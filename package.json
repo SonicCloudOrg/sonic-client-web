@@ -1,17 +1,21 @@
 {
-  "name": "sonic-client-web",
-  "version": "0.0.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
-  },
-  "dependencies": {
-    "vue": "^3.2.6"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^1.6.0",
-    "@vue/compiler-sfc": "^3.0.5",
-    "vite": "^2.5.1"
-  }
+    "name": "sonic-client-web",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "serve": "vite preview"
+    },
+    "dependencies": {
+        "axios": "^0.21.1",
+        "element-plus": "^1.1.0-beta.7",
+        "vue": "^3.0.0-rc.1",
+        "vue-router": "^4.0.10",
+        "vuex": "^4.0.2"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^1.2.4",
+        "@vue/compiler-sfc": "^3.0.0-rc.1",
+        "vite": "^1.0.0-rc.13"
+    }
 }
