@@ -6,6 +6,8 @@ export default createStore({
             userInfo: {
                 token: localStorage.getItem('SonicToken') ? localStorage.getItem('SonicToken') : '',
             },
+            isCollapse: false,
+            project: {}
         }
     },
     mutations: {

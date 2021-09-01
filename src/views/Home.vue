@@ -1,19 +1,406 @@
 <template>
-      <el-menu :default-active="1" class="el-menu-demo" mode="horizontal">
-  <el-menu-item index="1">处理中心</el-menu-item>
-  <el-sub-menu index="2">
-    <template #title>我的工作台</template>
-    <el-menu-item index="2-1">选项1</el-menu-item>
-    <el-menu-item index="2-2">选项2</el-menu-item>
-    <el-menu-item index="2-3">选项3</el-menu-item>
-    <el-sub-menu index="2-4">
-      <template #title>选项4</template>
-      <el-menu-item index="2-4-1">选项1</el-menu-item>
-      <el-menu-item index="2-4-2">选项2</el-menu-item>
-      <el-menu-item index="2-4-3">选项3</el-menu-item>
-    </el-sub-menu>
-  </el-sub-menu>
-  <el-menu-item index="3" disabled>消息中心</el-menu-item>
-  <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
-</el-menu>
+  <el-container>
+    <el-aside width="auto" v-if="route.params.projectId">
+      <el-menu
+        :collapse="store.state.isCollapse"
+        style="border-right-width: 0"
+        :default-active="route.path"
+        background-color="#2d3a4b"
+        text-color="#D6E0ED"
+        active-text-color="#409EFF"
+        :unique-opened="true"
+        class="el-menu-vertical-demo"
+        router
+      >
+        <p style="display: flex; justify-content: center; align-items: center">
+          <el-avatar
+            :size="40"
+            :src="store.state.project.projectImg"
+            shape="square"
+          ></el-avatar>
+          <span
+            style="
+              color: #eee;
+              font-size: 19px;
+              font-weight: 600;
+              text-align: center;
+              margin-left: 10px;
+            "
+            v-if="!store.state.isCollapse"
+            >{{ store.state.project.projectName }}</span
+          >
+        </p>
+        <el-menu-item :index="'/Home/' + projectId + '/ProjectIndex'">
+          <i class="el-icon-data-analysis"></i>
+          <template #title>项目概况</template>
+        </el-menu-item>
+
+        <el-submenu index="2">
+          <template #title>
+            <i class="el-icon-folder-opened"></i>
+            <span>测试用例管理</span>
+          </template>
+          <el-submenu index="1-4">
+            <template #title> <i class="el-icon-tickets"></i>测试用例 </template>
+            <el-menu-item :index="'/Home/' + projectId + '/AndroidTestCases'">
+              <i class="el-icon-d-arrow-right"></i>安卓端测试用例
+            </el-menu-item>
+            <el-menu-item :index="'/Home/' + projectId + '/IOSTestCases'">
+              <i class="el-icon-d-arrow-right"></i>iOS端测试用例
+            </el-menu-item>
+            <el-menu-item :index="'/Home/' + projectId + '/WebTestCases'" disabled>
+              <i class="el-icon-d-arrow-right"></i>Web端测试用例
+            </el-menu-item>
+            <el-menu-item :index="'/Home/' + projectId + '/WebTestCases'" disabled>
+              <i class="el-icon-d-arrow-right"></i>Win端测试用例
+            </el-menu-item>
+            <el-menu-item :index="'/Home/' + projectId + '/WebTestCases'" disabled>
+              <i class="el-icon-d-arrow-right"></i>Mac端测试用例
+            </el-menu-item>
+          </el-submenu>
+          <el-menu-item :index="'/Home/' + projectId + '/TestSuites'">
+            <i class="el-icon-document-copy"></i>测试套件
+          </el-menu-item>
+          <el-menu-item :index="'/Home/' + projectId + '/Jobs'">
+            <i class="el-icon-timer"></i>定时任务
+          </el-menu-item>
+        </el-submenu>
+
+        <el-submenu index="5">
+          <template #title>
+            <i class="el-icon-lock"></i>
+            <span>测试数据管理</span>
+          </template>
+          <el-menu-item :index="'/Home/' + projectId + '/Elements'">
+            <i class="el-icon-thumb"></i>元素管理
+          </el-menu-item>
+          <el-menu-item :index="'/Home/' + projectId + '/PublicStep'">
+            <i class="el-icon-star-off"></i>公共步骤
+          </el-menu-item>
+          <el-menu-item :index="'/Home/' + projectId + '/GlobalParams'">
+            <i class="el-icon-user"></i>全局参数
+          </el-menu-item>
+        </el-submenu>
+
+        <el-submenu index="4">
+          <template #title>
+            <i class="el-icon-paperclip"></i>
+            <span>测试结果分析</span>
+          </template>
+          <el-menu-item :index="'/Home/' + projectId + '/Results'">
+            <i class="el-icon-s-data"></i>测试结果
+          </el-menu-item>
+        </el-submenu>
+
+        <el-submenu index="7">
+          <template #title>
+            <i class="el-icon-connection"></i>
+            <span>持续集成设置</span>
+          </template>
+          <el-menu-item :index="'/Home/' + projectId + '/InstallPackage'">
+            <i class="el-icon-sold-out"></i>批量装包
+          </el-menu-item>
+        </el-submenu>
+
+        <el-submenu index="6">
+          <template #title>
+            <i class="el-icon-setting"></i>
+            <span>项目高级设置</span>
+          </template>
+          <el-menu-item :index="'/Home/' + projectId + '/Modules'">
+            <i class="el-icon-price-tag"></i>模块管理
+          </el-menu-item>
+          <el-menu-item :index="'/Home/' + projectId + '/Versions'">
+            <i class="el-icon-coin"></i>迭代管理
+          </el-menu-item>
+          <el-menu-item :index="'/Home/' + projectId + '/ProjectOption'">
+            <i class="el-icon-key"></i>其他设置
+          </el-menu-item>
+        </el-submenu>
+      </el-menu>
+    </el-aside>
+
+    <el-container direction="vertical">
+      <div style="height: 100%">
+        <el-header>
+          <el-menu mode="horizontal">
+            <el-menu-item
+              @click="store.commit('changeCollapse')"
+              v-if="route.params.projectId"
+            >
+              <i v-if="store.state.isCollapse === false" class="el-icon-s-fold"></i>
+              <i v-if="store.state.isCollapse === true" class="el-icon-s-unfold"></i>
+            </el-menu-item>
+            <el-menu-item v-else @click="addStar()">
+              <i class="el-icon-refresh"></i>
+            </el-menu-item>
+            <!-- <el-submenu index="1">
+                    <template #title>
+                      <i class="el-icon-monitor" style="margin-right: 0"></i>
+                      <span>Agent状态</span>
+                      <el-badge
+                        :value="onlineNum"
+                        type="success"
+                        style="margin-top: -4px; margin-left: 3px"
+                      >
+                      </el-badge>
+                    </template>
+                    <el-menu-item
+                      v-for="agent in resourceList"
+                      :key="agent.id"
+                      @click="findByWebHost(agent)"
+                    >
+                      <div style="width: 360px">
+                        <el-image
+                          style="
+                            width: 35px;
+                            position: absolute;
+                            top: 0px;
+                            bottom: 0px;
+                            margin: auto;
+                          "
+                          fit="contain"
+                          :src="require('../../src/assets/img/agent.png')"
+                        >
+                        </el-image>
+                        <span style="margin-left: 38px"
+                          >{{ agent.agentName }}
+                          <span
+                            style="
+                              color: #8492a6;
+                              font-size: 10px;
+                              font-style: italic;
+                            "
+                            >v{{ agent.version }}</span
+                          ></span
+                        >
+                        <span style="position: absolute; right: 10px">
+                          <span
+                            style="
+                              color: #8492a6;
+                              font-size: 10px;
+                              font-style: italic;
+                            "
+                            >IP：{{ agent.ip }}</span
+                          >
+                          <el-tag
+                            size="small"
+                            type="success"
+                            style="margin-left: 7px"
+                            v-if="agent.status === 'ONLINE'"
+                            >在线</el-tag
+                          >
+                          <el-tag
+                            size="small"
+                            type="info"
+                            style="margin-left: 7px"
+                            v-if="agent.status === 'OFFLINE'"
+                            >离线</el-tag
+                          >
+                        </span>
+                      </div>
+                    </el-menu-item>
+                  </el-submenu> -->
+            <el-menu-item
+              @click="
+                goToDevices(
+                  route.params.projectId
+                    ? '/Home/' + route.params.projectId + '/Devices'
+                    : '/Home/Devices'
+                )
+              "
+              ><i class="el-icon-mobile" style="margin-right: 0"></i>搜索设备
+            </el-menu-item>
+          </el-menu>
+          <el-menu mode="horizontal" active-text-color="#999">
+            <el-sub-menu index="1">
+              <template #title>
+                <!-- <img
+                        width="20px"
+                        :src="require('../../src/assets/img/logo.png')"
+                      /> -->
+                <span style="margin-left: 10px; font-size: 13px">文档中心</span></template
+              >
+              <div style="padding: 0 10px">
+                <el-divider
+                  ><span style="font-size: 13px; color: #999; white-space: nowrap"
+                    >Sonic相关</span
+                  ></el-divider
+                >
+                <el-menu-item
+                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                  >版本更新记录<el-badge
+                    value="New"
+                    style="margin: 0 0 5px 5px"
+                  ></el-badge
+                ></el-menu-item>
+                <el-menu-item
+                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                  >Sonic官方网站</el-menu-item
+                >
+                <el-menu-item
+                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                  >Sonic使用文档</el-menu-item
+                >
+                <el-menu-item
+                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                  >Sonic实现方案与原理<el-badge
+                    value="New"
+                    style="margin: 0 0 5px 5px"
+                  ></el-badge
+                ></el-menu-item>
+                <el-menu-item
+                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                  >Sonic手机助手</el-menu-item
+                >
+              </div>
+              <div style="padding: 0 10px">
+                <el-divider
+                  ><span style="font-size: 13px; color: #999; white-space: nowrap"
+                    >其他</span
+                  ></el-divider
+                >
+                <el-menu-item @click="goToUrl('http://localhost:8094/doc.html')">
+                  <!-- <el-image
+                          fit="contain"
+                          style="
+                            width: 20px;
+                            position: absolute;
+                            top: 9px;
+                            bottom: 9px;
+                            left: 10px;
+                          "
+                          :src="require('../../src/assets/img/knife4j.jpg')"
+                        ></el-image
+                        > -->
+                  <span style="margin-left: 28px">Open API Doc</span></el-menu-item
+                >
+              </div>
+            </el-sub-menu>
+            <el-sub-menu index="2">
+              <template #title
+                ><i class="el-icon-menu"></i
+                ><span style="font-size: 13px">切换项目</span></template
+              >
+              <!-- <el-menu-item
+                      v-for="project in projectData"
+                      v-show="project.id != $route.params.projectId"
+                      :key="project.id"
+                      @click="jump(project.id)"
+                    >
+                      <el-avatar
+                        style="margin-right: 10px"
+                        :size="32"
+                        :src="project.projectImg"
+                        shape="square"
+                      ></el-avatar
+                      >{{ project.projectName }}</el-menu-item
+                    > -->
+            </el-sub-menu>
+            <el-sub-menu>
+              <template #title
+                ><i class="el-icon-user"></i
+                ><span style="font-size: 13px">{{
+                  store.state.userInfo.name
+                }}</span></template
+              >
+              <div style="padding: 0 10px">
+                <el-menu-item @click="dialogSelf = true">个人信息</el-menu-item>
+                <el-menu-item @click="call()">联系我们</el-menu-item>
+                <el-menu-item @click="logout()"> 注销</el-menu-item>
+              </div>
+            </el-sub-menu>
+          </el-menu>
+        </el-header>
+
+        <!-- <el-main>
+              <router-view v-if="$route.params.projectId" />
+              <router-view
+                v-else-if="
+                  $route.name === 'Devices' ||
+                  $route.name === '404' ||
+                  $route.name === '500'
+                "
+              />
+              <div v-else>
+                <el-alert
+                  title="欢迎来到Sonic-UI自动化测试平台，请选择项目进入"
+                  type="info"
+                  center
+                  :closable="false"
+                >
+                </el-alert>
+                <el-row style="margin-top: 10px" justify="center" type="flex">
+                  <el-col
+                    v-for="project in projectData"
+                    :key="project"
+                    :xs="12"
+                    :sm="8"
+                    :md="8"
+                    :lg="4"
+                    :xl="3"
+                  >
+                    <div @click="jump(project.id)">
+                      <el-card
+                        style="margin: 10px 10px; cursor: pointer"
+                        shadow="hover"
+                      >
+                        <div style="text-align: center">
+                          <el-avatar
+                            :src="project.projectImg"
+                            :size="150"
+                            shape="square"
+                          ></el-avatar>
+                        </div>
+                        <el-form
+                          label-position="left"
+                          class="demo-table-expand"
+                          style="margin-top: 10px"
+                        >
+                          <el-form-item style="text-align: center">
+                            <strong style="font-size: 17px">{{
+                              project.projectName
+                            }}</strong>
+                          </el-form-item>
+                          <el-form-item>
+                            <p
+                              style="
+                                text-indent: 2em;
+                                line-height: 30px;
+                                margin-top: 0px;
+                              "
+                            >
+                              {{
+                                project.projectDes.length > 30
+                                  ? project.projectDes.substring(0, 30) + "..."
+                                  : project.projectDes
+                              }}
+                            </p>
+                          </el-form-item>
+                        </el-form>
+                      </el-card>
+                    </div>
+                  </el-col>
+                </el-row>
+              </div>
+            </el-main> -->
+        <!-- </el-scrollbar> -->
+      </div>
+    </el-container>
+  </el-container>
 </template>
+
+<script>
+import { defineComponent, reactive, toRefs, onMounted, ref } from "vue";
+import { useStore } from "vuex";
+import { useRouter, useRoute } from "vue-router";
+import axios from "../http/axios";
+export default defineComponent({
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    const route = useRoute();
+    return { store, router, route };
+  },
+});
+</script>
