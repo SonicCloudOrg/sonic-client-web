@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-aside width="auto" v-if="route.params.projectId">
+    <el-aside width="auto">
       <el-menu
         :collapse="store.state.isCollapse"
         style="border-right-width: 0"
@@ -35,12 +35,12 @@
           <template #title>项目概况</template>
         </el-menu-item>
 
-        <el-submenu index="2">
+        <el-sub-menu index="2">
           <template #title>
             <i class="el-icon-folder-opened"></i>
             <span>测试用例管理</span>
           </template>
-          <el-submenu index="1-4">
+          <el-sub-menu index="1-4">
             <template #title> <i class="el-icon-tickets"></i>测试用例 </template>
             <el-menu-item :index="'/Home/' + projectId + '/AndroidTestCases'">
               <i class="el-icon-d-arrow-right"></i>安卓端测试用例
@@ -57,16 +57,16 @@
             <el-menu-item :index="'/Home/' + projectId + '/WebTestCases'" disabled>
               <i class="el-icon-d-arrow-right"></i>Mac端测试用例
             </el-menu-item>
-          </el-submenu>
+          </el-sub-menu>
           <el-menu-item :index="'/Home/' + projectId + '/TestSuites'">
             <i class="el-icon-document-copy"></i>测试套件
           </el-menu-item>
           <el-menu-item :index="'/Home/' + projectId + '/Jobs'">
             <i class="el-icon-timer"></i>定时任务
           </el-menu-item>
-        </el-submenu>
+        </el-sub-menu>
 
-        <el-submenu index="5">
+        <el-sub-menu index="5">
           <template #title>
             <i class="el-icon-lock"></i>
             <span>测试数据管理</span>
@@ -80,9 +80,9 @@
           <el-menu-item :index="'/Home/' + projectId + '/GlobalParams'">
             <i class="el-icon-user"></i>全局参数
           </el-menu-item>
-        </el-submenu>
+        </el-sub-menu>
 
-        <el-submenu index="4">
+        <el-sub-menu index="4">
           <template #title>
             <i class="el-icon-paperclip"></i>
             <span>测试结果分析</span>
@@ -90,9 +90,9 @@
           <el-menu-item :index="'/Home/' + projectId + '/Results'">
             <i class="el-icon-s-data"></i>测试结果
           </el-menu-item>
-        </el-submenu>
+        </el-sub-menu>
 
-        <el-submenu index="7">
+        <el-sub-menu index="7">
           <template #title>
             <i class="el-icon-connection"></i>
             <span>持续集成设置</span>
@@ -100,9 +100,9 @@
           <el-menu-item :index="'/Home/' + projectId + '/InstallPackage'">
             <i class="el-icon-sold-out"></i>批量装包
           </el-menu-item>
-        </el-submenu>
+        </el-sub-menu>
 
-        <el-submenu index="6">
+        <el-sub-menu index="6">
           <template #title>
             <i class="el-icon-setting"></i>
             <span>项目高级设置</span>
@@ -116,7 +116,7 @@
           <el-menu-item :index="'/Home/' + projectId + '/ProjectOption'">
             <i class="el-icon-key"></i>其他设置
           </el-menu-item>
-        </el-submenu>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
 
@@ -134,7 +134,7 @@
             <el-menu-item v-else @click="addStar()">
               <i class="el-icon-refresh"></i>
             </el-menu-item>
-            <!-- <el-submenu index="1">
+            <!-- <el-sub-menu index="1">
                     <template #title>
                       <i class="el-icon-monitor" style="margin-right: 0"></i>
                       <span>Agent状态</span>
@@ -200,7 +200,7 @@
                         </span>
                       </div>
                     </el-menu-item>
-                  </el-submenu> -->
+                  </el-sub-menu> -->
             <el-menu-item
               @click="
                 goToDevices(
