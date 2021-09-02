@@ -1,14 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [{
-        path: '/Home',
+        path: '/Devices',
         component: () =>
-            import ("../views/Home.vue"),
+            import ("../views/Devices.vue"),
+        meta: { title: "设备中心" }
     },
-    {
-        path: '/',
-        redirect: '/Home'
-    }
+    // {
+    //     path: '/',
+    //     redirect: '/Home'
+    // }
 ]
 
 export default createRouter({

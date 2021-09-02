@@ -6,13 +6,15 @@ import store from './store/index.js'
 import 'element-plus/dist/index.css'
 import axios from "./http/axios";
 import { ElMessage } from 'element-plus'
-import './assets/index.css'
 
 createApp(App).use(ElementPlus).use(router).use(store).mount('#app')
 
 router.beforeEach((to, from, next) => {
+    document.title = "Sonic-UI自动化测试平台 - "
     if (to.meta.title) {
-        document.title = "Sonic-UI自动化测试平台 - " + to.meta.title
+        document.title += to.meta.title
+    } else {
+        document.title += " 首页"
     }
     if (!store.state.userInfo.token && store.state.userInfo.token.length !== 0) {
         // axios.get("/user").then((res) => {
