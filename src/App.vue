@@ -2,21 +2,21 @@
   <el-container>
     <el-aside width="auto">
       <el-menu
-        :collapse="store.state.isCollapse"
-        :default-active="route.path"
-        active-text-color="#409EFF"
-        :unique-opened="true"
-        class="el-menu-vertical-demo"
+          :collapse="store.state.isCollapse"
+          :default-active="route.path"
+          active-text-color="#409EFF"
+          :unique-opened="true"
+          class="el-menu-vertical-demo"
       >
         <p class="flex-center">
           <el-avatar
-            :size="40"
-            :src="store.state.project.projectImg"
-            shape="square"
+              :size="40"
+              :src="store.state.project.projectImg"
+              shape="square"
           ></el-avatar>
           <span class="project-name" v-if="!store.state.isCollapse">{{
-            store.state.project.projectName
-          }}</span>
+              store.state.project.projectName
+            }}</span>
         </p>
         <el-menu-item :index="'/Home/' + projectId + '/ProjectIndex'">
           <i class="el-icon-data-analysis"></i>
@@ -29,7 +29,7 @@
             <span>测试用例管理</span>
           </template>
           <el-sub-menu index="1-4">
-            <template #title> <i class="el-icon-tickets"></i>测试用例 </template>
+            <template #title><i class="el-icon-tickets"></i>测试用例</template>
             <el-menu-item :index="'/Home/' + projectId + '/AndroidTestCases'">
               <i class="el-icon-d-arrow-right"></i>安卓端测试用例
             </el-menu-item>
@@ -104,9 +104,9 @@
         <el-header>
           <el-menu mode="horizontal">
             <el-menu-item
-              index="1"
-              @click="store.commit('changeCollapse')"
-              v-if="route.params.projectId"
+                index="1"
+                @click="store.commit('changeCollapse')"
+                v-if="route.params.projectId"
             >
               <i v-if="store.state.isCollapse === false" class="el-icon-s-fold"></i>
               <i v-if="store.state.isCollapse === true" class="el-icon-s-unfold"></i>
@@ -182,83 +182,90 @@
                     </el-menu-item>
                   </el-sub-menu> -->
             <el-menu-item
-              index="3"
-              @click="
+                index="3"
+                @click="
                 goToDevices(
                   route.params.projectId
                     ? '/' + route.params.projectId + '/Devices'
                     : '/Devices'
                 )
               "
-              ><i class="el-icon-mobile" style="margin-right: 0"></i>设备中心
+            ><i class="el-icon-mobile" style="margin-right: 0"></i>设备中心
             </el-menu-item>
           </el-menu>
           <el-menu mode="horizontal" active-text-color="#999">
             <el-sub-menu index="1">
               <template #title
-                ><i class="el-icon-menu"></i
-                ><span style="font-size: 13px">切换项目</span></template
+              ><i class="el-icon-menu"></i
+              ><span style="font-size: 13px">切换项目</span></template
               >
-              <!-- <el-menu-item
-                      v-for="project in projectData"
-                      v-show="project.id != route.params.projectId"
-                      :key="project.id"
-                      @click="jump(project.id)"
-                    >
-                      <el-avatar
-                        style="margin-right: 10px"
-                        :size="32"
-                        :src="project.projectImg"
-                        shape="square"
-                      ></el-avatar
-                      >{{ project.projectName }}</el-menu-item
-                    > -->
+              <el-menu-item
+                  v-for="project in projectData"
+                  v-show="project.id != route.params.projectId"
+                  :key="project.id"
+                  @click="jump(project.id)"
+              >
+                <el-avatar
+                    style="margin-right: 10px"
+                    :size="32"
+                    :src="project.projectImg"
+                    shape="square"
+                ></el-avatar
+                >
+                {{ project.projectName }}
+              </el-menu-item
+              >
             </el-sub-menu>
             <el-sub-menu index="2">
               <template #title
-                ><i class="el-icon-user"></i
-                ><span style="font-size: 13px">{{
+              ><i class="el-icon-user"></i
+              ><span style="font-size: 13px">{{
                   store.state.userInfo.name
                 }}</span></template
               >
               <div style="padding: 0 10px">
                 <el-menu-item @click="dialogSelf = true">个人信息</el-menu-item>
                 <el-divider
-                  ><span
+                ><span
                     style="font-size: 13px; color: #999; white-space: nowrap"
                     class="flex-center"
-                    ><img
-                      style="margin-right: 5px"
-                      width="20"
-                      :src="logo"
-                    />关于Sonic</span
-                  ></el-divider
+                ><img
+                    style="margin-right: 5px"
+                    width="20"
+                    :src="logo"
+                />关于Sonic</span
+                ></el-divider
                 >
                 <el-menu-item
-                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-                  >Sonic官方网站</el-menu-item
+                    @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                >Sonic官方网站
+                </el-menu-item
                 >
                 <el-menu-item
-                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-                  >Sonic使用文档</el-menu-item
+                    @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                >Sonic使用文档
+                </el-menu-item
                 >
                 <el-menu-item
-                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-                  >Sonic手机助手</el-menu-item
+                    @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                >Sonic手机助手
+                </el-menu-item
                 >
                 <el-menu-item
-                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-                  >版本更新记录<el-badge
-                    value="New"
-                    style="margin: 0 0 5px 5px"
+                    @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                >版本更新记录
+                  <el-badge
+                      value="New"
+                      style="margin: 0 0 5px 5px"
                   ></el-badge
-                ></el-menu-item>
+                  >
+                </el-menu-item>
               </div>
               <div style="padding: 0 10px">
                 <el-divider
-                  ><span style="font-size: 13px; color: #999; white-space: nowrap"
-                    >其他</span
-                  ></el-divider
+                ><span style="font-size: 13px; color: #999; white-space: nowrap"
+                >其他</span
+                ></el-divider
                 >
                 <el-menu-item @click="goToUrl('http://localhost:8094/doc.html')">
                   REST API
@@ -346,22 +353,19 @@
   </el-container>
 </template>
 
-<script>
+<script setup>
 import './assets/light.css'
-import { defineComponent, reactive, toRefs, onMounted, ref } from "vue";
-import { useStore } from "vuex";
-import { useRouter, useRoute } from "vue-router";
+import {ref} from "vue";
+import {useStore} from "vuex";
+import {useRouter, useRoute} from "vue-router";
 import logo from "./assets/logo.png";
 // import axios from "../http/axios";
-export default defineComponent({
-  setup() {
-    const store = useStore();
-    const router = useRouter();
-    const route = useRoute();
-    const state = reactive({
-      logo: logo,
-    });
-    return { ...toRefs(state), store, router, route };
-  },
-});
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+const projectData = ref([{"id": 1, "projectName": "test", "projectImg": "http://test.png"}])
+const jump = (id) => {
+  projectData.value[0].projectName = id
+  console.log("aaa");
+}
 </script>
