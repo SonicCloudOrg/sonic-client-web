@@ -102,7 +102,7 @@
     <el-container direction="vertical">
       <div style="height: 100%">
         <el-header>
-          <el-menu mode="horizontal">
+          <el-menu mode="horizontal" class="el-menu-horizontal-demo">
             <el-menu-item
                 index="1"
                 @click="store.commit('changeCollapse')"
@@ -193,11 +193,12 @@
             ><i class="el-icon-mobile" style="margin-right: 0"></i>设备中心
             </el-menu-item>
           </el-menu>
-          <el-menu mode="horizontal" active-text-color="#999">
+          <el-menu mode="horizontal" class="el-menu-horizontal-demo">
             <el-sub-menu index="1">
               <template #title
               ><i class="el-icon-menu"></i
-              ><span style="font-size: 13px">切换项目</span></template
+              >切换项目
+              </template
               >
               <el-menu-item
                   v-for="project in projectData"
@@ -219,9 +220,10 @@
             <el-sub-menu index="2">
               <template #title
               ><i class="el-icon-user"></i
-              ><span style="font-size: 13px">{{
+              >{{
                   store.state.userInfo.name
-                }}</span></template
+                }}
+              </template
               >
               <div style="padding: 0 10px">
                 <el-menu-item @click="dialogSelf = true">个人信息</el-menu-item>
@@ -353,9 +355,14 @@
   </el-container>
 </template>
 
+<style>
+@import "./assets/common.css";
+</style>
+
 <script setup>
 import './assets/light.css'
-import {ref} from "vue";
+import './assets/dark.css'
+import {ref, onMounted} from "vue";
 import {useStore} from "vuex";
 import {useRouter, useRoute} from "vue-router";
 import logo from "./assets/logo.png";
@@ -366,6 +373,15 @@ const route = useRoute();
 const projectData = ref([{"id": 1, "projectName": "test", "projectImg": "http://test.png"}])
 const jump = (id) => {
   projectData.value[0].projectName = id
-  console.log("aaa");
 }
+const toggleClass = (element, className) => {
+  if (!element || !className) {
+    return
+  }
+  localStorage.setItem('SonicTheme', className);
+  element.className = className
+}
+onMounted(() => {
+  toggleClass(document.body, localStorage.getItem('SonicTheme') ? localStorage.getItem('SonicTheme') : "light");
+})
 </script>

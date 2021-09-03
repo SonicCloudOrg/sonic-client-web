@@ -1,64 +1,51 @@
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: #2c3e50;
-}
-
-.el-header {
-    padding: 0!important;
+.light .el-header {
+    padding: 0 !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #e6e6e6;
 }
 
-.el-avatar {
+.light .el-avatar {
     background: transparent !important;
 }
 
-html,
-body,
-#app,
-.el-container {
-    padding: 0px;
-    margin: 0!important;
-    height: 100%;
+.light .el-menu-vertical-demo {
+    height: 100%
 }
 
-.el-aside {
-    background-color: #2d3a4b;
-}
-
-.el-menu-vertical-demo {
-    border-right-width: 0
-}
-
-.el-menu-vertical-demo:not(.el-menu--collapse) {
+.light .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 230px;
 }
 
-.el-menu-vertical-demo,
-.el-menu-vertical-demo .el-menu-item,
-.el-menu-vertical-demo .el-sub-menu__title {
-    color: #D6E0ED;
-    background-color: #2d3a4b!important;
+.light .el-menu-vertical-demo,
+.light .el-menu-vertical-demo .el-menu-item,
+.light .el-menu-vertical-demo .el-sub-menu__title {
+    font-size: 13px;
+    color: #999 !important;
+    background-color: #ffffff !important;
 }
 
-.el-menu--horizontal>.el-sub-menu .el-sub-menu__title {
-    border-bottom: 0px solid transparent!important;
+.light .el-menu-horizontal-demo,
+.light .el-menu-horizontal-demo .el-menu-item,
+.light .el-menu-horizontal-demo .el-sub-menu__title,
+.light .el-menu-horizontal-demo .el-sub-menu.is-active .el-sub-menu__title,
+.light .el-menu--horizontal .el-menu .el-menu-item.is-active,
+.light .el-menu--horizontal .el-menu .el-sub-menu.is-active > .el-sub-menu__title {
+    font-size: 13px;
+    color: #999 !important;
+    background-color: #ffffff !important;
 }
 
-.project-name {
+.light .el-menu--horizontal > .el-sub-menu .el-sub-menu__title,
+.light .el-menu--horizontal > .el-menu-item.is-active {
+    border-bottom: 0px solid transparent !important;
+}
+
+.light .project-name {
     color: #eee;
     font-size: 19px;
     font-weight: 600;
     text-align: center;
     margin-left: 10px;
-}
-
-.flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center
 }

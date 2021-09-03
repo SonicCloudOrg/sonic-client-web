@@ -1,64 +1,42 @@
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: #2c3e50;
-}
-
-.el-header {
-    padding: 0!important;
+.dark .el-header {
+    padding: 0 !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #e6e6e6;
 }
 
-.el-avatar {
+.dark .el-avatar {
     background: transparent !important;
 }
 
-html,
-body,
-#app,
-.el-container {
-    padding: 0px;
-    margin: 0!important;
-    height: 100%;
-}
-
-.el-aside {
+.dark .el-aside {
     background-color: #2d3a4b;
 }
 
-.el-menu-vertical-demo {
+.dark .el-menu-vertical-demo {
     border-right-width: 0
 }
 
-.el-menu-vertical-demo:not(.el-menu--collapse) {
+.dark .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 230px;
 }
 
-.el-menu-vertical-demo,
-.el-menu-vertical-demo .el-menu-item,
-.el-menu-vertical-demo .el-sub-menu__title {
+.dark .el-menu-vertical-demo,
+.dark .el-menu-vertical-demo .el-menu-item,
+.dark .el-menu-vertical-demo .el-sub-menu__title {
     color: #D6E0ED;
-    background-color: #2d3a4b!important;
+    background-color: #2d3a4b !important;
 }
 
-.el-menu--horizontal>.el-sub-menu .el-sub-menu__title {
-    border-bottom: 0px solid transparent!important;
+.dark .el-menu--horizontal > .el-sub-menu .el-sub-menu__title {
+    border-bottom: 0px solid transparent !important;
 }
 
-.project-name {
+.dark .project-name {
     color: #eee;
     font-size: 19px;
     font-weight: 600;
     text-align: center;
     margin-left: 10px;
-}
-
-.flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center
 }
