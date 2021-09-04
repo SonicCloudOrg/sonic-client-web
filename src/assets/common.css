@@ -5,6 +5,10 @@
     color: #2c3e50;
 }
 
+.font, .font * {
+    font-size: 13px !important;
+}
+
 html,
 body,
 #app,
@@ -18,4 +22,21 @@ body,
     display: flex;
     justify-content: center;
     align-items: center
+}
+
+.el-menu--horizontal > .el-sub-menu .el-sub-menu__title,
+.el-menu--horizontal > .el-menu-item.is-active {
+    border-bottom: 0px solid transparent !important;
+}
+
+.el-avatar {
+    background: transparent !important;
+}
+
+.el-menu-vertical-demo {
+    height: 100%
+}
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 230px;
 }

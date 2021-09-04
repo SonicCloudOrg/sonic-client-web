@@ -6,40 +6,27 @@
     border-bottom: 1px solid #e6e6e6;
 }
 
-.light .el-avatar {
-    background: transparent !important;
+.light .title {
+    color: #909399 !important;
+    white-space: nowrap
 }
 
-.light .el-menu-vertical-demo {
-    height: 100%
-}
-
-.light .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 230px;
-}
-
-.light .el-menu-vertical-demo,
 .light .el-menu-vertical-demo .el-menu-item,
-.light .el-menu-vertical-demo .el-sub-menu__title {
-    font-size: 13px;
-    color: #999 !important;
-    background-color: #ffffff !important;
+.light .el-menu-vertical-demo .el-sub-menu__title,
+.light .el-menu-horizontal-demo .el-menu-item,
+.light .el-menu-horizontal-demo .el-sub-menu__title {
+    color: #909399 !important;
+    background-color: #ffffff
 }
 
-.light .el-menu-horizontal-demo,
-.light .el-menu-horizontal-demo .el-menu-item,
-.light .el-menu-horizontal-demo .el-sub-menu__title,
-.light .el-menu-horizontal-demo .el-sub-menu.is-active .el-sub-menu__title,
+.light .el-menu-vertical-demo .el-menu-item.is-active {
+    color: #409EFF !important;
+}
+
 .light .el-menu--horizontal .el-menu .el-menu-item.is-active,
 .light .el-menu--horizontal .el-menu .el-sub-menu.is-active > .el-sub-menu__title {
-    font-size: 13px;
-    color: #999 !important;
-    background-color: #ffffff !important;
-}
-
-.light .el-menu--horizontal > .el-sub-menu .el-sub-menu__title,
-.light .el-menu--horizontal > .el-menu-item.is-active {
-    border-bottom: 0px solid transparent !important;
+    font-size: 13px !important;
+    color: #909399 !important;
 }
 
 .light .project-name {

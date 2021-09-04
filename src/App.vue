@@ -4,9 +4,9 @@
       <el-menu
           :collapse="store.state.isCollapse"
           :default-active="route.path"
-          active-text-color="#409EFF"
           :unique-opened="true"
-          class="el-menu-vertical-demo"
+          class="el-menu-vertical-demo font"
+          router
       >
         <p class="flex-center">
           <el-avatar
@@ -102,7 +102,7 @@
     <el-container direction="vertical">
       <div style="height: 100%">
         <el-header>
-          <el-menu mode="horizontal" class="el-menu-horizontal-demo">
+          <el-menu mode="horizontal" class="el-menu-horizontal-demo font">
             <el-menu-item
                 index="1"
                 @click="store.commit('changeCollapse')"
@@ -193,7 +193,7 @@
             ><i class="el-icon-mobile" style="margin-right: 0"></i>设备中心
             </el-menu-item>
           </el-menu>
-          <el-menu mode="horizontal" class="el-menu-horizontal-demo">
+          <el-menu mode="horizontal" class="el-menu-horizontal-demo font" default-active="0">
             <el-sub-menu index="1">
               <template #title
               ><i class="el-icon-menu"></i
@@ -229,8 +229,7 @@
                 <el-menu-item @click="dialogSelf = true">个人信息</el-menu-item>
                 <el-divider
                 ><span
-                    style="font-size: 13px; color: #999; white-space: nowrap"
-                    class="flex-center"
+                    class="flex-center font title"
                 ><img
                     style="margin-right: 5px"
                     width="20"
@@ -265,7 +264,7 @@
               </div>
               <div style="padding: 0 10px">
                 <el-divider
-                ><span style="font-size: 13px; color: #999; white-space: nowrap"
+                ><span class="font title"
                 >其他</span
                 ></el-divider
                 >
@@ -382,6 +381,7 @@ const toggleClass = (element, className) => {
   element.className = className
 }
 onMounted(() => {
-  toggleClass(document.body, localStorage.getItem('SonicTheme') ? localStorage.getItem('SonicTheme') : "light");
+  // toggleClass(document.body, localStorage.getItem('SonicTheme') ? localStorage.getItem('SonicTheme') : "light");
+  toggleClass(document.body, "dark");
 })
 </script>
