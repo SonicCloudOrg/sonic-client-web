@@ -41,20 +41,44 @@ body,
     width: 230px;
 }
 
-.el-switch__label--right {
+ .demo .el-switch__label {
+     position: absolute;
+     display: none;
+     color: #fff;
+ }
+/*打开时文字位置设置*/
+.demo .el-switch__label--right {
+    top:1px;
     z-index: 1;
-    right: -10px;
-    top: 0.5px;
+    right: 3px;
 }
-
 /*关闭时文字位置设置*/
-.el-switch__label--left {
+.demo .el-switch__label--left {
+    top:1px;
     z-index: 1;
-    left: 23px;
-    top: 0.5px;
+    left: 2px;
+}
+/*显示文字*/
+.demo .el-switch__label.is-active {
+    display: block;
 }
 
-/*显示文字*/
-.el-switch__label.is-active {
-    display: block;
+.demo .el-switch__core {
+   height:10px!important;
+}
+
+.demo .el-switch.is-checked .el-switch__core .el-switch__action{
+    top:-5px;
+    margin-left:-18px!important;
+    border:1px solid red;
+    width:17px!important;
+    height: 17px!important;
+}
+
+.demo .el-switch .el-switch__core .el-switch__action{
+    top:-5px;
+    margin-left:-2px!important;
+    border:1px solid red;
+    width:17px!important;
+    height: 17px!important;
 }

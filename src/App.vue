@@ -18,7 +18,7 @@
               store.state.project.projectName
             }}</span>
         </p>
-        <el-menu-item :index="'/Home/' + projectId + '/ProjectIndex'">
+        <el-menu-item :index="'/' + route.params.projectId + '/ProjectIndex'">
           <i class="el-icon-data-analysis"></i>
           <template #title>项目概况</template>
         </el-menu-item>
@@ -30,17 +30,17 @@
           </template>
           <el-sub-menu index="1-4">
             <template #title><i class="el-icon-tickets"></i>测试用例</template>
-            <el-menu-item :index="'/Home/' + projectId + '/AndroidTestCases'">
+            <el-menu-item :index="'/' + route.params.projectId + '/AndroidTestCases'">
               <i class="el-icon-d-arrow-right"></i>安卓端测试用例
             </el-menu-item>
-            <el-menu-item :index="'/Home/' + projectId + '/IOSTestCases'">
+            <el-menu-item :index="'/' + route.params.projectId + '/IOSTestCases'">
               <i class="el-icon-d-arrow-right"></i>iOS端测试用例
             </el-menu-item>
           </el-sub-menu>
-          <el-menu-item :index="'/Home/' + projectId + '/TestSuites'">
+          <el-menu-item :index="'/' + route.params.projectId + '/TestSuites'">
             <i class="el-icon-document-copy"></i>测试套件
           </el-menu-item>
-          <el-menu-item :index="'/Home/' + projectId + '/Jobs'">
+          <el-menu-item :index="'/' + route.params.projectId + '/Jobs'">
             <i class="el-icon-timer"></i>定时任务
           </el-menu-item>
         </el-sub-menu>
@@ -50,13 +50,13 @@
             <i class="el-icon-lock"></i>
             <span>测试数据管理</span>
           </template>
-          <el-menu-item :index="'/Home/' + projectId + '/Elements'">
+          <el-menu-item :index="'/' + route.params.projectId + '/Elements'">
             <i class="el-icon-thumb"></i>元素管理
           </el-menu-item>
-          <el-menu-item :index="'/Home/' + projectId + '/PublicStep'">
+          <el-menu-item :index="'/' + route.params.projectId + '/PublicStep'">
             <i class="el-icon-star-off"></i>公共步骤
           </el-menu-item>
-          <el-menu-item :index="'/Home/' + projectId + '/GlobalParams'">
+          <el-menu-item :index="'/' + route.params.projectId + '/GlobalParams'">
             <i class="el-icon-user"></i>全局参数
           </el-menu-item>
         </el-sub-menu>
@@ -66,7 +66,7 @@
             <i class="el-icon-paperclip"></i>
             <span>测试结果分析</span>
           </template>
-          <el-menu-item :index="'/Home/' + projectId + '/Results'">
+          <el-menu-item :index="'/' + route.params.projectId + '/Results'">
             <i class="el-icon-s-data"></i>测试结果
           </el-menu-item>
         </el-sub-menu>
@@ -76,7 +76,7 @@
             <i class="el-icon-connection"></i>
             <span>持续集成设置</span>
           </template>
-          <el-menu-item :index="'/Home/' + projectId + '/InstallPackage'">
+          <el-menu-item :index="'/' + route.params.projectId + '/InstallPackage'">
             <i class="el-icon-sold-out"></i>批量装包
           </el-menu-item>
         </el-sub-menu>
@@ -86,13 +86,13 @@
             <i class="el-icon-setting"></i>
             <span>项目高级设置</span>
           </template>
-          <el-menu-item :index="'/Home/' + projectId + '/Modules'">
+          <el-menu-item :index="'/' + route.params.projectId + '/Modules'">
             <i class="el-icon-price-tag"></i>模块管理
           </el-menu-item>
-          <el-menu-item :index="'/Home/' + projectId + '/Versions'">
+          <el-menu-item :index="'/' + route.params.projectId + '/Versions'">
             <i class="el-icon-coin"></i>迭代管理
           </el-menu-item>
-          <el-menu-item :index="'/Home/' + projectId + '/ProjectOption'">
+          <el-menu-item :index="'/' + route.params.projectId + '/ProjectOption'">
             <i class="el-icon-key"></i>其他设置
           </el-menu-item>
         </el-sub-menu>
@@ -193,9 +193,12 @@
             ><i class="el-icon-mobile" style="margin-right: 0"></i>设备中心
             </el-menu-item>
           </el-menu>
-          <div class="flex-center">
-            <el-switch v-model="theme" @change="toggleClass" active-value="light"
+          <div class="flex-center demo">
+            <el-switch v-model="theme" @change="toggleClass"
+                       width="33"
+                       active-value="light"
                        inactive-value="dark"
+                       active-color="#13ce66" inactive-color="#ff4949"
                        active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>
             <el-menu mode="horizontal" class="el-menu-horizontal-demo font" default-active="0">
               <el-sub-menu index="1">
