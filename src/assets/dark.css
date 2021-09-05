@@ -16,15 +16,19 @@
     background-color: #545c64 !important;
 }
 
+.dark .el-menu-vertical-demo {
+    border-right: 1px solid #999999 !important;
+}
+
 .dark .el-menu-vertical-demo .el-menu-item,
 .dark .el-menu-vertical-demo .el-sub-menu__title,
 .dark .el-menu-horizontal-demo .el-menu-item,
 .dark .el-menu-horizontal-demo .el-sub-menu__title {
     color: #ffffff !important;
-    background-color: #545c64
+    background-color: #545c64 !important;
 }
 
-.dark .el-menu-vertical-demo .el-menu-item.is-active {
+.dark .el-menu-item.is-active {
     color: #ffd04b !important;
 }
 

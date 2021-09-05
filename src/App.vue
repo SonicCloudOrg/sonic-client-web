@@ -193,88 +193,93 @@
             ><i class="el-icon-mobile" style="margin-right: 0"></i>设备中心
             </el-menu-item>
           </el-menu>
-          <el-menu mode="horizontal" class="el-menu-horizontal-demo font" default-active="0">
-            <el-sub-menu index="1">
-              <template #title
-              ><i class="el-icon-menu"></i
-              >切换项目
-              </template
-              >
-              <el-menu-item
-                  v-for="project in projectData"
-                  v-show="project.id != route.params.projectId"
-                  :key="project.id"
-                  @click="jump(project.id)"
-              >
-                <el-avatar
-                    style="margin-right: 10px"
-                    :size="32"
-                    :src="project.projectImg"
-                    shape="square"
-                ></el-avatar
-                >
-                {{ project.projectName }}
-              </el-menu-item
-              >
-            </el-sub-menu>
-            <el-sub-menu index="2">
-              <template #title
-              ><i class="el-icon-user"></i
-              >{{
-                  store.state.userInfo.name
-                }}
-              </template
-              >
-              <div style="padding: 0 10px">
-                <el-menu-item @click="dialogSelf = true">个人信息</el-menu-item>
-                <el-divider
-                ><span
-                    class="flex-center font title"
-                ><img
-                    style="margin-right: 5px"
-                    width="20"
-                    :src="logo"
-                />关于Sonic</span
-                ></el-divider
+          <div class="flex-center">
+            <el-switch v-model="theme" @change="toggleClass" active-value="light"
+                       inactive-value="dark"
+                       active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>
+            <el-menu mode="horizontal" class="el-menu-horizontal-demo font" default-active="0">
+              <el-sub-menu index="1">
+                <template #title
+                ><i class="el-icon-menu"></i
+                >切换项目
+                </template
                 >
                 <el-menu-item
-                    @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-                >Sonic官方网站
-                </el-menu-item
+                    v-for="project in projectData"
+                    v-show="project.id != route.params.projectId"
+                    :key="project.id"
+                    @click="jump(project.id)"
                 >
-                <el-menu-item
-                    @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-                >Sonic使用文档
-                </el-menu-item
-                >
-                <el-menu-item
-                    @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-                >Sonic手机助手
-                </el-menu-item
-                >
-                <el-menu-item
-                    @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-                >版本更新记录
-                  <el-badge
-                      value="New"
-                      style="margin: 0 0 5px 5px"
-                  ></el-badge
+                  <el-avatar
+                      style="margin-right: 10px"
+                      :size="32"
+                      :src="project.projectImg"
+                      shape="square"
+                  ></el-avatar
                   >
-                </el-menu-item>
-              </div>
-              <div style="padding: 0 10px">
-                <el-divider
-                ><span class="font title"
-                >其他</span
-                ></el-divider
+                  {{ project.projectName }}
+                </el-menu-item
                 >
-                <el-menu-item @click="goToUrl('http://localhost:8094/doc.html')">
-                  REST API
-                </el-menu-item>
-                <el-menu-item @click="logout()"> 注销</el-menu-item>
-              </div>
-            </el-sub-menu>
-          </el-menu>
+              </el-sub-menu>
+              <el-sub-menu index="2">
+                <template #title
+                ><i class="el-icon-user"></i
+                >{{
+                    store.state.userInfo.name
+                  }}
+                </template
+                >
+                <div style="padding: 0 10px">
+                  <el-menu-item @click="dialogSelf = true">个人信息</el-menu-item>
+                  <el-divider
+                  ><span
+                      class="flex-center font title"
+                  ><img
+                      style="margin-right: 5px"
+                      width="20"
+                      :src="logo"
+                  />关于Sonic</span
+                  ></el-divider
+                  >
+                  <el-menu-item
+                      @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                  >Sonic官方网站
+                  </el-menu-item
+                  >
+                  <el-menu-item
+                      @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                  >Sonic使用文档
+                  </el-menu-item
+                  >
+                  <el-menu-item
+                      @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                  >Sonic手机助手
+                  </el-menu-item
+                  >
+                  <el-menu-item
+                      @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+                  >版本更新记录
+                    <el-badge
+                        value="New"
+                        style="margin: 0 0 5px 5px"
+                    ></el-badge
+                    >
+                  </el-menu-item>
+                </div>
+                <div style="padding: 0 10px">
+                  <el-divider
+                  ><span class="font title"
+                  >其他</span
+                  ></el-divider
+                  >
+                  <el-menu-item @click="goToUrl('http://localhost:8094/doc.html')">
+                    REST API
+                  </el-menu-item>
+                  <el-menu-item @click="logout()"> 注销</el-menu-item>
+                </div>
+              </el-sub-menu>
+            </el-menu>
+          </div>
         </el-header>
 
         <!-- <el-main>
@@ -361,7 +366,7 @@
 <script setup>
 import './assets/light.css'
 import './assets/dark.css'
-import {ref, onMounted} from "vue";
+import {ref, onMounted, onBeforeMount} from "vue";
 import {useStore} from "vuex";
 import {useRouter, useRoute} from "vue-router";
 import logo from "./assets/logo.png";
@@ -370,18 +375,18 @@ const store = useStore();
 const router = useRouter();
 const route = useRoute();
 const projectData = ref([{"id": 1, "projectName": "test", "projectImg": "http://test.png"}])
+const theme = ref("");
 const jump = (id) => {
   projectData.value[0].projectName = id
 }
-const toggleClass = (element, className) => {
-  if (!element || !className) {
-    return
-  }
-  localStorage.setItem('SonicTheme', className);
-  element.className = className
+const toggleClass = (t) => {
+  localStorage.setItem('SonicTheme', t);
+  document.body.className = t
 }
+onBeforeMount(() => {
+  theme.value = localStorage.getItem('SonicTheme') ? localStorage.getItem('SonicTheme') : "light"
+})
 onMounted(() => {
-  // toggleClass(document.body, localStorage.getItem('SonicTheme') ? localStorage.getItem('SonicTheme') : "light");
-  toggleClass(document.body, "dark");
+  toggleClass(theme.value);
 })
 </script>

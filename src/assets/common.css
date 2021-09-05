@@ -40,3 +40,21 @@ body,
 .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 230px;
 }
+
+.el-switch__label--right {
+    z-index: 1;
+    right: -10px;
+    top: 0.5px;
+}
+
+/*关闭时文字位置设置*/
+.el-switch__label--left {
+    z-index: 1;
+    left: 23px;
+    top: 0.5px;
+}
+
+/*显示文字*/
+.el-switch__label.is-active {
+    display: block;
+}
