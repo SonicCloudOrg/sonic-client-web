@@ -36,3 +36,8 @@
     text-align: center;
     margin-left: 10px;
 }
+
+.light .demo .el-switch__label.is-active {
+    display: block;
+    color: #409EFF;
+}
