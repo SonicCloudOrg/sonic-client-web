@@ -51,3 +51,8 @@
     text-align: center;
     margin-left: 10px;
 }
+
+.dark .demo .el-switch__label.is-active {
+    display: block;
+    color: #ffd04b;
+}

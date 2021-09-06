@@ -194,12 +194,14 @@
             </el-menu-item>
           </el-menu>
           <div class="flex-center demo">
-            <el-switch v-model="theme" @change="toggleClass"
-                       width="33"
-                       active-value="light"
-                       inactive-value="dark"
-                       active-color="#13ce66" inactive-color="#ff4949"
-                       active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>
+            <el-tooltip :content="'当前主题: '+theme.toUpperCase()" placement="bottom">
+              <el-switch v-model="theme" @change="toggleClass"
+                         width="33"
+                         active-value="light"
+                         inactive-value="dark"
+                         active-color="#C0C4CC" inactive-color="#ffffff"
+                         active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>
+            </el-tooltip>
             <el-menu mode="horizontal" class="el-menu-horizontal-demo font" default-active="0">
               <el-sub-menu index="1">
                 <template #title

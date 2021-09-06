@@ -41,44 +41,40 @@ body,
     width: 230px;
 }
 
- .demo .el-switch__label {
-     position: absolute;
-     display: none;
-     color: #fff;
- }
-/*打开时文字位置设置*/
-.demo .el-switch__label--right {
-    top:1px;
-    z-index: 1;
-    right: 3px;
+.demo .el-switch__label {
+    position: absolute;
+    display: none;
 }
-/*关闭时文字位置设置*/
+
+.demo .el-switch__label--right {
+    top: 1px;
+    z-index: 1;
+    right: 13px;
+}
+
 .demo .el-switch__label--left {
-    top:1px;
+    top: 1px;
     z-index: 1;
     left: 2px;
 }
-/*显示文字*/
-.demo .el-switch__label.is-active {
-    display: block;
-}
 
 .demo .el-switch__core {
-   height:10px!important;
+    height: 10px !important;
+    margin-right: 10px;
 }
 
-.demo .el-switch.is-checked .el-switch__core .el-switch__action{
-    top:-5px;
-    margin-left:-18px!important;
-    border:1px solid red;
-    width:17px!important;
-    height: 17px!important;
+.demo .el-switch.is-checked .el-switch__core .el-switch__action {
+    top: -6px;
+    margin-left: -19.5px !important;
+    border: 2px solid #409EFF;
+    width: 17px !important;
+    height: 17px !important;
 }
 
-.demo .el-switch .el-switch__core .el-switch__action{
-    top:-5px;
-    margin-left:-2px!important;
-    border:1px solid red;
-    width:17px!important;
-    height: 17px!important;
+.demo .el-switch .el-switch__core .el-switch__action {
+    top: -6px;
+    margin-left: -4px !important;
+    border: 2px solid #ffd04b;
+    width: 17px !important;
+    height: 17px !important;
 }
