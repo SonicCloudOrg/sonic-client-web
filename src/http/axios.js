@@ -62,13 +62,13 @@ $http.interceptors.response.use(response => {
                 break;
             default:
                 ElMessage.error({
-                    message: '接口出错了！',
+                    message: '系统出错了！',
                 });
                 break;
         }
     } else {
         ElMessage.error({
-            message: '接口出错了！',
+            message: '系统出错了！',
         });
     }
     return Promise.reject(err);

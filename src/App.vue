@@ -102,16 +102,17 @@
     <el-container direction="vertical">
       <div style="height: 100%">
         <el-header>
-          <el-menu mode="horizontal" class="el-menu-horizontal-demo font">
+          <div  class="flex-center">
+          <div>asd</div>
+          <el-menu mode="horizontal" class="el-menu-horizontal-demo font" :default-active="route.path" router>
             <el-menu-item
-                index="1"
                 @click="store.commit('changeCollapse')"
                 v-if="route.params.projectId"
             >
               <i v-if="store.state.isCollapse === false" class="el-icon-s-fold"></i>
               <i v-if="store.state.isCollapse === true" class="el-icon-s-unfold"></i>
             </el-menu-item>
-            <el-menu-item v-else @click="addStar()" index="2">
+            <el-menu-item v-else @click="addStar()">
               <i class="el-icon-refresh"></i>
             </el-menu-item>
             <!-- <el-sub-menu index="1">
@@ -182,18 +183,14 @@
                     </el-menu-item>
                   </el-sub-menu> -->
             <el-menu-item
-                index="3"
-                @click="
-                goToDevices(
-                  route.params.projectId
+                :index="route.params.projectId
                     ? '/' + route.params.projectId + '/Devices'
-                    : '/Devices'
-                )
-              "
+                    : '/Devices'"
             ><i class="el-icon-mobile" style="margin-right: 0"></i>设备中心
             </el-menu-item>
           </el-menu>
-          <div class="flex-center demo">
+          </div>
+            <div class="flex-center demo">
             <el-tooltip :content="'当前主题: '+theme.toUpperCase()" placement="bottom">
               <el-switch v-model="theme" @change="toggleClass"
                          width="33"

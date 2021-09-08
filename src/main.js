@@ -1,18 +1,18 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router/index.js'
 import ElementPlus from 'element-plus';
 import store from './store/index.js'
 import 'element-plus/dist/index.css'
 import axios from "./http/axios";
-import { ElMessage } from 'element-plus'
+import {ElMessage} from 'element-plus'
 
 createApp(App).use(ElementPlus).use(router).use(store).mount('#app')
 
 router.beforeEach((to, from, next) => {
     document.title = "Sonic -"
     if (to.meta.title) {
-        document.title += " " + to.meta.titleW
+        document.title += " " + to.meta.title
     } else {
         document.title += " 首页"
     }
