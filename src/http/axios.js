@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === 'development') {
 if (process.env.NODE_ENV === 'production') {
     baseURL = "http://localhost:8094"
 }
-var $http = axios.create();
+const $http = axios.create();
 $http.defaults.baseURL = baseURL
 $http.defaults.timeout = 20000;
 $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

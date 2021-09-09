@@ -21,7 +21,7 @@ body,
 .flex-center {
     display: flex;
     justify-content: center;
-    align-items: center
+    align-items: center;
 }
 
 .el-menu--horizontal > .el-sub-menu .el-sub-menu__title,
@@ -77,4 +77,76 @@ body,
     border: 2px solid #ffd04b;
     width: 17px !important;
     height: 17px !important;
+}
+
+/*.deviceCard .el-card__header {*/
+/*    padding: 15px;*/
+/*    color: #606266;*/
+/*    line-height: 1.2;*/
+/*}*/
+
+.device-form label {
+    color: #99a9bf;
+    font-size: 14px;
+    height: 27px;
+}
+
+.device-form .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 100%;
+    height: 27px;
+}
+
+.device-form .el-form-item__content {
+    font-size: 14px;
+    color: #606266;
+}
+
+.device-form .el-form-item__content div {
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.device-radio .el-checkbox {
+    margin-right: 15px;
+}
+
+.device-radio .el-checkbox__label * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.device-radio-p .el-checkbox__label img {
+    vertical-align: middle;
+}
+
+.device-card-divider {
+    width: 98%;
+    margin: 15px auto 5px;
+}
+
+.device-card-divider .el-divider__text {
+    color: #909399;
+}
+
+.demo-table-expand label {
+    color: #99a9bf;
+}
+
+.demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    display: flex;
+}
+
+.demo-table-expand .el-form-item__content * {
+    line-height: 40px;
+}
+
+.el-page-header__content{
+    font-size: 15px!important;
 }
