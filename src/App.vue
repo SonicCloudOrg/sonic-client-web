@@ -102,98 +102,98 @@
     <el-container direction="vertical">
       <div style="height: 100%">
         <el-header>
-          <div  class="flex-center">
-          <div>asd</div>
-          <el-menu mode="horizontal" class="el-menu-horizontal-demo font" :default-active="route.path" router>
-            <el-menu-item
-                @click="store.commit('changeCollapse')"
-                v-if="route.params.projectId"
-            >
-              <i v-if="store.state.isCollapse === false" class="el-icon-s-fold"></i>
-              <i v-if="store.state.isCollapse === true" class="el-icon-s-unfold"></i>
-            </el-menu-item>
-            <el-menu-item v-else @click="addStar()">
-              <i class="el-icon-refresh"></i>
-            </el-menu-item>
-            <!-- <el-sub-menu index="1">
-                    <template #title>
-                      <i class="el-icon-monitor" style="margin-right: 0"></i>
-                      <span>Agent状态</span>
-                      <el-badge
-                        :value="onlineNum"
-                        type="success"
-                        style="margin-top: -4px; margin-left: 3px"
+          <div class="flex-center">
+            <div>asd</div>
+            <el-menu mode="horizontal" class="el-menu-horizontal-demo font" :default-active="route.path" router>
+              <el-menu-item
+                  @click="store.commit('changeCollapse')"
+                  v-if="route.params.projectId"
+              >
+                <i v-if="store.state.isCollapse === false" class="el-icon-s-fold"></i>
+                <i v-if="store.state.isCollapse === true" class="el-icon-s-unfold"></i>
+              </el-menu-item>
+              <el-menu-item v-else @click="addStar()">
+                <i class="el-icon-refresh"></i>
+              </el-menu-item>
+              <!-- <el-sub-menu index="1">
+                      <template #title>
+                        <i class="el-icon-monitor" style="margin-right: 0"></i>
+                        <span>Agent状态</span>
+                        <el-badge
+                          :value="onlineNum"
+                          type="success"
+                          style="margin-top: -4px; margin-left: 3px"
+                        >
+                        </el-badge>
+                      </template>
+                      <el-menu-item
+                        v-for="agent in resourceList"
+                        :key="agent.id"
+                        @click="findByWebHost(agent)"
                       >
-                      </el-badge>
-                    </template>
-                    <el-menu-item
-                      v-for="agent in resourceList"
-                      :key="agent.id"
-                      @click="findByWebHost(agent)"
-                    >
-                      <div style="width: 360px">
-                        <el-image
-                          style="
-                            width: 35px;
-                            position: absolute;
-                            top: 0px;
-                            bottom: 0px;
-                            margin: auto;
-                          "
-                          fit="contain"
-                          :src="require('../../src/assets/img/agent.png')"
-                        >
-                        </el-image>
-                        <span style="margin-left: 38px"
-                          >{{ agent.agentName }}
-                          <span
+                        <div style="width: 360px">
+                          <el-image
                             style="
-                              color: #8492a6;
-                              font-size: 10px;
-                              font-style: italic;
+                              width: 35px;
+                              position: absolute;
+                              top: 0px;
+                              bottom: 0px;
+                              margin: auto;
                             "
-                            >v{{ agent.version }}</span
-                          ></span
-                        >
-                        <span style="position: absolute; right: 10px">
-                          <span
-                            style="
-                              color: #8492a6;
-                              font-size: 10px;
-                              font-style: italic;
-                            "
-                            >IP：{{ agent.ip }}</span
+                            fit="contain"
+                            :src="require('../../src/assets/img/agent.png')"
                           >
-                          <el-tag
-                            size="small"
-                            type="success"
-                            style="margin-left: 7px"
-                            v-if="agent.status === 'ONLINE'"
-                            >在线</el-tag
+                          </el-image>
+                          <span style="margin-left: 38px"
+                            >{{ agent.agentName }}
+                            <span
+                              style="
+                                color: #8492a6;
+                                font-size: 10px;
+                                font-style: italic;
+                              "
+                              >v{{ agent.version }}</span
+                            ></span
                           >
-                          <el-tag
-                            size="small"
-                            type="info"
-                            style="margin-left: 7px"
-                            v-if="agent.status === 'OFFLINE'"
-                            >离线</el-tag
-                          >
-                        </span>
-                      </div>
-                    </el-menu-item>
-                  </el-sub-menu> -->
-            <el-menu-item
-                :index="route.params.projectId
+                          <span style="position: absolute; right: 10px">
+                            <span
+                              style="
+                                color: #8492a6;
+                                font-size: 10px;
+                                font-style: italic;
+                              "
+                              >IP：{{ agent.ip }}</span
+                            >
+                            <el-tag
+                              size="small"
+                              type="success"
+                              style="margin-left: 7px"
+                              v-if="agent.status === 'ONLINE'"
+                              >在线</el-tag
+                            >
+                            <el-tag
+                              size="small"
+                              type="info"
+                              style="margin-left: 7px"
+                              v-if="agent.status === 'OFFLINE'"
+                              >离线</el-tag
+                            >
+                          </span>
+                        </div>
+                      </el-menu-item>
+                    </el-sub-menu> -->
+              <el-menu-item
+                  :index="route.params.projectId
                     ? '/' + route.params.projectId + '/Devices'
                     : '/Devices'"
-            ><i class="el-icon-mobile" style="margin-right: 0"></i>设备中心
-            </el-menu-item>
-          </el-menu>
+              ><i class="el-icon-mobile" style="margin-right: 0"></i>设备中心
+              </el-menu-item>
+            </el-menu>
           </div>
-            <div class="flex-center demo">
+          <div class="flex-center demo">
             <el-tooltip :content="'当前主题: '+theme.toUpperCase()" placement="bottom">
               <el-switch v-model="theme" @change="toggleClass"
-                         width="33"
+                         :width="33"
                          active-value="light"
                          inactive-value="dark"
                          active-color="#C0C4CC" inactive-color="#ffffff"
@@ -233,7 +233,7 @@
                 >
                 <div style="padding: 0 10px">
                   <el-menu-item @click="dialogSelf = true">个人信息</el-menu-item>
-                  <el-divider
+                  <el-divider class="about"
                   ><span
                       class="flex-center font title"
                   ><img
@@ -269,7 +269,7 @@
                   </el-menu-item>
                 </div>
                 <div style="padding: 0 10px">
-                  <el-divider
+                  <el-divider class="about"
                   ><span class="font title"
                   >其他</span
                   ></el-divider
@@ -283,6 +283,10 @@
             </el-menu>
           </div>
         </el-header>
+
+        <el-main>
+          <router-view/>
+        </el-main>
 
         <!-- <el-main>
               <router-view v-if="$route.params.projectId" />
@@ -376,14 +380,14 @@ import logo from "./assets/logo.png";
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
-const projectData = ref([{"id": 1, "projectName": "test", "projectImg": "http://test.png"}])
+const projectData = ref([{"id": 1, "projectName": "test", "projectImg": ""}])
 const theme = ref("");
 const jump = (id) => {
   projectData.value[0].projectName = id
 }
 const toggleClass = (t) => {
   localStorage.setItem('SonicTheme', t);
-  document.body.className = t
+  document.body.className = 'sonic-' + t
 }
 onBeforeMount(() => {
   theme.value = localStorage.getItem('SonicTheme') ? localStorage.getItem('SonicTheme') : "light"

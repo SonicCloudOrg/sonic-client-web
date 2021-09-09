@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 const routes = [{
         path: '/Devices',
         component: () =>
-            import ("../views/Devices.vue"),
+            import ("../components/Devices.vue"),
         meta: { title: "设备中心" }
     },
     // {

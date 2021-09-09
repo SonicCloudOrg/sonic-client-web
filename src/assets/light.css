@@ -1,4 +1,4 @@
-.light .el-header {
+.sonic-light .el-header {
     padding: 0 !important;
     display: flex;
     align-items: center;
@@ -6,30 +6,30 @@
     border-bottom: 1px solid #e6e6e6;
 }
 
-.light .title {
+.sonic-light .title {
     color: #909399 !important;
     white-space: nowrap
 }
 
-.light .el-menu-vertical-demo .el-menu-item,
-.light .el-menu-vertical-demo .el-sub-menu__title,
-.light .el-menu-horizontal-demo .el-menu-item,
-.light .el-menu-horizontal-demo .el-sub-menu__title {
+.sonic-light .el-menu-vertical-demo .el-menu-item,
+.sonic-light .el-menu-vertical-demo .el-sub-menu__title,
+.sonic-light .el-menu-horizontal-demo .el-menu-item,
+.sonic-light .el-menu-horizontal-demo .el-sub-menu__title {
     color: #909399 !important;
     background-color: #ffffff
 }
 
-.light .el-menu-vertical-demo .el-menu-item.is-active {
+.sonic-light .el-menu-vertical-demo .el-menu-item.is-active {
     color: #409EFF !important;
 }
 
-.light .el-menu--horizontal .el-menu .el-menu-item.is-active,
-.light .el-menu--horizontal .el-menu .el-sub-menu.is-active > .el-sub-menu__title {
+.sonic-light .el-menu--horizontal .el-menu .el-menu-item.is-active,
+.sonic-light .el-menu--horizontal .el-menu .el-sub-menu.is-active > .el-sub-menu__title {
     font-size: 13px !important;
     color: #909399 !important;
 }
 
-.light .project-name {
+.sonic-light .project-name {
     color: #eee;
     font-size: 19px;
     font-weight: 600;
@@ -37,7 +37,7 @@
     margin-left: 10px;
 }
 
-.light .demo .el-switch__label.is-active {
+.sonic-light .demo .el-switch__label.is-active {
     display: block;
     color: #409EFF;
 }

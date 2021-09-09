@@ -1,12 +1,8 @@
 <template>
-  <el-page-header
-      @back="router.go(-1)"
-      content="设备中心"
-      style="margin-bottom: 10px"
-  >
-  </el-page-header>
-
-  <el-card :body-style="{ padding: '10px' }">
+  <el-popover placement="left-start" width="800px" trigger="click">
+    <template #reference>
+      <el-button size="small" type="primary" style="float:right">高级筛选器</el-button>
+    </template>
     <el-form
         label-position="left"
         class="demo-table-expand"
@@ -16,7 +12,6 @@
       <el-form-item label="安卓系统">
         <el-checkbox
             label="全选"
-            style="float: left; margin-right: 20px"
             :indeterminate="isAllAndroid"
             v-model="checkAllAndroid"
             @change="handleAndroid"
@@ -24,56 +19,53 @@
         <el-checkbox-group
             v-model="androidSystem"
             @change="handleCheckedAndroid"
+            class="device-radio-p"
         >
           <el-checkbox
               v-for="version in androidSystemVersion"
               :key="version"
               :label="version"
-          ><el-image
-              style="vertical-align: middle; width: 30px; margin-right: 5px"
-              fit="contain"
-              :src="getImg('ANDROID')"
           >
-          </el-image
-          >{{ version }}</el-checkbox
+            <img
+                width="30"
+                :src="getImg('ANDROID')"
+            />
+            {{ version }}
+          </el-checkbox
           >
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="iOS系统">
         <el-checkbox
             label="全选"
-            style="float: left; margin-right: 20px"
             :indeterminate="isAlliOS"
             v-model="checkAlliOS"
-            @change="handleiOS"
+            @change="handleIOS"
         ></el-checkbox>
-        <el-checkbox-group v-model="iOSSystem" @change="handleCheckediOS">
+        <el-checkbox-group class="device-radio-p" v-model="iOSSystem" @change="handleCheckedIOS">
           <el-checkbox
               v-for="version in iOSSystemVersion"
               :key="version"
               :label="version"
           >
-            <el-image
-                style="vertical-align: middle; width: 30px"
-                fit="contain"
+            <img
+                width="30"
                 :src="getImg('IOS')"
-            >
-            </el-image
-            >{{ version }}
+            />
+            {{ version }}
           </el-checkbox>
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="设备制造商">
         <el-checkbox
             label="全选"
-            style="float: left; margin-right: 20px"
             :indeterminate="isAllMan"
             v-model="checkAllMan"
             @change="handleMan"
         ></el-checkbox>
         <el-checkbox-group
             v-model="checkMan"
-            class="deviceRadio"
+            class="device-radio"
             @change="handleCheckedMan"
         >
           <el-checkbox v-for="man in manufacturer" :key="man" :label="man">
@@ -81,28 +73,28 @@
                 v-if="
                   man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'
                 "
-                style="vertical-align: middle; width: 80px"
+                style="width: 80px"
                 fit="contain"
                 :src="getImg(man)"
             >
             </el-image>
             <el-image
                 v-else-if="man === 'Xiaomi'"
-                style="vertical-align: middle; width: 30px"
+                style="width: 30px"
                 fit="contain"
                 :src="getImg(man)"
             >
             </el-image>
             <el-image
                 v-else-if="man === 'APPLE'"
-                style="vertical-align: middle; width: 30px"
+                style=" width: 30px"
                 fit="contain"
                 :src="getImg(man)"
             >
             </el-image>
             <el-image
                 v-else
-                style="vertical-align: middle; width: 70px"
+                style=" width: 70px"
                 fit="contain"
                 :src="getImg(man)"
             >
@@ -113,7 +105,6 @@
       <el-form-item label="CPU处理器">
         <el-checkbox
             label="全选"
-            style="float: left; margin-right: 20px"
             :indeterminate="isAllCpu"
             v-model="checkAllCpu"
             @change="handleCpu"
@@ -125,7 +116,6 @@
       <el-form-item label="屏幕分辨率">
         <el-checkbox
             label="全选"
-            style="float: left; margin-right: 20px"
             :indeterminate="isAllSize"
             v-model="checkAllSize"
             @change="handleSize"
@@ -137,24 +127,23 @@
       <el-form-item label="所在位置">
         <el-checkbox
             label="全选"
-            style="float: left; margin-right: 20px"
-            :indeterminate="isAllWebhost"
-            v-model="checkAllWebHost"
-            @change="handleWebhost"
+            :indeterminate="isAllAgent"
+            v-model="checkAllAgent"
+            @change="handleAgent"
         ></el-checkbox>
-        <el-checkbox-group v-model="webHost" @change="handleCheckedWebhost">
+        <el-checkbox-group v-model="agentIds" @change="handleCheckedAgent">
           <el-checkbox
               v-for="agent in agentList"
               :key="agent"
-              :label="agent.webHost"
-          >{{ agent.agentName }}</el-checkbox
+              :label="agent.id"
+          >{{ agent.name }}
+          </el-checkbox
           >
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="设备状态">
         <el-checkbox
             label="全选"
-            style="float: left; margin-right: 20px"
             :indeterminate="isAllStatus"
             v-model="checkAllStatus"
             @change="handleStatus"
@@ -164,7 +153,8 @@
               v-for="statusDevice in statusList"
               :key="statusDevice"
               :label="statusDevice.value"
-          >{{ statusDevice.name }}</el-checkbox
+          >{{ statusDevice.name }}
+          </el-checkbox
           >
         </el-checkbox-group>
       </el-form-item>
@@ -183,11 +173,18 @@
         </el-input>
       </el-form-item>
     </el-form>
-
+  </el-popover>
+  <el-page-header
+      @back="router.go(-1)"
+      content="设备中心"
+      style="margin-bottom: 20px"
+  >
+  </el-page-header>
+  <el-card :body-style="{ padding: '10px' }">
+    <div style="text-align: center">
+      <el-divider class="device-card-divider">设备列表</el-divider>
+    </div>
     <el-row :gutter="20">
-      <div style="text-align: center">
-        <el-divider class="deviceCardDivider">设备列表</el-divider>
-      </div>
       <el-col
           :xs="12"
           :sm="12"
@@ -204,60 +201,68 @@
             class="deviceCard"
         >
           <div slot="header">
-              <span v-if="device.deviceName">{{
-                  device.deviceName.length > 25
-                      ? device.deviceName.substring(0, 17) + "..."
-                      : device.deviceName
+              <span v-if="device.model">{{
+                  device.model.length > 25
+                      ? device.model.substring(0, 17) + "..."
+                      : device.model
                 }}</span>
             <el-tag
                 size="mini"
                 type="success"
                 style="float: right"
                 v-if="device.status === 'ONLINE'"
-            >空闲中</el-tag
+            >空闲中
+            </el-tag
             >
             <el-tag
                 size="mini"
                 type="info"
                 style="float: right"
                 v-else-if="device.status === 'OFFLINE'"
-            >已离线</el-tag
+            >已离线
+            </el-tag
             >
             <el-tag
                 size="mini"
                 type="info"
                 style="float: right"
                 v-else-if="device.status === 'DISCONNECTED'"
-            >已断开</el-tag
+            >已断开
+            </el-tag
             >
             <el-tag
                 size="mini"
                 style="float: right"
-                v-else-if="device.status === 'DEBUG'"
-            >占用中</el-tag
+                v-else-if="device.status === 'DEBUGGING'"
+            >占用中
+            </el-tag
             >
             <el-tag
                 size="mini"
                 style="float: right"
-                v-else-if="device.status === 'SUITE'"
-            >测试中</el-tag
+                v-else-if="device.status === 'TESTING'"
+            >测试中
+            </el-tag
             >
             <el-tag
                 size="mini"
                 type="danger"
                 style="float: right"
                 v-else-if="device.status === 'UNAUTHORIZED'"
-            >未授权</el-tag
+            >未授权
+            </el-tag
             >
             <el-tag
                 size="mini"
                 type="warning"
                 style="float: right"
                 v-else-if="device.status === 'ERROR'"
-            >异常中</el-tag
+            >异常中
+            </el-tag
             >
             <el-tag size="mini" style="float: right" type="warning" v-else
-            >加载中</el-tag
+            >加载中
+            </el-tag
             >
           </div>
           <el-row>
@@ -265,8 +270,8 @@
               <el-image
                   style="height: 160px"
                   fit="contain"
-                  :src="getPhoneImg(device.deviceName)"
-                  :preview-src-list="[getPhoneImg(device.deviceName)]"
+                  :src="getPhoneImg(device.model)"
+                  :preview-src-list="[getPhoneImg(device.model)]"
               >
               </el-image>
             </el-col>
@@ -375,7 +380,7 @@
                   <div>{{ device.size }}</div>
                 </el-form-item>
                 <el-form-item label="所在位置">
-                  <div>{{ findAgentByWebHost(device.webHost) }}</div>
+                  <div>{{ findAgentById(device.agentId) }}</div>
                 </el-form-item>
               </el-form>
             </el-col>
@@ -393,16 +398,13 @@
                   <span>{{ device.name }}</span>
                 </el-form-item>
                 <el-form-item label="设备型号">
-                  <span>{{ device.deviceName }}</span>
+                  <span>{{ device.model }}</span>
                 </el-form-item>
                 <el-form-item label="设备UDID">
-                  <span>{{ device.serialNum }}</span>
+                  <span>{{ device.udId }}</span>
                 </el-form-item>
                 <el-form-item label="屏幕分辨率">
                   <span>{{ device.size }}</span>
-                </el-form-item>
-                <el-form-item label="SDK版本">
-                  <span>{{ device.api }}</span>
                 </el-form-item>
                 <el-form-item label="CPU版本">
                   <span>{{ device.cpu }}</span>
@@ -421,7 +423,8 @@
                         slot="append"
                         size="mini"
                         @click="saveDevice(device)"
-                    >保存</el-button
+                    >保存
+                    </el-button
                     >
                   </el-input>
                 </el-form-item>
@@ -432,9 +435,9 @@
                       cancelButtonText="取消"
                       @confirm="
                         reboot(
-                          device.webHost,
+                          device.agentId,
                           device.platform,
-                          device.serialNum
+                          device.udId
                         )
                       "
                       icon="el-icon-warning"
@@ -446,12 +449,13 @@
                         size="mini"
                         :disabled="
                           device.status !== 'ONLINE' &&
-                          device.status !== 'DEBUG' &&
-                          device.status !== 'SUITE' &&
+                          device.status !== 'DEBUGGING' &&
+                          device.status !== 'TESTING' &&
                           device.status !== 'ERROR'
                         "
                         slot="reference"
-                    >重启</el-button
+                    >重启
+                    </el-button
                     >
                   </el-popconfirm>
                 </el-form-item>
@@ -462,45 +466,51 @@
         </el-card>
       </el-col>
     </el-row>
-<!--    <Pageable-->
-<!--        :isPageSet="false"-->
-<!--        :pagedata="pageData"-->
-<!--        @changePage="findAll"-->
-<!--    ></Pageable>-->
+    <Pageable
+        :isPageSet="false"
+        :pageData="pageData"
+        @changePage="findAll"
+    ></Pageable>
   </el-card>
 </template>
 
 <script setup>
-import {ref,onMounted, onBeforeMount} from "vue";
-const checkAllAndroid=ref( false);
-    const isAllAndroid=ref( false);
-  const  checkAlliOS = ref(false);
-    isAlliOS: false,
-    checkAllMan: false,
-    isAllMan: false,
-    checkAllCpu: false,
-    isAllCpu: false,
-    checkAllSize: false,
-    isAllSize: false,
-    checkAllWebHost: false,
-    isAllWebhost: false,
-    checkAllStatus: false,
-    isAllStatus: false,
-    pageData: {},
-pageSize: 8,
-    checkMan: [],
-    name: "",
-    androidSystem: [],
-    iOSSystem: [],
-    cpu: [],
-    status: [],
-    size: [],
-    webHost: [],
-    cpus: [],
-    sizes: [],
-    androidSystemVersion: [5, 6, 7, 8, 9, 10, 11, 12],
-    iOSSystemVersion: [9, 10, 11, 12, 13, 14],
-    manufacturer: [
+import {ref, onMounted, onBeforeMount} from "vue";
+import {useRouter} from "vue-router";
+import Pageable from "./Pageable.vue";
+import axios from "../http/axios";
+
+const img = import.meta.globEager("./../assets/img/*")
+const router = useRouter();
+const checkAllAndroid = ref(false);
+const isAllAndroid = ref(false);
+const checkAlliOS = ref(false);
+const isAlliOS = ref(false);
+const checkAllMan = ref(false);
+const isAllMan = ref(false);
+const checkAllCpu = ref(false);
+const isAllCpu = ref(false);
+const checkAllSize = ref(false);
+const isAllSize = ref(false);
+const checkAllAgent = ref(false);
+const isAllAgent = ref(false);
+const checkAllStatus = ref(false);
+const isAllStatus = ref(false);
+const pageData = ref({});
+const pageSize = ref(8);
+const checkMan = ref([]);
+const name = ref("");
+const androidSystem = ref([]);
+const iOSSystem = ref([]);
+const cpu = ref([]);
+const status = ref([]);
+const size = ref([]);
+const agentIds = ref([]);
+const cpus = ref([]);
+const sizes = ref([]);
+const androidSystemVersion = ref([5, 6, 7, 8, 9, 10, 11, 12]);
+const iOSSystemVersion = ref([9, 10, 11, 12, 13, 14]);
+const manufacturer = ref([
   "APPLE",
   "HUAWEI",
   "Xiaomi",
@@ -512,19 +522,19 @@ pageSize: 8,
   "OnePlus",
   "360",
   "Yulong",
-],
-    statusList: [
+]);
+const statusList = ref([
   {
     name: "空闲中",
     value: "ONLINE",
   },
   {
     name: "占用中",
-    value: "DEBUG",
+    value: "DEBUGGING",
   },
   {
     name: "测试中",
-    value: "SUITE",
+    value: "TESTING",
   },
   {
     name: "已断开",
@@ -542,6 +552,147 @@ pageSize: 8,
     name: "异常中",
     value: "ERROR",
   },
-],
-    agentList: [],
+]);
+const agentList = ref([]);
+const handleAndroid = (val) => {
+  androidSystem.value = val ? androidSystemVersion.value : [];
+  isAllAndroid.value = false;
+  findAll();
+};
+const handleCheckedAndroid = (value) => {
+  let checkedCount = value.length;
+  checkAllAndroid.value = checkedCount === androidSystemVersion.value.length;
+  isAllAndroid.value =
+      checkedCount > 0 && checkedCount < androidSystemVersion.value.length;
+  findAll();
+};
+const handleIOS = (val) => {
+  iOSSystem.value = val ? iOSSystemVersion.value : [];
+  isAlliOS.value = false;
+  findAll();
+};
+const handleCheckedIOS = (value) => {
+  let checkedCount = value.length;
+  checkAlliOS.value = checkedCount === androidSystemVersion.value.length;
+  isAlliOS.value =
+      checkedCount > 0 && checkedCount < androidSystemVersion.value.length;
+  findAll();
+};
+const handleMan = (val) => {
+  checkMan.value = val ? manufacturer.value : [];
+  isAllMan.value = false;
+  findAll();
+};
+const handleCheckedMan = (value) => {
+  let checkedCount = value.length;
+  checkAllMan.value = checkedCount === manufacturer.value.length;
+  isAllMan.value =
+      checkedCount > 0 && checkedCount < manufacturer.value.length;
+  findAll();
+};
+const handleCpu = (val) => {
+  cpu.value = val ? cpus.value : [];
+  isAllCpu.value = false;
+  findAll();
+};
+const handleCheckedCpu = (value) => {
+  let checkedCount = value.length;
+  checkAllCpu.value = checkedCount === cpus.value.length;
+  isAllCpu.value = checkedCount > 0 && checkedCount < cpus.value.length;
+  findAll();
+};
+const handleSize = (val) => {
+  size.value = val ? sizes.value : [];
+  isAllSize.value = false;
+  findAll();
+};
+const handleCheckedSize = (value) => {
+  let checkedCount = value.length;
+  checkAllSize.value = checkedCount === sizes.value.length;
+  isAllSize.value = checkedCount > 0 && checkedCount < sizes.value.length;
+  findAll();
+};
+const handleAgent = (val) => {
+  agentIds.value = val
+      ? agentList.value.map((item) => {
+        return item.id;
+      })
+      : [];
+  isAllAgent.value = false;
+  findAll();
+};
+const handleCheckedAgent = (value) => {
+  let checkedCount = value.length;
+  checkAllAgent.value = checkedCount === agentList.value.length;
+  isAllAgent.value =
+      checkedCount > 0 && checkedCount < agentList.value.length;
+  findAll();
+};
+const handleStatus = (val) => {
+  status.value = val
+      ? statusList.value.map((item) => {
+        return item.value;
+      })
+      : [];
+  isAllStatus.value = false;
+  findAll();
+};
+const handleCheckedStatus = (value) => {
+  let checkedCount = value.length;
+  checkAllStatus.value = checkedCount === statusList.value.length;
+  isAllStatus.value =
+      checkedCount > 0 && checkedCount < statusList.value.length;
+  findAll();
+};
+const handleInput = () => {
+  findAll();
+};
+const findAll = (pageNum) => {
+  axios
+      .get("/controller/devices/list", {
+        params: {
+          page: pageNum || 1,
+          pageSize: pageSize.value,
+          androidVersion:
+              androidSystem.value.length === 0 ? undefined : androidSystem.value,
+          iOSVersion:
+              iOSSystem.value.length === 0 ? undefined : iOSSystem.value,
+          manufacturer:
+              checkMan.value.length === 0 ||
+              checkMan.value.length === manufacturer.value.length
+                  ? undefined
+                  : checkMan.value,
+          cpu:
+              cpu.value.length === 0 || cpu.value.length === cpus.value.length
+                  ? undefined
+                  : cpu.value,
+          size:
+              size.value.length === 0 || size.value.length === sizes.value.length
+                  ? undefined
+                  : size.value,
+          agentId:
+              agentIds.value.length === 0 ||
+              agentIds.value.length === agentList.value.length
+                  ? undefined
+                  : agentIds.value,
+          status:
+              status.value.length === 0 ||
+              status.value.length === statusList.value.length
+                  ? undefined
+                  : status.value,
+          deviceInfo: name.value.length > 0 ? name.value : undefined,
+        },
+      })
+      .then((res) => {
+        if (res.data.error === 0) {
+          pageData.value = res.data.data;
+        }
+      });
+};
+const getImg = (name) => {
+  return img['./../assets/img/' + name + '.jpg'].default
+}
+onMounted(() => {
+  // console.log(img['./../assets/img/'+name+'.jpg'])
+})
 </script>
