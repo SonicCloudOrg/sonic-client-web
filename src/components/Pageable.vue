@@ -1,8 +1,5 @@
-<script setup>
-import {defineProps} from "vue";
-
-const template = `
-<el-pagination
+<template>
+  <el-pagination
       v-if="isPageSet === true"
       background
       style="text-align: center; margin-top: 20px"
@@ -24,7 +21,9 @@ const template = `
       layout="prev, pager, next, jumper, ->, total"
       :total="pageData.totalElements"
   ></el-pagination>
-`
+</template>
+<script setup>
+import {defineProps} from "vue";
 const props = defineProps(
     {
       pageData: Object,

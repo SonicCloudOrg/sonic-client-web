@@ -4,10 +4,10 @@ import router from '../router/index.js'
 
 let baseURL = '';
 if (process.env.NODE_ENV === 'development') {
-    baseURL = "http://localhost:8094"
+    baseURL = "http://localhost:8094/api"
 }
 if (process.env.NODE_ENV === 'production') {
-    baseURL = "http://localhost:8094"
+    baseURL = "http://localhost:8094/api"
 }
 const $http = axios.create();
 $http.defaults.baseURL = baseURL
