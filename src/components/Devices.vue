@@ -69,32 +69,24 @@
             @change="handleCheckedMan"
         >
           <el-checkbox v-for="man in manufacturer" :key="man" :label="man">
-            <el-image
+            <img
                 v-if="
-                  man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'
+                  man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'||man === 'GIONEE'
                 "
                 style="width: 80px"
                 fit="contain"
                 :src="getImg(man)"
-            >
-            </el-image>
+            />
             <el-image
-                v-else-if="man === 'Xiaomi'"
+                v-else-if="man === 'Xiaomi' ||man === 'APPLE'"
                 style="width: 30px"
                 fit="contain"
                 :src="getImg(man)"
             >
             </el-image>
             <el-image
-                v-else-if="man === 'APPLE'"
-                style=" width: 30px"
-                fit="contain"
-                :src="getImg(man)"
-            >
-            </el-image>
-            <el-image
                 v-else
-                style=" width: 70px"
+                style="width: 70px"
                 fit="contain"
                 :src="getImg(man)"
             >
@@ -270,8 +262,8 @@
               <el-image
                   style="height: 160px"
                   fit="contain"
-                  :src="getPhoneImg(device.model)"
-                  :preview-src-list="[getPhoneImg(device.model)]"
+                  :src="getImg(device.model)"
+                  :preview-src-list="[getImg(device.model)]"
               >
               </el-image>
             </el-col>
@@ -286,80 +278,103 @@
                   <div>{{ device.name }}</div>
                 </el-form-item>
                 <el-form-item label="制造商">
-                  <img
-                      height="55%"
+<!--                  <img-->
+<!--                      height="55%"-->
+<!--                      v-if="-->
+<!--                        device.manufacturer === 'Meizu' ||-->
+<!--                        device.manufacturer === 'vivo' ||-->
+<!--                        device.manufacturer === 'Yulong'-->
+<!--                      "-->
+<!--                      style="-->
+<!--                        position: absolute;-->
+<!--                        top: 11px;-->
+<!--                        bottom: 11px;-->
+<!--                        left: 0px;-->
+<!--                      "-->
+<!--                      :src="getImg(device.manufacturer)"-->
+<!--                  />-->
+                  <el-image
                       v-if="
-                        device.manufacturer === 'Meizu' ||
-                        device.manufacturer === 'vivo' ||
-                        device.manufacturer === 'Yulong'
-                      "
-                      style="
-                        position: absolute;
-                        top: 11px;
-                        bottom: 11px;
-                        left: 0px;
-                      "
+                  device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'
+                "
+                      style="width: 80px"
+                      fit="contain"
                       :src="getImg(device.manufacturer)"
-                  />
-                  <img
-                      height="75%"
-                      v-else-if="
-                        device.manufacturer === 'HUAWEI' ||
-                        device.manufacturer === 'samsung' ||
-                        device.manufacturer === 'OnePlus'
-                      "
-                      style="
-                        position: absolute;
-                        top: 10px;
-                        bottom: 10px;
-                        left: 0px;
-                      "
+                  >
+                  </el-image>
+                  <el-image
+                      v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'"
+                      style="width: 30px"
+                      fit="contain"
                       :src="getImg(device.manufacturer)"
-                  />
-                  <img
-                      height="90%"
-                      v-else-if="device.manufacturer === 'Xiaomi'"
-                      style="
-                        position: absolute;
-                        top: 7px;
-                        bottom: 7px;
-                        left: 0px;
-                      "
-                      :src="getImg(device.manufacturer)"
-                  />
-                  <img
-                      height="95%"
-                      v-else-if="device.manufacturer === 'APPLE'"
-                      style="
-                        position: absolute;
-                        top: 7px;
-                        bottom: 7px;
-                        left: 0px;
-                      "
-                      :src="getImg(device.manufacturer)"
-                  />
-                  <img
-                      height="110%"
-                      v-else-if="device.manufacturer === 'OPPO'"
-                      style="
-                        position: absolute;
-                        top: 7px;
-                        bottom: 7px;
-                        left: 0px;
-                      "
-                      :src="getImg(device.manufacturer)"
-                  />
-                  <img
-                      height="80%"
+                  >
+                  </el-image>
+                  <el-image
                       v-else
-                      style="
-                        position: absolute;
-                        top: 7px;
-                        bottom: 7px;
-                        left: 0px;
-                      "
+                      style="width: 70px"
+                      fit="contain"
                       :src="getImg(device.manufacturer)"
-                  />
+                  >
+                  </el-image>
+<!--                  <img-->
+<!--                      height="75%"-->
+<!--                      v-else-if="-->
+<!--                        device.manufacturer === 'HUAWEI' ||-->
+<!--                        device.manufacturer === 'samsung' ||-->
+<!--                        device.manufacturer === 'OnePlus'-->
+<!--                      "-->
+<!--                      style="-->
+<!--                        position: absolute;-->
+<!--                        top: 10px;-->
+<!--                        bottom: 10px;-->
+<!--                        left: 0px;-->
+<!--                      "-->
+<!--                      :src="getImg(device.manufacturer)"-->
+<!--                  />-->
+<!--                  <img-->
+<!--                      height="90%"-->
+<!--                      v-else-if="device.manufacturer === 'Xiaomi'"-->
+<!--                      style="-->
+<!--                        position: absolute;-->
+<!--                        top: 7px;-->
+<!--                        bottom: 7px;-->
+<!--                        left: 0px;-->
+<!--                      "-->
+<!--                      :src="getImg(device.manufacturer)"-->
+<!--                  />-->
+<!--                  <img-->
+<!--                      height="95%"-->
+<!--                      v-else-if="device.manufacturer === 'APPLE'||device.manufacturer==='GIONEE'"-->
+<!--                      style="-->
+<!--                        position: absolute;-->
+<!--                        top: 7px;-->
+<!--                        bottom: 7px;-->
+<!--                        left: 0px;-->
+<!--                      "-->
+<!--                      :src="getImg(device.manufacturer)"-->
+<!--                  />-->
+<!--                  <img-->
+<!--                      height="110%"-->
+<!--                      v-else-if="device.manufacturer === 'OPPO'"-->
+<!--                      style="-->
+<!--                        position: absolute;-->
+<!--                        top: 7px;-->
+<!--                        bottom: 7px;-->
+<!--                        left: 0px;-->
+<!--                      "-->
+<!--                      :src="getImg(device.manufacturer)"-->
+<!--                  />-->
+<!--                  <img-->
+<!--                      height="80%"-->
+<!--                      v-else-->
+<!--                      style="-->
+<!--                        position: absolute;-->
+<!--                        top: 7px;-->
+<!--                        bottom: 7px;-->
+<!--                        left: 0px;-->
+<!--                      "-->
+<!--                      :src="getImg(device.manufacturer)"-->
+<!--                  />-->
                 </el-form-item>
                 <el-form-item label="设备系统">
                   <img
@@ -370,7 +385,7 @@
                         bottom: 7px;
                         left: 0px;
                       "
-                      :src="getImg(device.platform)"
+                      :src="getImg(device.platform===1?'ANDROID':'IOS')"
                   />
                 </el-form-item>
                 <el-form-item label="系统版本">
@@ -379,9 +394,9 @@
                 <el-form-item label="分辨率">
                   <div>{{ device.size }}</div>
                 </el-form-item>
-                <el-form-item label="所在位置">
-                  <div>{{ findAgentById(device.agentId) }}</div>
-                </el-form-item>
+                <!--                <el-form-item label="所在位置">-->
+                <!--                  <div>{{ findAgentById(device.agentId) }}</div>-->
+                <!--                </el-form-item>-->
               </el-form>
             </el-col>
           </el-row>
@@ -419,46 +434,46 @@
                       maxlength="30"
                       style="position: absolute; top: 7px; bottom: 7px"
                   >
-                    <el-button
-                        slot="append"
-                        size="mini"
-                        @click="saveDevice(device)"
-                    >保存
-                    </el-button
-                    >
+                    <!--                    <el-button-->
+                    <!--                        slot="append"-->
+                    <!--                        size="mini"-->
+                    <!--                        @click="saveDevice(device)"-->
+                    <!--                    >保存-->
+                    <!--                    </el-button-->
+                    <!--                    >-->
                   </el-input>
                 </el-form-item>
-                <el-form-item label="快捷操作">
-                  <el-popconfirm
-                      placement="top"
-                      confirmButtonText="确认"
-                      cancelButtonText="取消"
-                      @confirm="
-                        reboot(
-                          device.agentId,
-                          device.platform,
-                          device.udId
-                        )
-                      "
-                      icon="el-icon-warning"
-                      iconColor="red"
-                      title="确定重启该设备吗？"
-                  >
-                    <el-button
-                        type="danger"
-                        size="mini"
-                        :disabled="
-                          device.status !== 'ONLINE' &&
-                          device.status !== 'DEBUGGING' &&
-                          device.status !== 'TESTING' &&
-                          device.status !== 'ERROR'
-                        "
-                        slot="reference"
-                    >重启
-                    </el-button
-                    >
-                  </el-popconfirm>
-                </el-form-item>
+                <!--                <el-form-item label="快捷操作">-->
+                <!--                  <el-popconfirm-->
+                <!--                      placement="top"-->
+                <!--                      confirmButtonText="确认"-->
+                <!--                      cancelButtonText="取消"-->
+                <!--                      @confirm="-->
+                <!--                        reboot(-->
+                <!--                          device.agentId,-->
+                <!--                          device.platform,-->
+                <!--                          device.udId-->
+                <!--                        )-->
+                <!--                      "-->
+                <!--                      icon="el-icon-warning"-->
+                <!--                      iconColor="red"-->
+                <!--                      title="确定重启该设备吗？"-->
+                <!--                  >-->
+                <!--                    <el-button-->
+                <!--                        type="danger"-->
+                <!--                        size="mini"-->
+                <!--                        :disabled="-->
+                <!--                          device.status !== 'ONLINE' &&-->
+                <!--                          device.status !== 'DEBUGGING' &&-->
+                <!--                          device.status !== 'TESTING' &&-->
+                <!--                          device.status !== 'ERROR'-->
+                <!--                        "-->
+                <!--                        slot="reference"-->
+                <!--                    >重启-->
+                <!--                    </el-button-->
+                <!--                    >-->
+                <!--                  </el-popconfirm>-->
+                <!--                </el-form-item>-->
               </el-form>
               <el-button slot="reference" size="mini">更多信息</el-button>
             </el-popover>
@@ -466,11 +481,11 @@
         </el-card>
       </el-col>
     </el-row>
-    <Pageable
-        :isPageSet="false"
-        :pageData="pageData"
-        @changePage="findAll"
-    ></Pageable>
+    <!--    <Pageable-->
+    <!--        :isPageSet="false"-->
+    <!--        :pageData="pageData"-->
+    <!--        @changePage="findAll"-->
+    <!--    ></Pageable>-->
   </el-card>
 </template>
 
@@ -522,6 +537,7 @@ const manufacturer = ref([
   "OnePlus",
   "360",
   "Yulong",
+  "GIONEE"
 ]);
 const statusList = ref([
   {
@@ -684,15 +700,21 @@ const findAll = (pageNum) => {
         },
       })
       .then((res) => {
-        if (res.data.error === 0) {
+        if (res.data.code === 2000) {
           pageData.value = res.data.data;
         }
       });
 };
 const getImg = (name) => {
-  return img['./../assets/img/' + name + '.jpg'].default
+  let result;
+  try {
+    result = img['./../assets/img/' + name + '.jpg'].default
+  } catch {
+    result = img['./../assets/img/unName.jpg'].default
+  }
+  return result;
 }
 onMounted(() => {
-  // console.log(img['./../assets/img/'+name+'.jpg'])
+  findAll();
 })
 </script>
