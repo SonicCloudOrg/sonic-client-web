@@ -194,64 +194,6 @@
                       : device.model
                 }}</span>
             <RenderStatus :status="device.status"></RenderStatus>
-<!--            <el-tag-->
-<!--                size="mini"-->
-<!--                type="success"-->
-<!--                style="float: right"-->
-<!--                v-if="device.status === 'ONLINE'"-->
-<!--            >空闲中-->
-<!--            </el-tag-->
-<!--            >-->
-<!--            <el-tag-->
-<!--                size="mini"-->
-<!--                type="info"-->
-<!--                style="float: right"-->
-<!--                v-else-if="device.status === 'OFFLINE'"-->
-<!--            >已离线-->
-<!--            </el-tag-->
-<!--            >-->
-<!--            <el-tag-->
-<!--                size="mini"-->
-<!--                type="info"-->
-<!--                style="float: right"-->
-<!--                v-else-if="device.status === 'DISCONNECTED'"-->
-<!--            >已断开-->
-<!--            </el-tag-->
-<!--            >-->
-<!--            <el-tag-->
-<!--                size="mini"-->
-<!--                style="float: right"-->
-<!--                v-else-if="device.status === 'DEBUGGING'"-->
-<!--            >占用中-->
-<!--            </el-tag-->
-<!--            >-->
-<!--            <el-tag-->
-<!--                size="mini"-->
-<!--                style="float: right"-->
-<!--                v-else-if="device.status === 'TESTING'"-->
-<!--            >测试中-->
-<!--            </el-tag-->
-<!--            >-->
-<!--            <el-tag-->
-<!--                size="mini"-->
-<!--                type="danger"-->
-<!--                style="float: right"-->
-<!--                v-else-if="device.status === 'UNAUTHORIZED'"-->
-<!--            >未授权-->
-<!--            </el-tag-->
-<!--            >-->
-<!--            <el-tag-->
-<!--                size="mini"-->
-<!--                type="warning"-->
-<!--                style="float: right"-->
-<!--                v-else-if="device.status === 'ERROR'"-->
-<!--            >异常中-->
-<!--            </el-tag-->
-<!--            >-->
-<!--            <el-tag size="mini" style="float: right" type="warning" v-else-->
-<!--            >加载中-->
-<!--            </el-tag-->
-<!--            >-->
           </template>
           <el-row>
             <el-col :span="10">
@@ -393,11 +335,11 @@
         </el-card>
       </el-col>
     </el-row>
-        <Pageable
-            :isPageSet="false"
-            :pageData="pageData"
-            @changePage="findAll"
-        ></Pageable>
+    <Pageable
+        :isPageSet="false"
+        :pageData="pageData"
+        @changePage="findAll"
+    ></Pageable>
   </el-card>
 </template>
 
@@ -406,7 +348,8 @@ import {ref, onMounted, onBeforeMount, h} from "vue";
 import {useRouter} from "vue-router";
 import Pageable from "./Pageable.vue";
 import axios from "../http/axios";
-import RenderStatus from  "./RenderStatus.vue"
+import RenderStatus from "./RenderStatus.vue"
+
 const img = import.meta.globEager("./../assets/img/*")
 const router = useRouter();
 const checkAllAndroid = ref(false);
@@ -626,9 +569,6 @@ const getImg = (name) => {
   }
   return result;
 }
-// const renderStatus = (status) =>{
-//
-// }
 onMounted(() => {
   findAll();
 })

@@ -1,44 +1,48 @@
+<template>
+  <el-tag :type="type" size="mini" style="float: right">
+    {{ text }}
+  </el-tag>
+</template>
 <script setup>
-import {defineProps, h, render} from "vue";
+import {defineProps, onMounted, ref} from "vue";
 
+const type = ref('')
+const text = ref('')
 const props = defineProps(
     {
       status: String,
     }
 );
-render(() => {
-  let type;
-  let text;
+onMounted(() => {
   switch (props.status) {
     case 'ONLINE':
-      type = 'success';
-      text = '空闲中';
+      type.value = 'success';
+      text.value = '空闲中';
       break
     case 'OFFLINE':
-      type = 'info';
-      text = '已离线';
+      type.value = 'info';
+      text.value = '已离线';
       break
     case "DISCONNECTED":
-      type = 'info';
-      text = '已断开';
+      type.value = 'info';
+      text.value = '已断开';
       break
     case "DEBUGGING":
-      text = '占用中';
+      text.value = '占用中';
       break
     case "TESTING":
-      text = '测试中';
+      text.value = '测试中';
       break
     case "UNAUTHORIZED":
-      type = 'danger';
-      text = '未授权';
+      type.value = 'danger';
+      text.value = '未授权';
       break
     case "ERROR":
-      type = 'warning';
-      text = '异常中';
+      type.value = 'warning';
+      text.value = '异常中';
     default :
-      type = 'warning';
-      text = '加载中';
+      type.value = 'warning';
+      text.value = '加载中';
   }
-  return h('el-tag', {type: type, size: 'mini', style: 'float: right'}, text)
-}, {}, false)
+})
 </script>
