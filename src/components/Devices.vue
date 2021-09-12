@@ -210,7 +210,7 @@
               <el-form
                   label-position="left"
                   class="device-form"
-                  label-width="80px"
+                  label-width="70px"
                   style="margin: 0 0 15px 10px"
               >
                 <el-form-item label="设备名称">

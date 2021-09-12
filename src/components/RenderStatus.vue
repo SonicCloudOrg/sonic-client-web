@@ -5,7 +5,6 @@
 </template>
 <script setup>
 import {defineProps, onMounted, ref} from "vue";
-
 const type = ref('')
 const text = ref('')
 const props = defineProps(
