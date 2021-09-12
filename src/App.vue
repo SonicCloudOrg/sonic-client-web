@@ -1,106 +1,106 @@
 <template>
-  <el-container>
-    <el-aside width="auto">
-      <el-menu
-          :collapse="store.state.isCollapse"
-          :default-active="route.path"
-          :unique-opened="true"
-          class="el-menu-vertical-demo font"
-          router
-      >
-        <p class="flex-center">
-          <el-avatar
-              :size="40"
-              :src="store.state.project.projectImg"
-              shape="square"
-          ></el-avatar>
-          <span class="project-name" v-if="!store.state.isCollapse">{{
-              store.state.project.projectName
-            }}</span>
-        </p>
-        <el-menu-item :index="'/' + route.params.projectId + '/ProjectIndex'">
-          <i class="el-icon-data-analysis"></i>
-          <template #title>项目概况</template>
-        </el-menu-item>
+  <el-config-provider :locale="locale">
+    <el-container>
+      <el-aside width="auto">
+        <el-menu
+            :collapse="store.state.isCollapse"
+            :default-active="route.path"
+            :unique-opened="true"
+            class="el-menu-vertical-demo font"
+            router
+        >
+          <p class="flex-center">
+            <el-avatar
+                :size="40"
+                :src="store.state.project.projectImg"
+                shape="square"
+            ></el-avatar>
+            <span class="project-name" v-if="!store.state.isCollapse">{{
+                store.state.project.projectName
+              }}</span>
+          </p>
+          <el-menu-item :index="'/' + route.params.projectId + '/ProjectIndex'">
+            <i class="el-icon-data-analysis"></i>
+            <template #title>项目概况</template>
+          </el-menu-item>
 
-        <el-sub-menu index="2">
-          <template #title>
-            <i class="el-icon-folder-opened"></i>
-            <span>测试用例管理</span>
-          </template>
-          <el-sub-menu index="1-4">
-            <template #title><i class="el-icon-tickets"></i>测试用例</template>
-            <el-menu-item :index="'/' + route.params.projectId + '/AndroidTestCases'">
-              <i class="el-icon-d-arrow-right"></i>安卓端测试用例
+          <el-sub-menu index="2">
+            <template #title>
+              <i class="el-icon-folder-opened"></i>
+              <span>测试用例管理</span>
+            </template>
+            <el-sub-menu index="1-4">
+              <template #title><i class="el-icon-tickets"></i>测试用例</template>
+              <el-menu-item :index="'/' + route.params.projectId + '/AndroidTestCases'">
+                <i class="el-icon-d-arrow-right"></i>安卓端测试用例
+              </el-menu-item>
+              <el-menu-item :index="'/' + route.params.projectId + '/IOSTestCases'">
+                <i class="el-icon-d-arrow-right"></i>iOS端测试用例
+              </el-menu-item>
+            </el-sub-menu>
+            <el-menu-item :index="'/' + route.params.projectId + '/TestSuites'">
+              <i class="el-icon-document-copy"></i>测试套件
             </el-menu-item>
-            <el-menu-item :index="'/' + route.params.projectId + '/IOSTestCases'">
-              <i class="el-icon-d-arrow-right"></i>iOS端测试用例
+            <el-menu-item :index="'/' + route.params.projectId + '/Jobs'">
+              <i class="el-icon-timer"></i>定时任务
             </el-menu-item>
           </el-sub-menu>
-          <el-menu-item :index="'/' + route.params.projectId + '/TestSuites'">
-            <i class="el-icon-document-copy"></i>测试套件
-          </el-menu-item>
-          <el-menu-item :index="'/' + route.params.projectId + '/Jobs'">
-            <i class="el-icon-timer"></i>定时任务
-          </el-menu-item>
-        </el-sub-menu>
 
-        <el-sub-menu index="5">
-          <template #title>
-            <i class="el-icon-lock"></i>
-            <span>测试数据管理</span>
-          </template>
-          <el-menu-item :index="'/' + route.params.projectId + '/Elements'">
-            <i class="el-icon-thumb"></i>元素管理
-          </el-menu-item>
-          <el-menu-item :index="'/' + route.params.projectId + '/PublicStep'">
-            <i class="el-icon-star-off"></i>公共步骤
-          </el-menu-item>
-          <el-menu-item :index="'/' + route.params.projectId + '/GlobalParams'">
-            <i class="el-icon-user"></i>全局参数
-          </el-menu-item>
-        </el-sub-menu>
+          <el-sub-menu index="5">
+            <template #title>
+              <i class="el-icon-lock"></i>
+              <span>测试数据管理</span>
+            </template>
+            <el-menu-item :index="'/' + route.params.projectId + '/Elements'">
+              <i class="el-icon-thumb"></i>元素管理
+            </el-menu-item>
+            <el-menu-item :index="'/' + route.params.projectId + '/PublicStep'">
+              <i class="el-icon-star-off"></i>公共步骤
+            </el-menu-item>
+            <el-menu-item :index="'/' + route.params.projectId + '/GlobalParams'">
+              <i class="el-icon-user"></i>全局参数
+            </el-menu-item>
+          </el-sub-menu>
 
-        <el-sub-menu index="4">
-          <template #title>
-            <i class="el-icon-paperclip"></i>
-            <span>测试结果分析</span>
-          </template>
-          <el-menu-item :index="'/' + route.params.projectId + '/Results'">
-            <i class="el-icon-s-data"></i>测试结果
-          </el-menu-item>
-        </el-sub-menu>
+          <el-sub-menu index="4">
+            <template #title>
+              <i class="el-icon-paperclip"></i>
+              <span>测试结果分析</span>
+            </template>
+            <el-menu-item :index="'/' + route.params.projectId + '/Results'">
+              <i class="el-icon-s-data"></i>测试结果
+            </el-menu-item>
+          </el-sub-menu>
 
-        <el-sub-menu index="7">
-          <template #title>
-            <i class="el-icon-connection"></i>
-            <span>持续集成设置</span>
-          </template>
-          <el-menu-item :index="'/' + route.params.projectId + '/InstallPackage'">
-            <i class="el-icon-sold-out"></i>批量装包
-          </el-menu-item>
-        </el-sub-menu>
+          <el-sub-menu index="7">
+            <template #title>
+              <i class="el-icon-connection"></i>
+              <span>持续集成设置</span>
+            </template>
+            <el-menu-item :index="'/' + route.params.projectId + '/InstallPackage'">
+              <i class="el-icon-sold-out"></i>批量装包
+            </el-menu-item>
+          </el-sub-menu>
 
-        <el-sub-menu index="6">
-          <template #title>
-            <i class="el-icon-setting"></i>
-            <span>项目高级设置</span>
-          </template>
-          <el-menu-item :index="'/' + route.params.projectId + '/Modules'">
-            <i class="el-icon-price-tag"></i>模块管理
-          </el-menu-item>
-          <el-menu-item :index="'/' + route.params.projectId + '/Versions'">
-            <i class="el-icon-coin"></i>迭代管理
-          </el-menu-item>
-          <el-menu-item :index="'/' + route.params.projectId + '/ProjectOption'">
-            <i class="el-icon-key"></i>其他设置
-          </el-menu-item>
-        </el-sub-menu>
-      </el-menu>
-    </el-aside>
+          <el-sub-menu index="6">
+            <template #title>
+              <i class="el-icon-setting"></i>
+              <span>项目高级设置</span>
+            </template>
+            <el-menu-item :index="'/' + route.params.projectId + '/Modules'">
+              <i class="el-icon-price-tag"></i>模块管理
+            </el-menu-item>
+            <el-menu-item :index="'/' + route.params.projectId + '/Versions'">
+              <i class="el-icon-coin"></i>迭代管理
+            </el-menu-item>
+            <el-menu-item :index="'/' + route.params.projectId + '/ProjectOption'">
+              <i class="el-icon-key"></i>其他设置
+            </el-menu-item>
+          </el-sub-menu>
+        </el-menu>
+      </el-aside>
 
-    <el-container direction="vertical">
-      <div style="height: 100%">
+      <el-container direction="vertical">
         <el-header>
           <div class="flex-center">
             <div>asd</div>
@@ -283,10 +283,11 @@
             </el-menu>
           </div>
         </el-header>
-
-        <el-main>
-          <router-view/>
-        </el-main>
+        <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
+          <el-main>
+            <router-view/>
+          </el-main>
+        </el-scrollbar>
 
         <!-- <el-main>
               <router-view v-if="$route.params.projectId" />
@@ -360,9 +361,9 @@
               </div>
             </el-main> -->
         <!-- </el-scrollbar> -->
-      </div>
+      </el-container>
     </el-container>
-  </el-container>
+  </el-config-provider>
 </template>
 
 <style>
@@ -376,12 +377,15 @@ import {ref, onMounted, onBeforeMount} from "vue";
 import {useStore} from "vuex";
 import {useRouter, useRoute} from "vue-router";
 import logo from "./assets/logo.png";
+import {ElConfigProvider} from 'element-plus'
+import zhCn from 'element-plus/lib/locale/lang/zh-cn'
 // import axios from "../http/axios";
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
 const projectData = ref([{"id": 1, "projectName": "test", "projectImg": ""}])
 const theme = ref("");
+const locale = ref(zhCn);
 const jump = (id) => {
   projectData.value[0].projectName = id
 }
