@@ -147,10 +147,6 @@ body,
     display: flex;
 }
 
-.demo-table-expand .el-form-item__content * {
-    line-height: 40px;
-}
-
 .el-page-header__content {
     font-size: 15px !important;
 }

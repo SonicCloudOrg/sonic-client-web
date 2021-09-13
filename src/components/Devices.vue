@@ -151,7 +151,7 @@
             v-model="name"
             type="text"
             size="mini"
-            placeholder="输入要筛选的型号"
+            placeholder="输入要筛选的型号或设备序列号"
             maxlength="20"
             show-word-limit
             clearable
@@ -248,14 +248,15 @@
                 <el-form-item label="分辨率">
                   <div>{{ device.size }}</div>
                 </el-form-item>
-                <!--                <el-form-item label="所在位置">-->
-                <!--                  <div>{{ findAgentById(device.agentId) }}</div>-->
-                <!--                </el-form-item>-->
+                <el-form-item label="所在位置">
+                  <div>{{ findAgentById(device.agentId) }}</div>
+                </el-form-item>
               </el-form>
             </el-col>
           </el-row>
           <div style="text-align: center">
-            <el-popover placement="right-end" width="350" trigger="hover">
+            <el-button type="primary" size="mini">马上使用</el-button>
+            <el-popover placement="right-end" width="300px" trigger="hover">
               <el-form
                   label-position="left"
                   class="demo-table-expand"
@@ -284,17 +285,18 @@
                       v-model="device.password"
                       type="text"
                       size="mini"
-                      placeholder="默认为cs123456"
+                      placeholder="默认为Sonic123456"
                       maxlength="30"
                       style="position: absolute; top: 7px; bottom: 7px"
                   >
-                    <!--                    <el-button-->
-                    <!--                        slot="append"-->
-                    <!--                        size="mini"-->
-                    <!--                        @click="saveDevice(device)"-->
-                    <!--                    >保存-->
-                    <!--                    </el-button-->
-                    <!--                    >-->
+                    <template #append>
+                      <el-button
+                          size="mini"
+                          @click="savePwd(device)"
+                      >保存
+                      </el-button
+                      >
+                    </template>
                   </el-input>
                 </el-form-item>
                 <!--                <el-form-item label="快捷操作">-->
@@ -329,7 +331,9 @@
                 <!--                  </el-popconfirm>-->
                 <!--                </el-form-item>-->
               </el-form>
-              <el-button slot="reference" size="mini">更多信息</el-button>
+              <template #reference>
+                <el-button size="mini">更多信息</el-button>
+              </template>
             </el-popover>
           </div>
         </el-card>
@@ -344,11 +348,12 @@
 </template>
 
 <script setup>
-import {ref, onMounted, onBeforeMount, h} from "vue";
+import {ref, onMounted, onBeforeMount} from "vue";
 import {useRouter} from "vue-router";
 import Pageable from "./Pageable.vue";
 import axios from "../http/axios";
 import RenderStatus from "./RenderStatus.vue"
+import {ElMessage} from "element-plus";
 
 const img = import.meta.globEager("./../assets/img/*")
 const router = useRouter();
@@ -560,6 +565,32 @@ const findAll = (pageNum) => {
         }
       });
 };
+const findAgentById = (id) => {
+  let result = '未知'
+  for (let i in agentList.value) {
+    if (agentList.value[i].id === id) {
+      result = agentList.value[i].name
+      break
+    }
+  }
+  return result
+}
+const getAllAgents = () => {
+  axios
+      .get("/controller/agents").then((res) => {
+    agentList.value = res.data.data
+  })
+}
+const savePwd = (device) => {
+  axios
+      .put("/controller/devices/savePwd", {id: device.id, password: device.password}).then((res) => {
+    if (res.data.code === 2000) {
+      ElMessage.success({
+        message: res.data.message,
+      });
+    }
+  })
+}
 const getImg = (name) => {
   let result;
   try {
@@ -571,5 +602,6 @@ const getImg = (name) => {
 }
 onMounted(() => {
   findAll();
+  getAllAgents();
 })
 </script>
