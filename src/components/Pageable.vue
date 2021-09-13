@@ -1,3 +1,20 @@
+<script setup>
+import {defineProps} from "vue";
+
+defineProps(
+    {
+      pageData: Object,
+      isPageSet: Boolean
+    }
+);
+const emit = defineEmits(["changePage", "changeSize"])
+const changePage = (num) => {
+  emit("changePage", num)
+}
+const changeSize = (num) => {
+  emit("changeSize", num)
+}
+</script>
 <template>
   <el-pagination
       v-if="isPageSet === true"
@@ -22,19 +39,3 @@
       :total="pageData.totalElements"
   ></el-pagination>
 </template>
-<script setup>
-import {defineProps} from "vue";
-const props = defineProps(
-    {
-      pageData: Object,
-      isPageSet: Boolean
-    }
-);
-const emit = defineEmits(["changePage", "changeSize"])
-const changePage = (num) => {
-  emit("changePage", num)
-}
-const changeSize = (num) => {
-  emit("changeSize", num)
-}
-</script>

@@ -13,8 +13,6 @@ router.beforeEach((to, from, next) => {
     document.title = "Sonic -"
     if (to.meta.title) {
         document.title += " " + to.meta.title
-    } else {
-        document.title += " 首页"
     }
     if (!store.state.userInfo.token && store.state.userInfo.token.length !== 0) {
         // axios.get("/user").then((res) => {
