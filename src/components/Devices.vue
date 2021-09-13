@@ -74,23 +74,18 @@
                   man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'||man === 'GIONEE'
                 "
                 style="width: 80px"
-                fit="contain"
                 :src="getImg(man)"
             />
-            <el-image
+            <img
                 v-else-if="man === 'Xiaomi' ||man === 'APPLE'"
                 style="width: 30px"
-                fit="contain"
                 :src="getImg(man)"
-            >
-            </el-image>
-            <el-image
+            />
+            <img
                 v-else
                 style="width: 70px"
-                fit="contain"
                 :src="getImg(man)"
-            >
-            </el-image>
+            />
           </el-checkbox>
         </el-checkbox-group>
       </el-form-item>
@@ -156,7 +151,7 @@
             v-model="name"
             type="text"
             size="mini"
-            placeholder="输入要筛选的型号"
+            placeholder="输入要筛选的型号或设备序列号"
             maxlength="20"
             show-word-limit
             clearable
@@ -190,73 +185,16 @@
         <el-card
             shadow="hover"
             :body-style="{ padding: '10px 10px 15px 10px' }"
-            class="deviceCard"
+            class="device-card"
         >
-          <div slot="header">
+          <template #header>
               <span v-if="device.model">{{
                   device.model.length > 25
                       ? device.model.substring(0, 17) + "..."
                       : device.model
                 }}</span>
-            <el-tag
-                size="mini"
-                type="success"
-                style="float: right"
-                v-if="device.status === 'ONLINE'"
-            >空闲中
-            </el-tag
-            >
-            <el-tag
-                size="mini"
-                type="info"
-                style="float: right"
-                v-else-if="device.status === 'OFFLINE'"
-            >已离线
-            </el-tag
-            >
-            <el-tag
-                size="mini"
-                type="info"
-                style="float: right"
-                v-else-if="device.status === 'DISCONNECTED'"
-            >已断开
-            </el-tag
-            >
-            <el-tag
-                size="mini"
-                style="float: right"
-                v-else-if="device.status === 'DEBUGGING'"
-            >占用中
-            </el-tag
-            >
-            <el-tag
-                size="mini"
-                style="float: right"
-                v-else-if="device.status === 'TESTING'"
-            >测试中
-            </el-tag
-            >
-            <el-tag
-                size="mini"
-                type="danger"
-                style="float: right"
-                v-else-if="device.status === 'UNAUTHORIZED'"
-            >未授权
-            </el-tag
-            >
-            <el-tag
-                size="mini"
-                type="warning"
-                style="float: right"
-                v-else-if="device.status === 'ERROR'"
-            >异常中
-            </el-tag
-            >
-            <el-tag size="mini" style="float: right" type="warning" v-else
-            >加载中
-            </el-tag
-            >
-          </div>
+            <RenderStatus :status="device.status"></RenderStatus>
+          </template>
           <el-row>
             <el-col :span="10">
               <el-image
@@ -264,6 +202,7 @@
                   fit="contain"
                   :src="getImg(device.model)"
                   :preview-src-list="[getImg(device.model)]"
+                  hide-on-click-modal
               >
               </el-image>
             </el-col>
@@ -271,120 +210,35 @@
               <el-form
                   label-position="left"
                   class="device-form"
-                  label-width="80px"
+                  label-width="70px"
                   style="margin: 0 0 15px 10px"
               >
                 <el-form-item label="设备名称">
                   <div>{{ device.name }}</div>
                 </el-form-item>
                 <el-form-item label="制造商">
-<!--                  <img-->
-<!--                      height="55%"-->
-<!--                      v-if="-->
-<!--                        device.manufacturer === 'Meizu' ||-->
-<!--                        device.manufacturer === 'vivo' ||-->
-<!--                        device.manufacturer === 'Yulong'-->
-<!--                      "-->
-<!--                      style="-->
-<!--                        position: absolute;-->
-<!--                        top: 11px;-->
-<!--                        bottom: 11px;-->
-<!--                        left: 0px;-->
-<!--                      "-->
-<!--                      :src="getImg(device.manufacturer)"-->
-<!--                  />-->
-                  <el-image
+                  <img
                       v-if="
                   device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'
                 "
                       style="width: 80px"
-                      fit="contain"
                       :src="getImg(device.manufacturer)"
-                  >
-                  </el-image>
-                  <el-image
+                  />
+                  <img
                       v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'"
                       style="width: 30px"
-                      fit="contain"
                       :src="getImg(device.manufacturer)"
-                  >
-                  </el-image>
-                  <el-image
+                  />
+                  <img
                       v-else
                       style="width: 70px"
-                      fit="contain"
                       :src="getImg(device.manufacturer)"
-                  >
-                  </el-image>
-<!--                  <img-->
-<!--                      height="75%"-->
-<!--                      v-else-if="-->
-<!--                        device.manufacturer === 'HUAWEI' ||-->
-<!--                        device.manufacturer === 'samsung' ||-->
-<!--                        device.manufacturer === 'OnePlus'-->
-<!--                      "-->
-<!--                      style="-->
-<!--                        position: absolute;-->
-<!--                        top: 10px;-->
-<!--                        bottom: 10px;-->
-<!--                        left: 0px;-->
-<!--                      "-->
-<!--                      :src="getImg(device.manufacturer)"-->
-<!--                  />-->
-<!--                  <img-->
-<!--                      height="90%"-->
-<!--                      v-else-if="device.manufacturer === 'Xiaomi'"-->
-<!--                      style="-->
-<!--                        position: absolute;-->
-<!--                        top: 7px;-->
-<!--                        bottom: 7px;-->
-<!--                        left: 0px;-->
-<!--                      "-->
-<!--                      :src="getImg(device.manufacturer)"-->
-<!--                  />-->
-<!--                  <img-->
-<!--                      height="95%"-->
-<!--                      v-else-if="device.manufacturer === 'APPLE'||device.manufacturer==='GIONEE'"-->
-<!--                      style="-->
-<!--                        position: absolute;-->
-<!--                        top: 7px;-->
-<!--                        bottom: 7px;-->
-<!--                        left: 0px;-->
-<!--                      "-->
-<!--                      :src="getImg(device.manufacturer)"-->
-<!--                  />-->
-<!--                  <img-->
-<!--                      height="110%"-->
-<!--                      v-else-if="device.manufacturer === 'OPPO'"-->
-<!--                      style="-->
-<!--                        position: absolute;-->
-<!--                        top: 7px;-->
-<!--                        bottom: 7px;-->
-<!--                        left: 0px;-->
-<!--                      "-->
-<!--                      :src="getImg(device.manufacturer)"-->
-<!--                  />-->
-<!--                  <img-->
-<!--                      height="80%"-->
-<!--                      v-else-->
-<!--                      style="-->
-<!--                        position: absolute;-->
-<!--                        top: 7px;-->
-<!--                        bottom: 7px;-->
-<!--                        left: 0px;-->
-<!--                      "-->
-<!--                      :src="getImg(device.manufacturer)"-->
-<!--                  />-->
+                  />
+
                 </el-form-item>
                 <el-form-item label="设备系统">
                   <img
-                      height="25px"
-                      style="
-                        position: absolute;
-                        top: 7px;
-                        bottom: 7px;
-                        left: 0px;
-                      "
+                      style="width: 30px"
                       :src="getImg(device.platform===1?'ANDROID':'IOS')"
                   />
                 </el-form-item>
@@ -394,14 +248,15 @@
                 <el-form-item label="分辨率">
                   <div>{{ device.size }}</div>
                 </el-form-item>
-                <!--                <el-form-item label="所在位置">-->
-                <!--                  <div>{{ findAgentById(device.agentId) }}</div>-->
-                <!--                </el-form-item>-->
+                <el-form-item label="所在位置">
+                  <div>{{ findAgentById(device.agentId) }}</div>
+                </el-form-item>
               </el-form>
             </el-col>
           </el-row>
           <div style="text-align: center">
-            <el-popover placement="right-end" width="350" trigger="hover">
+            <el-button type="primary" size="mini">马上使用</el-button>
+            <el-popover placement="right-end" width="300px" trigger="hover">
               <el-form
                   label-position="left"
                   class="demo-table-expand"
@@ -430,17 +285,18 @@
                       v-model="device.password"
                       type="text"
                       size="mini"
-                      placeholder="默认为cs123456"
+                      placeholder="默认为Sonic123456"
                       maxlength="30"
                       style="position: absolute; top: 7px; bottom: 7px"
                   >
-                    <!--                    <el-button-->
-                    <!--                        slot="append"-->
-                    <!--                        size="mini"-->
-                    <!--                        @click="saveDevice(device)"-->
-                    <!--                    >保存-->
-                    <!--                    </el-button-->
-                    <!--                    >-->
+                    <template #append>
+                      <el-button
+                          size="mini"
+                          @click="savePwd(device)"
+                      >保存
+                      </el-button
+                      >
+                    </template>
                   </el-input>
                 </el-form-item>
                 <!--                <el-form-item label="快捷操作">-->
@@ -475,17 +331,19 @@
                 <!--                  </el-popconfirm>-->
                 <!--                </el-form-item>-->
               </el-form>
-              <el-button slot="reference" size="mini">更多信息</el-button>
+              <template #reference>
+                <el-button size="mini">更多信息</el-button>
+              </template>
             </el-popover>
           </div>
         </el-card>
       </el-col>
     </el-row>
-    <!--    <Pageable-->
-    <!--        :isPageSet="false"-->
-    <!--        :pageData="pageData"-->
-    <!--        @changePage="findAll"-->
-    <!--    ></Pageable>-->
+    <Pageable
+        :isPageSet="false"
+        :pageData="pageData"
+        @changePage="findAll"
+    ></Pageable>
   </el-card>
 </template>
 
@@ -494,6 +352,8 @@ import {ref, onMounted, onBeforeMount} from "vue";
 import {useRouter} from "vue-router";
 import Pageable from "./Pageable.vue";
 import axios from "../http/axios";
+import RenderStatus from "./RenderStatus.vue"
+import {ElMessage} from "element-plus";
 
 const img = import.meta.globEager("./../assets/img/*")
 const router = useRouter();
@@ -512,7 +372,7 @@ const isAllAgent = ref(false);
 const checkAllStatus = ref(false);
 const isAllStatus = ref(false);
 const pageData = ref({});
-const pageSize = ref(8);
+const pageSize = ref(12);
 const checkMan = ref([]);
 const name = ref("");
 const androidSystem = ref([]);
@@ -705,6 +565,32 @@ const findAll = (pageNum) => {
         }
       });
 };
+const findAgentById = (id) => {
+  let result = '未知'
+  for (let i in agentList.value) {
+    if (agentList.value[i].id === id) {
+      result = agentList.value[i].name
+      break
+    }
+  }
+  return result
+}
+const getAllAgents = () => {
+  axios
+      .get("/controller/agents").then((res) => {
+    agentList.value = res.data.data
+  })
+}
+const savePwd = (device) => {
+  axios
+      .put("/controller/devices/savePwd", {id: device.id, password: device.password}).then((res) => {
+    if (res.data.code === 2000) {
+      ElMessage.success({
+        message: res.data.message,
+      });
+    }
+  })
+}
 const getImg = (name) => {
   let result;
   try {
@@ -716,5 +602,6 @@ const getImg = (name) => {
 }
 onMounted(() => {
   findAll();
+  getAllAgents();
 })
 </script>
