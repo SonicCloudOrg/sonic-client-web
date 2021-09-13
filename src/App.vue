@@ -1,3 +1,34 @@
+<script setup>
+import './assets/light.css'
+import './assets/dark.css'
+import {ref, onMounted, onBeforeMount} from "vue";
+import {useStore} from "vuex";
+import {useRouter, useRoute} from "vue-router";
+import logo from "./assets/logo.png";
+import {ElConfigProvider} from 'element-plus'
+import zhCn from 'element-plus/lib/locale/lang/zh-cn'
+// import axios from "../http/axios";
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+const projectData = ref([{"id": 1, "projectName": "test", "projectImg": ""}])
+const theme = ref("");
+const locale = ref(zhCn);
+const jump = (id) => {
+  projectData.value[0].projectName = id
+}
+const toggleClass = (t) => {
+  localStorage.setItem('SonicTheme', t);
+  document.body.className = 'sonic-' + t
+}
+onBeforeMount(() => {
+  theme.value = localStorage.getItem('SonicTheme') ? localStorage.getItem('SonicTheme') : "light"
+})
+onMounted(() => {
+  toggleClass(theme.value);
+})
+</script>
+
 <template>
   <el-config-provider :locale="locale">
     <el-container>
@@ -369,34 +400,3 @@
 <style>
 @import "./assets/common.css";
 </style>
-
-<script setup>
-import './assets/light.css'
-import './assets/dark.css'
-import {ref, onMounted, onBeforeMount} from "vue";
-import {useStore} from "vuex";
-import {useRouter, useRoute} from "vue-router";
-import logo from "./assets/logo.png";
-import {ElConfigProvider} from 'element-plus'
-import zhCn from 'element-plus/lib/locale/lang/zh-cn'
-// import axios from "../http/axios";
-const store = useStore();
-const router = useRouter();
-const route = useRoute();
-const projectData = ref([{"id": 1, "projectName": "test", "projectImg": ""}])
-const theme = ref("");
-const locale = ref(zhCn);
-const jump = (id) => {
-  projectData.value[0].projectName = id
-}
-const toggleClass = (t) => {
-  localStorage.setItem('SonicTheme', t);
-  document.body.className = 'sonic-' + t
-}
-onBeforeMount(() => {
-  theme.value = localStorage.getItem('SonicTheme') ? localStorage.getItem('SonicTheme') : "light"
-})
-onMounted(() => {
-  toggleClass(theme.value);
-})
-</script>

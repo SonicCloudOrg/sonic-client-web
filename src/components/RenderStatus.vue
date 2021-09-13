@@ -1,8 +1,3 @@
-<template>
-  <el-tag :type="selObj.type" size="mini" style="float: right">
-    {{ selObj.text }}
-  </el-tag>
-</template>
 <script setup>
 import {defineProps} from "vue";
 
@@ -41,3 +36,9 @@ const props = defineProps(
 );
 const selObj = statusList[props.status] || {type: 'danger', text: '加载中'}
 </script>
+
+<template>
+  <el-tag :type="selObj.type" size="mini" style="float: right">
+    {{ selObj.text }}
+  </el-tag>
+</template>
