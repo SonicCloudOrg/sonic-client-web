@@ -23,15 +23,9 @@ const getProjectList = () => {
 }
 const jump = (projectId) => {
   store.commit("reset");
-  // if (route.params.projectId) {
-  //   router.replace({
-  //     path: "/Empty/" + projectId,
-  //   });
-  // } else {
   router.push({
     path: "/Home/" + projectId + "/Devices",
   });
-  // }
 }
 const toggleClass = (t) => {
   localStorage.setItem('SonicTheme', t);
