@@ -1,4 +1,4 @@
-import { createStore } from 'vuex'
+import {createStore} from 'vuex'
 
 export default createStore({
     state() {
@@ -11,6 +11,17 @@ export default createStore({
         }
     },
     mutations: {
+        saveProject(state, payload) {
+            state.project = payload
+        },
+        changeCollapse(state) {
+            state.isCollapse = !state.isCollapse;
+        },
+        autoChangeCollapse(state) {
+            if (state.isCollapse === false) {
+                state.isCollapse = !state.isCollapse;
+            }
+        },
         setUserInfo(state, userInfo) {
             state.userInfo = userInfo;
             if (userInfo.token) {
@@ -18,7 +29,7 @@ export default createStore({
             }
         },
         clear(state) {
-            state.userInfo = { token: "" };
+            state.userInfo = {token: ""};
             localStorage.removeItem('SonicToken');
         }
     },

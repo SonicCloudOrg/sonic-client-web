@@ -2,7 +2,7 @@
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: #2c3e50;
+    color: #909399;
 }
 
 .font, .font * {
@@ -149,6 +149,7 @@ body,
 
 .el-page-header__content {
     font-size: 15px !important;
+    color: #909399;
 }
 
 .demo-tree-scrollbar .el-scrollbar__wrap {

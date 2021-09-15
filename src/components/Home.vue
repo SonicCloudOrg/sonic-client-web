@@ -21,10 +21,11 @@ const getProjectList = () => {
     projectData.value = res.data.data;
   })
 }
-const jump = (projectId) => {
-  store.commit("reset");
+const jump = (project) => {
+  store.commit("saveProject",project);
   router.push({
-    path: "/Home/" + projectId + "/Devices",
+    path: "/Home/" + project.id + "/Test" +
+        "",
   });
 }
 const toggleClass = (t) => {
@@ -37,20 +38,22 @@ onBeforeMount(() => {
 onMounted(() => {
   toggleClass(theme.value);
   getProjectList();
+  const windowWidth = document.body.clientWidth;
+  if (windowWidth < 1200) {
+    store.commit("autoChangeCollapse");
+  }
 })
 </script>
 
 <template>
   <el-config-provider :locale="locale">
     <el-container>
-      <el-aside width="auto">
-        <!--      <el-aside width="auto" v-if="route.params.projectId">-->
+      <el-aside width="auto" v-if="route.params.projectId">
         <el-menu
             :collapse="store.state.isCollapse"
             :default-active="route.path"
             :unique-opened="true"
             class="el-menu-vertical-demo font"
-            router
         >
           <p class="flex-center">
             <el-avatar
@@ -146,18 +149,12 @@ onMounted(() => {
       <el-container direction="vertical">
         <el-header>
           <div class="flex-center">
-            <div>asd</div>
+            <div style="margin:0 20px;font-size: 20px;cursor:pointer" @click="store.commit('changeCollapse')"
+                 v-if="route.params.projectId">
+              <i v-if="store.state.isCollapse === false" class="el-icon-s-fold"></i>
+              <i v-if="store.state.isCollapse === true" class="el-icon-s-unfold"></i>
+            </div>
             <el-menu mode="horizontal" class="el-menu-horizontal-demo font" :default-active="route.path" router>
-              <el-menu-item
-                  @click="store.commit('changeCollapse')"
-                  v-if="route.params.projectId"
-              >
-                <i v-if="store.state.isCollapse === false" class="el-icon-s-fold"></i>
-                <i v-if="store.state.isCollapse === true" class="el-icon-s-unfold"></i>
-              </el-menu-item>
-              <el-menu-item v-else @click="addStar()">
-                <i class="el-icon-refresh"></i>
-              </el-menu-item>
               <!-- <el-sub-menu index="1">
                       <template #title>
                         <i class="el-icon-monitor" style="margin-right: 0"></i>
@@ -226,9 +223,8 @@ onMounted(() => {
                       </el-menu-item>
                     </el-sub-menu> -->
               <el-menu-item
-                  :index="route.params.projectId
-                    ? '/Home' + route.params.projectId + '/Devices'
-                    : '/Home/Devices'"
+                  v-if="route.params.projectId"
+                  :index=" '/Home/' + route.params.projectId + '/Devices'"
               ><i class="el-icon-mobile" style="margin-right: 0"></i>设备中心
               </el-menu-item>
             </el-menu>
@@ -253,7 +249,7 @@ onMounted(() => {
                     v-for="project in projectData"
                     v-show="project.id != route.params.projectId"
                     :key="project.id"
-                    @click="jump(project.id)"
+                    @click="jump(project)"
                 >
                   <el-avatar
                       style="margin-right: 10px"
@@ -354,7 +350,7 @@ onMounted(() => {
                     :lg="4"
                     :xl="3"
                 >
-                  <div @click="jump(project.id)">
+                  <div @click="jump(project)">
                     <el-card
                         style="margin: 10px 10px; cursor: pointer"
                         shadow="hover"
