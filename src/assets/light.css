@@ -19,6 +19,10 @@
     background-color: #ffffff
 }
 
+.sonic-light .el-menu-item.is-active {
+    color: #409EFF !important;
+}
+
 .sonic-light .el-menu-vertical-demo .el-menu-item.is-active {
     color: #409EFF !important;
 }
@@ -30,11 +34,11 @@
 }
 
 .sonic-light .project-name {
-    color: #eee;
-    font-size: 19px;
+    color: #606266;
+    font-size: 19px !important;
     font-weight: 600;
     text-align: center;
-    margin-left: 10px;
+    margin-left: 12px;
 }
 
 .sonic-light .demo .el-switch__label.is-active {

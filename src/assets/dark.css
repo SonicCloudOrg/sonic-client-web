@@ -46,10 +46,10 @@
 
 .sonic-dark .project-name {
     color: #eee;
-    font-size: 19px;
+    font-size: 19px!important;
     font-weight: 600;
     text-align: center;
-    margin-left: 10px;
+    margin-left: 12px;
 }
 
 .sonic-dark .demo .el-switch__label.is-active {

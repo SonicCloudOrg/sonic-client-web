@@ -3,12 +3,18 @@ import {createRouter, createWebHistory} from 'vue-router';
 const routes = [
     {
         path: '/',
-        redirect: '/Home'
+        redirect: '/Home',
     },
     {
         path: '/Home',
         component: () =>
             import ("../components/Home.vue"),
+    },
+    {
+        path: '/Home/:projectId(\\d+)',
+        component: () =>
+            import ("../components/Home.vue"),
+        redirect: {name: 'Test'},
         meta: {title: "首页"},
         children: [
             {
@@ -17,28 +23,16 @@ const routes = [
                 component: () =>
                     import ("../components/Devices.vue"),
                 meta: {title: "设备中心"}
+            },
+            {
+                path: 'Test',
+                name: 'Test',
+                component: () =>
+                    import ("../components/Test.vue"),
+                meta: {title: "设备中心"}
             }
         ]
-    },
-    {
-        path: '/Home/:projectId',
-        component: () =>
-            import ("../components/Home.vue"),
-        redirect: '/Home/:projectId/Devices',
-        children: [
-            {
-                path: 'Devices',
-                name: 'Devices',
-                component: () =>
-                    import ("../components/Devices.vue"),
-                meta: {title: "设备中心"}
-            }]
-    },
-    {
-        path: '/Empty/:projectId',
-        component: () =>
-            import ("../components/Empty.vue"),
-    },
+    }
 ]
 
 export default createRouter({
