@@ -14,6 +14,19 @@ router.beforeEach((to, from, next) => {
     if (to.meta.title) {
         document.title += " " + to.meta.title
     }
+    if (to.params.projectId && store.state.project.id === undefined) {
+        axios
+            .get("/controller/projects", {
+                params: {
+                    id: to.params.projectId,
+                },
+            })
+            .then((res) => {
+                if (res.data.code === 2000) {
+                    store.commit("saveProject", res.data.data);
+                }
+            });
+    }
     if (!store.state.userInfo.token && store.state.userInfo.token.length !== 0) {
         // axios.get("/user").then((res) => {
         //     if (res.data.code === 2000) {
