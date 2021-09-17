@@ -23,6 +23,11 @@ const jump = (project) => {
         "",
   });
 }
+const logout = () => {
+}
+const goToUrl = (url) => {
+  window.open(url, "_blank");
+}
 const toggleClass = (t) => {
   localStorage.setItem('SonicTheme', t);
   document.body.className = 'sonic-' + t
@@ -121,6 +126,7 @@ onMounted(() => {
       <div class="flex-center demo">
         <el-tooltip :content="'当前主题: '+theme.toUpperCase()" placement="bottom">
           <el-switch v-model="theme" @change="toggleClass"
+                     style="margin-right: 10px;"
                      :width="33"
                      active-value="light"
                      inactive-value="dark"
@@ -128,30 +134,11 @@ onMounted(() => {
                      active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>
         </el-tooltip>
         <el-menu mode="horizontal" class="el-menu-horizontal-demo font" default-active="0">
-          <el-sub-menu index="1" v-if="route.params.projectId">
-            <template #title
-            ><i class="el-icon-menu"></i
-            >切换项目
-            </template
-            >
-            <el-menu-item
-                v-for="project in projectData"
-                v-show="project.id != route.params.projectId"
-                :key="project.id"
-                @click="jump(project)"
-            >
-              <el-avatar
-                  style="margin-right: 10px"
-                  :size="32"
-                  :src="project.projectImg"
-                  shape="square"
-              ></el-avatar
-              >
-              {{ project.projectName }}
-            </el-menu-item
-            >
-          </el-sub-menu>
-          <el-sub-menu index="2">
+          <el-menu-item :index="'/Index'" v-if="route.params.projectId|| route.fullPath==='/Index/Devices'"
+                        @click="router.push('/Index')"
+          >回到首页
+          </el-menu-item>
+          <el-sub-menu index="1">
             <template #title
             ><i class="el-icon-user"></i
             >{{
@@ -160,7 +147,12 @@ onMounted(() => {
             </template
             >
             <div style="padding: 0 10px">
-              <el-menu-item @click="dialogSelf = true">个人信息</el-menu-item>
+              <el-divider class="about"
+              ><span class="font title"
+              >个人中心</span
+              ></el-divider
+              >
+              <el-menu-item>我的信息</el-menu-item>
               <el-divider class="about"
               ><span
                   class="flex-center font title"
@@ -178,16 +170,6 @@ onMounted(() => {
               >
               <el-menu-item
                   @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-              >Sonic使用文档
-              </el-menu-item
-              >
-              <el-menu-item
-                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-              >Sonic手机助手
-              </el-menu-item
-              >
-              <el-menu-item
-                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
               >版本更新记录
                 <el-badge
                     value="New"
@@ -195,8 +177,6 @@ onMounted(() => {
                 ></el-badge
                 >
               </el-menu-item>
-            </div>
-            <div style="padding: 0 10px">
               <el-divider class="about"
               ><span class="font title"
               >其他</span
@@ -205,15 +185,76 @@ onMounted(() => {
               <el-menu-item @click="goToUrl('http://localhost:8094/doc.html')">
                 REST API
               </el-menu-item>
-              <el-menu-item @click="logout()"> 注销</el-menu-item>
+              <el-menu-item @click="logout"> 注销</el-menu-item>
             </div>
           </el-sub-menu>
         </el-menu>
       </div>
     </el-header>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
-      <el-main>
+      <el-main v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices'">
         <router-view/>
+      </el-main>
+      <el-main v-else>
+        <el-alert
+            title="欢迎来到Sonic-UI自动化测试平台，请选择项目进入"
+            type="info"
+            center
+            :closable="false"
+        >
+        </el-alert>
+        <el-row style="margin-top: 10px" justify="center" type="flex">
+          <el-col
+              v-for="project in projectData"
+              :key="project"
+              :xs="12"
+              :sm="8"
+              :md="8"
+              :lg="4"
+              :xl="3"
+          >
+            <div @click="jump(project)">
+              <el-card
+                  style="margin: 10px 10px; cursor: pointer"
+                  shadow="hover"
+              >
+                <div style="text-align: center">
+                  <el-avatar
+                      :src="project.projectImg"
+                      :size="150"
+                      shape="square"
+                  ></el-avatar>
+                </div>
+                <el-form
+                    label-position="left"
+                    class="demo-table-expand"
+                    style="margin-top: 10px"
+                >
+                  <el-form-item style="text-align: center">
+                    <strong style="font-size: 17px">{{
+                        project.projectName
+                      }}</strong>
+                  </el-form-item>
+                  <el-form-item>
+                    <p
+                        style="
+                                text-indent: 2em;
+                                line-height: 30px;
+                                margin-top: 0px;
+                              "
+                    >
+                      {{
+                        project.projectDes.length > 30
+                            ? project.projectDes.substring(0, 30) + "..."
+                            : project.projectDes
+                      }}
+                    </p>
+                  </el-form-item>
+                </el-form>
+              </el-card>
+            </div>
+          </el-col>
+        </el-row>
       </el-main>
     </el-scrollbar>
   </el-container>

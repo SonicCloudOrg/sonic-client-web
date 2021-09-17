@@ -19,6 +19,10 @@
     background-color: #ffffff
 }
 
+.sonic-light .el-menu-item:hover {
+    background-color: #ECF5FF !important;
+}
+
 .sonic-light .el-menu-item.is-active {
     color: #409EFF !important;
 }
@@ -29,7 +33,7 @@
 
 .sonic-light .el-menu--horizontal .el-menu .el-menu-item.is-active,
 .sonic-light .el-menu--horizontal .el-menu .el-sub-menu.is-active > .el-sub-menu__title {
-    font-size: 13px !important;
+    font-size: 14px !important;
     color: #909399 !important;
 }
 

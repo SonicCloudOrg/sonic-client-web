@@ -81,9 +81,9 @@ const statusList = ref([
   },
 ]);
 const agentList = ref([]);
-const jump = () => {
+const jump = (id) => {
   router.push({
-    path: "AndroidRemote"
+    path: "AndroidRemote/"+id
   });
 }
 const handleAndroid = (val) => {
@@ -233,7 +233,7 @@ const findAgentById = (id) => {
 }
 const getAllAgents = () => {
   axios
-      .get("/controller/agents").then((res) => {
+      .get("/controller/agents/list").then((res) => {
     agentList.value = res.data.data
   })
 }
@@ -521,7 +521,7 @@ onMounted(() => {
             </el-col>
           </el-row>
           <div style="text-align: center">
-            <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'" @click="jump">马上使用</el-button>
+            <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'" @click="jump(device.id)">马上使用</el-button>
             <el-popover placement="right-end" width="300px" trigger="hover">
               <el-form
                   label-position="left"
@@ -542,7 +542,7 @@ onMounted(() => {
                 <el-form-item label="屏幕分辨率">
                   <span>{{ device.size }}</span>
                 </el-form-item>
-                <el-form-item label="CPU版本">
+                <el-form-item label="CPU类型">
                   <span>{{ device.cpu }}</span>
                 </el-form-item>
                 <el-form-item label="安装密码">
