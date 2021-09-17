@@ -28,6 +28,10 @@
     background-color: #545c64 !important;
 }
 
+.sonic-dark .el-menu-item:hover {
+    background-color: #434A50 !important;
+}
+
 .sonic-dark .el-menu-item.is-active {
     color: #ffd04b !important;
 }
@@ -39,14 +43,14 @@
 .sonic-dark .el-menu--horizontal .el-menu .el-menu-item.is-active,
 .sonic-dark .el-menu--horizontal .el-menu .el-sub-menu.is-active > .el-sub-menu__title,
 .sonic-dark .el-menu .el-menu--popup * {
-    font-size: 13px !important;
+    font-size: 14px !important;
     color: #ffffff !important;
     background-color: #545c64 !important;
 }
 
 .sonic-dark .project-name {
     color: #eee;
-    font-size: 19px!important;
+    font-size: 19px !important;
     font-weight: 600;
     text-align: center;
     margin-left: 12px;

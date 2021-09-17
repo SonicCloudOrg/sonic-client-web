@@ -6,7 +6,7 @@
 }
 
 .font, .font * {
-    font-size: 13px !important;
+    font-size: 14px !important;
 }
 
 html,
@@ -149,9 +149,41 @@ body,
 
 .el-page-header__content {
     font-size: 15px !important;
-    color: #909399;
+    color: #909399 !important;
 }
 
 .demo-tree-scrollbar .el-scrollbar__wrap {
     overflow-x: hidden;
+}
+
+#pressKey {
+    padding: 3px;
+    width: 100%;
+    margin-top: 10px;
+    margin-left: 2px;
+}
+
+#canvas {
+    border: 3px solid #303133;
+    background-color: #ffffff;
+    border-radius: 20px;
+    cursor: url("img/pointer.png") 12 12, crosshair;
+}
+
+.divider .el-divider--horizontal {
+    margin: 8px 0;
+    background: 0 0;
+    border-top: 1px solid #e8eaec;
+}
+
+.divider {
+    padding: 10px 10px;
+}
+
+.el-dropdown-menu {
+    padding: 10px!important;
+}
+
+.el-form-item--small.el-form-item{
+    margin-bottom: 12px!important;
 }

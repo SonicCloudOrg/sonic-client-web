@@ -3,26 +3,46 @@ import {createRouter, createWebHistory} from 'vue-router';
 const routes = [
     {
         path: '/',
-        redirect: '/Home',
+        redirect: '/Index',
     },
     {
-        path: '/Home',
+        path: '/Index',
         component: () =>
-            import ("../components/Home.vue"),
+            import ("../components/Index.vue"),
+        meta: {title: "首页"},
+        // redirect: '/Index/Devices',
+        children: [
+            {
+                path: 'Devices',
+                component: () =>
+                    import ("../components/Devices.vue"),
+                meta: {title: "设备中心"}
+            },
+            {
+                path: 'AndroidRemote/:deviceId(\\d+)',
+                component: () =>
+                    import ("../components/AndroidRemote.vue"),
+                meta: {title: "远程控制"}
+            },
+        ]
     },
     {
         path: '/Home/:projectId(\\d+)',
         component: () =>
             import ("../components/Home.vue"),
         redirect: {name: 'Test'},
-        meta: {title: "首页"},
         children: [
             {
                 path: 'Devices',
-                name: 'Devices',
                 component: () =>
                     import ("../components/Devices.vue"),
                 meta: {title: "设备中心"}
+            },
+            {
+                path: 'AndroidRemote/:deviceId(\\d+)',
+                component: () =>
+                    import ("../components/AndroidRemote.vue"),
+                meta: {title: "远程控制"}
             },
             {
                 path: 'Test',
