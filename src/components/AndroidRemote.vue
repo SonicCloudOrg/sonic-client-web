@@ -236,6 +236,14 @@ const pressKey = (keyNum) => {
       })
   );
 }
+const screen = (type) => {
+  websocket.send(
+      JSON.stringify({
+        type: "screen",
+        detail: type,
+      })
+  );
+}
 const sendText = (text) => {
   websocket.send(
       JSON.stringify({
@@ -311,7 +319,7 @@ onMounted(() => {
       <el-col :span="6">
         <el-card v-loading="loading"
                  element-loading-text="初始化设备中"
-                 element-loading-background="rgba(0, 0, 0, 0.6)"
+                 element-loading-background="rgba(255, 255, 255, 0.9)"
                  style="font-size: 14px"
                  :body-style="{
         padding: '10px',
@@ -413,6 +421,46 @@ onMounted(() => {
             </el-button-group>
           </div>
           <div style="position: absolute; right: 5px; top: 10px">
+            <el-dropdown
+                :hide-on-click="false"
+                trigger="click"
+                placement="right"
+                style="margin-top: 4px"
+            >
+              <el-button
+                  size="small"
+                  type="info"
+                  circle
+                  icon="el-icon-wallet"
+              ></el-button>
+              <template #dropdown>
+                <el-dropdown-menu class="divider">
+                  <el-button-group>
+                    <el-button
+                        size="small"
+                        type="info"
+                        circle
+                        icon="el-icon-refresh-left"
+                        @click="screen('portrait')"
+                    ></el-button>
+                    <el-button
+                        size="small"
+                        type="info"
+                        circle
+                        icon="el-icon-refresh"
+                        @click="screen('abort')"
+                    ></el-button>
+                    <el-button
+                        size="small"
+                        type="info"
+                        circle
+                        icon="el-icon-refresh-right"
+                        @click="screen('landscape')"
+                    ></el-button>
+                  </el-button-group>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
             <div style="margin-top: 4px">
               <el-button
                   size="small"
@@ -609,7 +657,12 @@ onMounted(() => {
         </el-card>
       </el-col>
       <el-col :span="18">
-
+        <el-tabs type="border-card">
+          <el-tab-pane label="UI自动化">xxx</el-tab-pane>
+          <el-tab-pane label="运行日志">xxx</el-tab-pane>
+          <el-tab-pane label="控件元素">xxx</el-tab-pane>
+          <el-tab-pane label="WebView调试" disabled>xxx</el-tab-pane>
+        </el-tabs>
       </el-col>
     </el-row>
   </el-card>
