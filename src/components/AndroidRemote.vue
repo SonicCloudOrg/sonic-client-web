@@ -39,6 +39,7 @@ const elementDetail = ref(null)
 const elementScreenLoading = ref(false)
 const tree = ref(null)
 const currentId = ref([])
+const filterText = ref("")
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null
 const getImg = (name) => {
@@ -49,6 +50,17 @@ const getImg = (name) => {
     result = img['./../assets/img/unName.jpg'].default
   }
   return result;
+}
+watch(filterText, (newValue, oldValue) => {
+  tree.value.filter(newValue);
+})
+const filterNode = (value, data) => {
+  if (!value) return true;
+  return (data.label.indexOf(value) !== -1) ||
+      (data.detail.resourceid ? data.detail.resourceid.indexOf(value) !== -1 : false);
+}
+const downloadImg = () => {
+  window.open(imgUrl.value, "_blank");
 }
 const copy = (value) => {
   try {
@@ -291,7 +303,7 @@ const mousemove = (event) => {
     }
   }
 }
-const touchstart = async (event) =>{
+const touchstart = async (event) => {
   const debugPic = document.getElementById("debugPic");
   const rect = debugPic.getBoundingClientRect();
   const x = parseInt(
@@ -309,14 +321,14 @@ const touchstart = async (event) =>{
   });
   await handleNodeClick(tree.value.getCurrentNode());
 }
-const findMinSize = (data)=> {
+const findMinSize = (data) => {
   if (data.length === 0) {
     return null;
   }
   let result = data[0];
   for (let i in data) {
     if (data[i].size === result.size) {
-      if (data[i].ele.eleDetail.text.length !== 0) {
+      if (data[i].ele.detail.text.length !== 0) {
         result = data[i];
       }
     }
@@ -327,22 +339,22 @@ const findMinSize = (data)=> {
   currentId.value = [result.ele.id];
   return result.ele.id;
 }
-const findElementByPoint = (ele, x, y)=> {
+const findElementByPoint = (ele, x, y) => {
   let result = [];
   for (let i in ele) {
-    const eleStartx = ele[i].eleDetail.pointStart.substring(
+    const eleStartx = ele[i].detail.bStart.substring(
         0,
-        ele[i].eleDetail.pointStart.indexOf(",")
+        ele[i].detail.bStart.indexOf(",")
     );
-    const eleStarty = ele[i].eleDetail.pointStart.substring(
-        ele[i].eleDetail.pointStart.indexOf(",") + 1
+    const eleStarty = ele[i].detail.bStart.substring(
+        ele[i].detail.bStart.indexOf(",") + 1
     );
-    const eleEndx = ele[i].eleDetail.pointEnd.substring(
+    const eleEndx = ele[i].detail.bEnd.substring(
         0,
-        ele[i].eleDetail.pointEnd.indexOf(",")
+        ele[i].detail.bEnd.indexOf(",")
     );
-    const eleEndy = ele[i].eleDetail.pointEnd.substring(
-        ele[i].eleDetail.pointEnd.indexOf(",") + 1
+    const eleEndy = ele[i].detail.bEnd.substring(
+        ele[i].detail.bEnd.indexOf(",") + 1
     );
     if (x >= eleStartx && x <= eleEndx && y >= eleStarty && y <= eleEndy) {
       result.push({
@@ -359,13 +371,45 @@ const findElementByPoint = (ele, x, y)=> {
   }
   return result;
 }
-const handleNodeClick = (data) =>{
+const handleNodeClick = (data) => {
+  if (data !== null) {
+    elementDetail.value = data.detail;
+    print(data);
+  }
+}
+const print = (data) => {
+  const canvas = document.getElementById("debugPic"),
+      g = canvas.getContext("2d");
+  g.clearRect(0, 0, canvas.width, canvas.height);
+  const eleStartx = data.detail.bStart.substring(
+      0,
+      data.detail.bStart.indexOf(",")
+  );
+  const eleStarty = data.detail.bStart.substring(
+      data.detail.bStart.indexOf(",") + 1
+  );
+  const eleEndx = data.detail.bEnd.substring(
+      0,
+      data.detail.bEnd.indexOf(",")
+  );
+  const eleEndy = data.detail.bEnd.substring(
+      data.detail.bEnd.indexOf(",") + 1
+  );
+  let a = Math.round(Math.random() * 255);
+  let b = Math.round(Math.random() * 255);
+  let c = Math.round(Math.random() * 255);
+  g.fillStyle = "rgba(" + a + ", " + b + ", " + c + ", 0.6)";
+  g.fillRect(
+      eleStartx * (canvas.width / imgWidth),
+      eleStarty * (canvas.height / imgHeight),
+      (eleEndx - eleStartx) * (canvas.width / imgWidth),
+      (eleEndy - eleStarty) * (canvas.height / imgHeight)
+  );
+}
+const beforeOpen = () => {
 
 }
-const beforeOpen = ()=>{
-
-}
-const getEleScreen = (xpath) =>{
+const getEleScreen = (xpath) => {
 
 }
 const pressKey = (keyNum) => {
@@ -974,23 +1018,26 @@ onMounted(() => {
           <el-tab-pane label="UI自动化">xxx</el-tab-pane>
           <el-tab-pane label="运行日志">xxx</el-tab-pane>
           <el-tab-pane label="控件元素">
-            <div style="text-align: center">
+            <div style="display: flex;align-items: center;justify-content: space-between;">
               <el-button
                   icon="el-icon-search"
                   type="primary"
-                  size="small"
+                  size="mini"
                   :loading="elementLoading"
                   @click="getElement"
                   :disabled="isDriverFinish === false"
-              >获取控件元素
+              >重新获取控件
               </el-button
               >
+              <span style="margin-right:10px;color: #909399;font-size: 14px; cursor: pointer"
+                    @click="copy(activity)"
+                    v-if="activity.length > 0">当前Activity： {{ activity }}</span>
             </div>
             <el-row
                 :gutter="10"
                 v-loading="!isShowImg"
                 element-loading-spinner="el-icon-lock"
-                element-loading-text="请先获取UI元素"
+                element-loading-text="请先获取控件元素"
             >
               <el-col :span="7">
                 <el-card shadow="hover" style="margin-top: 15px">
@@ -1003,19 +1050,9 @@ onMounted(() => {
                   >
                     <canvas id="debugPic" @mousedown="touchstart"></canvas>
                   </div>
-                </el-card>
-                <el-card
-                    :body-style="{ padding: '12px' }"
-                    shadow="hover"
-                    v-if="activity.length > 0"
-                    style="margin-top: 10px"
-                >
-                  <div
-                      style="font-size: 14px; text-align: center; cursor: pointer"
-                      @click="copy(activity)"
-                  >
-                    <span style="color: #909399">当前Activity:</span>
-                    {{ activity }}
+                  <div style="text-align: center;margin-top: 10px">
+                    <el-button type="primary" plain size="mini" icon="el-icon-download" @click="downloadImg">保存图片
+                    </el-button>
                   </div>
                 </el-card>
                 <el-card
@@ -1030,7 +1067,7 @@ onMounted(() => {
                         align="center"
                         :show-overflow-tooltip="true"
                     >
-                      <template slot-scope="scope">
+                      <template #default="scope">
                         <span
                             style="cursor: pointer"
                             @click="copy(scope.row)"
@@ -1048,12 +1085,20 @@ onMounted(() => {
                     v-if="isShowTree"
                     style="margin-top: 15px"
                 >
+                  <el-input
+                      style="margin-bottom: 10px"
+                      size="mini"
+                      placeholder="输入class或resource-id进行过滤"
+                      v-model="filterText"
+                  ></el-input>
                   <div style="height: 660px">
                     <el-scrollbar
                         class="demo-tree-scrollbar"
                         style="height: 100%"
                     >
                       <el-tree
+                          :indent="13"
+                          :filter-node-method="filterNode"
                           :default-expanded-keys="currentId"
                           node-key="id"
                           style="margin-top: 10px; margin-bottom: 20px"
@@ -1062,7 +1107,15 @@ onMounted(() => {
                           :accordion="true"
                           :data="elementData"
                           @node-click="handleNodeClick"
-                      ></el-tree>
+                      >
+                        <template #default="{ node, data }">
+                          <span style="font-size: 14px" v-if="data.detail.resourceid">
+                            {{ node.label.substring(0, node.label.indexOf('>')) + " " }}
+                            <span style="color: #F55781">resource-id</span>={{ "\"" + data.detail.resourceid + "\">" }}
+                          </span>
+                          <span style="font-size: 14px" v-else>{{ node.label }}</span>
+                        </template>
+                      </el-tree>
                     </el-scrollbar>
                   </div>
                 </el-card>
@@ -1100,14 +1153,14 @@ onMounted(() => {
                     </el-button
                     >
                   </div>
-                  <div style="height: 650px">
+                  <div style="height: 655px">
                     <el-scrollbar
                         style="height: 100%"
                         class="demo-tree-scrollbar"
                     >
                       <el-form
                           label-position="left"
-                          class="element-table-expand"
+                          class="element-table"
                           label-width="100px"
                           v-if="elementDetail !== null"
                       >
