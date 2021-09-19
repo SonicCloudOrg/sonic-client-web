@@ -129,6 +129,7 @@ const websocketOnmessage = (message) => {
       ElMessage.success({
         message: "获取控件元素成功！",
       });
+      currentId.value = [1]
       elementData.value = JSON.parse(message.data).detail;
       isShowTree.value = true;
       elementLoading.value = false
@@ -138,7 +139,7 @@ const websocketOnmessage = (message) => {
     }
     if (JSON.parse(message.data).msg === "treeFail") {
       ElMessage.error({
-        message: "获取元素失败！请重新获取"
+        message: "获取控件元素失败！请重新获取"
       });
       elementLoading.value = false
     }
@@ -1026,7 +1027,7 @@ onMounted(() => {
                   :loading="elementLoading"
                   @click="getElement"
                   :disabled="isDriverFinish === false"
-              >重新获取控件
+              >获取元素控件
               </el-button
               >
               <span style="margin-right:10px;color: #909399;font-size: 14px; cursor: pointer"
