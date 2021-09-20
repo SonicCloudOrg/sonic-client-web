@@ -121,51 +121,67 @@ const websocketOnmessage = (message) => {
     const u = URL.createObjectURL(blob);
     img.src = u;
   } else {
-    if (JSON.parse(message.data).msg === "size") {
-      imgWidth = JSON.parse(message.data).width;
-      imgHeight = JSON.parse(message.data).height;
-    }
-    if (JSON.parse(message.data).msg === "tree") {
-      ElMessage.success({
-        message: "获取控件元素成功！",
-      });
-      currentId.value = [1]
-      elementData.value = JSON.parse(message.data).detail;
-      isShowTree.value = true;
-      elementLoading.value = false
-      setImgData(JSON.parse(message.data).img)
-      webViewData.value = JSON.parse(message.data).webView
-      activity.value = JSON.parse(message.data).activity
-    }
-    if (JSON.parse(message.data).msg === "treeFail") {
-      ElMessage.error({
-        message: "获取控件元素失败！请重新获取"
-      });
-      elementLoading.value = false
-    }
-    if (JSON.parse(message.data).msg === "installFinish") {
-      if (JSON.parse(message.data).status === "success") {
+    switch (JSON.parse(message.data).msg) {
+      case "size": {
+        imgWidth = JSON.parse(message.data).width;
+        imgHeight = JSON.parse(message.data).height;
+        break
+      }
+      case "tree": {
         ElMessage.success({
-          message: "安装成功！",
+          message: "获取控件元素成功！",
         });
-      } else {
+        currentId.value = [1]
+        elementData.value = JSON.parse(message.data).detail;
+        isShowTree.value = true;
+        elementLoading.value = false
+        setImgData(JSON.parse(message.data).img)
+        webViewData.value = JSON.parse(message.data).webView
+        activity.value = JSON.parse(message.data).activity
+        break
+      }
+      case "treeFail": {
         ElMessage.error({
-          message: "安装失败！",
+          message: "获取控件元素失败！请重新获取"
         });
+        elementLoading.value = false
+        break
       }
-    }
-    if (JSON.parse(message.data).msg === "openDriver") {
-      loading.value = false;
-      ElMessage({
-        type: JSON.parse(message.data).status,
-        message: JSON.parse(message.data).detail
-      });
-      if (JSON.parse(message.data).status === 'success') {
-        isDriverFinish.value = true;
+      case "installFinish": {
+        if (JSON.parse(message.data).status === "success") {
+          ElMessage.success({
+            message: "安装成功！",
+          });
+        } else {
+          ElMessage.error({
+            message: "安装失败！",
+          });
+        }
+        break
       }
-    }
-    if (JSON.parse(message.data).msg === "picFinish") {
-      loading.value = false;
+      case "openDriver": {
+        loading.value = false;
+        ElMessage({
+          type: JSON.parse(message.data).status,
+          message: JSON.parse(message.data).detail
+        });
+        if (JSON.parse(message.data).status === 'success') {
+          isDriverFinish.value = true;
+        }
+        break
+      }
+      case "picFinish": {
+        loading.value = false;
+        break
+      }
+      case "error": {
+        ElMessage.error({
+          message: "系统出现异常！已断开远程控制！",
+        });
+        close()
+        router.go(-1)
+        break
+      }
     }
   }
 }
@@ -500,18 +516,11 @@ const getElement = () => {
       })
   );
 }
-const debugClose = () => {
-  websocket.send(
-      JSON.stringify({
-        type: "debug",
-        detail: "close",
-      })
-  );
-}
-const close = async () => {
-  await debugClose()
-  websocket.close()
-  websocket = null
+const close = () => {
+  if (websocket !== null) {
+    websocket.close()
+    websocket = null
+  }
 }
 onBeforeUnmount(() => {
   close()
