@@ -229,8 +229,8 @@ body,
 }
 
 .shake {
-    -webkit-animation: drag-shake 1s infinite;
-    animation: drag-shake 1s infinite;
+    -webkit-animation: drag-shake 0.7s infinite;
+    animation: drag-shake 0.7s infinite;
 }
 
 .g-host {
@@ -242,5 +242,6 @@ body,
 }
 
 .move {
+    border-radius: 10px;
     border: 2px dashed #909399;
 }
