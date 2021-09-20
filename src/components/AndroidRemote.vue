@@ -5,6 +5,7 @@ import {useStore} from "vuex";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import useClipboard from 'vue-clipboard3';
+import {VueDraggableNext} from 'vue-draggable-next';
 
 const {toClipboard} = useClipboard();
 const route = useRoute()
@@ -16,6 +17,7 @@ const agent = ref({})
 const upload = ref({apk: "", pkg: ""})
 const text = ref({content: ""})
 const installFrom = ref(null)
+const steps = ref([{"id": 1, "name": "aaa"}, {"id": 2, "name": "aaas"}]);
 let imgWidth = 0
 let imgHeight = 0
 let moveX = 0
@@ -1025,7 +1027,35 @@ onMounted(() => {
       </el-col>
       <el-col :span="18">
         <el-tabs type="border-card">
-          <el-tab-pane label="UI自动化">xxx</el-tab-pane>
+          <el-tab-pane label="UI自动化">
+            <el-timeline>
+              <vue-draggable-next tag="div"
+                                  v-model="steps"
+                                  handle=".mover"
+                                  animation="200"
+                                  forceFallback="true"
+                                  fallbackClass="shake"
+                                  ghostClass="g-host"
+                                  chosenClass="move">
+                <el-timeline-item
+                    v-for="(s, index) in steps"
+                    :key="index"
+                    :timestamp="'步骤' + (index + 1)"
+                    placement="top"
+                    type="primary"
+                    style="height: 38px"
+                    :hollow="true"
+                >
+                  <el-button
+                      class="mover"
+                      circle
+                      size="mini"
+                      icon="el-icon-rank"
+                  ></el-button>
+                </el-timeline-item>
+              </vue-draggable-next>
+            </el-timeline>
+          </el-tab-pane>
           <el-tab-pane label="运行日志">xxx</el-tab-pane>
           <el-tab-pane label="控件元素">
             <div style="display: flex;align-items: center;justify-content: space-between;">

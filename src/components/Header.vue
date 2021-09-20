@@ -30,6 +30,7 @@ const goToUrl = (url) => {
 }
 const toggleClass = (t) => {
   localStorage.setItem('SonicTheme', t);
+  store.commit("saveTheme", theme.value);
   document.body.className = 'sonic-' + t
 }
 onBeforeMount(() => {
@@ -49,7 +50,9 @@ onMounted(() => {
           <i v-if="store.state.isCollapse === false" class="el-icon-s-fold"></i>
           <i v-if="store.state.isCollapse === true" class="el-icon-s-unfold"></i>
         </div>
-        <el-menu mode="horizontal" class="el-menu-horizontal-demo font" :default-active="route.path" router>
+        <el-menu :background-color="store.state.menuBack" :text-color="store.state.menuText"
+                 :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
+                 :default-active="route.path" router>
           <!-- <el-sub-menu index="1">
                   <template #title>
                     <i class="el-icon-monitor" style="margin-right: 0"></i>
@@ -133,7 +136,9 @@ onMounted(() => {
                      active-color="#C0C4CC" inactive-color="#ffffff"
                      active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>
         </el-tooltip>
-        <el-menu mode="horizontal" class="el-menu-horizontal-demo font" default-active="0">
+        <el-menu :background-color="store.state.menuBack" :text-color="store.state.menuText"
+                 :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
+                 default-active="0">
           <el-menu-item :index="'/Index'" v-if="route.params.projectId|| route.fullPath==='/Index/Devices'"
                         @click="router.push('/Index')"
           >回到首页

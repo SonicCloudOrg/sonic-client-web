@@ -7,10 +7,24 @@ export default createStore({
                 token: localStorage.getItem('SonicToken') ? localStorage.getItem('SonicToken') : '',
             },
             isCollapse: false,
-            project: {}
+            project: {},
+            menuBack: "",
+            menuText:"",
+            menuActiveText:""
         }
     },
     mutations: {
+        saveTheme(state, payload) {
+            if(payload==='light'){
+                state.menuBack = "#ffffff"
+                state.menuText = "#303133"
+                state.menuActiveText = "#409EFF"
+            }else{
+                state.menuBack = "#545c64"
+                state.menuText = "#ffffff"
+                state.menuActiveText = "#ffd04b"
+            }
+        },
         saveProject(state, payload) {
             state.project = payload
         },

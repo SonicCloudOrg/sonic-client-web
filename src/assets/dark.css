@@ -12,40 +12,8 @@
     white-space: nowrap
 }
 
-.sonic-dark .el-menu {
-    background-color: #545c64 !important;
-}
-
 .sonic-dark .el-menu-vertical-demo {
     border-right: 1px solid #606266 !important;
-}
-
-.sonic-dark .el-menu-vertical-demo .el-menu-item,
-.sonic-dark .el-menu-vertical-demo .el-sub-menu__title,
-.sonic-dark .el-menu-horizontal-demo .el-menu-item,
-.sonic-dark .el-menu-horizontal-demo .el-sub-menu__title {
-    color: #ffffff !important;
-    background-color: #545c64 !important;
-}
-
-.sonic-dark .el-menu-item:hover {
-    background-color: #434A50 !important;
-}
-
-.sonic-dark .el-menu-item.is-active {
-    color: #ffd04b !important;
-}
-
-.sonic-dark .about .el-divider__text {
-    background-color: #545c64
-}
-
-.sonic-dark .el-menu--horizontal .el-menu .el-menu-item.is-active,
-.sonic-dark .el-menu--horizontal .el-menu .el-sub-menu.is-active > .el-sub-menu__title,
-.sonic-dark .el-menu .el-menu--popup * {
-    font-size: 14px !important;
-    color: #ffffff !important;
-    background-color: #545c64 !important;
 }
 
 .sonic-dark .project-name {

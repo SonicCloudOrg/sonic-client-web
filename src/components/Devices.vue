@@ -598,10 +598,10 @@ onMounted(() => {
         </el-card>
       </el-col>
     </el-row>
-    <Pageable
+    <pageable
         :isPageSet="false"
         :pageData="pageData"
         @changePage="findAll"
-    ></Pageable>
+    ></pageable>
   </el-card>
 </template>

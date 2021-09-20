@@ -2,11 +2,8 @@
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 14px;
     color: #909399;
-}
-
-.font, .font * {
-    font-size: 14px !important;
 }
 
 html,
@@ -205,4 +202,45 @@ body,
 
 .el-form-item--small.el-form-item {
     margin-bottom: 12px !important;
+}
+
+@-webkit-keyframes drag-shake {
+    0% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes drag-shake {
+    0% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0.7;
+    }
+}
+
+.shake {
+    -webkit-animation: drag-shake 1s infinite;
+    animation: drag-shake 1s infinite;
+}
+
+.g-host {
+    background: rgba(242, 246, 252, 0.7);
+}
+
+.mover {
+    cursor: move;
+}
+
+.move {
+    border: 2px dashed #909399;
 }
