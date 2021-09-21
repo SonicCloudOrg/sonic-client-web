@@ -6,6 +6,7 @@ import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import useClipboard from 'vue-clipboard3';
 import {VueDraggableNext} from 'vue-draggable-next';
+import StepUpdate from './StepUpdate.vue'
 
 const {toClipboard} = useClipboard();
 const route = useRoute()
@@ -1175,7 +1176,7 @@ onMounted(() => {
                   ></el-input>
                   <div style="height: 660px">
                     <el-scrollbar
-                        class="demo-tree-scrollbar"
+                        class="element-tree-scrollbar"
                         style="height: 100%"
                     >
                       <el-tree
@@ -1238,7 +1239,7 @@ onMounted(() => {
                   <div style="height: 655px">
                     <el-scrollbar
                         style="height: 100%"
-                        class="demo-tree-scrollbar"
+                        class="element-tree-scrollbar"
                     >
                       <el-form
                           label-position="left"
@@ -1374,4 +1375,6 @@ onMounted(() => {
       </el-col>
     </el-row>
   </el-card>
+
+  <step-update></step-update>
 </template>

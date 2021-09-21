@@ -167,6 +167,10 @@ body,
     overflow-x: hidden;
 }
 
+.element-tree-scrollbar .el-scrollbar__wrap {
+    overflow-x: hidden;
+}
+
 .el-tree > .el-tree-node {
     min-width: 100%;
     display: inline-block;

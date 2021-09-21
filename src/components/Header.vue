@@ -217,6 +217,7 @@ onMounted(() => {
         </el-menu>
       </div>
     </el-header>
+    <el-backtop :right="20" :bottom="20" target=".demo-tree-scrollbar .el-scrollbar__wrap"></el-backtop>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
       <el-main v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices'">
         <router-view/>
