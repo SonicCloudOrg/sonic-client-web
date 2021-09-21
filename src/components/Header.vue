@@ -152,11 +152,11 @@ onMounted(() => {
             </template
             >
             <div style="padding: 0 10px">
-              <el-divider class="about"
-              ><span class="font title"
-              >个人中心</span
-              ></el-divider
-              >
+<!--              <el-divider class="about"-->
+<!--              ><span class="font title"-->
+<!--              >个人中心</span-->
+<!--              ></el-divider-->
+<!--              >-->
               <el-menu-item>我的信息</el-menu-item>
               <el-divider class="about"
               ><span
@@ -192,6 +192,27 @@ onMounted(() => {
               </el-menu-item>
               <el-menu-item @click="logout"> 注销</el-menu-item>
             </div>
+          </el-sub-menu>
+          <el-sub-menu index="2">
+            <template #title
+            ><span
+                class="flex-center font title"
+            ><img
+                style="margin-right: 5px"
+                width="20"
+                :src="logo"
+            />关于Sonic</span
+            >
+            </template
+            >
+          </el-sub-menu>
+          <el-sub-menu index="3">
+            <template #title
+            ><span class="font title"
+            >其他</span
+            >
+            </template
+            >
           </el-sub-menu>
         </el-menu>
       </div>
