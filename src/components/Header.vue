@@ -30,6 +30,7 @@ const goToUrl = (url) => {
 }
 const toggleClass = (t) => {
   localStorage.setItem('SonicTheme', t);
+  store.commit("saveTheme", theme.value);
   document.body.className = 'sonic-' + t
 }
 onBeforeMount(() => {
@@ -49,7 +50,9 @@ onMounted(() => {
           <i v-if="store.state.isCollapse === false" class="el-icon-s-fold"></i>
           <i v-if="store.state.isCollapse === true" class="el-icon-s-unfold"></i>
         </div>
-        <el-menu mode="horizontal" class="el-menu-horizontal-demo font" :default-active="route.path" router>
+        <el-menu :background-color="store.state.menuBack" :text-color="store.state.menuText"
+                 :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
+                 :default-active="route.path" router>
           <!-- <el-sub-menu index="1">
                   <template #title>
                     <i class="el-icon-monitor" style="margin-right: 0"></i>
@@ -133,7 +136,9 @@ onMounted(() => {
                      active-color="#C0C4CC" inactive-color="#ffffff"
                      active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>
         </el-tooltip>
-        <el-menu mode="horizontal" class="el-menu-horizontal-demo font" default-active="0">
+        <el-menu :background-color="store.state.menuBack" :text-color="store.state.menuText"
+                 :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
+                 default-active="0">
           <el-menu-item :index="'/Index'" v-if="route.params.projectId|| route.fullPath==='/Index/Devices'"
                         @click="router.push('/Index')"
           >回到首页
@@ -147,11 +152,11 @@ onMounted(() => {
             </template
             >
             <div style="padding: 0 10px">
-              <el-divider class="about"
-              ><span class="font title"
-              >个人中心</span
-              ></el-divider
-              >
+<!--              <el-divider class="about"-->
+<!--              ><span class="font title"-->
+<!--              >个人中心</span-->
+<!--              ></el-divider-->
+<!--              >-->
               <el-menu-item>我的信息</el-menu-item>
               <el-divider class="about"
               ><span
@@ -188,9 +193,31 @@ onMounted(() => {
               <el-menu-item @click="logout"> 注销</el-menu-item>
             </div>
           </el-sub-menu>
+<!--          <el-sub-menu index="2">-->
+<!--            <template #title-->
+<!--            ><span-->
+<!--                class="flex-center font title"-->
+<!--            ><img-->
+<!--                style="margin-right: 5px"-->
+<!--                width="20"-->
+<!--                :src="logo"-->
+<!--            />关于Sonic</span-->
+<!--            >-->
+<!--            </template-->
+<!--            >-->
+<!--          </el-sub-menu>-->
+<!--          <el-sub-menu index="3">-->
+<!--            <template #title-->
+<!--            ><span class="font title"-->
+<!--            >其他</span-->
+<!--            >-->
+<!--            </template-->
+<!--            >-->
+<!--          </el-sub-menu>-->
         </el-menu>
       </div>
     </el-header>
+    <el-backtop :right="20" :bottom="20" target=".demo-tree-scrollbar .el-scrollbar__wrap"></el-backtop>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
       <el-main v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices'">
         <router-view/>

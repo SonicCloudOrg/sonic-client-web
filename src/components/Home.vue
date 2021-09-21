@@ -18,6 +18,8 @@ onMounted(() => {
   <el-container>
     <el-aside width="auto" v-if="route.params.projectId">
       <el-menu
+          :background-color="store.state.menuBack" :text-color="store.state.menuText"
+          :active-text-color="store.state.menuActiveText"
           :collapse="store.state.isCollapse"
           :default-active="route.path"
           :unique-opened="true"

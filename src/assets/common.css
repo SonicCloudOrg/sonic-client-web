@@ -2,11 +2,8 @@
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 14px;
     color: #909399;
-}
-
-.font, .font * {
-    font-size: 14px !important;
 }
 
 html,
@@ -162,11 +159,14 @@ body,
 }
 
 .el-page-header__content {
-    font-size: 15px !important;
     color: #909399 !important;
 }
 
 .demo-tree-scrollbar .el-scrollbar__wrap {
+    overflow-x: hidden;
+}
+
+.element-tree-scrollbar .el-scrollbar__wrap {
     overflow-x: hidden;
 }
 
@@ -205,4 +205,51 @@ body,
 
 .el-form-item--small.el-form-item {
     margin-bottom: 12px !important;
+}
+
+@-webkit-keyframes drag-shake {
+    0% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes drag-shake {
+    0% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0.7;
+    }
+}
+
+.shake {
+    -webkit-animation: drag-shake 0.7s infinite;
+    animation: drag-shake 0.7s infinite;
+    border: 2px dashed #909399;
+}
+
+.g-host {
+    background: rgba(242, 246, 252, 0.7);
+}
+
+.handle:hover {
+    cursor: move
+}
+
+.move {
+    border-radius: 10px;
+}
+
+.el-dialog,
+.el-card{
+    border-radius: 15px!important;
 }

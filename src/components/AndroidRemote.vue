@@ -5,6 +5,8 @@ import {useStore} from "vuex";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import useClipboard from 'vue-clipboard3';
+import {VueDraggableNext} from 'vue-draggable-next';
+import StepUpdate from './StepUpdate.vue'
 
 const {toClipboard} = useClipboard();
 const route = useRoute()
@@ -16,6 +18,7 @@ const agent = ref({})
 const upload = ref({apk: "", pkg: ""})
 const text = ref({content: ""})
 const installFrom = ref(null)
+const steps = ref([]);
 let imgWidth = 0
 let imgHeight = 0
 let moveX = 0
@@ -40,8 +43,16 @@ const elementScreenLoading = ref(false)
 const tree = ref(null)
 const currentId = ref([])
 const filterText = ref("")
+const update = ref(null)
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null
+const addStep = () => {
+  update.value.open()
+  steps.value.push({id: 1, name: '111'})
+}
+const resetCaseId = (stepId) => {
+
+}
 const getImg = (name) => {
   let result;
   try {
@@ -1024,8 +1035,72 @@ onMounted(() => {
         </el-card>
       </el-col>
       <el-col :span="18">
-        <el-tabs type="border-card">
-          <el-tab-pane label="UI自动化">xxx</el-tab-pane>
+        <el-tabs type="border-card" style="min-height: 450px">
+          <el-tab-pane label="UI自动化">
+            <div style="margin-bottom: 10px;display: flex;justify-content: center;">
+              <el-button-group>
+                <el-button type="success" size="mini">开始运行</el-button>
+                <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
+              </el-button-group>
+              <el-button style="position: absolute;right: 15px" type="primary" size="mini" @click="addStep">关联用例
+              </el-button>
+            </div>
+            <el-timeline v-if="steps.length>0">
+              <vue-draggable-next tag="div"
+                                  v-model="steps"
+                                  handle=".handle"
+                                  animation="200"
+                                  forceFallback="true"
+                                  fallbackClass="shake"
+                                  ghostClass="g-host"
+                                  chosenClass="move">
+                <el-timeline-item
+                    v-for="(s, index) in steps"
+                    :key="index"
+                    :timestamp="'步骤' + (index + 1)"
+                    placement="top"
+                    type="primary"
+                    style="height: 38px"
+                    :hollow="true"
+                >
+                  <div style="float: right">
+                    <el-button
+                        circle
+                        type="primary"
+                        size="mini"
+                        icon="el-icon-edit"
+                    ></el-button>
+                    <el-button
+                        class="handle"
+                        circle
+                        size="mini"
+                        icon="el-icon-rank"
+                    ></el-button>
+                    <el-popconfirm
+                        style="margin-left: 10px"
+                        confirmButtonText="确认"
+                        cancelButtonText="取消"
+                        @confirm="resetCaseId(s.id)"
+                        icon="el-icon-warning"
+                        iconColor="red"
+                        title="确定从用例中移除该步骤吗？"
+                    >
+                      <template #reference>
+                        <el-button
+                            circle
+                            type="danger"
+                            size="mini"
+                            icon="el-icon-delete"
+                            slot="reference"
+                        ></el-button>
+                      </template>
+                    </el-popconfirm>
+                  </div>
+                </el-timeline-item>
+              </vue-draggable-next>
+            </el-timeline>
+            <el-empty description="暂无步骤" v-else></el-empty>
+          </el-tab-pane>
           <el-tab-pane label="运行日志">xxx</el-tab-pane>
           <el-tab-pane label="控件元素">
             <div style="display: flex;align-items: center;justify-content: space-between;">
@@ -1036,7 +1111,7 @@ onMounted(() => {
                   :loading="elementLoading"
                   @click="getElement"
                   :disabled="isDriverFinish === false"
-              >获取元素控件
+              >获取控件元素
               </el-button
               >
               <span style="margin-right:10px;color: #909399;font-size: 14px; cursor: pointer"
@@ -1103,7 +1178,7 @@ onMounted(() => {
                   ></el-input>
                   <div style="height: 660px">
                     <el-scrollbar
-                        class="demo-tree-scrollbar"
+                        class="element-tree-scrollbar"
                         style="height: 100%"
                     >
                       <el-tree
@@ -1166,7 +1241,7 @@ onMounted(() => {
                   <div style="height: 655px">
                     <el-scrollbar
                         style="height: 100%"
-                        class="demo-tree-scrollbar"
+                        class="element-tree-scrollbar"
                     >
                       <el-form
                           label-position="left"
@@ -1302,4 +1377,6 @@ onMounted(() => {
       </el-col>
     </el-row>
   </el-card>
+
+  <step-update ref="update"></step-update>
 </template>
