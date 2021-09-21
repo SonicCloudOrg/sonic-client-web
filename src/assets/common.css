@@ -159,7 +159,7 @@ body,
 }
 
 .el-page-header__content {
-    font-size: 15px !important;
+    /*font-size: 15px !important;*/
     color: #909399 !important;
 }
 
@@ -248,4 +248,9 @@ body,
 
 .move {
     border-radius: 10px;
+}
+
+.el-dialog,
+.el-card{
+    border-radius: 15px!important;
 }

@@ -43,9 +43,11 @@ const elementScreenLoading = ref(false)
 const tree = ref(null)
 const currentId = ref([])
 const filterText = ref("")
+const update = ref(null)
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null
 const addStep = () => {
+  update.value.open()
   steps.value.push({id: 1, name: '111'})
 }
 const resetCaseId = (stepId) => {
@@ -1376,5 +1378,5 @@ onMounted(() => {
     </el-row>
   </el-card>
 
-  <step-update></step-update>
+  <step-update ref="update"></step-update>
 </template>
