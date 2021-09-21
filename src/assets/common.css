@@ -238,8 +238,8 @@ body,
     background: rgba(242, 246, 252, 0.7);
 }
 
-.mover {
-    cursor: move;
+.handle:hover {
+    cursor: move
 }
 
 .move {

@@ -193,27 +193,27 @@ onMounted(() => {
               <el-menu-item @click="logout"> 注销</el-menu-item>
             </div>
           </el-sub-menu>
-          <el-sub-menu index="2">
-            <template #title
-            ><span
-                class="flex-center font title"
-            ><img
-                style="margin-right: 5px"
-                width="20"
-                :src="logo"
-            />关于Sonic</span
-            >
-            </template
-            >
-          </el-sub-menu>
-          <el-sub-menu index="3">
-            <template #title
-            ><span class="font title"
-            >其他</span
-            >
-            </template
-            >
-          </el-sub-menu>
+<!--          <el-sub-menu index="2">-->
+<!--            <template #title-->
+<!--            ><span-->
+<!--                class="flex-center font title"-->
+<!--            ><img-->
+<!--                style="margin-right: 5px"-->
+<!--                width="20"-->
+<!--                :src="logo"-->
+<!--            />关于Sonic</span-->
+<!--            >-->
+<!--            </template-->
+<!--            >-->
+<!--          </el-sub-menu>-->
+<!--          <el-sub-menu index="3">-->
+<!--            <template #title-->
+<!--            ><span class="font title"-->
+<!--            >其他</span-->
+<!--            >-->
+<!--            </template-->
+<!--            >-->
+<!--          </el-sub-menu>-->
         </el-menu>
       </div>
     </el-header>

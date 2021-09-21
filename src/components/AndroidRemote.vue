@@ -17,7 +17,7 @@ const agent = ref({})
 const upload = ref({apk: "", pkg: ""})
 const text = ref({content: ""})
 const installFrom = ref(null)
-const steps = ref([{"id": 1, "name": "aaa"}, {"id": 2, "name": "aaas"}]);
+const steps = ref([]);
 let imgWidth = 0
 let imgHeight = 0
 let moveX = 0
@@ -44,6 +44,12 @@ const currentId = ref([])
 const filterText = ref("")
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null
+const addStep = () => {
+  steps.value.push({id: 1, name: '111'})
+}
+const resetCaseId = (stepId) => {
+
+}
 const getImg = (name) => {
   let result;
   try {
@@ -1026,12 +1032,20 @@ onMounted(() => {
         </el-card>
       </el-col>
       <el-col :span="18">
-        <el-tabs type="border-card">
+        <el-tabs type="border-card" style="min-height: 450px">
           <el-tab-pane label="UI自动化">
-            <el-timeline>
+            <div style="margin-bottom: 10px;display: flex;justify-content: center;">
+              <el-button-group>
+                <el-button type="success" size="mini">开始运行</el-button>
+                <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
+              </el-button-group>
+              <el-button style="position: absolute;right: 15px" type="primary" size="mini" @click="addStep">关联用例
+              </el-button>
+            </div>
+            <el-timeline v-if="steps.length>0">
               <vue-draggable-next tag="div"
                                   v-model="steps"
-                                  handle=".mover"
+                                  handle=".handle"
                                   animation="200"
                                   forceFallback="true"
                                   fallbackClass="shake"
@@ -1046,15 +1060,43 @@ onMounted(() => {
                     style="height: 38px"
                     :hollow="true"
                 >
-                  <el-button
-                      class="mover"
-                      circle
-                      size="mini"
-                      icon="el-icon-rank"
-                  ></el-button>
+                  <div style="float: right">
+                    <el-button
+                        circle
+                        type="primary"
+                        size="mini"
+                        icon="el-icon-edit"
+                    ></el-button>
+                    <el-button
+                        class="handle"
+                        circle
+                        size="mini"
+                        icon="el-icon-rank"
+                    ></el-button>
+                    <el-popconfirm
+                        style="margin-left: 10px"
+                        confirmButtonText="确认"
+                        cancelButtonText="取消"
+                        @confirm="resetCaseId(s.id)"
+                        icon="el-icon-warning"
+                        iconColor="red"
+                        title="确定从用例中移除该步骤吗？"
+                    >
+                      <template #reference>
+                        <el-button
+                            circle
+                            type="danger"
+                            size="mini"
+                            icon="el-icon-delete"
+                            slot="reference"
+                        ></el-button>
+                      </template>
+                    </el-popconfirm>
+                  </div>
                 </el-timeline-item>
               </vue-draggable-next>
             </el-timeline>
+            <el-empty description="暂无步骤" v-else></el-empty>
           </el-tab-pane>
           <el-tab-pane label="运行日志">xxx</el-tab-pane>
           <el-tab-pane label="控件元素">
@@ -1066,7 +1108,7 @@ onMounted(() => {
                   :loading="elementLoading"
                   @click="getElement"
                   :disabled="isDriverFinish === false"
-              >获取元素控件
+              >获取控件元素
               </el-button
               >
               <span style="margin-right:10px;color: #909399;font-size: 14px; cursor: pointer"
