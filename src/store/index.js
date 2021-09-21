@@ -8,22 +8,26 @@ export default createStore({
             },
             isCollapse: false,
             project: {},
+            projectList: [],
             menuBack: "",
-            menuText:"",
-            menuActiveText:""
+            menuText: "",
+            menuActiveText: ""
         }
     },
     mutations: {
         saveTheme(state, payload) {
-            if(payload==='light'){
+            if (payload === 'light') {
                 state.menuBack = "#ffffff"
                 state.menuText = "#303133"
                 state.menuActiveText = "#409EFF"
-            }else{
+            } else {
                 state.menuBack = "#545c64"
                 state.menuText = "#ffffff"
                 state.menuActiveText = "#ffd04b"
             }
+        },
+        saveProjectList(state, payload) {
+            state.projectList = payload
         },
         saveProject(state, payload) {
             state.project = payload

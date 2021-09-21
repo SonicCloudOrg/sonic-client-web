@@ -14,6 +14,7 @@ const getProjectList = () => {
   axios
       .get("/controller/projects/list").then((res) => {
     projectData.value = res.data.data;
+    store.commit("saveProjectList", projectData.value);
   })
 }
 const jump = (project) => {

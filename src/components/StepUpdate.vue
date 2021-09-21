@@ -251,7 +251,7 @@ defineExpose({open})
     >
       <template #default="{ node, data }">
         <span>{{ data.label }}</span>
-        <span v-if="!node.isLeaf">({{ data.children.length }})</span>
+        <span v-if="!node.isLeaf">&nbsp;({{ data.children.length }})</span>
       </template>
     </el-cascader>
   </el-dialog>

@@ -44,6 +44,8 @@ const tree = ref(null)
 const currentId = ref([])
 const filterText = ref("")
 const update = ref(null)
+const projectId = ref(null)
+const testCase = ref({})
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null
 const addStep = () => {
@@ -570,6 +572,9 @@ const getDeviceById = (id) => {
   })
 }
 onMounted(() => {
+  if (store.state.project.id) {
+    projectId.value = store.state.project.id
+  }
   getDeviceById(route.params.deviceId)
   store.commit("autoChangeCollapse");
 })
@@ -1037,6 +1042,25 @@ onMounted(() => {
       <el-col :span="18">
         <el-tabs type="border-card" style="min-height: 450px">
           <el-tab-pane label="UI自动化">
+            <el-select size="mini" v-model="projectId" placeholder="请选择关联项目">
+              <el-option
+                  v-for="item in store.state.projectList"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="item.projectName"
+              >
+                <div style=" display: flex;align-items: center;">
+                  <el-avatar
+                      style="margin-right: 10px"
+                      :size="32"
+                      :src="item.projectImg"
+                      shape="square"
+                  ></el-avatar
+                  >
+                  {{ item.projectName }}
+                </div>
+              </el-option>
+            </el-select>
             <div style="margin-bottom: 10px;display: flex;justify-content: center;">
               <el-button-group>
                 <el-button type="success" size="mini">开始运行</el-button>
