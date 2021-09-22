@@ -215,9 +215,9 @@ const findAll = (pageNum) => {
           deviceInfo: name.value.length > 0 ? name.value : undefined,
         },
       })
-      .then((res) => {
-        if (res.data.code === 2000) {
-          pageData.value = res.data.data;
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          pageData.value = resp.data;
         }
       });
 };
@@ -233,26 +233,26 @@ const findAgentById = (id) => {
 }
 const getAllAgents = () => {
   axios
-      .get("/controller/agents/list").then((res) => {
-    agentList.value = res.data.data
+      .get("/controller/agents/list").then((resp) => {
+    agentList.value = resp.data
   })
 }
 const savePwd = (device) => {
   axios
-      .put("/controller/devices/savePwd", {id: device.id, password: device.password}).then((res) => {
-    if (res.data.code === 2000) {
+      .put("/controller/devices/savePwd", {id: device.id, password: device.password}).then((resp) => {
+    if (resp['code'] === 2000) {
       ElMessage.success({
-        message: res.data.message,
+        message: resp['message'],
       });
     }
   })
 }
 const reboot = (id) => {
   axios
-      .get("/transport/exchange/reboot", {params: {id: id}}).then((res) => {
-    if (res.data.code === 2000) {
+      .get("/transport/exchange/reboot", {params: {id: id}}).then((resp) => {
+    if (resp['code'] === 2000) {
       ElMessage.success({
-        message: res.data.message,
+        message: resp['message'],
       });
     }
   })

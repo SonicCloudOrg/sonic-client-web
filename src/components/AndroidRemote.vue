@@ -7,6 +7,7 @@ import {ElMessage} from "element-plus";
 import useClipboard from 'vue-clipboard3';
 import {VueDraggableNext} from 'vue-draggable-next';
 import StepUpdate from './StepUpdate.vue'
+import TestCaseList from './TestCaseList.vue'
 
 const {toClipboard} = useClipboard();
 const route = useRoute()
@@ -49,7 +50,7 @@ const testCase = ref({})
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null
 const addStep = () => {
-  update.value.open()
+  // update.value.open()
   steps.value.push({id: 1, name: '111'})
 }
 const resetCaseId = (stepId) => {
@@ -65,12 +66,12 @@ const getImg = (name) => {
   return result;
 }
 watch(filterText, (newValue, oldValue) => {
-  tree.value.filter(newValue);
+  tree['value'].filter(newValue);
 })
 const filterNode = (value, data) => {
   if (!value) return true;
   return (data.label.indexOf(value) !== -1) ||
-      (data.detail.resourceid ? data.detail.resourceid.indexOf(value) !== -1 : false);
+      (data.detail['resource-id'] ? data.detail['resource-id'].indexOf(value) !== -1 : false);
 }
 const downloadImg = () => {
   window.open(imgUrl.value, "_blank");
@@ -134,7 +135,7 @@ const websocketOnmessage = (message) => {
     const u = URL.createObjectURL(blob);
     img.src = u;
   } else {
-    switch (JSON.parse(message.data).msg) {
+    switch (JSON.parse(message.data)['msg']) {
       case "size": {
         imgWidth = JSON.parse(message.data).width;
         imgHeight = JSON.parse(message.data).height;
@@ -149,8 +150,8 @@ const websocketOnmessage = (message) => {
         isShowTree.value = true;
         elementLoading.value = false
         setImgData(JSON.parse(message.data).img)
-        webViewData.value = JSON.parse(message.data).webView
-        activity.value = JSON.parse(message.data).activity
+        webViewData.value = JSON.parse(message.data)['webView']
+        activity.value = JSON.parse(message.data)['activity']
         break
       }
       case "treeFail": {
@@ -345,11 +346,11 @@ const touchstart = async (event) => {
       (imgHeight / rect.height)
   );
   await nextTick(() => {
-    tree.value.setCurrentKey(
+    tree['value'].setCurrentKey(
         findMinSize(findElementByPoint(elementData.value, x, y))
     );
   });
-  await handleNodeClick(tree.value.getCurrentNode());
+  await handleNodeClick(tree['value'].getCurrentNode());
 }
 const findMinSize = (data) => {
   if (data.length === 0) {
@@ -372,24 +373,24 @@ const findMinSize = (data) => {
 const findElementByPoint = (ele, x, y) => {
   let result = [];
   for (let i in ele) {
-    const eleStartx = ele[i].detail.bStart.substring(
+    const eleStartX = ele[i].detail['bStart'].substring(
         0,
-        ele[i].detail.bStart.indexOf(",")
+        ele[i].detail['bStart'].indexOf(",")
     );
-    const eleStarty = ele[i].detail.bStart.substring(
-        ele[i].detail.bStart.indexOf(",") + 1
+    const eleStartY = ele[i].detail['bStart'].substring(
+        ele[i].detail['bStart'].indexOf(",") + 1
     );
-    const eleEndx = ele[i].detail.bEnd.substring(
+    const eleEndX = ele[i].detail['bEnd'].substring(
         0,
-        ele[i].detail.bEnd.indexOf(",")
+        ele[i].detail['bEnd'].indexOf(",")
     );
-    const eleEndy = ele[i].detail.bEnd.substring(
-        ele[i].detail.bEnd.indexOf(",") + 1
+    const eleEndY = ele[i].detail['bEnd'].substring(
+        ele[i].detail['bEnd'].indexOf(",") + 1
     );
-    if (x >= eleStartx && x <= eleEndx && y >= eleStarty && y <= eleEndy) {
+    if (x >= eleStartX && x <= eleEndX && y >= eleStartY && y <= eleEndY) {
       result.push({
         ele: ele[i],
-        size: (eleEndy - eleStarty) * (eleEndx - eleStartx),
+        size: (eleEndY - eleStartY) * (eleEndX - eleStartX),
       });
     }
     if (ele[i].children) {
@@ -411,29 +412,29 @@ const print = (data) => {
   const canvas = document.getElementById("debugPic"),
       g = canvas.getContext("2d");
   g.clearRect(0, 0, canvas.width, canvas.height);
-  const eleStartx = data.detail.bStart.substring(
+  const eleStartX = data.detail['bStart'].substring(
       0,
-      data.detail.bStart.indexOf(",")
+      data.detail['bStart'].indexOf(",")
   );
-  const eleStarty = data.detail.bStart.substring(
-      data.detail.bStart.indexOf(",") + 1
+  const eleStartY = data.detail['bStart'].substring(
+      data.detail['bStart'].indexOf(",") + 1
   );
-  const eleEndx = data.detail.bEnd.substring(
+  const eleEndX = data.detail['bEnd'].substring(
       0,
-      data.detail.bEnd.indexOf(",")
+      data.detail['bEnd'].indexOf(",")
   );
-  const eleEndy = data.detail.bEnd.substring(
-      data.detail.bEnd.indexOf(",") + 1
+  const eleEndY = data.detail['bEnd'].substring(
+      data.detail['bEnd'].indexOf(",") + 1
   );
   let a = Math.round(Math.random() * 255);
   let b = Math.round(Math.random() * 255);
   let c = Math.round(Math.random() * 255);
   g.fillStyle = "rgba(" + a + ", " + b + ", " + c + ", 0.6)";
   g.fillRect(
-      eleStartx * (canvas.width / imgWidth),
-      eleStarty * (canvas.height / imgHeight),
-      (eleEndx - eleStartx) * (canvas.width / imgWidth),
-      (eleEndy - eleStarty) * (canvas.height / imgHeight)
+      eleStartX * (canvas.width / imgWidth),
+      eleStartY * (canvas.height / imgHeight),
+      (eleEndX - eleStartX) * (canvas.width / imgWidth),
+      (eleEndY - eleStartY) * (canvas.height / imgHeight)
   );
 }
 const beforeOpen = () => {
@@ -504,7 +505,7 @@ const sendText = (text) => {
   );
 }
 const install = (apk, pkg) => {
-  installFrom.value.validate((valid) => {
+  installFrom['value'].validate((valid) => {
     if (valid) {
       websocket.send(
           JSON.stringify({
@@ -541,31 +542,31 @@ onBeforeUnmount(() => {
 const getDeviceById = (id) => {
   loading.value = true;
   axios
-      .get("/controller/devices", {params: {id: id}}).then((res) => {
-    if (res.data.code === 2000) {
-      device.value = res.data.data
-      if (device.value.status !== 'ONLINE') {
+      .get("/controller/devices", {params: {id: id}}).then((resp) => {
+    if (resp['code'] === 2000) {
+      device.value = resp.data
+      if (device.value['status'] !== 'ONLINE') {
         ElMessage.error({
           message: "该设备暂时不可使用！",
         });
         router.replace("/Index")
         return
       }
-      if (device.value.version.indexOf(".") === -1) {
+      if (device.value['version'].indexOf(".") === -1) {
         devicePlatformVersion = parseInt(
-            device.value.version.replace(" ", "")
+            device.value['version'].replace(" ", "")
         );
       } else {
         devicePlatformVersion = parseInt(
-            device.value.version.substring(0, device.value.version.indexOf("."))
+            device.value['version'].substring(0, device.value['version'].indexOf("."))
         );
       }
       axios
-          .get("/controller/agents", {params: {id: device.value.agentId}}).then((res) => {
-        if (res.data.code === 2000) {
-          agent.value = res.data.data
-          openSocket(agent.value.host, agent.value.port
-              , agent.value.secretKey, device.value.udId);
+          .get("/controller/agents", {params: {id: device.value['agentId']}}).then((resp) => {
+        if (resp.code === 2000) {
+          agent.value = resp.data
+          openSocket(agent.value['host'], agent.value['port']
+              , agent.value['secretKey'], device.value['udId']);
         }
       })
     }
@@ -1040,361 +1041,405 @@ onMounted(() => {
         </el-card>
       </el-col>
       <el-col :span="18">
-        <el-tabs type="border-card" style="min-height: 450px">
-          <el-tab-pane label="UI自动化">
+        <el-tabs type="border-card">
+          <el-tab-pane label="用例详情">
             <el-select size="mini" v-model="projectId" placeholder="请选择关联项目">
               <el-option
                   v-for="item in store.state.projectList"
                   :key="item.id"
                   :value="item.id"
-                  :label="item.projectName"
+                  :label="item['projectName']"
               >
                 <div style=" display: flex;align-items: center;">
                   <el-avatar
                       style="margin-right: 10px"
                       :size="32"
-                      :src="item.projectImg"
+                      :src="item['projectImg']"
                       shape="square"
                   ></el-avatar
                   >
-                  {{ item.projectName }}
+                  {{ item['projectName'] }}
                 </div>
               </el-option>
             </el-select>
-            <div style="margin-bottom: 10px;display: flex;justify-content: center;">
-              <el-button-group>
-                <el-button type="success" size="mini">开始运行</el-button>
-                <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
-              </el-button-group>
-              <el-button style="position: absolute;right: 15px" type="primary" size="mini" @click="addStep">关联用例
-              </el-button>
+            <test-case-list v-if="projectId!==null" :project-id="projectId" :platform="1"></test-case-list>
+            <!--            <el-select size="mini" v-model="testCase" placeholder="请选择关联用例">-->
+            <!--              <el-option-->
+            <!--                  v-for="item in store.state.projectList"-->
+            <!--                  :key="item.id"-->
+            <!--                  :value="item.id"-->
+            <!--                  :label="item.projectName"-->
+            <!--              >-->
+            <!--                <div style=" display: flex;align-items: center;">-->
+            <!--                  <el-avatar-->
+            <!--                      style="margin-right: 10px"-->
+            <!--                      :size="32"-->
+            <!--                      :src="item.projectImg"-->
+            <!--                      shape="square"-->
+            <!--                  ></el-avatar-->
+            <!--                  >-->
+            <!--                  {{ item.projectName }}-->
+            <!--                </div>-->
+            <!--              </el-option>-->
+            <!--            </el-select>-->
+          </el-tab-pane>
+          <el-tab-pane label="UI自动化">
+            <div v-if="testCase['id']">
+              <div style="margin-bottom: 10px;text-align: center">
+                <el-button-group>
+                  <el-button type="success" size="mini">开始运行</el-button>
+                  <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
+                </el-button-group>
+              </div>
+              <el-timeline v-if="steps.length>0">
+                <vue-draggable-next tag="div"
+                                    v-model="steps"
+                                    handle=".handle"
+                                    animation="200"
+                                    forceFallback="true"
+                                    fallbackClass="shake"
+                                    ghostClass="g-host"
+                                    chosenClass="move">
+                  <el-timeline-item
+                      v-for="(s, index) in steps"
+                      :key="index"
+                      :timestamp="'步骤' + (index + 1)"
+                      placement="top"
+                      type="primary"
+                      style="height: 38px"
+                      :hollow="true"
+                  >
+                    <div style="float: right">
+                      <el-button
+                          circle
+                          type="primary"
+                          size="mini"
+                          icon="el-icon-edit"
+                      ></el-button>
+                      <el-button
+                          class="handle"
+                          circle
+                          size="mini"
+                          icon="el-icon-rank"
+                      ></el-button>
+                      <el-popconfirm
+                          style="margin-left: 10px"
+                          confirmButtonText="确认"
+                          cancelButtonText="取消"
+                          @confirm="resetCaseId(s.id)"
+                          icon="el-icon-warning"
+                          iconColor="red"
+                          title="确定从用例中移除该步骤吗？"
+                      >
+                        <template #reference>
+                          <el-button
+                              circle
+                              type="danger"
+                              size="mini"
+                              icon="el-icon-delete"
+                              slot="reference"
+                          ></el-button>
+                        </template>
+                      </el-popconfirm>
+                    </div>
+                  </el-timeline-item>
+                </vue-draggable-next>
+              </el-timeline>
+              <el-empty description="暂无步骤" v-else></el-empty>
             </div>
-            <el-timeline v-if="steps.length>0">
-              <vue-draggable-next tag="div"
-                                  v-model="steps"
-                                  handle=".handle"
-                                  animation="200"
-                                  forceFallback="true"
-                                  fallbackClass="shake"
-                                  ghostClass="g-host"
-                                  chosenClass="move">
-                <el-timeline-item
-                    v-for="(s, index) in steps"
-                    :key="index"
-                    :timestamp="'步骤' + (index + 1)"
-                    placement="top"
-                    type="primary"
-                    style="height: 38px"
-                    :hollow="true"
-                >
-                  <div style="float: right">
-                    <el-button
-                        circle
-                        type="primary"
-                        size="mini"
-                        icon="el-icon-edit"
-                    ></el-button>
-                    <el-button
-                        class="handle"
-                        circle
-                        size="mini"
-                        icon="el-icon-rank"
-                    ></el-button>
-                    <el-popconfirm
-                        style="margin-left: 10px"
-                        confirmButtonText="确认"
-                        cancelButtonText="取消"
-                        @confirm="resetCaseId(s.id)"
-                        icon="el-icon-warning"
-                        iconColor="red"
-                        title="确定从用例中移除该步骤吗？"
-                    >
-                      <template #reference>
-                        <el-button
-                            circle
-                            type="danger"
-                            size="mini"
-                            icon="el-icon-delete"
-                            slot="reference"
-                        ></el-button>
-                      </template>
-                    </el-popconfirm>
-                  </div>
-                </el-timeline-item>
-              </vue-draggable-next>
-            </el-timeline>
-            <el-empty description="暂无步骤" v-else></el-empty>
+            <el-card style="height: 100%" v-else>
+              <el-result icon="info" title="提示" subTitle="该功能需要先关联测试用例">
+                <template #extra>
+                  <el-button type="primary" size="mini">马上关联</el-button>
+                </template>
+              </el-result>
+            </el-card>
           </el-tab-pane>
           <el-tab-pane label="运行日志">xxx</el-tab-pane>
           <el-tab-pane label="控件元素">
-            <div style="display: flex;align-items: center;justify-content: space-between;">
-              <el-button
-                  icon="el-icon-search"
-                  type="primary"
-                  size="mini"
-                  :loading="elementLoading"
-                  @click="getElement"
-                  :disabled="isDriverFinish === false"
-              >获取控件元素
-              </el-button
+            <div v-show="isShowImg">
+              <div style="margin-bottom: 15px; display: flex;align-items: center;justify-content: space-between;">
+                <el-button
+                    icon="el-icon-search"
+                    type="primary"
+                    size="mini"
+                    :loading="elementLoading"
+                    @click="getElement"
+                    :disabled="isDriverFinish === false"
+                >获取控件元素
+                </el-button
+                >
+                <span style="margin-right:10px;color: #909399;font-size: 14px; cursor: pointer"
+                      @click="copy(activity)"
+                      v-if="activity.length > 0">当前Activity： {{ activity }}</span>
+              </div>
+              <el-row
+                  :gutter="10"
               >
-              <span style="margin-right:10px;color: #909399;font-size: 14px; cursor: pointer"
-                    @click="copy(activity)"
-                    v-if="activity.length > 0">当前Activity： {{ activity }}</span>
-            </div>
-            <el-row
-                :gutter="10"
-                v-loading="!isShowImg"
-                element-loading-spinner="el-icon-lock"
-                element-loading-text="请先获取控件元素"
-            >
-              <el-col :span="7">
-                <el-card shadow="hover" style="margin-top: 15px">
-                  <div
-                      :style="
+                <el-col :span="7">
+                  <el-card shadow="hover">
+                    <div
+                        :style="
                       'width: 100%;background-image: url(' +
                       imgUrl +
                       ');background-size:cover;'
                     "
-                  >
-                    <canvas id="debugPic" @mousedown="touchstart"></canvas>
-                  </div>
-                  <div style="text-align: center;margin-top: 10px">
-                    <el-button type="primary" plain size="mini" icon="el-icon-download" @click="downloadImg">保存图片
-                    </el-button>
-                  </div>
-                </el-card>
-                <el-card
-                    :body-style="{ padding: '12px' }"
-                    shadow="hover"
-                    v-if="webViewData.length > 0"
-                    style="margin-top: 10px"
-                >
-                  <el-table :data="webViewData" border>
-                    <el-table-column
-                        label="WebView列表"
-                        align="center"
-                        :show-overflow-tooltip="true"
                     >
-                      <template #default="scope">
+                      <canvas id="debugPic" @mousedown="touchstart"></canvas>
+                    </div>
+                    <div style="text-align: center;margin-top: 10px">
+                      <el-button type="primary" plain size="mini" icon="el-icon-download" @click="downloadImg">保存图片
+                      </el-button>
+                    </div>
+                  </el-card>
+                  <el-card
+                      :body-style="{ padding: '12px' }"
+                      shadow="hover"
+                      v-if="webViewData.length > 0"
+                      style="margin-top: 10px"
+                  >
+                    <el-table :data="webViewData" border>
+                      <el-table-column
+                          label="WebView列表"
+                          align="center"
+                          :show-overflow-tooltip="true"
+                      >
+                        <template #default="scope">
                         <span
                             style="cursor: pointer"
                             @click="copy(scope.row)"
                         >
                           {{ scope.row }}</span
                         >
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </el-card>
-              </el-col>
-              <el-col :span="9">
-                <el-card
-                    shadow="hover"
-                    v-if="isShowTree"
-                    style="margin-top: 15px"
-                >
-                  <el-input
-                      style="margin-bottom: 10px"
-                      size="mini"
-                      placeholder="输入class或resource-id进行过滤"
-                      v-model="filterText"
-                  ></el-input>
-                  <div style="height: 660px">
-                    <el-scrollbar
-                        class="element-tree-scrollbar"
-                        style="height: 100%"
-                    >
-                      <el-tree
-                          :indent="13"
-                          :filter-node-method="filterNode"
-                          :default-expanded-keys="currentId"
-                          node-key="id"
-                          style="margin-top: 10px; margin-bottom: 20px"
-                          :highlight-current="true"
-                          ref="tree"
-                          :accordion="true"
-                          :data="elementData"
-                          @node-click="handleNodeClick"
-                      >
-                        <template #default="{ node, data }">
-                          <span style="font-size: 14px" v-if="data.detail.resourceid">
-                            {{ node.label.substring(0, node.label.indexOf('>')) + " " }}
-                            <span style="color: #F55781">resource-id</span>={{ "\"" + data.detail.resourceid + "\">" }}
-                          </span>
-                          <span style="font-size: 14px" v-else>{{ node.label }}</span>
                         </template>
-                      </el-tree>
-                    </el-scrollbar>
-                  </div>
-                </el-card>
-              </el-col>
-              <el-col :span="8">
-                <el-card
-                    shadow="hover"
-                    v-if="isShowTree"
-                    style="margin-top: 15px"
-                >
-                  <div style="text-align: center; margin-bottom: 10px">
-                    <el-button
-                        :disabled="elementDetail === null"
-                        plain
-                        size="small"
-                        type="primary"
-                        round
-                        icon="el-icon-circle-plus-outline"
-                        @click="beforeOpen()"
-                    >添加元素
-                    </el-button
-                    >
-                    <el-button
-                        v-if="
-                        elementDetail && elementDetail.xpath && isDriverFinish
-                      "
-                        :loading="elementScreenLoading"
-                        style="margin-left: 5px"
-                        plain
-                        size="small"
-                        round
-                        icon="el-icon-download"
-                        @click="getEleScreen(elementDetail.xpath)"
-                    >元素快照
-                    </el-button
-                    >
-                  </div>
-                  <div style="height: 655px">
-                    <el-scrollbar
-                        style="height: 100%"
-                        class="element-tree-scrollbar"
-                    >
-                      <el-form
-                          label-position="left"
-                          class="element-table"
-                          label-width="100px"
-                          v-if="elementDetail !== null"
+                      </el-table-column>
+                    </el-table>
+                  </el-card>
+                </el-col>
+                <el-col :span="9">
+                  <el-card
+                      shadow="hover"
+                      v-if="isShowTree"
+                  >
+                    <el-input
+                        style="margin-bottom: 10px"
+                        size="mini"
+                        placeholder="输入class或resource-id进行过滤"
+                        v-model="filterText"
+                    ></el-input>
+                    <div style="height: 660px">
+                      <el-scrollbar
+                          class="element-tree-scrollbar"
+                          style="height: 100%"
                       >
-                        <el-form-item
-                            label="class"
-                            style="cursor: pointer"
-                            @click="copy(elementDetail.class)"
+                        <el-tree
+                            :indent="13"
+                            :filter-node-method="filterNode"
+                            :default-expanded-keys="currentId"
+                            node-key="id"
+                            style="margin-top: 10px; margin-bottom: 20px"
+                            :highlight-current="true"
+                            ref="tree"
+                            :accordion="true"
+                            :data="elementData"
+                            @node-click="handleNodeClick"
                         >
-                          <span>{{ elementDetail.class }}</span>
-                        </el-form-item>
-                        <el-form-item
-                            label="resource-id"
-                            style="cursor: pointer"
-                            v-if="elementDetail.resourceid"
-                            @click="copy(elementDetail.resourceid)"
+                          <template #default="{ node, data }">
+                          <span style="font-size: 14px" v-if="data.detail['resource-id']">
+                            {{ node.label.substring(0, node.label.indexOf('>')) + " " }}
+                            <span style="color: #F55781">resource-id</span>={{
+                              "\"" + data.detail['resource-id'] + "\">"
+                            }}
+                          </span>
+                            <span style="font-size: 14px" v-else>{{ node.label }}</span>
+                          </template>
+                        </el-tree>
+                      </el-scrollbar>
+                    </div>
+                  </el-card>
+                </el-col>
+                <el-col :span="8">
+                  <el-card
+                      shadow="hover"
+                      v-if="isShowTree"
+                  >
+                    <div style="text-align: center; margin-bottom: 10px">
+                      <el-button
+                          :disabled="elementDetail === null"
+                          plain
+                          size="small"
+                          type="primary"
+                          round
+                          icon="el-icon-circle-plus-outline"
+                          @click="beforeOpen()"
+                      >添加元素
+                      </el-button
+                      >
+                      <el-button
+                          v-if="
+                        elementDetail && elementDetail['xpath'] && isDriverFinish
+                      "
+                          :loading="elementScreenLoading"
+                          style="margin-left: 5px"
+                          plain
+                          size="small"
+                          round
+                          icon="el-icon-download"
+                          @click="getEleScreen(elementDetail['xpath'])"
+                      >元素快照
+                      </el-button
+                      >
+                    </div>
+                    <div style="height: 655px">
+                      <el-scrollbar
+                          style="height: 100%"
+                          class="element-tree-scrollbar"
+                      >
+                        <el-form
+                            label-position="left"
+                            class="element-table"
+                            label-width="100px"
+                            v-if="elementDetail !== null"
                         >
-                          <span>{{ elementDetail.resourceid }}</span>
-                        </el-form-item>
-                        <el-form-item label="xpath">
-                          <span>{{ elementDetail.xpath }}</span>
-                        </el-form-item>
-                        <el-form-item
-                            label="text"
-                            style="cursor: pointer"
-                            @click="copy(elementDetail.text)"
-                        >
-                          <span>{{ elementDetail.text }}</span>
-                        </el-form-item>
-                        <el-form-item
-                            label="content-desc"
-                            style="cursor: pointer"
-                            v-if="elementDetail.contentdesc"
-                            @click="copy(elementDetail.contentdesc)"
-                        >
-                          <span>{{ elementDetail.contentdesc }}</span>
-                        </el-form-item>
-                        <el-form-item
-                            label="package"
-                            style="cursor: pointer"
-                            @click="copy(elementDetail.package)"
-                        >
-                          <span>{{ elementDetail.package }}</span>
-                        </el-form-item>
-                        <el-form-item label="index">
-                          <span>{{ elementDetail.index }}</span>
-                        </el-form-item>
-                        <el-form-item label="是否可勾选">
-                          <el-switch
-                              :value="JSON.parse(elementDetail.checkable)"
-                              disabled
+                          <el-form-item
+                              label="class"
+                              style="cursor: pointer"
+                              @click="copy(elementDetail['class'])"
                           >
-                          </el-switch>
-                        </el-form-item>
-                        <el-form-item label="是否勾选">
-                          <el-switch
-                              :value="JSON.parse(elementDetail.checked)"
-                              disabled
+                            <span>{{ elementDetail['class'] }}</span>
+                          </el-form-item>
+                          <el-form-item
+                              label="resource-id"
+                              style="cursor: pointer"
+                              v-if="elementDetail['resource-id']"
+                              @click="copy(elementDetail['resource-id'])"
                           >
-                          </el-switch>
-                        </el-form-item>
-                        <el-form-item label="是否可点击">
-                          <el-switch
-                              :value="JSON.parse(elementDetail.clickable)"
-                              disabled
+                            <span>{{ elementDetail['resource-id'] }}</span>
+                          </el-form-item>
+                          <el-form-item label="xpath">
+                            <span>{{ elementDetail['xpath'] }}</span>
+                          </el-form-item>
+                          <el-form-item
+                              label="text"
+                              style="cursor: pointer"
+                              @click="copy(elementDetail['text'])"
                           >
-                          </el-switch>
-                        </el-form-item>
-                        <el-form-item label="是否被选">
-                          <el-switch
-                              :value="JSON.parse(elementDetail.selected)"
-                              disabled
+                            <span>{{ elementDetail['text'] }}</span>
+                          </el-form-item>
+                          <el-form-item
+                              label="content-desc"
+                              style="cursor: pointer"
+                              v-if="elementDetail['content-desc']"
+                              @click="copy(elementDetail['content-desc'])"
                           >
-                          </el-switch>
-                        </el-form-item>
-                        <el-form-item label="是否显示">
-                          <el-switch
-                              :value="JSON.parse(elementDetail.displayed)"
-                              disabled
+                            <span>{{ elementDetail['content-desc'] }}</span>
+                          </el-form-item>
+                          <el-form-item
+                              label="package"
+                              style="cursor: pointer"
+                              @click="copy(elementDetail['package'])"
                           >
-                          </el-switch>
-                        </el-form-item>
-                        <el-form-item label="是否可用">
-                          <el-switch
-                              :value="JSON.parse(elementDetail.enabled)"
-                              disabled
-                          >
-                          </el-switch>
-                        </el-form-item>
-                        <el-form-item label="是否可聚焦">
-                          <el-switch
-                              :value="JSON.parse(elementDetail.focusable)"
-                              disabled
-                          >
-                          </el-switch>
-                        </el-form-item>
-                        <el-form-item label="是否聚焦">
-                          <el-switch
-                              :value="JSON.parse(elementDetail.focused)"
-                              disabled
-                          >
-                          </el-switch>
-                        </el-form-item>
-                        <el-form-item label="是否支持长按">
-                          <el-switch
-                              :value="JSON.parse(elementDetail.longclickable)"
-                              disabled
-                          >
-                          </el-switch>
-                        </el-form-item>
-                        <el-form-item label="是否支持滚动">
-                          <el-switch
-                              :value="JSON.parse(elementDetail.scrollable)"
-                              disabled
-                          >
-                          </el-switch>
-                        </el-form-item>
-                        <el-form-item label="Bounds">
-                          <span>{{ elementDetail.bounds }}</span>
-                        </el-form-item>
-                      </el-form>
-                    </el-scrollbar>
-                  </div>
-                </el-card>
-              </el-col>
-            </el-row>
+                            <span>{{ elementDetail['package'] }}</span>
+                          </el-form-item>
+                          <el-form-item label="index">
+                            <span>{{ elementDetail['index'] }}</span>
+                          </el-form-item>
+                          <el-form-item label="是否可勾选">
+                            <el-switch
+                                :value="JSON.parse(elementDetail['checkable'])"
+                                disabled
+                            >
+                            </el-switch>
+                          </el-form-item>
+                          <el-form-item label="是否勾选">
+                            <el-switch
+                                :value="JSON.parse(elementDetail['checked'])"
+                                disabled
+                            >
+                            </el-switch>
+                          </el-form-item>
+                          <el-form-item label="是否可点击">
+                            <el-switch
+                                :value="JSON.parse(elementDetail['clickable'])"
+                                disabled
+                            >
+                            </el-switch>
+                          </el-form-item>
+                          <el-form-item label="是否被选">
+                            <el-switch
+                                :value="JSON.parse(elementDetail['selected'])"
+                                disabled
+                            >
+                            </el-switch>
+                          </el-form-item>
+                          <el-form-item label="是否显示">
+                            <el-switch
+                                :value="JSON.parse(elementDetail['displayed'])"
+                                disabled
+                            >
+                            </el-switch>
+                          </el-form-item>
+                          <el-form-item label="是否可用">
+                            <el-switch
+                                :value="JSON.parse(elementDetail['enabled'])"
+                                disabled
+                            >
+                            </el-switch>
+                          </el-form-item>
+                          <el-form-item label="是否可聚焦">
+                            <el-switch
+                                :value="JSON.parse(elementDetail['focusable'])"
+                                disabled
+                            >
+                            </el-switch>
+                          </el-form-item>
+                          <el-form-item label="是否聚焦">
+                            <el-switch
+                                :value="JSON.parse(elementDetail['focused'])"
+                                disabled
+                            >
+                            </el-switch>
+                          </el-form-item>
+                          <el-form-item label="是否支持长按">
+                            <el-switch
+                                :value="JSON.parse(elementDetail['long-clickable'])"
+                                disabled
+                            >
+                            </el-switch>
+                          </el-form-item>
+                          <el-form-item label="是否支持滚动">
+                            <el-switch
+                                :value="JSON.parse(elementDetail['scrollable'])"
+                                disabled
+                            >
+                            </el-switch>
+                          </el-form-item>
+                          <el-form-item label="Bounds">
+                            <span>{{ elementDetail['bounds'] }}</span>
+                          </el-form-item>
+                        </el-form>
+                      </el-scrollbar>
+                    </div>
+                  </el-card>
+                </el-col>
+              </el-row>
+            </div>
+            <el-card style="height: 100%" v-show="!isShowImg">
+              <el-result icon="info" title="提示" subTitle="请先获取控件元素">
+                <template #extra>
+                  <el-button
+                      icon="el-icon-search"
+                      type="primary"
+                      size="mini"
+                      :loading="elementLoading"
+                      @click="getElement"
+                      :disabled="isDriverFinish === false"
+                  >获取控件元素
+                  </el-button
+                  >
+                </template>
+              </el-result>
+            </el-card>
           </el-tab-pane>
           <el-tab-pane label="WebView调试" disabled>xxx</el-tab-pane>
         </el-tabs>

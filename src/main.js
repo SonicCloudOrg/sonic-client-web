@@ -11,8 +11,8 @@ createApp(App).use(ElementPlus).use(router).use(store).mount('#app')
 
 router.beforeEach((to, from, next) => {
     document.title = "Sonic -"
-    if (to.meta.title) {
-        document.title += " " + to.meta.title
+    if (to.meta['title']) {
+        document.title += " " + to.meta['title']
     }
     if (to.params.projectId && store.state.project.id === undefined) {
         axios
@@ -21,9 +21,9 @@ router.beforeEach((to, from, next) => {
                     id: to.params.projectId,
                 },
             })
-            .then((res) => {
-                if (res.data.code === 2000) {
-                    store.commit("saveProject", res.data.data);
+            .then((resp) => {
+                if (resp.code === 2000) {
+                    store.commit("saveProject", resp.data);
                 }
             });
     }

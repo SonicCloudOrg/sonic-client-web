@@ -28,11 +28,11 @@ onMounted(() => {
         <p class="flex-center">
           <el-avatar
               :size="40"
-              :src="store.state.project.projectImg"
+              :src="store.state.project['projectImg']"
               shape="square"
           ></el-avatar>
           <span class="project-name" v-if="!store.state.isCollapse">{{
-              store.state.project.projectName
+              store.state.project['projectName']
             }}</span>
         </p>
         <el-menu-item :index="'/' + route.params.projectId + '/ProjectIndex'">

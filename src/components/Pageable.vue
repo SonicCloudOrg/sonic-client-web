@@ -26,7 +26,7 @@ const changeSize = (num) => {
       :page-sizes="[10, 15, 20, 25]"
       @size-change="changeSize"
       layout="sizes, prev, pager, next, jumper, ->, total"
-      :total="pageData.totalElements"
+      :total="pageData['totalElements']"
   ></el-pagination>
   <el-pagination
       v-else
@@ -36,6 +36,6 @@ const changeSize = (num) => {
       :page-size="pageData.size"
       :current-page="pageData.number + 1"
       layout="prev, pager, next, jumper, ->, total"
-      :total="pageData.totalElements"
+      :total="pageData['totalElements']"
   ></el-pagination>
 </template>

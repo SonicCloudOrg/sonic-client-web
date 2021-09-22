@@ -12,8 +12,8 @@ const projectData = ref([])
 const theme = ref("");
 const getProjectList = () => {
   axios
-      .get("/controller/projects/list").then((res) => {
-    projectData.value = res.data.data;
+      .get("/controller/projects/list").then((resp) => {
+    projectData.value = resp.data;
     store.commit("saveProjectList", projectData.value);
   })
 }
@@ -248,7 +248,7 @@ onMounted(() => {
               >
                 <div style="text-align: center">
                   <el-avatar
-                      :src="project.projectImg"
+                      :src="project['projectImg']"
                       :size="150"
                       shape="square"
                   ></el-avatar>
@@ -260,7 +260,7 @@ onMounted(() => {
                 >
                   <el-form-item style="text-align: center">
                     <strong style="font-size: 17px">{{
-                        project.projectName
+                        project['projectName']
                       }}</strong>
                   </el-form-item>
                   <el-form-item>
@@ -272,9 +272,9 @@ onMounted(() => {
                               "
                     >
                       {{
-                        project.projectDes.length > 30
-                            ? project.projectDes.substring(0, 30) + "..."
-                            : project.projectDes
+                        project['projectDes'].length > 30
+                            ? project['projectDes'].substring(0, 30) + "..."
+                            : project['projectDes']
                       }}
                     </p>
                   </el-form-item>
