@@ -1,6 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import {ArrowDown} from "@element-plus/icons";
+import {Tickets} from "@element-plus/icons";
+import ElementSelect from './ElementSelect.vue'
 
 const props = defineProps({
   projectId: Number,
@@ -13,12 +14,19 @@ const step = ref({
   caseId: props.caseId,
   projectId: props.projectId,
   stepType: "",
-  element: [],
+  elements: [],
   text: "",
   content: "",
+  error: 1
 })
-const element1 = ref({})
-const elementList = ref([{id: 1, "eleName": "aa"}])
+const stepForm = ref(null)
+const changeType = (e) => {
+}
+const summit = () => {
+  stepForm['value'].validate((valid) => {
+    console.log(valid)
+  })
+}
 const options = ref([])
 const androidOptions = ref([
   {
@@ -252,53 +260,109 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-cascader
-      style="width: 100%"
-      size="small"
-      placeholder="请选择操作类型"
-      v-model="step['stepType']"
-      :options="options"
-      :props="{ emitPath: false,expandTrigger: 'hover' }"
-  >
-    <template #default="{ node, data }">
-      <span>{{ data.label }}</span>
-      <span v-if="!node.isLeaf">&nbsp;({{ data.children.length }})</span>
-    </template>
-  </el-cascader>
-
-  <el-divider>
-    <el-icon :size="20">
-      <ArrowDown/>
-    </el-icon>
-  </el-divider>
-
   <el-form
       label-position="left"
       class="demo-table-expand"
-      label-width="100px"
-      ref="step"
+      label-width="80px"
+      ref="stepForm"
       :model="step"
       size="small"
   >
     <el-form-item
-        label="控件截图" prop="element"
+        prop="stepType"
+        label="步骤类型"
+        :rules="{
+            required: true,
+            message: '请填写步骤类型',
+            trigger: 'change',
+          }"
+    >
+      <el-cascader
+          style="width: 100%"
+          size="small"
+          placeholder="请填写步骤类型"
+          v-model="step.stepType"
+          :options="options"
+          :props="{ emitPath: false,expandTrigger: 'hover' }"
+          @change="changeType"
+      >
+        <template #default="{ node, data }">
+          <span>{{ data.label }}</span>
+          <span v-if="!node.isLeaf">&nbsp;({{ data.children.length }})</span>
+        </template>
+      </el-cascader>
+    </el-form-item>
+
+    <el-divider>
+      <el-icon :size="15">
+        <Tickets/>
+      </el-icon>
+    </el-divider>
+
+    <element-select v-if="step.stepType==='clickByImg'"
+                    label="控件截图" place="请选择控件元素截图"
+                    :index="0" :step="step"/>
+
+    <div v-if="step.stepType === 'readText'">
+      <div style="font-size: 13px; color: #999;margin-bottom: 10px"
+      >默认语言包只有简体中文和英文，需要额外添加可以咨询管理员。
+      </div
+      >
+      <el-form-item
+          prop="content"
+          label="识别语言"
+          :rules="{
+            required: true,
+            message: '语言类型不能为空',
+            trigger: 'change',
+          }"
+      >
+        <el-select
+            v-model="step.content"
+            placeholder="请选择识别语言类型"
+        >
+          <el-option label="简体中文" value="chi_sim"></el-option>
+          <el-option label="英文" value="eng"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+          prop="text"
+          label="期望内容"
+          :rules="{
+            required: true,
+            message: '期望文本不能为空',
+            trigger: 'blur',
+          }"
+      >
+        <el-input
+            type="text"
+            v-model="step.text"
+            placeholder="请输入期望包含的文本内容"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <el-form-item
+        prop="error"
+        label="异常处理"
+        :rules="{
+            required: true,
+            message: '异常处理不能为空',
+            trigger: 'change',
+          }"
     >
       <el-select
-          value-key="id"
-          v-model="element1"
-          placeholder="请选择控件元素截图"
+          v-model="step.error"
+          placeholder="请选择异常处理方案"
       >
-        <el-option
-            v-for="item in elementList"
-            :key="item.id"
-            :label="item['eleName']"
-            :value="item"
-        ></el-option>
-        <div style="text-align: center">
-          <el-pagination small layout="prev, pager, next" :total="50"></el-pagination>
-        </div>
+        <el-option label="忽略" :value="1"></el-option>
+        <el-option label="告警" :value="2"></el-option>
+        <el-option label="中断" :value="3"></el-option>
       </el-select>
     </el-form-item>
   </el-form>
 
+  <div style="text-align: center;margin-top: 20px">
+    <el-button @click="summit" size="small" type="primary">提交</el-button>
+  </div>
 </template>

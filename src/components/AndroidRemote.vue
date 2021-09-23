@@ -637,7 +637,7 @@ onMounted(() => {
 
 <template>
   <el-dialog v-model="dialogVisible" title="步骤信息" width="600px">
-    <step-update ref="update" :step-id="0" :case-id="testCase['id']" :project-id="project['id']"
+    <step-update v-if="dialogVisible" ref="update" :step-id="0" :case-id="testCase['id']" :project-id="project['id']"
                  :platform="1"></step-update>
   </el-dialog>
   <el-page-header
