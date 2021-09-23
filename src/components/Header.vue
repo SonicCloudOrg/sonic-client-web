@@ -4,6 +4,7 @@ import {useRoute, useRouter} from "vue-router";
 import {onBeforeMount, onMounted, ref} from "vue";
 import axios from "../http/axios";
 import logo from "./../assets/logo.png";
+import {Fold, Expand} from "@element-plus/icons";
 
 const store = useStore();
 const router = useRouter();
@@ -46,10 +47,14 @@ onMounted(() => {
   <el-container direction="vertical">
     <el-header>
       <div class="flex-center">
-        <div style="margin:0 20px;font-size: 20px;cursor:pointer" @click="store.commit('changeCollapse')"
+        <div style="margin:0 20px;cursor:pointer" @click="store.commit('changeCollapse')"
              v-if="route.params.projectId">
-          <i v-if="store.state.isCollapse === false" class="el-icon-s-fold"></i>
-          <i v-if="store.state.isCollapse === true" class="el-icon-s-unfold"></i>
+          <el-icon :size="20" style="vertical-align: middle;" v-if="store.state.isCollapse === false">
+            <Fold/>
+          </el-icon>
+          <el-icon :size="20" style="vertical-align: middle;" v-else>
+            <Expand/>
+          </el-icon>
         </div>
         <el-menu :background-color="store.state.menuBack" :text-color="store.state.menuText"
                  :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
@@ -123,7 +128,8 @@ onMounted(() => {
                 </el-sub-menu> -->
           <el-menu-item
               :index="route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices'"
-          ><i class="el-icon-mobile" style="margin-right: 0"></i>设备中心
+          >
+            设备中心
           </el-menu-item>
         </el-menu>
       </div>
@@ -153,11 +159,11 @@ onMounted(() => {
             </template
             >
             <div style="padding: 0 10px">
-<!--              <el-divider class="about"-->
-<!--              ><span class="font title"-->
-<!--              >个人中心</span-->
-<!--              ></el-divider-->
-<!--              >-->
+              <!--              <el-divider class="about"-->
+              <!--              ><span class="font title"-->
+              <!--              >个人中心</span-->
+              <!--              ></el-divider-->
+              <!--              >-->
               <el-menu-item>我的信息</el-menu-item>
               <el-divider class="about"
               ><span
@@ -194,27 +200,27 @@ onMounted(() => {
               <el-menu-item @click="logout"> 注销</el-menu-item>
             </div>
           </el-sub-menu>
-<!--          <el-sub-menu index="2">-->
-<!--            <template #title-->
-<!--            ><span-->
-<!--                class="flex-center font title"-->
-<!--            ><img-->
-<!--                style="margin-right: 5px"-->
-<!--                width="20"-->
-<!--                :src="logo"-->
-<!--            />关于Sonic</span-->
-<!--            >-->
-<!--            </template-->
-<!--            >-->
-<!--          </el-sub-menu>-->
-<!--          <el-sub-menu index="3">-->
-<!--            <template #title-->
-<!--            ><span class="font title"-->
-<!--            >其他</span-->
-<!--            >-->
-<!--            </template-->
-<!--            >-->
-<!--          </el-sub-menu>-->
+          <!--          <el-sub-menu index="2">-->
+          <!--            <template #title-->
+          <!--            ><span-->
+          <!--                class="flex-center font title"-->
+          <!--            ><img-->
+          <!--                style="margin-right: 5px"-->
+          <!--                width="20"-->
+          <!--                :src="logo"-->
+          <!--            />关于Sonic</span-->
+          <!--            >-->
+          <!--            </template-->
+          <!--            >-->
+          <!--          </el-sub-menu>-->
+          <!--          <el-sub-menu index="3">-->
+          <!--            <template #title-->
+          <!--            ><span class="font title"-->
+          <!--            >其他</span-->
+          <!--            >-->
+          <!--            </template-->
+          <!--            >-->
+          <!--          </el-sub-menu>-->
         </el-menu>
       </div>
     </el-header>

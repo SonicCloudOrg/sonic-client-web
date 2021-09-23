@@ -18,14 +18,16 @@ onMounted(() => {
   <el-container>
     <el-aside width="auto" v-if="route.params.projectId">
       <el-menu
-          :background-color="store.state.menuBack" :text-color="store.state.menuText"
+          style="padding-top: 15px"
+          :background-color="store.state.menuBack"
+          :text-color="store.state.menuText"
           :active-text-color="store.state.menuActiveText"
           :collapse="store.state.isCollapse"
           :default-active="route.path"
           :unique-opened="true"
           class="el-menu-vertical-demo font"
       >
-        <p class="flex-center">
+        <div class="flex-center" style="margin-bottom: 10px">
           <el-avatar
               :size="40"
               :src="store.state.project['projectImg']"
@@ -34,7 +36,7 @@ onMounted(() => {
           <span class="project-name" v-if="!store.state.isCollapse">{{
               store.state.project['projectName']
             }}</span>
-        </p>
+        </div>
         <el-menu-item :index="'/' + route.params.projectId + '/ProjectIndex'">
           <i class="el-icon-data-analysis"></i>
           <template #title>项目概况</template>

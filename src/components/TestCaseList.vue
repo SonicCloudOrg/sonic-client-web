@@ -23,27 +23,27 @@ const getTestCaseList = (pageNum, pSize) => {
     pageData.value = resp.data
   })
 }
+const emit = defineEmits(['selectCase'])
+const selectCase = (testCase, c, e) => {
+  emit("selectCase", testCase)
+}
 onMounted(() => {
   getTestCaseList();
 })
 </script>
 <template>
-  <el-table :data="pageData['content']" border>
+  <el-table :data="pageData['content']" border :row-style="{cursor:'pointer'}" style="margin-top: 15px"
+            @row-click="selectCase">
+    <el-table-column width="80" label="用例Id" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>
       <template #header>
-       <div class="flex-center"> <el-input v-model="name" size="mini" placeholder="输入用例名称搜索"/>
-      <el-button size="mini" type="primary" style="margin-left: 10px">新增用例</el-button></div>
+        <el-input v-model="name" size="mini" @input="getTestCaseList()" placeholder="输入用例名称搜索"/>
       </template>
     </el-table-column>
     <el-table-column min-width="80" label="模块名称" prop="module" align="center" show-overflow-tooltip/>
-    <el-table-column min-width="80" label="版本名称" prop="module" align="center" show-overflow-tooltip/>
-    <el-table-column min-width="80" label="设计人" prop="module" align="center" show-overflow-tooltip/>
-    <el-table-column min-width="180" label="最后修改日期" prop="module" align="center"/>
-    <el-table-column fixed="right" label="操作" align="center">
-      <template #default="scope">
-        <el-button type="primary" size="mini">关联</el-button>
-      </template>
-    </el-table-column>
+    <el-table-column min-width="80" label="版本名称" prop="version" align="center" show-overflow-tooltip/>
+    <el-table-column min-width="80" label="设计人" prop="designer" align="center" show-overflow-tooltip/>
+    <el-table-column min-width="180" label="最后修改日期" prop="editTime" align="center"/>
   </el-table>
   <pageable
       :isPageSet="true"

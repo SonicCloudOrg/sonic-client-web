@@ -1,10 +1,24 @@
 <script setup>
 import {onMounted, ref} from "vue";
+import {ArrowDown} from "@element-plus/icons";
 
-const dialogVisible = ref(false)
-const step = ref({
-  stepType: ""
+const props = defineProps({
+  projectId: Number,
+  caseId: Number,
+  platform: Number,
+  stepId: Number
 })
+const step = ref({
+  id: null,
+  caseId: props.caseId,
+  projectId: props.projectId,
+  stepType: "",
+  element: [],
+  text: "",
+  content: "",
+})
+const element1 = ref({})
+const elementList = ref([{id: 1, "eleName": "aa"}])
 const options = ref([])
 const androidOptions = ref([
   {
@@ -217,7 +231,7 @@ const androidOptions = ref([
       },
       {
         value: "monkey",
-        label: "Monkey随机事件",
+        label: "随机事件",
       },
       {
         value: "traverse",
@@ -231,28 +245,60 @@ const androidOptions = ref([
     ],
   },
 ])
-const open = () => {
-  dialogVisible.value = true
-}
 onMounted(() => {
-  options.value = androidOptions.value
+  if (props.platform === 1) {
+    options.value = androidOptions.value
+  }
 })
-defineExpose({open})
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="步骤信息">
-    <el-cascader
-        style="width: 100%"
-        size="small"
-        placeholder="请选择操作类型"
-        v-model="step.stepType"
-        :options="options"
-        :props="{ emitPath: false,expandTrigger: 'hover' }"
+  <el-cascader
+      style="width: 100%"
+      size="small"
+      placeholder="请选择操作类型"
+      v-model="step['stepType']"
+      :options="options"
+      :props="{ emitPath: false,expandTrigger: 'hover' }"
+  >
+    <template #default="{ node, data }">
+      <span>{{ data.label }}</span>
+      <span v-if="!node.isLeaf">&nbsp;({{ data.children.length }})</span>
+    </template>
+  </el-cascader>
+
+  <el-divider>
+    <el-icon :size="20">
+      <ArrowDown/>
+    </el-icon>
+  </el-divider>
+
+  <el-form
+      label-position="left"
+      class="demo-table-expand"
+      label-width="100px"
+      ref="step"
+      :model="step"
+      size="small"
+  >
+    <el-form-item
+        label="控件截图" prop="element"
     >
-      <template #default="{ node, data }">
-        <span>{{ data.label }}</span>
-        <span v-if="!node.isLeaf">&nbsp;({{ data.children.length }})</span>
-      </template>
-    </el-cascader>
-  </el-dialog>
+      <el-select
+          value-key="id"
+          v-model="element1"
+          placeholder="请选择控件元素截图"
+      >
+        <el-option
+            v-for="item in elementList"
+            :key="item.id"
+            :label="item['eleName']"
+            :value="item"
+        ></el-option>
+        <div style="text-align: center">
+          <el-pagination small layout="prev, pager, next" :total="50"></el-pagination>
+        </div>
+      </el-select>
+    </el-form-item>
+  </el-form>
+
 </template>

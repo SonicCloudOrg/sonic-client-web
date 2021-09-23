@@ -7,17 +7,18 @@
         "serve": "vite preview"
     },
     "dependencies": {
-        "axios": "^0.21.1",
-        "element-plus": "^1.1.0-beta.12",
-        "vue": "^3.2.6",
+        "@element-plus/icons": "0.0.11",
+        "axios": "^0.21.4",
+        "element-plus": "^1.1.0-beta.15",
+        "vue": "^3.2.14",
         "vue-clipboard3": "^1.0.1",
         "vue-draggable-next": "^2.0.1",
         "vue-router": "^4.0.10",
         "vuex": "^4.0.2"
     },
     "devDependencies": {
-        "@vitejs/plugin-vue": "^1.6.0",
-        "@vue/compiler-sfc": "^3.2.6",
-        "vite": "^2.5.2"
+        "@vitejs/plugin-vue": "^1.9.0",
+        "@vue/compiler-sfc": "^3.2.14",
+        "vite": "^2.5.10"
     }
 }

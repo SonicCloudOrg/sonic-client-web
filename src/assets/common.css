@@ -253,3 +253,7 @@ body,
 .el-card{
     border-radius: 15px!important;
 }
+
+.el-cascader-menu__wrap.el-scrollbar__wrap{
+    height: 280px!important;
+}

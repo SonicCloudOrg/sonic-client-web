@@ -8,7 +8,39 @@ import useClipboard from 'vue-clipboard3';
 import {VueDraggableNext} from 'vue-draggable-next';
 import StepUpdate from './StepUpdate.vue'
 import TestCaseList from './TestCaseList.vue'
+import {
+  Delete,
+  Rank,
+  Download,
+  Search,
+  UploadFilled,
+  SwitchButton,
+  Edit,
+  Position,
+  Camera,
+  Sunny,
+  Phone,
+  PhoneFilled,
+  Minus,
+  MuteNotification,
+  Plus,
+  CaretRight,
+  CaretLeft,
+  Operation,
+  Cellphone,
+  Refresh,
+  RefreshRight,
+  RefreshLeft,
+  Wallet,
+  Menu,
+  CopyDocument,
+  House,
+  Back,
+  View,
+  InfoFilled
+} from "@element-plus/icons";
 
+const dialogVisible = ref(false)
 const {toClipboard} = useClipboard();
 const route = useRoute()
 const store = useStore()
@@ -44,14 +76,36 @@ const elementScreenLoading = ref(false)
 const tree = ref(null)
 const currentId = ref([])
 const filterText = ref("")
-const update = ref(null)
-const projectId = ref(null)
+const project = ref(null)
 const testCase = ref({})
+const activeTab = ref('case')
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null
 const addStep = () => {
-  // update.value.open()
-  steps.value.push({id: 1, name: '111'})
+  dialogVisible.value = true
+}
+const selectCase = (val) => {
+  ElMessage.success({
+    message: "关联成功！"
+  })
+  testCase.value = val
+}
+const removeCase = () => {
+  testCase.value = {};
+}
+const tabSwitch = (tab, event) => {
+  if (tab.paneName === 'step' && testCase.value['id']) {
+    getStepsList()
+  }
+}
+const getStepsList = () => {
+  axios.get("/controller/steps", {
+    params: {
+      caseId: testCase.value['id'],
+    }
+  }).then(resp => {
+    steps.value = resp.data
+  })
 }
 const resetCaseId = (stepId) => {
 
@@ -563,7 +617,7 @@ const getDeviceById = (id) => {
       }
       axios
           .get("/controller/agents", {params: {id: device.value['agentId']}}).then((resp) => {
-        if (resp.code === 2000) {
+        if (resp['code'] === 2000) {
           agent.value = resp.data
           openSocket(agent.value['host'], agent.value['port']
               , agent.value['secretKey'], device.value['udId']);
@@ -574,7 +628,7 @@ const getDeviceById = (id) => {
 }
 onMounted(() => {
   if (store.state.project.id) {
-    projectId.value = store.state.project.id
+    project.value = store.state.project
   }
   getDeviceById(route.params.deviceId)
   store.commit("autoChangeCollapse");
@@ -582,6 +636,10 @@ onMounted(() => {
 </script>
 
 <template>
+  <el-dialog v-model="dialogVisible" title="步骤信息" width="600px">
+    <step-update ref="update" :step-id="0" :case-id="testCase['id']" :project-id="project['id']"
+                 :platform="1"></step-update>
+  </el-dialog>
   <el-page-header
       @back="router.go(-1)"
       content="远程控制"
@@ -597,58 +655,62 @@ onMounted(() => {
                  style="font-size: 14px"
                  :body-style="{ padding: '10px', background: '#ccc', position: 'relative',minHeight: '340px' }">
           <template #header>
-            <i class="el-icon-mobile-phone"></i>
-            <span style="color: #e6a23c; margin-left: 5px">{{
-                device.model
-              }}</span>
-            <el-popover placement="bottom-end" width="270" trigger="hover">
-              <el-form
-                  label-position="left"
-                  class="demo-table-expand"
-                  label-width="90px"
-                  style="margin-left: 10px; word-break: break-all"
-              >
-                <el-form-item label="设备名称">
-                  <span>{{ device.name }}</span>
-                </el-form-item>
-                <el-form-item label="设备型号">
-                  <span>{{ device.model }}</span>
-                </el-form-item>
-                <el-form-item label="设备UDID">
-                  <span>{{ device.udId }}</span>
-                </el-form-item>
-                <el-form-item label="设备系统">
-                  <img
-                      height="25"
-                      style="position: absolute; top: 7px; bottom: 7px; left: 7px"
-                      :src="getImg(device.platform===1?'ANDROID':'IOS')"
-                  />
-                </el-form-item>
-                <el-form-item label="系统版本">
-                  <span>{{ device.version }}</span>
-                </el-form-item>
-                <el-form-item label="屏幕分辨率">
-                  <span>{{ device.size }}</span>
-                </el-form-item>
-                <el-form-item label="CPU类型">
-                  <span>{{ device.cpu }}</span>
-                </el-form-item>
-                <el-form-item label="设备制造商">
-                  <img
-                      height="25"
-                      style="position: absolute; top: 7px; bottom: 7px; left: 7px"
-                      :src="getImg(device.manufacturer)"
-                  />
-                </el-form-item>
-              </el-form>
-              <template #reference>
-          <span
-              style="float: right; color: #909399; font-size: 13px"
-          >
-            设备信息 <i class="el-icon-info"></i>
-          </span>
-              </template>
-            </el-popover>
+            <div style="position: relative; display: flex;align-items: center;">
+              <el-icon :size="14" style="vertical-align: middle;">
+                <Cellphone/>
+              </el-icon>
+              <span style="color: #e6a23c; margin-left: 5px">{{
+                  device['model']
+                }}</span>
+              <el-popover placement="bottom-end" width="270" trigger="hover">
+                <el-form
+                    label-position="left"
+                    class="demo-table-expand"
+                    label-width="90px"
+                    style="margin-left: 10px; word-break: break-all"
+                >
+                  <el-form-item label="设备名称">
+                    <span>{{ device.name }}</span>
+                  </el-form-item>
+                  <el-form-item label="设备型号">
+                    <span>{{ device['model'] }}</span>
+                  </el-form-item>
+                  <el-form-item label="设备UDID">
+                    <span>{{ device['udId'] }}</span>
+                  </el-form-item>
+                  <el-form-item label="设备系统">
+                    <img
+                        height="25"
+                        style="position: absolute; top: 7px; bottom: 7px; left: 7px"
+                        :src="getImg(device['platform']===1?'ANDROID':'IOS')"
+                    />
+                  </el-form-item>
+                  <el-form-item label="系统版本">
+                    <span>{{ device['version'] }}</span>
+                  </el-form-item>
+                  <el-form-item label="屏幕分辨率">
+                    <span>{{ device['size'] }}</span>
+                  </el-form-item>
+                  <el-form-item label="CPU类型">
+                    <span>{{ device['cpu'] }}</span>
+                  </el-form-item>
+                  <el-form-item label="设备制造商">
+                    <img
+                        height="25"
+                        style="position: absolute; top: 7px; bottom: 7px; left: 7px"
+                        :src="getImg(device['manufacturer'])"
+                    />
+                  </el-form-item>
+                </el-form>
+                <template #reference>
+                  <div style="position: absolute;right:0px;color: #909399;">
+                    <el-icon :size="15" style="vertical-align: middle;">
+                      <InfoFilled/>
+                    </el-icon>
+                  </div>
+                </template>
+              </el-popover>
+            </div>
           </template>
           <div style="margin-right: 40px">
             <canvas
@@ -663,30 +725,42 @@ onMounted(() => {
                   size="small"
                   style="width: 25%"
                   type="info"
-                  icon="el-icon-menu"
                   @click="pressKey(82)"
-              ></el-button>
+              >
+                <el-icon :size="13" style="vertical-align: middle;">
+                  <Menu/>
+                </el-icon>
+              </el-button>
               <el-button
                   size="small"
                   style="width: 25%"
                   type="info"
-                  icon="el-icon-copy-document"
                   @click="pressKey(187)"
-              ></el-button>
+              >
+                <el-icon :size="13" style="vertical-align: middle;">
+                  <CopyDocument/>
+                </el-icon>
+              </el-button>
               <el-button
                   size="small"
                   style="width: 25%"
                   type="info"
-                  icon="el-icon-house"
                   @click="pressKey(3)"
-              ></el-button>
+              >
+                <el-icon :size="13" style="vertical-align: middle;">
+                  <House/>
+                </el-icon>
+              </el-button>
               <el-button
                   size="small"
                   style="width: 25%"
                   type="info"
-                  icon="el-icon-back"
                   @click="pressKey(4)"
-              ></el-button>
+              >
+                <el-icon :size="13" style="vertical-align: middle;">
+                  <Back/>
+                </el-icon>
+              </el-button>
             </el-button-group>
           </div>
           <div style="position: absolute; right: 5px; top: 10px">
@@ -708,8 +782,11 @@ onMounted(() => {
                       size="small"
                       type="info"
                       circle
-                      icon="el-icon-view"
-                  ></el-button>
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <View/>
+                    </el-icon>
+                  </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
                       <el-radio-group v-loading="loading" v-model="pic" size="mini" @change="changePic">
@@ -740,8 +817,11 @@ onMounted(() => {
                       size="small"
                       type="info"
                       circle
-                      icon="el-icon-wallet"
-                  ></el-button>
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <Wallet/>
+                    </el-icon>
+                  </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider" v-loading="loading"
                                       element-loading-background="rgba(255, 255, 255, 1)">
@@ -755,9 +835,12 @@ onMounted(() => {
                               size="small"
                               type="info"
                               circle
-                              icon="el-icon-refresh-left"
                               @click="screen(pic,'sub')"
-                          ></el-button>
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <RefreshLeft/>
+                            </el-icon>
+                          </el-button>
                         </el-tooltip>
                         <el-tooltip
                             effect="dark"
@@ -768,9 +851,12 @@ onMounted(() => {
                               size="small"
                               type="info"
                               circle
-                              icon="el-icon-refresh"
                               @click="screen(pic,'abort')"
-                          ></el-button>
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <Refresh/>
+                            </el-icon>
+                          </el-button>
                         </el-tooltip>
                         <el-tooltip
                             effect="dark"
@@ -781,9 +867,12 @@ onMounted(() => {
                               size="small"
                               type="info"
                               circle
-                              icon="el-icon-refresh-right"
                               @click="screen(pic,'add')"
-                          ></el-button>
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <RefreshRight/>
+                            </el-icon>
+                          </el-button>
                         </el-tooltip>
                       </el-button-group>
                     </el-dropdown-menu>
@@ -809,55 +898,77 @@ onMounted(() => {
                       size="small"
                       type="info"
                       circle
-                      icon="el-icon-s-operation"
-                  ></el-button>
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <Operation/>
+                    </el-icon>
+                  </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
                       <div style="text-align: center">
-                        <i class="el-icon-sunny" style="color: #909399"></i>
+                        <el-icon :size="14" style="color: #909399;vertical-align: middle;">
+                          <Sunny/>
+                        </el-icon>
                         <el-divider direction="vertical"></el-divider>
                         <el-button-group>
                           <el-button
                               size="small"
                               type="info"
                               circle
-                              icon="el-icon-caret-left"
                               @click="pressKey(220)"
-                          ></el-button>
+                          >
+                            <el-icon :size="12" style="vertical-align: middle;">
+                              <CaretLeft/>
+                            </el-icon>
+                          </el-button>
                           <el-button
                               size="small"
                               type="info"
                               circle
-                              icon="el-icon-caret-right"
                               @click="pressKey(221)"
-                          ></el-button>
+                          >
+                            <el-icon :size="12" style="vertical-align: middle;">
+                              <CaretRight/>
+                            </el-icon>
+                          </el-button>
                         </el-button-group>
                       </div>
                       <el-divider></el-divider>
-                      <i class="el-icon-phone-outline" style="color: #909399"></i>
+                      <el-icon :size="14" style="color: #909399;vertical-align: middle;">
+                        <Phone/>
+                      </el-icon>
                       <el-divider direction="vertical"></el-divider>
                       <el-button-group>
                         <el-button
                             size="small"
                             type="info"
                             circle
-                            icon="el-icon-plus"
                             @click="pressKey(24)"
-                        ></el-button>
+                        >
+                          <el-icon :size="12" style="vertical-align: middle;">
+                            <Plus/>
+                          </el-icon>
+                        </el-button>
                         <el-button
                             size="small"
                             type="info"
                             circle
-                            icon="el-icon-close-notification"
                             @click="pressKey(164)"
-                        ></el-button>
+                        >
+                          <el-icon :size="12" style="vertical-align: middle;">
+                            <MuteNotification/>
+                          </el-icon>
+                        </el-button>
                         <el-button
                             size="small"
                             type="info"
                             circle
-                            icon="el-icon-minus"
                             @click="pressKey(25)"
-                        ></el-button>
+                        >
+                          <el-icon :size="12" style="vertical-align: middle;">
+                            <Minus/>
+                          </el-icon>
+                        </el-button>
                       </el-button-group>
                     </el-dropdown-menu>
                   </template>
@@ -874,9 +985,12 @@ onMounted(() => {
                     size="small"
                     type="primary"
                     circle
-                    icon="el-icon-phone"
                     @click="pressKey(5)"
-                ></el-button>
+                >
+                  <el-icon :size="12" style="vertical-align: middle;">
+                    <PhoneFilled/>
+                  </el-icon>
+                </el-button>
               </div>
             </el-tooltip>
             <el-tooltip
@@ -889,9 +1003,12 @@ onMounted(() => {
                     size="small"
                     type="primary"
                     circle
-                    icon="el-icon-camera"
                     @click="pressKey(27)"
-                ></el-button>
+                >
+                  <el-icon :size="12" style="vertical-align: middle;">
+                    <Camera/>
+                  </el-icon>
+                </el-button>
               </div>
             </el-tooltip>
             <el-tooltip
@@ -904,9 +1021,12 @@ onMounted(() => {
                     size="small"
                     type="primary"
                     circle
-                    icon="el-icon-position"
                     @click="pressKey(64)"
-                ></el-button>
+                >
+                  <el-icon :size="12" style="vertical-align: middle;">
+                    <Position/>
+                  </el-icon>
+                </el-button>
               </div>
             </el-tooltip>
             <el-tooltip
@@ -927,8 +1047,11 @@ onMounted(() => {
                       size="small"
                       type="primary"
                       circle
-                      icon="el-icon-edit"
-                  ></el-button>
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <Edit/>
+                    </el-icon>
+                  </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
                       <el-form size="small" :model="text">
@@ -966,9 +1089,12 @@ onMounted(() => {
                     size="small"
                     type="primary"
                     circle
-                    icon="el-icon-switch-button"
                     @click="pressKey(26)"
-                ></el-button>
+                >
+                  <el-icon :size="12" style="vertical-align: middle;">
+                    <SwitchButton/>
+                  </el-icon>
+                </el-button>
               </div>
             </el-tooltip>
             <el-tooltip
@@ -989,8 +1115,11 @@ onMounted(() => {
                       size="small"
                       type="success"
                       circle
-                      icon="el-icon-upload"
-                  ></el-button>
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <UploadFilled/>
+                    </el-icon>
+                  </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
                       <el-form ref="installFrom" size="small" :model="upload">
@@ -1041,50 +1170,75 @@ onMounted(() => {
         </el-card>
       </el-col>
       <el-col :span="18">
-        <el-tabs type="border-card">
-          <el-tab-pane label="用例详情">
-            <span style="color: #909399;margin-right: 10px">关联项目</span>
-            <el-select size="mini" v-model="projectId" placeholder="请选择关联项目" style="margin-bottom: 15px">
-              <el-option
-                  v-for="item in store.state.projectList"
-                  :key="item.id"
-                  :value="item.id"
-                  :label="item['projectName']"
-              >
-                <div style=" display: flex;align-items: center;">
-                  <el-avatar
-                      style="margin-right: 10px"
-                      :size="32"
-                      :src="item['projectImg']"
-                      shape="square"
-                  ></el-avatar
-                  >
-                  {{ item['projectName'] }}
-                </div>
-              </el-option>
-            </el-select>
-            <test-case-list v-if="projectId!==null" :project-id="projectId" :platform="1"></test-case-list>
-            <!--            <el-select size="mini" v-model="testCase" placeholder="请选择关联用例">-->
-            <!--              <el-option-->
-            <!--                  v-for="item in store.state.projectList"-->
-            <!--                  :key="item.id"-->
-            <!--                  :value="item.id"-->
-            <!--                  :label="item.projectName"-->
-            <!--              >-->
-            <!--                <div style=" display: flex;align-items: center;">-->
-            <!--                  <el-avatar-->
-            <!--                      style="margin-right: 10px"-->
-            <!--                      :size="32"-->
-            <!--                      :src="item.projectImg"-->
-            <!--                      shape="square"-->
-            <!--                  ></el-avatar-->
-            <!--                  >-->
-            <!--                  {{ item.projectName }}-->
-            <!--                </div>-->
-            <!--              </el-option>-->
-            <!--            </el-select>-->
+        <el-tabs type="border-card" v-model="activeTab" @tab-click="tabSwitch">
+          <el-tab-pane label="用例详情" name="case">
+            <div v-if="!testCase['id']">
+              <span style="color: #909399;margin-right: 10px">关联项目</span>
+              <el-select size="mini" v-model="project" value-key="id" placeholder="请选择关联项目">
+                <el-option
+                    v-for="item in store.state.projectList"
+                    :key="item.id"
+                    :value="item"
+                    :label="item['projectName']"
+                >
+                  <div style=" display: flex;align-items: center;">
+                    <el-avatar
+                        style="margin-right: 10px"
+                        :size="32"
+                        :src="item['projectImg']"
+                        shape="square"
+                    ></el-avatar
+                    >
+                    {{ item['projectName'] }}
+                  </div>
+                </el-option>
+              </el-select>
+              <el-button size="mini" type="primary" style="position: absolute;right: 20px">新增用例</el-button>
+              <test-case-list v-if="project!==null"
+                              :project-id="project['id']"
+                              :platform="1"
+                              @select-case="selectCase"></test-case-list>
+            </div>
+            <div v-else>
+              <el-descriptions title="用例详情" :column="2" size="medium" border>
+                <el-descriptions-item width="100px" label="用例Id">{{ testCase['id'] }}</el-descriptions-item>
+                <el-descriptions-item width="100px" label="用例名称">{{ testCase.name }}</el-descriptions-item>
+                <el-descriptions-item label="所属项目">
+                  <div style=" display: flex;align-items: center;">
+                    <el-avatar
+                        style="margin-right: 10px"
+                        :size="27"
+                        :src="project['projectImg']"
+                        shape="square"
+                    ></el-avatar
+                    >
+                    {{ project['projectName'] }}
+                  </div>
+                </el-descriptions-item>
+                <el-descriptions-item label="所属平台">
+                  <div style=" display: flex;align-items: center;">
+                    <el-avatar
+                        style="margin-right: 10px"
+                        :size="27"
+                        :src="getImg(testCase['platform']===1?'ANDROID':'IOS')"
+                        shape="square"
+                    ></el-avatar
+                    >
+                    {{ testCase['platform'] === 1 ? '安卓' : 'iOS' }}
+                  </div>
+                </el-descriptions-item>
+                <el-descriptions-item label="模块">{{ testCase['module'] }}</el-descriptions-item>
+                <el-descriptions-item label="版本名称">{{ testCase['version'] }}</el-descriptions-item>
+                <el-descriptions-item label="设计人">{{ testCase['designer'] }}</el-descriptions-item>
+                <el-descriptions-item label="最后修改日期">{{ testCase['editTime'] }}</el-descriptions-item>
+                <el-descriptions-item label="用例描述">{{ testCase['des'] }}</el-descriptions-item>
+                <template #extra>
+                  <el-button type="danger" size="mini" @click="removeCase">取消关联</el-button>
+                </template>
+              </el-descriptions>
+            </div>
           </el-tab-pane>
-          <el-tab-pane label="UI自动化">
+          <el-tab-pane label="UI自动化" name="step">
             <div v-if="testCase['id']">
               <div style="margin-bottom: 10px;text-align: center">
                 <el-button-group>
@@ -1093,14 +1247,14 @@ onMounted(() => {
                 </el-button-group>
               </div>
               <el-timeline v-if="steps.length>0">
-                <vue-draggable-next tag="div"
-                                    v-model="steps"
-                                    handle=".handle"
-                                    animation="200"
-                                    forceFallback="true"
-                                    fallbackClass="shake"
-                                    ghostClass="g-host"
-                                    chosenClass="move">
+                <VueDraggableNext tag="div"
+                                  v-model="steps"
+                                  handle=".handle"
+                                  animation="200"
+                                  forceFallback="true"
+                                  fallbackClass="shake"
+                                  ghostClass="g-host"
+                                  chosenClass="move">
                   <el-timeline-item
                       v-for="(s, index) in steps"
                       :key="index"
@@ -1115,14 +1269,20 @@ onMounted(() => {
                           circle
                           type="primary"
                           size="mini"
-                          icon="el-icon-edit"
-                      ></el-button>
+                      >
+                        <el-icon :size="13" style="vertical-align: middle;">
+                          <Edit/>
+                        </el-icon>
+                      </el-button>
                       <el-button
                           class="handle"
                           circle
                           size="mini"
-                          icon="el-icon-rank"
-                      ></el-button>
+                      >
+                        <el-icon :size="13" style="vertical-align: middle;">
+                          <Rank/>
+                        </el-icon>
+                      </el-button>
                       <el-popconfirm
                           style="margin-left: 10px"
                           confirmButtonText="确认"
@@ -1137,37 +1297,43 @@ onMounted(() => {
                               circle
                               type="danger"
                               size="mini"
-                              icon="el-icon-delete"
                               slot="reference"
-                          ></el-button>
+                          >
+                            <el-icon :size="13" style="vertical-align: middle;">
+                              <Delete/>
+                            </el-icon>
+                          </el-button>
                         </template>
                       </el-popconfirm>
                     </div>
                   </el-timeline-item>
-                </vue-draggable-next>
+                </VueDraggableNext>
               </el-timeline>
               <el-empty description="暂无步骤" v-else></el-empty>
             </div>
             <el-card style="height: 100%" v-else>
               <el-result icon="info" title="提示" subTitle="该功能需要先关联测试用例">
                 <template #extra>
-                  <el-button type="primary" size="mini">马上关联</el-button>
+                  <el-button type="primary" size="mini" @click="activeTab = 'case'">马上关联</el-button>
                 </template>
               </el-result>
             </el-card>
           </el-tab-pane>
-          <el-tab-pane label="运行日志">xxx</el-tab-pane>
-          <el-tab-pane label="控件元素">
+          <el-tab-pane label="运行日志" name="log">xxx</el-tab-pane>
+          <el-tab-pane label="控件元素" name="ele">
             <div v-show="isShowImg">
               <div style="margin-bottom: 15px; display: flex;align-items: center;justify-content: space-between;">
                 <el-button
-                    icon="el-icon-search"
                     type="primary"
                     size="mini"
                     :loading="elementLoading"
                     @click="getElement"
                     :disabled="isDriverFinish === false"
-                >获取控件元素
+                >
+                  <el-icon :size="12" style="vertical-align: middle;">
+                    <Search/>
+                  </el-icon>
+                  重新获取控件元素
                 </el-button
                 >
                 <span style="margin-right:10px;color: #909399;font-size: 14px; cursor: pointer"
@@ -1189,7 +1355,11 @@ onMounted(() => {
                       <canvas id="debugPic" @mousedown="touchstart"></canvas>
                     </div>
                     <div style="text-align: center;margin-top: 10px">
-                      <el-button type="primary" plain size="mini" icon="el-icon-download" @click="downloadImg">保存图片
+                      <el-button type="primary" plain size="mini" @click="downloadImg">
+                        <el-icon :size="12" style="vertical-align: middle;">
+                          <Download/>
+                        </el-icon>
+                        保存图片
                       </el-button>
                     </div>
                   </el-card>
@@ -1264,14 +1434,13 @@ onMounted(() => {
                       shadow="hover"
                       v-if="isShowTree"
                   >
-                    <div style="text-align: center; margin-bottom: 10px">
+                    <div style="text-align: center; margin-bottom: 10px" v-if="testCase['id']">
                       <el-button
                           :disabled="elementDetail === null"
                           plain
                           size="small"
                           type="primary"
                           round
-                          icon="el-icon-circle-plus-outline"
                           @click="beforeOpen()"
                       >添加元素
                       </el-button
@@ -1285,7 +1454,6 @@ onMounted(() => {
                           plain
                           size="small"
                           round
-                          icon="el-icon-download"
                           @click="getEleScreen(elementDetail['xpath'])"
                       >元素快照
                       </el-button
@@ -1429,24 +1597,25 @@ onMounted(() => {
               <el-result icon="info" title="提示" subTitle="请先获取控件元素">
                 <template #extra>
                   <el-button
-                      icon="el-icon-search"
                       type="primary"
                       size="mini"
                       :loading="elementLoading"
                       @click="getElement"
                       :disabled="isDriverFinish === false"
-                  >获取控件元素
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <Search/>
+                    </el-icon>
+                    获取控件元素
                   </el-button
                   >
                 </template>
               </el-result>
             </el-card>
           </el-tab-pane>
-          <el-tab-pane label="WebView调试" disabled>xxx</el-tab-pane>
+          <el-tab-pane label="WebView调试" name="webview" disabled>xxx</el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
   </el-card>
-
-  <step-update ref="update"></step-update>
 </template>
