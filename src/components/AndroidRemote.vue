@@ -1043,7 +1043,8 @@ onMounted(() => {
       <el-col :span="18">
         <el-tabs type="border-card">
           <el-tab-pane label="用例详情">
-            <el-select size="mini" v-model="projectId" placeholder="请选择关联项目">
+            <span style="color: #909399;margin-right: 10px">关联项目</span>
+            <el-select size="mini" v-model="projectId" placeholder="请选择关联项目" style="margin-bottom: 15px">
               <el-option
                   v-for="item in store.state.projectList"
                   :key="item.id"

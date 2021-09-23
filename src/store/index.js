@@ -18,7 +18,7 @@ export default createStore({
         saveTheme(state, payload) {
             if (payload === 'light') {
                 state.menuBack = "#ffffff"
-                state.menuText = "#606266"
+                state.menuText = "#909399"
                 state.menuActiveText = "#409EFF"
             } else {
                 state.menuBack = "#545c64"

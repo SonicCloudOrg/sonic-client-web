@@ -1,18 +1,20 @@
 <script setup>
 import {defineProps} from "vue";
 
-defineProps(
+const props = defineProps(
     {
-      pageData: Object,
+      pageSize: Number,
+      currentPage: Number,
+      total: Number,
       isPageSet: Boolean
     }
 );
-const emit = defineEmits(["changePage", "changeSize"])
+const emit = defineEmits()
 const changePage = (num) => {
-  emit("changePage", num)
+  emit("change", num, props.pageSize)
 }
 const changeSize = (num) => {
-  emit("changeSize", num)
+  emit("change", props.currentPage, num)
 }
 </script>
 <template>
@@ -21,21 +23,21 @@ const changeSize = (num) => {
       background
       style="text-align: center; margin-top: 20px"
       @current-change="changePage"
-      :page-size="pageData.size"
-      :current-page="pageData.number + 1"
+      :page-size="pageSize"
+      v-model:current-page="currentPage"
       :page-sizes="[10, 15, 20, 25]"
       @size-change="changeSize"
       layout="sizes, prev, pager, next, jumper, ->, total"
-      :total="pageData['totalElements']"
+      :total="total"
   ></el-pagination>
   <el-pagination
       v-else
       background
       style="text-align: center; margin-top: 20px"
       @current-change="changePage"
-      :page-size="pageData.size"
-      :current-page="pageData.number + 1"
+      :page-size="pageSize"
+      v-model:current-page="currentPage"
       layout="prev, pager, next, jumper, ->, total"
-      :total="pageData['totalElements']"
+      :total="total"
   ></el-pagination>
 </template>
