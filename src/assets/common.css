@@ -204,7 +204,7 @@ body,
 }
 
 .el-form-item--small.el-form-item {
-    margin-bottom: 12px !important;
+    margin-bottom: 16px !important;
 }
 
 @-webkit-keyframes drag-shake {
@@ -252,4 +252,12 @@ body,
 .el-dialog,
 .el-card{
     border-radius: 15px!important;
+}
+
+.el-cascader-menu__wrap.el-scrollbar__wrap{
+    height: 280px!important;
+}
+
+.el-select-dropdown__wrap{
+    max-height: 390px!important;
 }

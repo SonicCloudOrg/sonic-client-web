@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
+import {ElMessage} from 'element-plus'
 import router from '../router/index.js'
 
 let baseURL = '';
@@ -36,23 +36,26 @@ $http.interceptors.response.use(response => {
             break;
         case 1001:
             if (router.currentRoute.value.path !== '/Login') {
-                router.replace({ path: "/Login" }).catch(err => {});
+                router.replace({path: "/Login"}).catch(err => {
+                });
             }
             localStorage.removeItem('SonicToken');
             if (response.data.message) {
                 ElMessage.error({
                     message: response.data.message,
                 })
-            };
+            }
+            ;
             break;
         default:
             if (response.data.message) {
                 ElMessage.error({
                     message: response.data.message,
                 })
-            };
+            }
+            ;
     }
-    return response;
+    return response.data;
 }, err => {
     if (err.response) {
         switch (err.response.status) {

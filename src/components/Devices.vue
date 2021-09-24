@@ -83,7 +83,7 @@ const statusList = ref([
 const agentList = ref([]);
 const jump = (id) => {
   router.push({
-    path: "AndroidRemote/"+id
+    path: "AndroidRemote/" + id
   });
 }
 const handleAndroid = (val) => {
@@ -179,12 +179,12 @@ const handleCheckedStatus = (value) => {
 const handleInput = () => {
   findAll();
 };
-const findAll = (pageNum) => {
+const findAll = (pageNum, pSize) => {
   axios
       .get("/controller/devices/list", {
         params: {
           page: pageNum || 1,
-          pageSize: pageSize.value,
+          pageSize: pSize || pageSize.value,
           androidVersion:
               androidSystem.value.length === 0 ? undefined : androidSystem.value,
           iOSVersion:
@@ -215,9 +215,9 @@ const findAll = (pageNum) => {
           deviceInfo: name.value.length > 0 ? name.value : undefined,
         },
       })
-      .then((res) => {
-        if (res.data.code === 2000) {
-          pageData.value = res.data.data;
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          pageData.value = resp.data;
         }
       });
 };
@@ -233,26 +233,26 @@ const findAgentById = (id) => {
 }
 const getAllAgents = () => {
   axios
-      .get("/controller/agents/list").then((res) => {
-    agentList.value = res.data.data
+      .get("/controller/agents/list").then((resp) => {
+    agentList.value = resp.data
   })
 }
 const savePwd = (device) => {
   axios
-      .put("/controller/devices/savePwd", {id: device.id, password: device.password}).then((res) => {
-    if (res.data.code === 2000) {
+      .put("/controller/devices/savePwd", {id: device.id, password: device.password}).then((resp) => {
+    if (resp['code'] === 2000) {
       ElMessage.success({
-        message: res.data.message,
+        message: resp['message'],
       });
     }
   })
 }
 const reboot = (id) => {
   axios
-      .get("/transport/exchange/reboot", {params: {id: id}}).then((res) => {
-    if (res.data.code === 2000) {
+      .get("/transport/exchange/reboot", {params: {id: id}}).then((resp) => {
+    if (resp['code'] === 2000) {
       ElMessage.success({
-        message: res.data.message,
+        message: resp['message'],
       });
     }
   })
@@ -521,7 +521,8 @@ onMounted(() => {
             </el-col>
           </el-row>
           <div style="text-align: center">
-            <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'" @click="jump(device.id)">马上使用</el-button>
+            <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'" @click="jump(device.id)">马上使用
+            </el-button>
             <el-popover placement="right-end" width="300px" trigger="hover">
               <el-form
                   label-position="left"
@@ -600,8 +601,10 @@ onMounted(() => {
     </el-row>
     <pageable
         :isPageSet="false"
-        :pageData="pageData"
-        @changePage="findAll"
+        :total="pageData['totalElements']"
+        :current-page="pageData['number']+1"
+        :page-size="pageData['size']"
+        @change="findAll"
     ></pageable>
   </el-card>
 </template>
