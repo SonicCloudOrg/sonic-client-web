@@ -257,3 +257,7 @@ body,
 .el-cascader-menu__wrap.el-scrollbar__wrap{
     height: 280px!important;
 }
+
+.el-select-dropdown__wrap{
+    max-height: 390px!important;
+}

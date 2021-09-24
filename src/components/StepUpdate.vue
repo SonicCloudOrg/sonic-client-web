@@ -1,7 +1,9 @@
 <script setup>
-import {onMounted, ref} from "vue";
-import {Tickets} from "@element-plus/icons";
+import {onMounted, defineProps, ref} from "vue";
+import {Tickets, QuestionFilled} from "@element-plus/icons";
 import ElementSelect from './ElementSelect.vue'
+import axios from "../http/axios";
+import {ElMessage} from "element-plus";
 
 const props = defineProps({
   projectId: Number,
@@ -13,6 +15,7 @@ const step = ref({
   id: null,
   caseId: props.caseId,
   projectId: props.projectId,
+  platform: props.platform,
   stepType: "",
   elements: [],
   text: "",
@@ -21,12 +24,44 @@ const step = ref({
 })
 const stepForm = ref(null)
 const changeType = (e) => {
+  step.value.text = "";
+  step.value.content = "";
+  step.value.elements = [];
 }
-const summit = () => {
+const emit = defineEmits();
+const summitStep = () => {
   stepForm['value'].validate((valid) => {
-    console.log(valid)
+    if (valid) {
+      axios.put("/controller/steps", step.value).then(resp => {
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+          emit("flush");
+        }
+      })
+    }
   })
 }
+const getPublicStepList = () => {
+  axios.get("/controller/publicSteps/findNameByProjectId", {
+    params: {
+      projectId: props.projectId,
+    }
+  }).then(resp => {
+    publicStepList.value = resp.data
+  })
+}
+const getStepInfo = (id) => {
+  axios.get("/controller/steps", {
+    params: {
+      id
+    }
+  }).then(resp => {
+    step.value = resp.data
+  })
+}
+const publicStepList = ref([])
 const options = ref([])
 const androidOptions = ref([
   {
@@ -257,13 +292,16 @@ onMounted(() => {
   if (props.platform === 1) {
     options.value = androidOptions.value
   }
+  if (props.stepId !== 0) {
+    getStepInfo(props.stepId)
+  }
 })
 </script>
 <template>
   <el-form
       label-position="left"
       class="demo-table-expand"
-      label-width="80px"
+      label-width="90px"
       ref="stepForm"
       :model="step"
       size="small"
@@ -299,15 +337,300 @@ onMounted(() => {
       </el-icon>
     </el-divider>
 
-    <element-select v-if="step.stepType==='clickByImg'"
-                    label="控件截图" place="请选择控件元素截图"
-                    :index="0" :step="step"/>
+    <div v-if="step.stepType === 'keyCode'">
+      <el-form-item label="系统按键"
+                    :rules="[
+            { required: true, message: '请选择系统按键', trigger: 'change' },
+          ]"
+                    prop="content">
+        <el-select
+            v-if="platform === 1"
+            v-model="step.content"
+            placeholder="请选择系统按键"
+        >
+          <el-option-group label="常用按键">
+            <el-option value="HOME"></el-option>
+            <el-option value="BACK"></el-option>
+            <el-option value="MENU"></el-option>
+            <el-option value="APP_SWITCH"></el-option>
+          </el-option-group>
+          <el-option-group label="其他">
+            <el-option value="BRIGHTNESS_DOWN"></el-option>
+            <el-option value="BRIGHTNESS_UP"></el-option>
+            <el-option value="VOLUME_UP"></el-option>
+            <el-option value="VOLUME_DOWN"></el-option>
+            <el-option value="VOLUME_MUTE"></el-option>
+            <el-option value="CAMERA"></el-option>
+            <el-option value="CALL"></el-option>
+            <el-option value="EXPLORER"></el-option>
+            <el-option value="POWER"></el-option>
+          </el-option-group>
+        </el-select>
+        <el-select
+            v-if="platform === 2"
+            v-model="step.content"
+            placeholder="请选择系统按键"
+        >
+          <el-option value="home"></el-option>
+          <el-option value="volumeup"></el-option>
+          <el-option value="volumedown"></el-option>
+        </el-select>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'tap'">
+      <element-select label="坐标控件" place="请选择坐标控件元素"
+                      :index="0" :project-id="projectId" type="point" :step="step"/>
+    </div>
+
+    <div v-if="step.stepType === 'longPressPoint'">
+      <element-select label="坐标控件" place="请选择坐标控件元素"
+                      :index="0" :project-id="projectId" type="point" :step="step"/>
+      <el-form-item label="长按时间">
+        <el-input-number
+            v-model="step.content"
+            :min="100"
+            :step="100"
+        ></el-input-number>
+        ms
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'swipe'">
+      <element-select label="从控件" place="请选择坐标控件元素"
+                      :index="0" :project-id="projectId" type="point" :step="step"/>
+      <element-select label="拖拽到" place="请选择坐标控件元素"
+                      :index="1" :project-id="projectId" type="point" :step="step"/>
+    </div>
+
+    <div v-if="step.stepType === 'zoom'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 合理设置好坐标位置，可以实现双指放大或缩小操作"/>
+      <element-select label="从控件" place="请选择坐标控件元素"
+                      :index="0" :project-id="projectId" type="point" :step="step"/>
+      <element-select label="移动到" place="请选择坐标控件元素"
+                      :index="1" :project-id="projectId" type="point" :step="step"/>
+      <element-select label="同时控件" place="请选择坐标控件元素"
+                      :index="2" :project-id="projectId" type="point" :step="step"/>
+      <element-select label="移动到" place="请选择坐标控件元素"
+                      :index="3" :project-id="projectId" type="point" :step="step"/>
+    </div>
+
+    <div v-if="step.stepType === 'openApp'">
+      <el-form-item
+          prop="text"
+          label="打开应用"
+          :rules="{
+            required: true,
+            message: '包名不能为空',
+            trigger: 'blur',
+          }"
+      >
+        <el-input
+            v-model="step.text"
+            placeholder="请输入启动的App包名"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'terminate'">
+      <el-form-item
+          prop="text"
+          label="终止应用"
+          :rules="{
+            required: true,
+            message: '包名不能为空',
+            trigger: 'blur',
+          }"
+      >
+        <el-input
+            v-model="step.text"
+            placeholder="请输入终止的App包名"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'install'">
+      <el-form-item
+          prop="content"
+          label="应用包名"
+          :rules="{
+            required: true,
+            message: '包名不能为空',
+            trigger: 'blur',
+          }"
+      >
+        <el-input
+            v-model="step.content"
+            placeholder="请输入应用包名"
+        ></el-input>
+      </el-form-item>
+      <el-form-item
+          prop="text"
+          label="安装路径"
+          :rules="{
+            required: true,
+            message: '路径不能为空',
+            trigger: 'blur',
+          }"
+      >
+        <el-input
+            v-model="step.text"
+            placeholder="请输入App下载路径或本地apk路径"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'uninstall'">
+      <el-form-item
+          prop="text"
+          label="卸载应用"
+          :rules="{
+            required: true,
+            message: '包名不能为空',
+            trigger: 'blur',
+          }"
+      >
+        <el-input
+            v-model="step.text"
+            placeholder="请输入卸载的App包名"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'runBack'">
+      <el-form-item label="后台运行">
+        <el-input-number
+            v-model="step.content"
+            :min="1000"
+            :step="1000"
+        ></el-input-number>
+        ms
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'toWebView'">
+      <el-form-item label="WebView">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入WebView名称"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'toHandle'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: Handle相当于页面的Tab，切换WebView后找不到页面可以尝试切换Handle"/>
+      <el-form-item label="Handle标题">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入Handle页面标题的名称"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'click'">
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+    </div>
+
+    <div v-if="step.stepType === 'sendKeys'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <el-form-item label="输入值">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入值"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'longPress'">
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <el-form-item label="长按时间">
+        <el-input-number
+            v-model="step.content"
+            :min="100"
+            :step="100"
+        ></el-input-number>
+        ms
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'clear'">
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+    </div>
+
+    <div v-if="step.stepType === 'getTextValue'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 可以将获取的文本放入临时变量中"/>
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <el-form-item label="变量名">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入变量名"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'getText'">
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <el-form-item label="期望值">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入期望值"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'getTitle'">
+      <el-form-item label="期望值">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入期望值"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div
+        v-if="
+          step.stepType === 'assertEquals' ||
+          step.stepType === 'assertTrue' ||
+          step.stepType === 'assertNotTrue'
+        "
+    >
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 可使用{{变量名}}将全局变量或临时变量插入，验证时将替换该内容为变量值"/>
+      <el-form-item label="真实值">
+        <el-input
+            v-model="step.text"
+            placeholder="请输入真实值"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="期望值">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入期望值"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType==='clickByImg'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 默认按顺序使用SIFT特征匹配、AKAZE特征匹配和模板匹配算法"/>
+      <element-select label="控件截图" place="请选择控件元素截图"
+                      :index="0" :project-id="projectId" type="image" :step="step"/>
+    </div>
 
     <div v-if="step.stepType === 'readText'">
-      <div style="font-size: 13px; color: #999;margin-bottom: 10px"
-      >默认语言包只有简体中文和英文，需要额外添加可以咨询管理员。
-      </div
-      >
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 默认语言包只有简体中文和英文，需要额外添加可以咨询管理员。"/>
       <el-form-item
           prop="content"
           label="识别语言"
@@ -342,14 +665,54 @@ onMounted(() => {
       </el-form-item>
     </div>
 
-    <el-form-item
-        prop="error"
-        label="异常处理"
-        :rules="{
+    <div v-if="step.stepType === 'checkImage'">
+      <element-select label="页面截图" place="请选择页面截图"
+                      :index="0" :project-id="projectId" type="image" :step="step"/>
+      <el-form-item label="期望相似度">
+        <el-input-number
+            v-model="step.content"
+            :min="70"
+            :step="1"
+        ></el-input-number>
+        %
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'publicStep'">
+      <el-form-item label="公共步骤" prop="text" :rules="{
             required: true,
-            message: '异常处理不能为空',
+            message: '公共步骤不能为空',
             trigger: 'change',
-          }"
+          }">
+        <el-select
+            v-model="step.text"
+            placeholder="请选择公共步骤"
+            no-data-text="该项目暂未添加公共步骤"
+            @visible-change="getPublicStepList"
+        >
+          <el-option
+              v-for="item in publicStepList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id + ''"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'pause'">
+      <el-form-item label="等待时间">
+        <el-input-number
+            v-model="step.content"
+            :min="1000"
+            :step="1000"
+        ></el-input-number>
+        ms
+      </el-form-item>
+    </div>
+
+    <el-form-item
+        label="异常处理"
     >
       <el-select
           v-model="step.error"
@@ -359,10 +722,28 @@ onMounted(() => {
         <el-option label="告警" :value="2"></el-option>
         <el-option label="中断" :value="3"></el-option>
       </el-select>
+      <el-popover
+          placement="right-start"
+          title="异常处理"
+          :width="300"
+          trigger="hover"
+      >
+        <p>
+          意为该测试步骤出现异常时的处理方案
+        </p>
+        <div><strong style="color: #409EFF">忽略：</strong>忽略异常并继续执行</div>
+        <div><strong style="color: #E6A23C">告警：</strong>标记警告并获取异常截图和异常堆栈，然后继续执行</div>
+        <div><strong style="color: #F56C6C">中断：</strong>标记失败并获取异常截图、异常堆栈和测试录像，然后中断执行</div>
+        <template #reference>
+          <el-icon :size="18" style="vertical-align: middle;margin-left: 10px;">
+            <QuestionFilled/>
+          </el-icon>
+        </template>
+      </el-popover>
     </el-form-item>
   </el-form>
 
   <div style="text-align: center;margin-top: 20px">
-    <el-button @click="summit" size="small" type="primary">提交</el-button>
+    <el-button @click="summitStep" size="small" type="primary">提交</el-button>
   </div>
 </template>

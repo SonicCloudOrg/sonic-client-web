@@ -7,6 +7,7 @@ import {ElMessage} from "element-plus";
 import useClipboard from 'vue-clipboard3';
 import {VueDraggableNext} from 'vue-draggable-next';
 import StepUpdate from './StepUpdate.vue'
+import StepShow from './StepShow.vue'
 import TestCaseList from './TestCaseList.vue'
 import {
   Delete,
@@ -81,8 +82,34 @@ const testCase = ref({})
 const activeTab = ref('case')
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null
+const stepId = ref(0)
+watch(dialogVisible, (newValue, oldValue) => {
+  if (!newValue) {
+    stepId.value = 0
+  }
+})
+const editStep = (id) => {
+  stepId.value = id
+  addStep()
+}
 const addStep = () => {
   dialogVisible.value = true
+}
+const flush = () => {
+  dialogVisible.value = false
+  getStepsList();
+}
+const getStepsList = () => {
+  axios.get("/controller/steps/list", {
+    params: {
+      caseId: testCase.value['id'],
+    }
+  }).then(resp => {
+    steps.value = resp.data
+  })
+}
+const resetCaseId = (stepId) => {
+
 }
 const selectCase = (val) => {
   ElMessage.success({
@@ -97,18 +124,6 @@ const tabSwitch = (tab, event) => {
   if (tab.paneName === 'step' && testCase.value['id']) {
     getStepsList()
   }
-}
-const getStepsList = () => {
-  axios.get("/controller/steps", {
-    params: {
-      caseId: testCase.value['id'],
-    }
-  }).then(resp => {
-    steps.value = resp.data
-  })
-}
-const resetCaseId = (stepId) => {
-
 }
 const getImg = (name) => {
   let result;
@@ -637,8 +652,9 @@ onMounted(() => {
 
 <template>
   <el-dialog v-model="dialogVisible" title="步骤信息" width="600px">
-    <step-update v-if="dialogVisible" ref="update" :step-id="0" :case-id="testCase['id']" :project-id="project['id']"
-                 :platform="1"></step-update>
+    <step-update v-if="dialogVisible" ref="update" :step-id="stepId" :case-id="testCase['id']"
+                 :project-id="project['id']"
+                 :platform="1" @flush="flush"></step-update>
   </el-dialog>
   <el-page-header
       @back="router.go(-1)"
@@ -1260,15 +1276,17 @@ onMounted(() => {
                       :key="index"
                       :timestamp="'步骤' + (index + 1)"
                       placement="top"
-                      type="primary"
+                      :type="s['error']===1?'primary':(s['error']===2?'warning':'danger')"
                       style="height: 38px"
                       :hollow="true"
                   >
+                    <step-show :step="s"></step-show>
                     <div style="float: right">
                       <el-button
                           circle
                           type="primary"
                           size="mini"
+                          @click="editStep(s.id)"
                       >
                         <el-icon :size="13" style="vertical-align: middle;">
                           <Edit/>
