@@ -9,7 +9,7 @@ const props = defineProps(
       isPageSet: Boolean
     }
 );
-const emit = defineEmits()
+const emit = defineEmits(['change'])
 const changePage = (num) => {
   emit("change", num, props.pageSize)
 }

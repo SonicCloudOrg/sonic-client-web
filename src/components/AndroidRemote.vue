@@ -5,13 +5,9 @@ import {useStore} from "vuex";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import useClipboard from 'vue-clipboard3';
-import {VueDraggableNext} from 'vue-draggable-next';
-import StepUpdate from './StepUpdate.vue'
-import StepShow from './StepShow.vue'
+import StepList from './StepList.vue'
 import TestCaseList from './TestCaseList.vue'
 import {
-  Delete,
-  Rank,
   Download,
   Search,
   UploadFilled,
@@ -41,7 +37,6 @@ import {
   InfoFilled
 } from "@element-plus/icons";
 
-const dialogVisible = ref(false)
 const {toClipboard} = useClipboard();
 const route = useRoute()
 const store = useStore()
@@ -52,7 +47,6 @@ const agent = ref({})
 const upload = ref({apk: "", pkg: ""})
 const text = ref({content: ""})
 const installFrom = ref(null)
-const steps = ref([]);
 let imgWidth = 0
 let imgHeight = 0
 let moveX = 0
@@ -81,36 +75,7 @@ const project = ref(null)
 const testCase = ref({})
 const activeTab = ref('case')
 const img = import.meta.globEager("./../assets/img/*")
-let websocket = null
-const stepId = ref(0)
-watch(dialogVisible, (newValue, oldValue) => {
-  if (!newValue) {
-    stepId.value = 0
-  }
-})
-const editStep = (id) => {
-  stepId.value = id
-  addStep()
-}
-const addStep = () => {
-  dialogVisible.value = true
-}
-const flush = () => {
-  dialogVisible.value = false
-  getStepsList();
-}
-const getStepsList = () => {
-  axios.get("/controller/steps/list", {
-    params: {
-      caseId: testCase.value['id'],
-    }
-  }).then(resp => {
-    steps.value = resp.data
-  })
-}
-const resetCaseId = (stepId) => {
-
-}
+let websocket = null;
 const selectCase = (val) => {
   ElMessage.success({
     message: "关联成功！"
@@ -119,11 +84,6 @@ const selectCase = (val) => {
 }
 const removeCase = () => {
   testCase.value = {};
-}
-const tabSwitch = (tab, event) => {
-  if (tab.paneName === 'step' && testCase.value['id']) {
-    getStepsList()
-  }
 }
 const getImg = (name) => {
   let result;
@@ -651,11 +611,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-dialog v-model="dialogVisible" title="步骤信息" width="600px">
-    <step-update v-if="dialogVisible" ref="update" :step-id="stepId" :case-id="testCase['id']"
-                 :project-id="project['id']"
-                 :platform="1" @flush="flush"></step-update>
-  </el-dialog>
   <el-page-header
       @back="router.go(-1)"
       content="远程控制"
@@ -1186,7 +1141,7 @@ onMounted(() => {
         </el-card>
       </el-col>
       <el-col :span="18">
-        <el-tabs type="border-card" v-model="activeTab" @tab-click="tabSwitch">
+        <el-tabs type="border-card" v-model="activeTab">
           <el-tab-pane label="用例详情" name="case">
             <div v-if="!testCase['id']">
               <span style="color: #909399;margin-right: 10px">关联项目</span>
@@ -1256,78 +1211,7 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane label="UI自动化" name="step">
             <div v-if="testCase['id']">
-              <div style="margin-bottom: 10px;text-align: center">
-                <el-button-group>
-                  <el-button type="success" size="mini">开始运行</el-button>
-                  <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
-                </el-button-group>
-              </div>
-              <el-timeline v-if="steps.length>0">
-                <VueDraggableNext tag="div"
-                                  v-model="steps"
-                                  handle=".handle"
-                                  animation="200"
-                                  forceFallback="true"
-                                  fallbackClass="shake"
-                                  ghostClass="g-host"
-                                  chosenClass="move">
-                  <el-timeline-item
-                      v-for="(s, index) in steps"
-                      :key="index"
-                      :timestamp="'步骤' + (index + 1)"
-                      placement="top"
-                      :type="s['error']===1?'primary':(s['error']===2?'warning':'danger')"
-                      style="height: 38px"
-                      :hollow="true"
-                  >
-                    <step-show :step="s"></step-show>
-                    <div style="float: right">
-                      <el-button
-                          circle
-                          type="primary"
-                          size="mini"
-                          @click="editStep(s.id)"
-                      >
-                        <el-icon :size="13" style="vertical-align: middle;">
-                          <Edit/>
-                        </el-icon>
-                      </el-button>
-                      <el-button
-                          class="handle"
-                          circle
-                          size="mini"
-                      >
-                        <el-icon :size="13" style="vertical-align: middle;">
-                          <Rank/>
-                        </el-icon>
-                      </el-button>
-                      <el-popconfirm
-                          style="margin-left: 10px"
-                          confirmButtonText="确认"
-                          cancelButtonText="取消"
-                          @confirm="resetCaseId(s.id)"
-                          icon="el-icon-warning"
-                          iconColor="red"
-                          title="确定从用例中移除该步骤吗？"
-                      >
-                        <template #reference>
-                          <el-button
-                              circle
-                              type="danger"
-                              size="mini"
-                              slot="reference"
-                          >
-                            <el-icon :size="13" style="vertical-align: middle;">
-                              <Delete/>
-                            </el-icon>
-                          </el-button>
-                        </template>
-                      </el-popconfirm>
-                    </div>
-                  </el-timeline-item>
-                </VueDraggableNext>
-              </el-timeline>
-              <el-empty description="暂无步骤" v-else></el-empty>
+              <step-list :case-id="testCase['id']" :project-id="project['id']"/>
             </div>
             <el-card style="height: 100%" v-else>
               <el-result icon="info" title="提示" subTitle="该功能需要先关联测试用例">

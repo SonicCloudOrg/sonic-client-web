@@ -25,10 +25,10 @@ const step = ref({
 const stepForm = ref(null)
 const changeType = (e) => {
   step.value.text = "";
-  step.value.content = "";
   step.value.elements = [];
+  step.value.content = "";
 }
-const emit = defineEmits();
+const emit = defineEmits(['flush']);
 const summitStep = () => {
   stepForm['value'].validate((valid) => {
     if (valid) {
@@ -59,6 +59,13 @@ const getStepInfo = (id) => {
     }
   }).then(resp => {
     step.value = resp.data
+    if (step.value.stepType === 'pause'
+        || step.value.stepType === 'longPressPoint'
+        || step.value.stepType === 'runBack'
+        || step.value.stepType === 'longPress'
+        || step.value.stepType === 'checkImage') {
+      step.value.content = parseInt(step.value.content);
+    }
   })
 }
 const publicStepList = ref([])

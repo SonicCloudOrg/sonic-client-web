@@ -1,5 +1,5 @@
 <script setup>
-import {ref, defineProps} from "vue";
+import {ref, defineProps, onMounted} from "vue";
 import axios from "../http/axios";
 
 const props = defineProps({
@@ -10,11 +10,14 @@ const props = defineProps({
   projectId: Number,
   step: Object,
 })
-const pageData = ref({});
+const pageData = ref({
+  content: []
+});
 const pageSize = ref(10);
 const currentPage = ref(0)
 const findByProjectIdAndEleType = (event, pageNum, pSize) => {
   if (event) {
+    props.step.elements[props.index] = null
     axios.get("/controller/elements/list", {
       params: {
         projectId: props.projectId,
@@ -28,6 +31,11 @@ const findByProjectIdAndEleType = (event, pageNum, pSize) => {
     })
   }
 }
+onMounted(() => {
+  if (props.step.elements[props.index]) {
+    pageData.value['content'].push(props.step.elements[props.index])
+  }
+})
 </script>
 <template>
   <el-form-item
