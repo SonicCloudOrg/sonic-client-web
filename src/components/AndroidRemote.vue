@@ -7,6 +7,8 @@ import {ElMessage} from "element-plus";
 import useClipboard from 'vue-clipboard3';
 import StepList from './StepList.vue'
 import TestCaseList from './TestCaseList.vue'
+import StepLog from './StepLog.vue'
+import ElementUpdate from './ElementUpdate.vue'
 import {
   Download,
   Search,
@@ -74,8 +76,38 @@ const filterText = ref("")
 const project = ref(null)
 const testCase = ref({})
 const activeTab = ref('case')
+const stepLog = ref([])
+const debugLoading = ref(false)
+const dialogElement = ref(false)
+const dialogImgElement = ref(false)
+const imgElementUrl = ref(null)
+const updateImgEle = ref(null)
+const element = ref({
+  id: null,
+  eleName: "",
+  eleType: "image",
+  eleValue: "",
+  projectId: 0
+})
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null;
+const saveEle = () => {
+  updateImgEle['value'].validate((valid) => {
+    if (valid) {
+      element.value.eleValue = imgElementUrl.value;
+      element.value.projectId = project.value['id']
+      axios.put("/controller/elements", element.value)
+          .then((resp) => {
+            if (resp['code'] === 2000) {
+              ElMessage.success({
+                message: resp['message'],
+              });
+              dialogImgElement.value = false;
+            }
+          });
+    }
+  });
+}
 const selectCase = (val) => {
   ElMessage.success({
     message: "关联成功！"
@@ -215,6 +247,30 @@ const websocketOnmessage = (message) => {
       }
       case "picFinish": {
         loading.value = false;
+        break
+      }
+      case "step": {
+        setStepLog(JSON.parse(message.data))
+        break
+      }
+      case "status": {
+        debugLoading.value = false
+        ElMessage.info({
+          message: '运行完毕！',
+        })
+        break
+      }
+      case "eleScreen": {
+        if (JSON.parse(message.data).img) {
+          ElMessage.success({
+            message: "获取快照成功！",
+          });
+          imgElementUrl.value = JSON.parse(message.data)['img'];
+          dialogImgElement.value = true;
+        } else {
+          ElMessage.error(JSON.parse(message.data)['errMsg']);
+        }
+        elementScreenLoading.value = false;
         break
       }
       case "error": {
@@ -466,11 +522,33 @@ const print = (data) => {
       (eleEndY - eleStartY) * (canvas.height / imgHeight)
   );
 }
-const beforeOpen = () => {
-
-}
 const getEleScreen = (xpath) => {
-
+  elementScreenLoading.value = true
+  websocket.send(
+      JSON.stringify({
+        type: "debug",
+        detail: "eleScreen",
+        xpath,
+      })
+  );
+}
+const clearLog = () => {
+  stepLog.value = [];
+}
+const setStepLog = (data) => {
+  stepLog.value.push(data);
+}
+const runStep = () => {
+  debugLoading.value = true
+  activeTab.value = 'log'
+  websocket.send(
+      JSON.stringify({
+        type: "debug",
+        detail: "runStep",
+        caseId: testCase.value['id'],
+        pwd: device.value['password']
+      })
+  );
 }
 const pressKey = (keyNum) => {
   websocket.send(
@@ -611,6 +689,52 @@ onMounted(() => {
 </script>
 
 <template>
+  <el-dialog
+      title="控件元素快照"
+      v-model="dialogImgElement"
+      width="28%"
+  >
+    <el-card>
+      <el-image
+          z-index="5000"
+          fit="contain"
+          style="width: 100%; height: 100px"
+          :src="imgElementUrl"
+          :preview-src-list="[imgElementUrl]"
+      ></el-image>
+    </el-card>
+    <el-form
+        ref="updateImgEle"
+        :model="element"
+        size="small"
+        style="margin-top: 20px"
+    >
+      <el-form-item
+          prop="eleName"
+          label="控件元素名称"
+          :rules="{
+            required: true,
+            message: '控件元素名称不能为空',
+            trigger: 'blur',
+          }"
+      >
+        <el-input
+            v-model="element.eleName"
+            placeholder="请输入控件元素名称"
+        ></el-input>
+      </el-form-item>
+      <div style="text-align: center">
+        <el-button size="small" type="primary" @click="saveEle"
+        >保存为图片元素
+        </el-button
+        >
+      </div>
+    </el-form>
+  </el-dialog>
+  <el-dialog v-model="dialogElement" title="控件元素信息" width="600px">
+    <element-update v-if="dialogElement" :project-id="project['id']"
+                    :element-id="0" @flush="dialogElement = false"/>
+  </el-dialog>
   <el-page-header
       @back="router.go(-1)"
       content="远程控制"
@@ -1211,7 +1335,8 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane label="UI自动化" name="step">
             <div v-if="testCase['id']">
-              <step-list :case-id="testCase['id']" :project-id="project['id']"/>
+              <step-list :is-driver-finish="isDriverFinish" :case-id="testCase['id']" :project-id="project['id']"
+                         @runStep="runStep"/>
             </div>
             <el-card style="height: 100%" v-else>
               <el-result icon="info" title="提示" subTitle="该功能需要先关联测试用例">
@@ -1221,7 +1346,9 @@ onMounted(() => {
               </el-result>
             </el-card>
           </el-tab-pane>
-          <el-tab-pane label="运行日志" name="log">xxx</el-tab-pane>
+          <el-tab-pane label="运行日志" name="log">
+            <step-log :debug-loading="debugLoading" :step-log="stepLog" @clearLog="clearLog"></step-log>
+          </el-tab-pane>
           <el-tab-pane label="控件元素" name="ele">
             <div v-show="isShowImg">
               <div style="margin-bottom: 15px; display: flex;align-items: center;justify-content: space-between;">
@@ -1336,15 +1463,15 @@ onMounted(() => {
                       shadow="hover"
                       v-if="isShowTree"
                   >
-                    <div style="text-align: center; margin-bottom: 10px" v-if="testCase['id']">
+                    <div style="text-align: center; margin-bottom: 10px" v-if="project && project['id']">
                       <el-button
                           :disabled="elementDetail === null"
                           plain
                           size="small"
                           type="primary"
                           round
-                          @click="beforeOpen()"
-                      >添加元素
+                          @click="dialogElement = true"
+                      >添加控件
                       </el-button
                       >
                       <el-button
@@ -1357,10 +1484,12 @@ onMounted(() => {
                           size="small"
                           round
                           @click="getEleScreen(elementDetail['xpath'])"
-                      >元素快照
+                      >控件快照
                       </el-button
                       >
                     </div>
+                    <el-alert style="margin-bottom: 10px" v-else title="关联项目后即可保存控件" type="info" show-icon
+                              close-text="Get!"/>
                     <div style="height: 655px">
                       <el-scrollbar
                           style="height: 100%"
@@ -1515,7 +1644,7 @@ onMounted(() => {
               </el-result>
             </el-card>
           </el-tab-pane>
-          <el-tab-pane label="WebView调试" name="webview" disabled>xxx</el-tab-pane>
+          <el-tab-pane label="WebView调试(暂不开放)" name="webview" disabled>xxx</el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
