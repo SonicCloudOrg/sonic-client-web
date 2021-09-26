@@ -9,8 +9,10 @@ import {ElMessage} from "element-plus";
 
 const props = defineProps({
   caseId: Number,
-  projectId: Number
+  projectId: Number,
+  isDriverFinish: Boolean
 })
+const emit = defineEmits(['runStep'])
 const dialogVisible = ref(false)
 const stepId = ref(0)
 watch(dialogVisible, (newValue, oldValue) => {
@@ -43,6 +45,35 @@ const resetCaseId = (id) => {
     }
   })
 }
+const sortStep = (e) => {
+  let startId = null;
+  let endId = null;
+  let direction = "";
+  if (e.moved.newIndex > e.moved.oldIndex) {
+    direction = "down";
+    endId = steps.value[e.moved.newIndex].sort;
+    startId = steps.value[e.moved.newIndex - 1].sort;
+  } else {
+    direction = "up";
+    startId = steps.value[e.moved.newIndex].sort;
+    endId = steps.value[e.moved.newIndex + 1].sort;
+  }
+  axios
+      .put("/controller/steps/stepSort", {
+        caseId: props.caseId,
+        direction,
+        startId,
+        endId,
+      })
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+          getStepsList();
+        }
+      });
+}
 const steps = ref([]);
 const getStepsList = () => {
   axios.get("/controller/steps/list", {
@@ -53,19 +84,22 @@ const getStepsList = () => {
     steps.value = resp.data
   })
 }
+const runStep = () => {
+  emit('runStep')
+}
 onMounted(() => {
   getStepsList();
 })
 </script>
 <template>
   <el-dialog v-model="dialogVisible" title="步骤信息" width="600px">
-    <step-update v-if="dialogVisible" ref="update" :step-id="stepId" :case-id="caseId"
+    <step-update v-if="dialogVisible" :step-id="stepId" :case-id="caseId"
                  :project-id="projectId"
                  :platform="1" @flush="flush"></step-update>
   </el-dialog>
   <div style="margin-bottom: 10px;text-align: center">
     <el-button-group>
-      <el-button type="success" size="mini">开始运行</el-button>
+      <el-button type="success" size="mini" :disabled="!isDriverFinish" @click="runStep">开始运行</el-button>
       <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
     </el-button-group>
   </div>
@@ -77,7 +111,8 @@ onMounted(() => {
                       forceFallback="true"
                       fallbackClass="shake"
                       ghostClass="g-host"
-                      chosenClass="move">
+                      chosenClass="move"
+                      @change="sortStep">
       <el-timeline-item
           v-for="(s, index) in steps"
           :key="index"
