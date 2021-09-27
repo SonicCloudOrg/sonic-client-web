@@ -8,7 +8,7 @@ const props = defineProps({
   platform: Number
 })
 const pageData = ref({});
-const pageSize = ref(10);
+const pageSize = ref(15);
 const name = ref("")
 const getTestCaseList = (pageNum, pSize) => {
   axios.get("/controller/testCases/list", {
@@ -32,7 +32,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-table :data="pageData['content']" border :row-style="{cursor:'pointer'}" style="margin-top: 15px"
+  <el-table :data="pageData['content']" border :row-style="{cursor:'pointer'}"
             @row-click="selectCase">
     <el-table-column width="80" label="用例Id" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>

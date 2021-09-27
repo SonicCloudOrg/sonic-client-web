@@ -217,6 +217,10 @@ defineProps({
       >{{ step.content }}</el-tag
       >
     </span>
+  <span v-if="step.stepType === 'monkey'">
+      <el-tag style="margin-right: 10px" type="warning" size="small">随机事件测试</el-tag>
+     应用包名：{{ JSON.parse(step.content).packageName }}&nbsp;&nbsp;事件数：{{ JSON.parse(step.content).pctNum }}
+    </span>
   <span v-if="step.stepType === 'pause'">
       <el-tag size="small" style="margin-right: 5px">强制等待</el-tag>
       等待 {{ step.content }} ms
