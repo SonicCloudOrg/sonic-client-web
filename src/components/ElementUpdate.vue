@@ -1,5 +1,5 @@
 <script setup>
-import {ref, defineProps, onMounted, defineEmits} from "vue";
+import {ref, onMounted} from "vue";
 import {ElMessage} from "element-plus";
 import axios from "../http/axios";
 

@@ -4,10 +4,12 @@ import {ref} from "vue";
 import {useRoute} from "vue-router";
 
 const route = useRoute()
-const projectId = ref(route.params.projectId)
+const caseList = ref(null)
+const projectId = ref(parseInt(route.params.projectId))
 const platform = 1
 
 </script>
 <template>
-  <test-case-list :project-id="projectId" :platform="platform"/>
+  <el-button size="mini" round @click="caseList.open()" type="primary" style="float: right;margin-bottom: 15px">添加用例</el-button>
+  <test-case-list ref="caseList" :project-id="projectId" :platform="platform" :is-read-only="false"/>
 </template>

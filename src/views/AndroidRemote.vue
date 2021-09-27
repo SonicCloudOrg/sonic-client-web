@@ -1289,12 +1289,11 @@ onMounted(() => {
                 </el-option>
               </el-select>
               <el-button size="mini" type="primary" style="position: absolute;right: 20px">新增用例</el-button>
-              <div style="margin-top: 15px">
                 <test-case-list v-if="project!==null"
                                 :project-id="project['id']"
                                 :platform="1"
+                                :is-read-only="true"
                                 @select-case="selectCase"></test-case-list>
-              </div>
             </div>
             <div v-else>
               <el-descriptions title="用例详情" :column="2" size="medium" border>
