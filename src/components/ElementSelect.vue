@@ -1,5 +1,5 @@
 <script setup>
-import {ref, defineProps, onMounted} from "vue";
+import {ref, onMounted} from "vue";
 import axios from "../http/axios";
 
 const props = defineProps({

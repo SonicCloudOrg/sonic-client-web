@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, defineProps, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {Tickets, QuestionFilled} from "@element-plus/icons";
 import ElementSelect from './ElementSelect.vue'
 import axios from "../http/axios";

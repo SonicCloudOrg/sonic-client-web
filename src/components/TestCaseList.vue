@@ -1,15 +1,18 @@
 <script setup>
 import axios from "../http/axios";
-import {ref, defineProps, onMounted} from "vue";
+import {ref, onMounted} from "vue";
 import Pageable from './Pageable.vue'
+import TestCaseUpdate from './TestCaseUpdate.vue'
 
 const props = defineProps({
   projectId: Number,
-  platform: Number
+  platform: Number,
+  isReadOnly: Boolean
 })
 const pageData = ref({});
 const pageSize = ref(15);
 const name = ref("")
+const dialogVisible = ref(false)
 const getTestCaseList = (pageNum, pSize) => {
   axios.get("/controller/testCases/list", {
     params: {
@@ -25,15 +28,26 @@ const getTestCaseList = (pageNum, pSize) => {
 }
 const emit = defineEmits(['selectCase'])
 const selectCase = (testCase, c, e) => {
-  emit("selectCase", testCase)
+  if (props.isReadOnly) {
+    emit("selectCase", testCase)
+  }
+}
+const open = () => {
+  dialogVisible.value = true
 }
 onMounted(() => {
   getTestCaseList();
 })
+defineExpose({open})
 </script>
 <template>
-  <el-table :data="pageData['content']" border :row-style="{cursor:'pointer'}"
-            @row-click="selectCase">
+  <el-dialog v-model="dialogVisible" title="用例信息" width="600px">
+    <test-case-update v-if="dialogVisible"
+                      :project-id="projectId"
+                      :platform="1"/>
+  </el-dialog>
+  <el-table :data="pageData['content']" border :row-style="isReadOnly?{cursor:'pointer'}:{}"
+            @row-click="selectCase" style="margin-top: 15px">
     <el-table-column width="80" label="用例Id" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>
       <template #header>

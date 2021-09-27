@@ -1,5 +1,5 @@
 <script setup>
-import {ref, onMounted, onBeforeMount} from "vue";
+import {ref, onMounted} from "vue";
 import {useRouter} from "vue-router";
 import Pageable from "../components/Pageable.vue";
 import axios from "../http/axios";
