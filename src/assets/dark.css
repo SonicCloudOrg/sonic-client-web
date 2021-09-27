@@ -12,6 +12,10 @@
     white-space: nowrap
 }
 
+.sonic-dark .about .el-divider__text {
+    background-color: #545c64 !important;
+}
+
 .sonic-dark .el-menu-vertical-demo {
     border-right: 1px solid #606266 !important;
 }

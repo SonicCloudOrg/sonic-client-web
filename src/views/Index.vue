@@ -2,7 +2,7 @@
 import {onMounted} from "vue";
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
-import Header from "./Header.vue"
+import Header from "../components/Header.vue"
 
 const store = useStore();
 const route = useRoute();

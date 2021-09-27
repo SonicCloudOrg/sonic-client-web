@@ -22,16 +22,161 @@ const step = ref({
   content: "",
   error: 1
 })
+const activityList = ref([{name: ""}])
+const add = () => {
+  activityList.value.push({name: ""});
+}
+const delObj = (data) => {
+  if (activityList.value.length === 0) {
+    return;
+  }
+  for (let i in activityList.value) {
+    const item = activityList.value[i];
+    if (item == data) {
+      activityList.value.splice(i, 1);
+      break;
+    }
+  }
+}
+const monkey = ref({
+  packageName: "",
+  pctNum: 10,
+  options: [
+    {
+      name: "sleepTime",
+      value: 500,
+    },
+    {
+      name: "tapEvent",
+      value: 40,
+    },
+    {
+      name: "longPressEvent",
+      value: 20,
+    },
+    {
+      name: "swipeEvent",
+      value: 40,
+    },
+    {
+      name: "zoomEvent",
+      value: 10,
+    },
+    {
+      name: "systemEvent",
+      value: 5,
+    },
+    {
+      name: "navEvent",
+      value: 5,
+    },
+    {
+      name: "isOpenH5Listener",
+      value: true,
+    },
+    {
+      name: "isOpenPackageListener",
+      value: true,
+    },
+    {
+      name: "isOpenActivityListener",
+      value: true,
+    },
+    {
+      name: "isOpenNetworkListener",
+      value: true,
+    },
+    {
+      name: "isOpenImageListener",
+      value: true,
+    },
+  ],
+})
+const monkeyOptions = {
+  sleepTime: {
+    label: "用户操作时延",
+    des: "指定事件间的时延，单位ms",
+  },
+  tapEvent: {
+    label: "轻触事件权重",
+    des: "随机坐标轻触",
+  },
+  longPressEvent: {
+    label: "长按事件权重",
+    des: "随机坐标长按1～3秒",
+  },
+  swipeEvent: {
+    label: "滑动事件权重",
+    des: "随机两个坐标滑动",
+  },
+  zoomEvent: {
+    label: "多点触控事件权重",
+    des: "随机双指放大或缩小",
+  },
+  systemEvent: {
+    label: "物理按键事件权重",
+    des: "Home、返回、音量控制键等等",
+  },
+  navEvent: {
+    label: "系统导航事件权重",
+    des: "随机开关WIFI、飞行模式、定位",
+  },
+  isOpenH5Listener: {
+    label: "H5页面监听器",
+    des: "检测是否长时间停留在H5页面",
+  },
+  isOpenPackageListener: {
+    label: "应用包名监听器",
+    des: "检测当前应用是否为被测应用",
+  },
+  isOpenActivityListener: {
+    label: "黑名单Activity监听器",
+    des: "检测当前Activity是否在黑名单内",
+  },
+  isOpenNetworkListener: {
+    label: "网络状态监听器",
+    des: "检测设备是否处于飞行模式和WIFI网络",
+  },
+  isOpenImageListener: {
+    label: "图像静止监听器",
+    des: "检测当前图像是否长期处于静止",
+  },
+}
 const stepForm = ref(null)
 const changeType = (e) => {
   step.value.text = "";
   step.value.elements = [];
   step.value.content = "";
+  activityList.value = [{name: ""}]
+}
+const isShowInputNumber = (data) => {
+  if (data === "isOpenH5Listener"
+      || data === "isOpenPackageListener"
+      || data === "isOpenActivityListener"
+      || data === "isOpenNetworkListener"
+      || data === "isOpenImageListener") {
+    return false;
+  } else {
+    return true;
+  }
+}
+const removeEmpty = (data) => {
+  for (let i in data) {
+    const item = data[i];
+    if (item.name === "") {
+      data.splice(i, 1);
+    }
+  }
 }
 const emit = defineEmits(['flush']);
 const summitStep = () => {
   stepForm['value'].validate((valid) => {
     if (valid) {
+      if (step.value.stepType === 'monkey') {
+        removeEmpty(activityList.value)
+        step.value.text = JSON.stringify(activityList.value);
+        step.value.content = JSON.stringify(monkey.value);
+      }
       axios.put("/controller/steps", step.value).then(resp => {
         if (resp['code'] === 2000) {
           ElMessage.success({
@@ -65,6 +210,10 @@ const getStepInfo = (id) => {
         || step.value.stepType === 'longPress'
         || step.value.stepType === 'checkImage') {
       step.value.content = parseInt(step.value.content);
+    }
+    if (step.value.stepType === 'monkey') {
+      monkey.value = JSON.parse(step.value.content);
+      activityList.value = JSON.parse(step.value.text);
     }
   })
 }
@@ -716,6 +865,134 @@ onMounted(() => {
         ></el-input-number>
         ms
       </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'monkey'">
+      <el-form
+          :model="monkey"
+          label-position="left"
+          label-width="90px"
+          class="demo-table-expand"
+          size="small"
+      >
+        <el-form-item label="测试包名">
+          <el-input
+              size="small"
+              type="text"
+              v-model="monkey.packageName"
+              placeholder="请输入测试包名"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="事件数量">
+          <el-input-number
+              style="width: 100%"
+              size="small"
+              v-model="monkey.pctNum"
+              :min="10"
+              :step="10"
+          ></el-input-number>
+        </el-form-item>
+        <el-form-item style="margin-top: 10px" label="事件配置">
+          <el-tabs type="border-card" stretch>
+            <el-tab-pane label="详细配置">
+              <el-table
+                  :data="monkey.options"
+                  border
+                  :show-header="false"
+              >
+                <el-table-column>
+                  <template #default="scope">
+                    <el-popover
+                        placement="top"
+                        :width="200"
+                        trigger="hover"
+                        :content="monkeyOptions[scope.row.name].des"
+                    >
+                      <template #reference>
+                        <div> {{ monkeyOptions[scope.row.name].label }}</div>
+                      </template>
+                    </el-popover>
+                  </template>
+                </el-table-column>
+                <el-table-column width="190" align="center">
+                  <template #default="scope">
+                    <el-input-number
+                        style="width: 100%"
+                        size="small"
+                        v-if="isShowInputNumber(scope.row.name)"
+                        v-model="scope.row.value"
+                        :min="0"
+                        :step="10"
+                    ></el-input-number>
+                    <el-switch
+                        v-else
+                        v-model="scope.row.value"
+                        active-color="#13ce66"
+                        inactive-color="#ff4949"
+                    >
+                    </el-switch>
+                  </template>
+                </el-table-column>
+                <!--            <el-table-column width="80" align="center">-->
+                <!--              <template slot-scope="scope">-->
+                <!--                <el-button-->
+                <!--                    type="danger"-->
+                <!--                    size="mini"-->
+                <!--                    @click="delObj(monkey.orders, scope.row)"-->
+                <!--                >删除</el-button-->
+                <!--                >-->
+                <!--              </template>-->
+                <!--            </el-table-column>-->
+                <!--            <div-->
+                <!--                slot="append"-->
+                <!--                style="text-align: center; line-height: 50px"-->
+                <!--            >-->
+                <!--              <el-button-->
+                <!--                  size="mini"-->
+                <!--                  @click="addParent(monkey.orders)"-->
+                <!--              >新增参数</el-button-->
+                <!--              >-->
+                <!--              <el-button size="mini" @click="useStar()"-->
+                <!--              >推荐模版</el-button-->
+                <!--              >-->
+                <!--            </div>-->
+              </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="Activity黑名单">
+              <el-table
+                  :data="activityList"
+                  border
+                  :show-header="false"
+              >
+                <el-table-column>
+                  <template #default="scope">
+                    <el-input v-model="scope.row.name" placeholder="Please input"/>
+                  </template>
+                </el-table-column>
+                <el-table-column width="80" align="center">
+                  <template #default="scope">
+                    <el-button
+                        type="danger"
+                        size="mini"
+                        @click="delObj(scope.row)"
+                    >删除
+                    </el-button
+                    >
+                  </template>
+                </el-table-column>
+              </el-table>
+              <div style="text-align: center;margin-top: 10px">
+                <el-button
+                    size="mini"
+                    @click="add()"
+                >新增
+                </el-button
+                >
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </el-form-item>
+      </el-form>
     </div>
 
     <el-form-item

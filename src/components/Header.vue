@@ -159,11 +159,11 @@ onMounted(() => {
             </template
             >
             <div style="padding: 0 10px">
-              <!--              <el-divider class="about"-->
-              <!--              ><span class="font title"-->
-              <!--              >个人中心</span-->
-              <!--              ></el-divider-->
-              <!--              >-->
+              <el-divider class="about"
+              ><span class="font title"
+              >个人中心</span
+              ></el-divider
+              >
               <el-menu-item>我的信息</el-menu-item>
               <el-divider class="about"
               ><span

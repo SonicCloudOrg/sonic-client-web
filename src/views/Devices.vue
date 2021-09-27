@@ -1,9 +1,9 @@
 <script setup>
 import {ref, onMounted, onBeforeMount} from "vue";
 import {useRouter} from "vue-router";
-import Pageable from "./Pageable.vue";
+import Pageable from "../components/Pageable.vue";
 import axios from "../http/axios";
-import RenderStatus from "./RenderStatus.vue"
+import RenderStatus from "../components/RenderStatus.vue"
 import {ElMessage} from "element-plus";
 
 const img = import.meta.globEager("./../assets/img/*")

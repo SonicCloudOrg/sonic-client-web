@@ -5,10 +5,10 @@ import {useStore} from "vuex";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import useClipboard from 'vue-clipboard3';
-import StepList from './StepList.vue'
-import TestCaseList from './TestCaseList.vue'
-import StepLog from './StepLog.vue'
-import ElementUpdate from './ElementUpdate.vue'
+import StepList from '../components/StepList.vue'
+import TestCaseList from '../components/TestCaseList.vue'
+import StepLog from '../components/StepLog.vue'
+import ElementUpdate from '../components/ElementUpdate.vue'
 import {
   Download,
   Search,
@@ -1289,10 +1289,12 @@ onMounted(() => {
                 </el-option>
               </el-select>
               <el-button size="mini" type="primary" style="position: absolute;right: 20px">新增用例</el-button>
-              <test-case-list v-if="project!==null"
-                              :project-id="project['id']"
-                              :platform="1"
-                              @select-case="selectCase"></test-case-list>
+              <div style="margin-top: 15px">
+                <test-case-list v-if="project!==null"
+                                :project-id="project['id']"
+                                :platform="1"
+                                @select-case="selectCase"></test-case-list>
+              </div>
             </div>
             <div v-else>
               <el-descriptions title="用例详情" :column="2" size="medium" border>

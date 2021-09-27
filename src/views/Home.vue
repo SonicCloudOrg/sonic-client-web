@@ -2,7 +2,7 @@
 import {onMounted} from "vue";
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
-import Header from "./Header.vue"
+import Header from "../components/Header.vue"
 
 const store = useStore();
 const route = useRoute();
@@ -26,6 +26,7 @@ onMounted(() => {
           :default-active="route.path"
           :unique-opened="true"
           class="el-menu-vertical-demo font"
+          router
       >
         <div class="flex-center" style="margin-bottom: 10px">
           <el-avatar
@@ -49,10 +50,10 @@ onMounted(() => {
           </template>
           <el-sub-menu index="1-4">
             <template #title><i class="el-icon-tickets"></i>测试用例</template>
-            <el-menu-item :index="'/' + route.params.projectId + '/AndroidTestCases'">
+            <el-menu-item :index="'/Home/' + route.params.projectId + '/AndroidTestCase'">
               <i class="el-icon-d-arrow-right"></i>安卓端测试用例
             </el-menu-item>
-            <el-menu-item :index="'/' + route.params.projectId + '/IOSTestCases'">
+            <el-menu-item :index="'/Home/' + route.params.projectId + '/IOSTestCase'">
               <i class="el-icon-d-arrow-right"></i>iOS端测试用例
             </el-menu-item>
           </el-sub-menu>
