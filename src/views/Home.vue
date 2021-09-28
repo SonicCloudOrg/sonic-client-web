@@ -53,14 +53,14 @@ onMounted(() => {
             <el-menu-item :index="'/Home/' + route.params.projectId + '/AndroidTestCase'">
               <i class="el-icon-d-arrow-right"></i>安卓端测试用例
             </el-menu-item>
-            <el-menu-item :index="'/Home/' + route.params.projectId + '/IOSTestCase'">
+            <el-menu-item :index="'/Home/' + route.params.projectId + '/IOSTestCase'" disabled>
               <i class="el-icon-d-arrow-right"></i>iOS端测试用例
             </el-menu-item>
           </el-sub-menu>
-          <el-menu-item :index="'/' + route.params.projectId + '/TestSuites'">
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/TestSuites'">
             <i class="el-icon-document-copy"></i>测试套件
           </el-menu-item>
-          <el-menu-item :index="'/' + route.params.projectId + '/Jobs'">
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/Jobs'">
             <i class="el-icon-timer"></i>定时任务
           </el-menu-item>
         </el-sub-menu>
@@ -70,13 +70,13 @@ onMounted(() => {
             <i class="el-icon-lock"></i>
             <span>测试数据管理</span>
           </template>
-          <el-menu-item :index="'/' + route.params.projectId + '/Elements'">
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/Elements'">
             <i class="el-icon-thumb"></i>元素管理
           </el-menu-item>
-          <el-menu-item :index="'/' + route.params.projectId + '/PublicStep'">
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/PublicStep'">
             <i class="el-icon-star-off"></i>公共步骤
           </el-menu-item>
-          <el-menu-item :index="'/' + route.params.projectId + '/GlobalParams'">
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/GlobalParams'">
             <i class="el-icon-user"></i>全局参数
           </el-menu-item>
         </el-sub-menu>
@@ -86,7 +86,7 @@ onMounted(() => {
             <i class="el-icon-paperclip"></i>
             <span>测试结果分析</span>
           </template>
-          <el-menu-item :index="'/' + route.params.projectId + '/Results'">
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/Results'">
             <i class="el-icon-s-data"></i>测试结果
           </el-menu-item>
         </el-sub-menu>
@@ -96,8 +96,11 @@ onMounted(() => {
             <i class="el-icon-connection"></i>
             <span>持续集成设置</span>
           </template>
-          <el-menu-item :index="'/' + route.params.projectId + '/InstallPackage'">
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/InstallPackage'" disabled>
             <i class="el-icon-sold-out"></i>批量装包
+          </el-menu-item>
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/Crash'" disabled>
+            <i class="el-icon-position"></i>崩溃上报
           </el-menu-item>
         </el-sub-menu>
 
@@ -106,13 +109,13 @@ onMounted(() => {
             <i class="el-icon-setting"></i>
             <span>项目高级设置</span>
           </template>
-          <el-menu-item :index="'/' + route.params.projectId + '/Modules'">
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/Modules'">
             <i class="el-icon-price-tag"></i>模块管理
           </el-menu-item>
-          <el-menu-item :index="'/' + route.params.projectId + '/Versions'">
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/Versions'">
             <i class="el-icon-coin"></i>迭代管理
           </el-menu-item>
-          <el-menu-item :index="'/' + route.params.projectId + '/ProjectOption'">
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/ProjectOption'">
             <i class="el-icon-key"></i>其他设置
           </el-menu-item>
         </el-sub-menu>

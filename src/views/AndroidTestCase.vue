@@ -10,6 +10,6 @@ const platform = 1
 
 </script>
 <template>
-  <el-button size="mini" round @click="caseList.open()" type="primary" style="float: right;margin-bottom: 15px">添加用例</el-button>
+  <el-button size="mini" round @click="caseList.open()" type="primary">添加用例</el-button>
   <test-case-list ref="caseList" :project-id="projectId" :platform="platform" :is-read-only="false"/>
 </template>
