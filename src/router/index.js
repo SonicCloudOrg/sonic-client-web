@@ -47,7 +47,7 @@ const routes = [
                 path: 'Test',
                 name: 'Test',
                 component: () =>
-                    import ("../components/Test.vue"),
+                    import ("../views/Test.vue"),
                 meta: {title: "设备中心"}
             },
             {
@@ -56,6 +56,13 @@ const routes = [
                 component: () =>
                     import ("../views/AndroidTestCase.vue"),
                 meta: {title: "安卓测试用例"}
+            },
+            {
+                path: 'TestSuites',
+                name: 'TestSuites',
+                component: () =>
+                    import ("../views/TestSuites.vue"),
+                meta: {title: "测试套件"}
             }
         ]
     }

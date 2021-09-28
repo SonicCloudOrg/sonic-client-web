@@ -10,6 +10,7 @@ import {ElMessage} from "element-plus";
 const props = defineProps({
   caseId: Number,
   projectId: Number,
+  platform: Number,
   isDriverFinish: Boolean
 })
 const emit = defineEmits(['runStep'])
@@ -95,11 +96,12 @@ onMounted(() => {
   <el-dialog v-model="dialogVisible" title="步骤信息" width="600px">
     <step-update v-if="dialogVisible" :step-id="stepId" :case-id="caseId"
                  :project-id="projectId"
-                 :platform="1" @flush="flush"></step-update>
+                 :platform="platform" @flush="flush"></step-update>
   </el-dialog>
   <div style="margin-bottom: 10px;text-align: center">
     <el-button-group>
-      <el-button type="success" size="mini" :disabled="!isDriverFinish" @click="runStep">开始运行</el-button>
+      <el-button type="success" size="mini" :disabled="(!isDriverFinish)&&steps.length>0" @click="runStep">开始运行
+      </el-button>
       <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
     </el-button-group>
   </div>
@@ -157,7 +159,6 @@ onMounted(() => {
                   circle
                   type="danger"
                   size="mini"
-                  slot="reference"
               >
                 <el-icon :size="13" style="vertical-align: middle;">
                   <Delete/>

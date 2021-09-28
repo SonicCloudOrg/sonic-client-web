@@ -43,6 +43,7 @@ const {toClipboard} = useClipboard();
 const route = useRoute()
 const store = useStore()
 const router = useRouter()
+const caseList = ref(null)
 const loading = ref(false)
 const device = ref({})
 const agent = ref({})
@@ -1288,12 +1289,15 @@ onMounted(() => {
                   </div>
                 </el-option>
               </el-select>
-              <el-button size="mini" type="primary" style="position: absolute;right: 20px">新增用例</el-button>
-                <test-case-list v-if="project!==null"
-                                :project-id="project['id']"
-                                :platform="1"
-                                :is-read-only="true"
-                                @select-case="selectCase"></test-case-list>
+              <el-button size="mini" type="primary" round style="position: absolute;right: 20px"
+                         @click="caseList.open()">
+                新增用例
+              </el-button>
+              <test-case-list ref="caseList" v-if="project!==null"
+                              :project-id="project['id']"
+                              :platform="1"
+                              :is-read-only="true"
+                              @select-case="selectCase"></test-case-list>
             </div>
             <div v-else>
               <el-descriptions title="用例详情" :column="2" size="medium" border>
@@ -1336,7 +1340,8 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane label="UI自动化" name="step">
             <div v-if="testCase['id']">
-              <step-list :is-driver-finish="isDriverFinish" :case-id="testCase['id']" :project-id="project['id']"
+              <step-list :platform="1" :is-driver-finish="isDriverFinish" :case-id="testCase['id']"
+                         :project-id="project['id']"
                          @runStep="runStep"/>
             </div>
             <el-card style="height: 100%" v-else>
