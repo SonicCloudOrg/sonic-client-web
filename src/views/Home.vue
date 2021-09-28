@@ -96,8 +96,11 @@ onMounted(() => {
             <i class="el-icon-connection"></i>
             <span>持续集成设置</span>
           </template>
-          <el-menu-item :index="'/Home/' + route.params.projectId + '/InstallPackage'">
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/InstallPackage'" disabled>
             <i class="el-icon-sold-out"></i>批量装包
+          </el-menu-item>
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/Crash'" disabled>
+            <i class="el-icon-position"></i>崩溃上报
           </el-menu-item>
         </el-sub-menu>
 
