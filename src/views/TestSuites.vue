@@ -45,11 +45,12 @@ const getImg = (name) => {
   }
   return result;
 }
+const agentList = ref([])
 const platformList = [{name: "安卓", value: 1, img: "ANDROID"}
   , {name: "iOS（暂不开放）", value: 2, img: "IOS", disabled: true}
   , {name: "WEB（暂不开放）", value: 5, img: "chrome", disabled: true}]
 const deviceData = ref({})
-const devicePageSize = ref(2)
+const devicePageSize = ref(10)
 const getDevice = (pageNum, pSize) => {
   axios
       .get("/controller/devices/list", {
@@ -64,6 +65,22 @@ const getDevice = (pageNum, pSize) => {
         }
       });
 }
+const findAgentById = (id) => {
+  let result = '未知'
+  for (let i in agentList.value) {
+    if (agentList.value[i].id === id) {
+      result = agentList.value[i].name
+      break
+    }
+  }
+  return result
+}
+const getAllAgents = () => {
+  axios
+      .get("/controller/agents/list").then((resp) => {
+    agentList.value = resp.data
+  })
+}
 const getTestSuiteList = () => {
 
 }
@@ -75,104 +92,153 @@ const editSuite = (id) => {
 }
 onMounted(() => {
   getDevice()
+  getAllAgents()
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="测试套件信息" width="600px">
-    <el-form
-        v-if="dialogVisible"
-        label-position="left"
-        class="demo-table-expand"
-        label-width="90px"
-        ref="suiteForm"
-        :model="testSuite"
-        size="small"
-    >
-      <el-form-item
-          prop="name"
-          label="套件名称"
-          :rules="{
+  <el-dialog v-model="dialogVisible" title="测试套件信息" width="90%">
+    <el-row>
+      <el-col :span="10">
+        <el-form
+            v-if="dialogVisible"
+            label-position="left"
+            class="demo-table-expand"
+            label-width="90px"
+            ref="suiteForm"
+            :model="testSuite"
+            size="small"
+        >
+          <el-form-item
+              prop="name"
+              label="套件名称"
+              :rules="{
             required: true,
             message: '请填写套件名称',
             trigger: 'blur',
           }"
-      >
-        <el-input v-model="testSuite.name" size="mini" placeholder="输入套件名称"/>
-      </el-form-item>
-      <el-form-item
-          prop="projectId"
-          label="所属项目"
-          :rules="{
+          >
+            <el-input v-model="testSuite.name" size="mini" placeholder="输入套件名称"/>
+          </el-form-item>
+          <el-form-item
+              prop="projectId"
+              label="所属项目"
+              :rules="{
             required: true,
             message: '请选择项目',
             trigger: 'change',
           }"
-      >
-        <el-select
-            v-model="testSuite.projectId"
-            placeholder="请选择项目"
-        >
-          <el-option
-              v-for="item in store.state.projectList"
-              :key="item.id"
-              :value="item.id"
-              :label="item['projectName']"
           >
-            <div style=" display: flex;align-items: center;">
-              <el-avatar
-                  style="margin-right: 10px"
-                  :size="32"
-                  :src="item['projectImg']"
-                  shape="square"
-              ></el-avatar
+            <el-select
+                v-model="testSuite.projectId"
+                placeholder="请选择项目"
+            >
+              <el-option
+                  v-for="item in store.state.projectList"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="item['projectName']"
               >
-              {{ item['projectName'] }}
-            </div>
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item
-          prop="platform"
-          label="平台"
-          :rules="{
+                <div style=" display: flex;align-items: center;">
+                  <el-avatar
+                      style="margin-right: 10px"
+                      :size="32"
+                      :src="item['projectImg']"
+                      shape="square"
+                  ></el-avatar
+                  >
+                  {{ item['projectName'] }}
+                </div>
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item
+              prop="platform"
+              label="平台"
+              :rules="{
             required: true,
             message: '请选择平台',
             trigger: 'change',
           }"
-      >
-        <el-select
-            v-model="testSuite.platform"
-            placeholder="请选择平台"
-        >
-          <el-option
-              v-for="item in platformList"
-              :key="item.name"
-              :value="item.value"
-              :label="item.name"
-              :disabled="item['disabled']"
           >
-            <div style="display: flex;align-items: center;justify-content: center">
-              <el-avatar
-                  style="margin-right: 10px"
-                  :size="32"
-                  :src="getImg(item.img)"
-                  shape="square"
-              ></el-avatar
+            <el-select
+                v-model="testSuite.platform"
+                placeholder="请选择平台"
+            >
+              <el-option
+                  v-for="item in platformList"
+                  :key="item.name"
+                  :value="item.value"
+                  :label="item.name"
+                  :disabled="item['disabled']"
               >
-              {{ item.name }}
-            </div>
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-table
-          ref="multipleTable"
-          :data="deviceData['content']"
-          style="width: 100%"
-      >
-        <el-table-column type="selection" width="55" />
-        <el-table-column label="设备id" prop="id" width="120"/>
-      </el-table>
-    </el-form>
+                <div style="display: flex;align-items: center;justify-content: center">
+                  <el-avatar
+                      style="margin-right: 10px"
+                      :size="32"
+                      :src="getImg(item.img)"
+                      shape="square"
+                  ></el-avatar
+                  >
+                  {{ item.name }}
+                </div>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-col :span="14">
+        <el-table
+            ref="multipleTable"
+            :data="deviceData['content']"
+            style="width: 100%"
+            border
+        >
+          <el-table-column align="center" type="selection" width="35"/>
+          <el-table-column label="设备图片" align="center" width="80">
+            <template #default="scope">
+              <el-image
+                  style="
+                      position: absolute;
+                      top: 7px;
+                      bottom: 7px;
+                      left: 7px;
+                      right: 7px;
+                      margin: auto;
+                    "
+                  fit="contain"
+                  :src="getImg(scope.row.model)"
+                  :preview-src-list="[getImg(scope.row.model)]"
+                  hide-on-click-modal
+              >
+              </el-image>
+            </template>
+          </el-table-column>
+          <el-table-column label="设备序列号" align="center" prop="udId" show-overflow-tooltip/>
+          <el-table-column label="设备型号" align="center" prop="model" width="120"/>
+          <el-table-column label="制造商" align="center" width="120">
+            <template #default="scope">
+              <img
+                  v-if="
+                  scope.row.manufacturer === 'HUAWEI' || scope.row.manufacturer === 'samsung' || scope.row.manufacturer === 'OnePlus'||scope.row.manufacturer === 'GIONEE'
+                "
+                  style="width: 80px"
+                  :src="getImg(scope.row.manufacturer)"
+              />
+              <img
+                  v-else-if="scope.row.manufacturer === 'Xiaomi' ||scope.row.manufacturer === 'APPLE'"
+                  style="width: 30px"
+                  :src="getImg(scope.row.manufacturer)"
+              />
+              <img
+                  v-else
+                  style="width: 70px"
+                  :src="getImg(scope.row.manufacturer)"
+              />
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
     <div style="text-align: center;margin-top: 20px">
       <el-button @click="summit" size="small" type="primary">提交</el-button>
     </div>
