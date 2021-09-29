@@ -1,9 +1,69 @@
 <script setup>
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
+import {useStore} from "vuex";
+import axios from "../http/axios";
 
+const img = import.meta.globEager("./../assets/img/*")
 const pageData = ref({})
 const dialogVisible = ref(false)
 const name = ref("")
+const store = useStore()
+const currentPage = ref(0)
+const testSuite = ref({
+  id: null,
+  name: "",
+  platform: null,
+  projectId: store.state.project.id,
+  moduleThread: 1,
+  caseThread: 1,
+  deviceThread: 10,
+  devices: [{
+    "id": 2,
+    "name": "ddddd",
+    "model": "Redmi Note 5",
+    "udId": "333333",
+    "status": "OFFLINE",
+    "agentId": 1,
+    "platform": 1,
+    "size": "1080x720",
+    "version": "7",
+    "cpu": "arm",
+    "manufacturer": "Xiaomi",
+    "password": "123"
+  }],
+  testCases: []
+})
+const test = () => {
+  console.log(testSuite.value.devices)
+}
+const getImg = (name) => {
+  let result;
+  try {
+    result = img['./../assets/img/' + name + '.jpg'].default
+  } catch {
+    result = img['./../assets/img/unName.jpg'].default
+  }
+  return result;
+}
+const platformList = [{name: "安卓", value: 1, img: "ANDROID"}
+  , {name: "iOS（暂不开放）", value: 2, img: "IOS", disabled: true}
+  , {name: "WEB（暂不开放）", value: 5, img: "chrome", disabled: true}]
+const deviceData = ref({})
+const devicePageSize = ref(2)
+const getDevice = (pageNum, pSize) => {
+  axios
+      .get("/controller/devices/list", {
+        params: {
+          page: pageNum || 1,
+          pageSize: pSize || devicePageSize.value
+        },
+      })
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          deviceData.value = resp.data;
+        }
+      });
+}
 const getTestSuiteList = () => {
 
 }
@@ -13,15 +73,111 @@ const deleteSuite = (id) => {
 const editSuite = (id) => {
 
 }
+onMounted(() => {
+  getDevice()
+})
 </script>
 <template>
   <el-dialog v-model="dialogVisible" title="测试套件信息" width="600px">
-    <!--    <test-case-update v-if="dialogVisible"-->
-    <!--                      :project-id="projectId"-->
-    <!--                      :case-id="caseId"-->
-    <!--                      :platform="platform" @flush="flush"/>-->
+    <el-form
+        v-if="dialogVisible"
+        label-position="left"
+        class="demo-table-expand"
+        label-width="90px"
+        ref="suiteForm"
+        :model="testSuite"
+        size="small"
+    >
+      <el-form-item
+          prop="name"
+          label="套件名称"
+          :rules="{
+            required: true,
+            message: '请填写套件名称',
+            trigger: 'blur',
+          }"
+      >
+        <el-input v-model="testSuite.name" size="mini" placeholder="输入套件名称"/>
+      </el-form-item>
+      <el-form-item
+          prop="projectId"
+          label="所属项目"
+          :rules="{
+            required: true,
+            message: '请选择项目',
+            trigger: 'change',
+          }"
+      >
+        <el-select
+            v-model="testSuite.projectId"
+            placeholder="请选择项目"
+        >
+          <el-option
+              v-for="item in store.state.projectList"
+              :key="item.id"
+              :value="item.id"
+              :label="item['projectName']"
+          >
+            <div style=" display: flex;align-items: center;">
+              <el-avatar
+                  style="margin-right: 10px"
+                  :size="32"
+                  :src="item['projectImg']"
+                  shape="square"
+              ></el-avatar
+              >
+              {{ item['projectName'] }}
+            </div>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+          prop="platform"
+          label="平台"
+          :rules="{
+            required: true,
+            message: '请选择平台',
+            trigger: 'change',
+          }"
+      >
+        <el-select
+            v-model="testSuite.platform"
+            placeholder="请选择平台"
+        >
+          <el-option
+              v-for="item in platformList"
+              :key="item.name"
+              :value="item.value"
+              :label="item.name"
+              :disabled="item['disabled']"
+          >
+            <div style="display: flex;align-items: center;justify-content: center">
+              <el-avatar
+                  style="margin-right: 10px"
+                  :size="32"
+                  :src="getImg(item.img)"
+                  shape="square"
+              ></el-avatar
+              >
+              {{ item.name }}
+            </div>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-table
+          ref="multipleTable"
+          :data="deviceData['content']"
+          style="width: 100%"
+      >
+        <el-table-column type="selection" width="55" />
+        <el-table-column label="设备id" prop="id" width="120"/>
+      </el-table>
+    </el-form>
+    <div style="text-align: center;margin-top: 20px">
+      <el-button @click="summit" size="small" type="primary">提交</el-button>
+    </div>
   </el-dialog>
-  <el-button size="mini" round type="primary">添加测试套件</el-button>
+  <el-button size="mini" round type="primary" @click="dialogVisible = true">添加测试套件</el-button>
   <el-table :data="pageData['content']" border style="margin-top: 15px">
     <el-table-column width="80" label="套件Id" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>
