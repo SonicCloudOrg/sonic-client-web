@@ -45,41 +45,32 @@ const getImg = (name) => {
   }
   return result;
 }
-const agentList = ref([])
 const platformList = [{name: "安卓", value: 1, img: "ANDROID"}
   , {name: "iOS（暂不开放）", value: 2, img: "IOS", disabled: true}
   , {name: "WEB（暂不开放）", value: 5, img: "chrome", disabled: true}]
-const deviceData = ref({})
-const devicePageSize = ref(10)
-const getDevice = (pageNum, pSize) => {
+const deviceData = ref([])
+const getDevice = (platform) => {
   axios
-      .get("/controller/devices/list", {
-        params: {
-          page: pageNum || 1,
-          pageSize: pSize || devicePageSize.value
-        },
-      })
+      .get("/controller/devices/listAll", {params: {platform}})
       .then((resp) => {
         if (resp['code'] === 2000) {
           deviceData.value = resp.data;
         }
       });
 }
-const findAgentById = (id) => {
-  let result = '未知'
-  for (let i in agentList.value) {
-    if (agentList.value[i].id === id) {
-      result = agentList.value[i].name
-      break
-    }
-  }
-  return result
-}
-const getAllAgents = () => {
+const testCaseData = ref([])
+const getTestCaseList = (platform) => {
   axios
-      .get("/controller/agents/list").then((resp) => {
-    agentList.value = resp.data
-  })
+      .get("/controller/testCases/listAll", {params: {platform}})
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          testCaseData.value = resp.data;
+        }
+      });
+}
+const getSource = (platform) => {
+  getDevice(platform);
+  getTestCaseList(platform)
 }
 const getTestSuiteList = () => {
 
@@ -90,155 +81,189 @@ const deleteSuite = (id) => {
 const editSuite = (id) => {
 
 }
+const c = (e) => {
+  console.log(e)
+}
 onMounted(() => {
-  getDevice()
-  getAllAgents()
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="测试套件信息" width="90%">
-    <el-row>
-      <el-col :span="10">
-        <el-form
-            v-if="dialogVisible"
-            label-position="left"
-            class="demo-table-expand"
-            label-width="90px"
-            ref="suiteForm"
-            :model="testSuite"
-            size="small"
-        >
-          <el-form-item
-              prop="name"
-              label="套件名称"
-              :rules="{
+  <el-dialog v-model="dialogVisible" title="测试套件信息" width="550px">
+    <el-form
+        v-if="dialogVisible"
+        label-position="left"
+        class="demo-table-expand"
+        label-width="90px"
+        ref="suiteForm"
+        :model="testSuite"
+        size="small"
+    >
+      <el-form-item
+          prop="name"
+          label="套件名称"
+          :rules="{
             required: true,
             message: '请填写套件名称',
             trigger: 'blur',
           }"
-          >
-            <el-input v-model="testSuite.name" size="mini" placeholder="输入套件名称"/>
-          </el-form-item>
-          <el-form-item
-              prop="projectId"
-              label="所属项目"
-              :rules="{
+      >
+        <el-input v-model="testSuite.name" size="mini" placeholder="输入套件名称"/>
+      </el-form-item>
+      <el-form-item
+          prop="projectId"
+          label="所属项目"
+          :rules="{
             required: true,
             message: '请选择项目',
             trigger: 'change',
           }"
+      >
+        <el-select
+            style="width: 100%"
+            v-model="testSuite.projectId"
+            placeholder="请选择项目"
+        >
+          <el-option
+              v-for="item in store.state.projectList"
+              :key="item.id"
+              :value="item.id"
+              :label="item['projectName']"
           >
-            <el-select
-                v-model="testSuite.projectId"
-                placeholder="请选择项目"
-            >
-              <el-option
-                  v-for="item in store.state.projectList"
-                  :key="item.id"
-                  :value="item.id"
-                  :label="item['projectName']"
+            <div style=" display: flex;align-items: center;">
+              <el-avatar
+                  style="margin-right: 10px"
+                  :size="32"
+                  :src="item['projectImg']"
+                  shape="square"
+              ></el-avatar
               >
-                <div style=" display: flex;align-items: center;">
-                  <el-avatar
-                      style="margin-right: 10px"
-                      :size="32"
-                      :src="item['projectImg']"
-                      shape="square"
-                  ></el-avatar
-                  >
-                  {{ item['projectName'] }}
-                </div>
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-              prop="platform"
-              label="平台"
-              :rules="{
+              {{ item['projectName'] }}
+            </div>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="模块并发数">
+        <el-slider
+            v-model="testSuite.moduleThread"
+            :step="1"
+            :max="10"
+            :min="1"
+            show-stops
+        ></el-slider>
+      </el-form-item>
+      <el-form-item label="用例并发数">
+        <el-slider
+            v-model="testSuite.caseThread"
+            :step="1"
+            :max="10"
+            :min="1"
+            show-stops
+        ></el-slider>
+      </el-form-item>
+      <el-form-item label="设备并发数">
+        <el-slider
+            v-model="testSuite.deviceThread"
+            :step="1"
+            :max="20"
+            :min="1"
+            show-stops
+        ></el-slider>
+      </el-form-item>
+      <el-form-item
+          prop="platform"
+          label="平台"
+          :rules="{
             required: true,
             message: '请选择平台',
             trigger: 'change',
           }"
-          >
-            <el-select
-                v-model="testSuite.platform"
-                placeholder="请选择平台"
-            >
-              <el-option
-                  v-for="item in platformList"
-                  :key="item.name"
-                  :value="item.value"
-                  :label="item.name"
-                  :disabled="item['disabled']"
-              >
-                <div style="display: flex;align-items: center;justify-content: center">
-                  <el-avatar
-                      style="margin-right: 10px"
-                      :size="32"
-                      :src="getImg(item.img)"
-                      shape="square"
-                  ></el-avatar
-                  >
-                  {{ item.name }}
-                </div>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-      </el-col>
-      <el-col :span="14">
-        <el-table
-            ref="multipleTable"
-            :data="deviceData['content']"
+      >
+        <el-select
             style="width: 100%"
-            border
+            v-model="testSuite.platform"
+            placeholder="请选择平台"
+            @change="getSource"
         >
-          <el-table-column align="center" type="selection" width="35"/>
-          <el-table-column label="设备图片" align="center" width="80">
-            <template #default="scope">
-              <el-image
-                  style="
-                      position: absolute;
-                      top: 7px;
-                      bottom: 7px;
-                      left: 7px;
-                      right: 7px;
-                      margin: auto;
-                    "
-                  fit="contain"
-                  :src="getImg(scope.row.model)"
-                  :preview-src-list="[getImg(scope.row.model)]"
-                  hide-on-click-modal
+          <el-option
+              v-for="item in platformList"
+              :key="item.name"
+              :value="item.value"
+              :label="item.name"
+              :disabled="item['disabled']"
+          >
+            <div style="display: flex;align-items: center;justify-content: center">
+              <el-avatar
+                  style="margin-right: 10px"
+                  :size="32"
+                  :src="getImg(item.img)"
+                  shape="square"
+              ></el-avatar
               >
-              </el-image>
-            </template>
-          </el-table-column>
-          <el-table-column label="设备序列号" align="center" prop="udId" show-overflow-tooltip/>
-          <el-table-column label="设备型号" align="center" prop="model" width="120"/>
-          <el-table-column label="制造商" align="center" width="120">
-            <template #default="scope">
-              <img
-                  v-if="
-                  scope.row.manufacturer === 'HUAWEI' || scope.row.manufacturer === 'samsung' || scope.row.manufacturer === 'OnePlus'||scope.row.manufacturer === 'GIONEE'
-                "
-                  style="width: 80px"
-                  :src="getImg(scope.row.manufacturer)"
-              />
-              <img
-                  v-else-if="scope.row.manufacturer === 'Xiaomi' ||scope.row.manufacturer === 'APPLE'"
-                  style="width: 30px"
-                  :src="getImg(scope.row.manufacturer)"
-              />
-              <img
-                  v-else
-                  style="width: 70px"
-                  :src="getImg(scope.row.manufacturer)"
-              />
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
+              {{ item.name }}
+            </div>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="关联设备" v-if="testSuite.platform!==null">
+        <el-select value-key="id"
+                   collapse-tags
+                   filterable
+                   style="width: 100%"
+                   v-model="testSuite.devices"
+                   multiple placeholder="请选择测试设备">
+          <el-option
+              v-for="item in deviceData"
+              :key="item.id"
+              :label="item.model"
+              :value="item"
+          >
+            <el-image
+                style="height: 80%;float: left"
+                fit="contain"
+                :src="getImg(item.model)"
+            >
+            </el-image>
+            <span style="float: left;margin-left: 10px">{{ item.model }}</span>
+            <span style="
+            margin-left: 15px;
+          float: right;
+          color: #909399;
+          font-size: 13px;
+           font-style: italic;
+        "
+            >{{ item.udId }}</span
+            >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="关联用例" v-if="testSuite.platform!==null">
+        <el-select value-key="id"
+                   collapse-tags
+                   filterable
+                   style="width: 100%"
+                   v-model="testSuite.testCases"
+                   multiple placeholder="请选择测试用例">
+          <el-option
+              v-for="item in testCaseData"
+              :key="item.id"
+              :label="item.name"
+              :value="item"
+          >
+            <span style="float: left;">{{ item.name }}</span>
+            <span style="
+            margin-left: 15px;
+          float: right;
+          color: #909399;
+          font-size: 13px;
+           font-style: italic;
+        "
+            >{{ item['editTime'] }}</span
+            >
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
+
     <div style="text-align: center;margin-top: 20px">
       <el-button @click="summit" size="small" type="primary">提交</el-button>
     </div>
@@ -248,7 +273,7 @@ onMounted(() => {
     <el-table-column width="80" label="套件Id" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>
       <template #header>
-        <el-input v-model="name" size="mini" @input="getTestSuiteList()" placeholder="输入测试套件名称搜索"/>
+        <el-input v-model="name" size="mini" @input="getTestSuiteList" placeholder="输入测试套件名称搜索"/>
       </template>
     </el-table-column>
     <el-table-column label="套件平台" min-width="110" align="center">
