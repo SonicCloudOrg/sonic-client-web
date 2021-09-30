@@ -9,7 +9,7 @@
     "dependencies": {
         "@element-plus/icons": "0.0.11",
         "axios": "^0.21.4",
-        "element-plus": "^1.1.0-beta.17",
+        "element-plus": "^1.1.0-beta.18",
         "vue": "^3.2.14",
         "vue-clipboard3": "^1.0.1",
         "vue-draggable-next": "^2.0.1",

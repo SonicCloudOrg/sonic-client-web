@@ -771,7 +771,7 @@ onMounted(() => {
                   <el-form-item label="设备型号">
                     <span>{{ device['model'] }}</span>
                   </el-form-item>
-                  <el-form-item label="设备UDID">
+                  <el-form-item label="设备序列号">
                     <span>{{ device['udId'] }}</span>
                   </el-form-item>
                   <el-form-item label="设备系统">
