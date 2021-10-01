@@ -1,268 +1,57 @@
 <script setup>
-import {onMounted, ref} from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import {useStore} from "vuex";
 import axios from "../http/axios";
+import {ElMessage} from "element-plus";
+import TestSuiteUpdate from '../components/TestSuiteUpdate.vue'
 
-const img = import.meta.globEager("./../assets/img/*")
 const pageData = ref({})
+const pageSize = ref(15)
 const dialogVisible = ref(false)
 const name = ref("")
 const store = useStore()
 const currentPage = ref(0)
-const testSuite = ref({
-  id: null,
-  name: "",
-  platform: null,
-  cover: 1,
-  projectId: store.state.project.id,
-  devices: [{
-    "id": 2,
-    "name": "ddddd",
-    "model": "Redmi Note 5",
-    "udId": "333333",
-    "status": "OFFLINE",
-    "agentId": 1,
-    "platform": 1,
-    "size": "1080x720",
-    "version": "7",
-    "cpu": "arm",
-    "manufacturer": "Xiaomi",
-    "password": "123"
-  }],
-  testCases: []
-})
-const test = () => {
-  console.log(testSuite.value.devices)
+const suiteId = ref(0)
+const open = () => {
+  dialogVisible.value = true
 }
-const getImg = (name) => {
-  let result;
-  try {
-    result = img['./../assets/img/' + name + '.jpg'].default
-  } catch {
-    result = img['./../assets/img/unName.jpg'].default
-  }
-  return result;
-}
-const platformList = [{name: "安卓", value: 1, img: "ANDROID"}
-  , {name: "iOS（暂不开放）", value: 2, img: "IOS", disabled: true}
-  , {name: "WEB（暂不开放）", value: 5, img: "chrome", disabled: true}]
-const deviceData = ref([])
-const getDevice = (platform) => {
-  axios
-      .get("/controller/devices/listAll", {params: {platform}})
-      .then((resp) => {
-        if (resp['code'] === 2000) {
-          deviceData.value = resp.data;
-        }
-      });
-}
-const testCaseData = ref([])
-const getTestCaseList = (platform) => {
-  axios
-      .get("/controller/testCases/listAll", {params: {platform}})
-      .then((resp) => {
-        if (resp['code'] === 2000) {
-          testCaseData.value = resp.data;
-        }
-      });
-}
-const getSource = (platform) => {
-  getDevice(platform);
-  getTestCaseList(platform)
-}
-const getTestSuiteList = () => {
-
+const getTestSuiteList = (pageNum, pSize) => {
+  axios.get("/controller/testSuites/list", {
+    params: {
+      projectId: store.state.project.id,
+      name: name.value,
+      page: pageNum || 1,
+      pageSize: pSize || pageSize.value,
+    }
+  }).then(resp => {
+    pageData.value = resp.data
+  })
 }
 const deleteSuite = (id) => {
 
 }
-const editSuite = (id) => {
-
+const editSuite = async (id) => {
+  suiteId.value = id
+  await open()
 }
-const c = (e) => {
-  console.log(e)
+watch(dialogVisible, (newValue, oldValue) => {
+  if (!newValue) {
+    suiteId.value = 0
+  }
+})
+const flush = () => {
+  dialogVisible.value = false
+  getTestSuiteList();
 }
 onMounted(() => {
+  getTestSuiteList();
 })
 </script>
 <template>
   <el-dialog v-model="dialogVisible" title="测试套件信息" width="550px">
-    <el-form
-        v-if="dialogVisible"
-        label-position="left"
-        class="demo-table-expand"
-        label-width="90px"
-        ref="suiteForm"
-        :model="testSuite"
-        size="small"
-    >
-      <el-form-item
-          prop="name"
-          label="套件名称"
-          :rules="{
-            required: true,
-            message: '请填写套件名称',
-            trigger: 'blur',
-          }"
-      >
-        <el-input v-model="testSuite.name" size="mini" placeholder="输入套件名称"/>
-      </el-form-item>
-      <el-form-item
-          prop="projectId"
-          label="所属项目"
-          :rules="{
-            required: true,
-            message: '请选择项目',
-            trigger: 'change',
-          }"
-      >
-        <el-select
-            style="width: 100%"
-            v-model="testSuite.projectId"
-            placeholder="请选择项目"
-        >
-          <el-option
-              v-for="item in store.state.projectList"
-              :key="item.id"
-              :value="item.id"
-              :label="item['projectName']"
-          >
-            <div style=" display: flex;align-items: center;">
-              <el-avatar
-                  style="margin-right: 10px"
-                  :size="32"
-                  :src="item['projectImg']"
-                  shape="square"
-              ></el-avatar
-              >
-              {{ item['projectName'] }}
-            </div>
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item
-          prop="platform"
-          label="平台"
-          :rules="{
-            required: true,
-            message: '请选择平台',
-            trigger: 'change',
-          }"
-      >
-        <el-select
-            style="width: 100%"
-            v-model="testSuite.platform"
-            placeholder="请选择平台"
-            @change="getSource"
-        >
-          <el-option
-              v-for="item in platformList"
-              :key="item.name"
-              :value="item.value"
-              :label="item.name"
-              :disabled="item['disabled']"
-          >
-            <div style="display: flex;align-items: center;justify-content: center">
-              <el-avatar
-                  style="margin-right: 10px"
-                  :size="32"
-                  :src="getImg(item.img)"
-                  shape="square"
-              ></el-avatar
-              >
-              {{ item.name }}
-            </div>
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-alert
-          title="覆盖类型"
-          type="info"
-          description="用例覆盖即为每个用例只分配一个设备，设备覆盖即为每个设备都会执行所有用例"
-          show-icon
-          style="margin-bottom: 10px"
-          close-text="Get!"
-      >
-      </el-alert>
-      <el-form-item
-          label="覆盖类型"
-      >
-        <el-select
-            style="width: 100%"
-            v-model="testSuite.cover"
-            placeholder="请选择覆盖类型"
-        >
-          <el-option :value="1" label="用例覆盖"></el-option>
-          <el-option :value="2" label="设备覆盖"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="关联设备" v-if="testSuite.platform!==null">
-        <el-select value-key="id"
-                   clearable
-                   collapse-tags
-                   filterable
-                   style="width: 100%"
-                   v-model="testSuite.devices"
-                   multiple placeholder="请选择测试设备">
-          <el-option
-              v-for="item in deviceData"
-              :key="item.id"
-              :label="item.model"
-              :value="item"
-          >
-            <el-image
-                style="height: 80%;float: left"
-                fit="contain"
-                :src="getImg(item.model)"
-            >
-            </el-image>
-            <span style="float: left;margin-left: 10px">{{ item.model }}</span>
-            <span style="
-            margin-left: 15px;
-          float: right;
-          color: #909399;
-          font-size: 13px;
-           font-style: italic;
-        "
-            >{{ item.udId }}</span
-            >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="关联用例" v-if="testSuite.platform!==null">
-        <el-select value-key="id"
-                   collapse-tags
-                   clearable
-                   filterable
-                   style="width: 100%"
-                   v-model="testSuite.testCases"
-                   multiple placeholder="请选择测试用例">
-          <el-option
-              v-for="item in testCaseData"
-              :key="item.id"
-              :label="item.name"
-              :value="item"
-          >
-            <span style="float: left;">{{ item.name }}</span>
-            <span style="
-            margin-left: 15px;
-          float: right;
-          color: #909399;
-          font-size: 13px;
-           font-style: italic;
-        "
-            >{{ item['editTime'] }}</span
-            >
-          </el-option>
-        </el-select>
-      </el-form-item>
-    </el-form>
-
-    <div style="text-align: center;margin-top: 20px">
-      <el-button @click="summit" size="small" type="primary">提交</el-button>
-    </div>
+    <test-suite-update v-if="dialogVisible" :suite-id="suiteId" @flush="flush"/>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="dialogVisible = true">添加测试套件</el-button>
+  <el-button size="mini" round type="primary" @click="open">添加测试套件</el-button>
   <el-table :data="pageData['content']" border style="margin-top: 15px">
     <el-table-column width="80" label="套件Id" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>
@@ -275,32 +64,9 @@ onMounted(() => {
         {{ scope.row.platform }}
       </template>
     </el-table-column>
-    <el-table-column
-        label="模块并发线程"
-        min-width="110"
-        align="center"
-        prop="moduleThread"
-    >
-    </el-table-column>
-
-    <el-table-column
-        label="用例并发线程"
-        min-width="110"
-        align="center"
-        prop="caseThread"
-    >
-    </el-table-column>
-
-    <el-table-column
-        label="设备并发线程"
-        min-width="110"
-        align="center"
-        prop="deviceThread"
-    >
-    </el-table-column>
     <el-table-column label="关联设备" width="130" align="center">
       <template #default="scope">
-        <el-popover placement="left-top" width="400">
+        <el-popover placement="left-start" width="400">
           <el-table
               max-height="350"
               :data="scope.row['devices']"
@@ -338,7 +104,7 @@ onMounted(() => {
     </el-table-column>
     <el-table-column label="关联用例" width="130" align="center">
       <template #default="scope">
-        <el-popover placement="left-top" width="400">
+        <el-popover placement="left-start" width="400">
           <el-table
               max-height="350"
               :data="scope.row['testCases']"
