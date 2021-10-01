@@ -13,10 +13,8 @@ const testSuite = ref({
   id: null,
   name: "",
   platform: null,
+  cover: 1,
   projectId: store.state.project.id,
-  moduleThread: 1,
-  caseThread: 1,
-  deviceThread: 10,
   devices: [{
     "id": 2,
     "name": "ddddd",
@@ -142,33 +140,6 @@ onMounted(() => {
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="模块并发数">
-        <el-slider
-            v-model="testSuite.moduleThread"
-            :step="1"
-            :max="10"
-            :min="1"
-            show-stops
-        ></el-slider>
-      </el-form-item>
-      <el-form-item label="用例并发数">
-        <el-slider
-            v-model="testSuite.caseThread"
-            :step="1"
-            :max="10"
-            :min="1"
-            show-stops
-        ></el-slider>
-      </el-form-item>
-      <el-form-item label="设备并发数">
-        <el-slider
-            v-model="testSuite.deviceThread"
-            :step="1"
-            :max="20"
-            :min="1"
-            show-stops
-        ></el-slider>
-      </el-form-item>
       <el-form-item
           prop="platform"
           label="平台"
@@ -204,8 +175,30 @@ onMounted(() => {
           </el-option>
         </el-select>
       </el-form-item>
+      <el-alert
+          title="覆盖类型"
+          type="info"
+          description="用例覆盖即为每个用例只分配一个设备，设备覆盖即为每个设备都会执行所有用例"
+          show-icon
+          style="margin-bottom: 10px"
+          close-text="Get!"
+      >
+      </el-alert>
+      <el-form-item
+          label="覆盖类型"
+      >
+        <el-select
+            style="width: 100%"
+            v-model="testSuite.cover"
+            placeholder="请选择覆盖类型"
+        >
+          <el-option :value="1" label="用例覆盖"></el-option>
+          <el-option :value="2" label="设备覆盖"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="关联设备" v-if="testSuite.platform!==null">
         <el-select value-key="id"
+                   clearable
                    collapse-tags
                    filterable
                    style="width: 100%"
@@ -239,6 +232,7 @@ onMounted(() => {
       <el-form-item label="关联用例" v-if="testSuite.platform!==null">
         <el-select value-key="id"
                    collapse-tags
+                   clearable
                    filterable
                    style="width: 100%"
                    v-model="testSuite.testCases"
