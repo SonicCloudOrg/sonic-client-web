@@ -3,7 +3,9 @@ import {onMounted, ref} from "vue";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import {useStore} from "vuex";
+import {useRoute} from "vue-router";
 
+const route = useRoute()
 const props = defineProps({
   suiteId: Number
 })
@@ -27,7 +29,7 @@ const testSuite = ref({
   name: "",
   platform: null,
   cover: 1,
-  projectId: store.state.project.id,
+  projectId: route.params.projectId,
   devices: [],
   testCases: []
 })
