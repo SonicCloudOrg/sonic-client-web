@@ -12,6 +12,7 @@ const dialogVisible = ref(false)
 const name = ref("")
 const currentPage = ref(0)
 const suiteId = ref(0)
+const loading = ref(false)
 const open = () => {
   dialogVisible.value = true
 }
@@ -42,11 +43,13 @@ const deleteSuite = (id) => {
   })
 }
 const runSuite = (id) => {
+  loading.value = true
   axios.get("/controller/testSuites/runSuite", {
     params: {
       id,
     }
   }).then(resp => {
+    loading.value = false
     if (resp['code'] === 2000) {
       ElMessage.success({
         message: resp['message'],
@@ -76,7 +79,7 @@ onMounted(() => {
     <test-suite-update v-if="dialogVisible" :suite-id="suiteId" @flush="flush"/>
   </el-dialog>
   <el-button size="mini" round type="primary" @click="open">添加测试套件</el-button>
-  <el-table :data="pageData['content']" border style="margin-top: 15px">
+  <el-table v-loading="loading" :data="pageData['content']" border style="margin-top: 15px">
     <el-table-column width="80" label="套件Id" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>
       <template #header>
