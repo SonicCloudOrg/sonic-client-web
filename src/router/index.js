@@ -55,7 +55,14 @@ const routes = [
                 name: 'AndroidTestCase',
                 component: () =>
                     import ("../views/AndroidTestCase.vue"),
-                meta: {title: "安卓测试用例"}
+                meta: {title: "安卓测试用例"},
+            },
+            {
+                path: 'StepListView/:caseId(\\d+)',
+                name: 'StepListView',
+                component: () =>
+                    import ("../views/StepListView.vue"),
+                meta: {title: "运行步骤"}
             },
             {
                 path: 'TestSuites',
@@ -63,6 +70,13 @@ const routes = [
                 component: () =>
                     import ("../views/TestSuites.vue"),
                 meta: {title: "测试套件"}
+            },
+            {
+                path: 'Results',
+                name: 'Results',
+                component: () =>
+                    import ("../views/Results.vue"),
+                meta: {title: "测试结果"}
             }
         ]
     }

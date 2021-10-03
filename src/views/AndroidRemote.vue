@@ -1340,7 +1340,7 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane label="UI自动化" name="step">
             <div v-if="testCase['id']">
-              <step-list :platform="1" :is-driver-finish="isDriverFinish" :case-id="testCase['id']"
+              <step-list :is-show-run="true" :platform="1" :is-driver-finish="isDriverFinish" :case-id="testCase['id']"
                          :project-id="project['id']"
                          @runStep="runStep"/>
             </div>

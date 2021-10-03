@@ -4,12 +4,14 @@ import {ref, onMounted, watch} from "vue";
 import Pageable from './Pageable.vue'
 import TestCaseUpdate from './TestCaseUpdate.vue'
 import {ElMessage} from "element-plus";
+import {useRouter} from "vue-router";
 
 const props = defineProps({
   projectId: Number,
   platform: Number,
   isReadOnly: Boolean
 })
+const router = useRouter()
 const pageData = ref({});
 const pageSize = ref(15);
 const name = ref("")
@@ -100,7 +102,7 @@ defineExpose({open})
     <el-table-column min-width="180" label="最后修改日期" prop="editTime" align="center"/>
     <el-table-column width="250" fixed="right" label="操作" align="center" v-if="!isReadOnly">
       <template #default="scope">
-        <el-button size="mini">步骤详情</el-button>
+        <el-button size="mini" @click="router.push('StepListView/'+scope.row.id)">步骤详情</el-button>
         <el-button size="mini" type="primary" @click="editCase(scope.row.id)">编辑</el-button>
         <el-popconfirm
             style="margin-left: 10px"

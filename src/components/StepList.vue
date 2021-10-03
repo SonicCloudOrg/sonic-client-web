@@ -11,6 +11,7 @@ const props = defineProps({
   caseId: Number,
   projectId: Number,
   platform: Number,
+  isShowRun: Boolean,
   isDriverFinish: Boolean
 })
 const emit = defineEmits(['runStep'])
@@ -100,7 +101,9 @@ onMounted(() => {
   </el-dialog>
   <div style="margin-bottom: 10px;text-align: center">
     <el-button-group>
-      <el-button type="success" size="mini" :disabled="(!isDriverFinish)&&steps.length>0" @click="runStep">开始运行
+      <el-button type="success" size="mini" v-if="isShowRun" :disabled="(!isDriverFinish)&&steps.length>0"
+                 @click="runStep">
+        开始运行
       </el-button>
       <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
     </el-button-group>
