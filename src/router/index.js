@@ -77,6 +77,13 @@ const routes = [
                 component: () =>
                     import ("../views/Results.vue"),
                 meta: {title: "测试结果"}
+            },
+            {
+                path: 'ResultDetail/:resultId(\\d+)',
+                name: 'ResultDetail',
+                component: () =>
+                    import ("../views/ResultDetail.vue"),
+                meta: {title: "报告详情"}
             }
         ]
     }

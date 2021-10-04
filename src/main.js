@@ -10,7 +10,7 @@ import {ElMessage} from 'element-plus'
 createApp(App).use(ElementPlus).use(router).use(store).mount('#app')
 
 router.beforeEach((to, from, next) => {
-    document.title = "Sonic云测平台 -"
+    document.title = "Sonic云真机测试平台 -"
     if (to.meta['title']) {
         document.title += " " + to.meta['title']
     }
