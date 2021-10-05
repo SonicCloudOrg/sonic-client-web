@@ -68,7 +68,7 @@ onMounted(() => {
         </el-tag
         >
         <el-tag type="warning" size="small" v-if="scope.row.status === 2"
-        >存在异常
+        >测试告警
         </el-tag
         >
       </template>

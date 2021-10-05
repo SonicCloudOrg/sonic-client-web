@@ -1353,7 +1353,7 @@ onMounted(() => {
             </el-card>
           </el-tab-pane>
           <el-tab-pane label="运行日志" name="log">
-            <step-log :debug-loading="debugLoading" :step-log="stepLog" @clearLog="clearLog"/>
+            <step-log :is-read-only="false" :debug-loading="debugLoading" :step-log="stepLog" @clearLog="clearLog"/>
           </el-tab-pane>
           <el-tab-pane label="控件元素" name="ele">
             <div v-show="isShowImg">
