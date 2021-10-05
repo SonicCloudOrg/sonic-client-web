@@ -52,7 +52,7 @@ const runSuite = (id) => {
     loading.value = false
     if (resp['code'] === 2000) {
       ElMessage.success({
-        message: resp['message'],
+        message: resp['message']+"测试已开始...",
       });
     }
   })
