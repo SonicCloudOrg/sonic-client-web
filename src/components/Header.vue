@@ -231,7 +231,7 @@ onMounted(() => {
       </el-main>
       <el-main v-else>
         <el-alert
-            title="欢迎来到Sonic云测平台，请选择项目进入"
+            title="欢迎来到Sonic云真机测试平台，请选择项目进入"
             type="info"
             center
             :closable="false"

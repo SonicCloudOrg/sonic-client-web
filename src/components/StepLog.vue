@@ -4,7 +4,8 @@ import {Loading, CircleCheckFilled} from "@element-plus/icons";
 
 const props = defineProps({
   stepLog: Array,
-  debugLoading: Boolean
+  debugLoading: Boolean,
+  isReadOnly:Boolean
 })
 const emit = defineEmits(['clearLog'])
 const clearLog = () => {
@@ -29,7 +30,7 @@ const getTag = (status) => {
 }
 </script>
 <template>
-  <div style="text-align: center; margin-bottom: 10px">
+  <div v-if="!isReadOnly" style="text-align: center; margin-bottom: 10px">
     <el-button
         icon="el-icon-delete"
         type="danger"
@@ -39,7 +40,7 @@ const getTag = (status) => {
     </el-button
     >
   </div>
-  <div style="height: 650px">
+  <div :style="isReadOnly?'height:100%':'height: 650px'">
     <el-scrollbar
         class="demo-tree-scrollbar"
         style="height: 100%"
