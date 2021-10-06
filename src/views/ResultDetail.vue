@@ -3,7 +3,24 @@ import {useRoute, useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import axios from "../http/axios";
 import StepLog from '../components/StepLog.vue'
+import * as echarts from 'echarts/core';
+import {
+  TitleComponent,
+  ToolboxComponent,
+  TooltipComponent,
+  GridComponent,
+  LegendComponent,
+} from 'echarts/components';
+import {
+  LineChart
+} from 'echarts/charts';
+import {
+  CanvasRenderer
+} from 'echarts/renderers';
 
+echarts.use(
+    [ToolboxComponent, GridComponent, LegendComponent, LineChart, CanvasRenderer, TitleComponent, TooltipComponent]
+);
 const router = useRouter()
 const route = useRoute()
 const results = ref({})
@@ -12,9 +29,202 @@ const deviceList = ref([])
 const caseId = ref(0)
 const deviceId = ref('')
 const stepList = ref([])
+const done = ref(false)
+const stepLoading = ref(false)
+const type = ref("log")
 let page = 1;
+const switchType = (e) => {
+  if (e.props.name === "perform") {
+    getPerform();
+  }
+}
+const getLegend = (data) => {
+  let result = [];
+  if (data.length > 0) {
+    for (let k in JSON.parse(data[0].log)) {
+      result.push(k)
+    }
+  }
+  return result;
+}
+const getSeries = (data, legend) => {
+  let result = []
+  if (data.length > 0 && legend.length > 0) {
+    for (let j in legend) {
+      let d = [];
+      for (let i in data) {
+        for (let k in JSON.parse(data[i].log)) {
+          if (k === legend[j]) {
+            d.push(JSON.parse(data[i].log)[k])
+          }
+        }
+      }
+      result.push({
+        name: legend[j],
+        type: "line",
+        areaStyle: {},
+        data: d,
+      });
+    }
+  }
+  return result;
+}
+const getTimes = (data) => {
+  let result = [];
+  for (let i in data) {
+    result.push(data[i].time);
+  }
+  return result;
+}
+const getPerform = () => {
+  echarts.init(document.getElementById('mem')).dispose();
+  echarts.init(document.getElementById('bat')).dispose();
+  let mem = echarts.getInstanceByDom(document.getElementById('mem'));
+  if (mem == null) {
+    mem = echarts.init(document.getElementById('mem'));
+  }
+  let bat = echarts.getInstanceByDom(document.getElementById('bat'));
+  if (bat == null) {
+    bat = echarts.init(document.getElementById('bat'));
+  }
+  let option = {
+    title: {
+      textStyle: {
+        color: "#606266",
+      },
+      x: "center",
+      y: "top",
+    },
+    tooltip: {
+      confine: true,
+      trigger: "axis",
+      axisPointer: {
+        type: "cross",
+        label: {
+          backgroundColor: "#606266",
+        },
+      },
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {show: true, title: "保存"},
+      },
+    },
+    xAxis: [
+      {
+        type: "category",
+        boundaryGap: false,
+        data: [],
+        axisTick: {
+          inside: true,
+        },
+        axisLine: {
+          lineStyle: {
+            color: "#909399",
+            shadowBlur: 2.5,
+          },
+        },
+        axisLabel: {
+          interval: 0,
+          rotate: 40,
+        },
+      },
+    ],
+    legend: {
+      top: "8%",
+      data: [],
+      textStyle: {
+        color: "#606266",
+      },
+    },
+    grid: {
+      top: "24%",
+      left: "3%",
+      right: "4%",
+      bottom: "10%",
+      containLabel: true,
+    },
+    yAxis: [
+      {
+        type: "value",
+        axisTick: {
+          inside: true,
+        },
+        axisLine: {
+          lineStyle: {
+            color: "#909399",
+            shadowBlur: 2.5,
+          },
+        },
+      },
+    ],
+    series: [],
+  };
+  mem.showLoading();
+  bat.showLoading();
+  axios.get("/controller/resultDetail/listAll", {
+    params: {
+      caseId: caseId.value,
+      resultId: route.params.resultId,
+      deviceId: deviceId.value,
+      type: 'perform',
+    }
+  }).then(async resp => {
+    if (resp['code'] === 2000 && resp['data'].length > 0) {
+      mem.hideLoading()
+      bat.hideLoading()
+      let memList = [];
+      let batList = [];
+      for (let i in resp['data']) {
+        if (resp['data'][i].status === 1) {
+          memList.push(resp['data'][i]);
+        }
+        if (resp['data'][i].status === 2) {
+          batList.push(resp['data'][i]);
+        }
+      }
+      let memLegend = getLegend(memList);
+      let memData = getSeries(memList, memLegend)
+      mem.setOption({
+        title: {text: "内存详情"},
+        series: memData,
+        legend: {
+          data: memLegend,
+        },
+        xAxis: [
+          {
+            data: getTimes(memList),
+          },
+        ],
+        yAxis: [{name: "单位(KB)"}],
+      });
+      mem.setOption(option);
+      mem.resize()
+      let batLegend = getLegend(batList);
+      let batData = getSeries(batList, batLegend)
+      bat.setOption({
+        title: {text: "内存详情"},
+        series: batData,
+        legend: {
+          data: batLegend,
+        },
+        xAxis: [
+          {
+            data: getTimes(batList),
+          },
+        ],
+        yAxis: [{ name: "单位(%)", max: 100, min: 0 }],
+      });
+      bat.setOption(option);
+      bat.resize()
+    }
+  })
+}
 const switchDevice = async (e) => {
+  page = 1;
+  done.value = false
   stepList.value = []
+  type.value = "log"
   await getStepList();
 }
 const loadMore = () => {
@@ -22,6 +232,7 @@ const loadMore = () => {
   getStepList()
 }
 const getStepList = () => {
+  stepLoading.value = true
   axios.get("/controller/resultDetail/list", {
     params: {
       caseId: caseId.value,
@@ -31,8 +242,12 @@ const getStepList = () => {
       page: page
     }
   }).then(async resp => {
+    stepLoading.value = false
     if (resp['code'] === 2000) {
       stepList.value.push(...resp.data.content)
+      if (resp.data['totalPages'] === page) {
+        done.value = true;
+      }
     }
   })
 }
@@ -102,9 +317,10 @@ onMounted(() => {
             c.status===2?'warning':
              c.status === 3 ? 'danger' : 'info'">
             <i class="el-icon-loading" style="margin-right: 5px;" v-if="c.status === 4"/>{{
-              c.status === 1 ? '通过' :
-                  c.status === 2 ? '警告' :
-                      c.status === 3 ? '失败' : '运行中'
+              c.status === 0 ? '未开始' :
+                  c.status === 1 ? '通过' :
+                      c.status === 2 ? '警告' :
+                          c.status === 3 ? '失败' : '运行中'
             }}
           </el-tag>
           <div style="position:absolute;right: 30px">
@@ -128,7 +344,28 @@ onMounted(() => {
                 </el-tag>
               </div>
             </template>
-            <step-log :is-read-only="true" :debug-loading="false" :step-log="stepList"/>
+            <el-tabs v-model="type" type="border-card" @tab-click="switchType">
+              <el-tab-pane label="运行日志" name="log">
+                <step-log @loadMore="loadMore" :is-done="done" :is-read-only="true" :debug-loading="stepLoading"
+                          :step-log="stepList"/>
+              </el-tab-pane>
+              <el-tab-pane label="性能信息" name="perform">
+                <el-card>
+                  <div
+                      id="mem"
+                      style="width: 100%; height: 400px; margin-top: 20px"
+                  ></div>
+                </el-card>
+                <el-card style="margin-top: 10px">
+                  <div
+                      id="bat"
+                      style="width: 100%; height: 400px; margin-top: 20px"
+                  ></div>
+                </el-card>
+              </el-tab-pane>
+              <el-tab-pane label="运行录像" name="record">
+              </el-tab-pane>
+            </el-tabs>
           </el-tab-pane>
         </el-tabs>
       </el-collapse-item>
