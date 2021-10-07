@@ -1,15 +1,19 @@
 <script setup>
 import {watch, nextTick, ref} from "vue";
-import {Loading, CircleCheckFilled} from "@element-plus/icons";
+import {Loading, CircleCheckFilled, CaretBottom} from "@element-plus/icons";
 
 const props = defineProps({
   stepLog: Array,
   debugLoading: Boolean,
-  isReadOnly:Boolean
+  isReadOnly: Boolean,
+  isDone: Boolean
 })
-const emit = defineEmits(['clearLog'])
+const emit = defineEmits(['clearLog', 'loadMore'])
 const clearLog = () => {
   emit('clearLog')
+}
+const loadMore = () => {
+  emit("loadMore")
 }
 const stepLogScrollbar = ref(null)
 watch(props.stepLog, (newVal, oldVal) => {
@@ -112,7 +116,27 @@ const getTag = (status) => {
           </template>
         </el-table-column>
         <template #append>
-          <div v-if="stepLog.length !== 0">
+          <div v-if="!isReadOnly">
+            <div v-if="stepLog.length !== 0">
+              <div
+                  v-if="debugLoading"
+                  style="color: #409eff;line-height: 50px;"
+                  class="flex-center"
+              >
+                <el-icon class="is-loading" style="margin-right: 5px">
+                  <Loading/>
+                </el-icon>
+                运行中
+              </div>
+              <div v-else style="line-height: 50px;color: #909399;" class="flex-center">
+                <el-icon style="margin-right: 5px">
+                  <CircleCheckFilled/>
+                </el-icon>
+                运行完毕
+              </div>
+            </div>
+          </div>
+          <div v-else>
             <div
                 v-if="debugLoading"
                 style="color: #409eff;line-height: 50px;"
@@ -121,13 +145,20 @@ const getTag = (status) => {
               <el-icon class="is-loading" style="margin-right: 5px">
                 <Loading/>
               </el-icon>
-              运行中
+              加载中
             </div>
-            <div v-else style="line-height: 50px;color: #909399;" class="flex-center">
+            <div v-else-if="isDone" style="line-height: 50px;color: #67C23A;" class="flex-center">
               <el-icon style="margin-right: 5px">
                 <CircleCheckFilled/>
               </el-icon>
-              运行完毕
+              加载完毕
+            </div>
+            <div v-else style="color: #409eff;line-height: 50px;cursor: pointer"
+                 class="flex-center"  @click="loadMore">
+              <el-icon style="margin-right: 5px">
+                <CaretBottom/>
+              </el-icon>
+              加载更多
             </div>
           </div>
         </template>

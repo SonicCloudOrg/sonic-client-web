@@ -78,7 +78,7 @@ const sortStep = (e) => {
 }
 const steps = ref([]);
 const getStepsList = () => {
-  axios.get("/controller/steps/list", {
+  axios.get("/controller/steps/listAll", {
     params: {
       caseId: props.caseId,
     }
@@ -124,7 +124,7 @@ onMounted(() => {
           :timestamp="'步骤' + (index + 1)"
           placement="top"
           :type="s['error']===1?'primary':(s['error']===2?'warning':'danger')"
-          style="height: 38px"
+          style="padding-bottom: 0px!important;"
           :hollow="true"
       >
         <step-show :step="s"></step-show>
