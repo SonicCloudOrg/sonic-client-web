@@ -1,6 +1,6 @@
 <script setup>
 import {useRoute, useRouter} from "vue-router";
-import {onMounted, ref} from "vue";
+import {nextTick, onMounted, onUnmounted, ref} from "vue";
 import axios from "../http/axios";
 import StepLog from '../components/StepLog.vue'
 import VuePlayerVideo from 'vue3-player-video'
@@ -13,7 +13,8 @@ import {
   LegendComponent,
 } from 'echarts/components';
 import {
-  LineChart
+  LineChart,
+  PieChart
 } from 'echarts/charts';
 import {
   CanvasRenderer
@@ -21,7 +22,7 @@ import {
 import {ElMessage} from "element-plus";
 
 echarts.use(
-    [ToolboxComponent, GridComponent, LegendComponent, LineChart, CanvasRenderer, TitleComponent, TooltipComponent]
+    [PieChart, ToolboxComponent, GridComponent, LegendComponent, LineChart, CanvasRenderer, TitleComponent, TooltipComponent]
 );
 const router = useRouter()
 const route = useRoute()
@@ -34,14 +35,33 @@ const stepList = ref([])
 const done = ref(false)
 const stepLoading = ref(false)
 const type = ref("log")
+const recordUrl = ref("")
 let page = 1;
 let resizeFun = undefined;
+let resizeChart = undefined;
+const subTime = (date1, date2) => {
+  let data = (new Date(date2) - new Date(date1)) / 1000;
+  let time = "";
+  const days = parseInt(data / 86400);
+  data = data % 86400;
+  const hours = parseInt(data / 3600);
+  data = data % 3600;
+  const minutes = parseInt(data / 60);
+  data = data % 60;
+  if (0 < days) {
+    time = days + "天" + hours + "小时" + minutes + "分" + data + "秒";
+  } else {
+    time = hours + "小时" + minutes + "分" + data + "秒";
+  }
+  return time;
+}
 const changeCase = (e) => {
   if (e !== "") {
     page = 1;
     done.value = false
     stepList.value = []
     type.value = "log"
+    deviceList.value = []
     for (let i in testCaseList.value) {
       if (testCaseList.value[i]['case'].id === e) {
         getDeviceList(testCaseList.value[i]['device'])
@@ -52,8 +72,30 @@ const changeCase = (e) => {
 }
 const switchType = (e) => {
   if (e.props.name === "perform") {
-    getPerform(caseId.value, deviceId.value);
+    nextTick(() => {
+      getPerform(caseId.value, deviceId.value);
+    })
   }
+  if (e.props.name === "record") {
+    nextTick(() => {
+      getRecord();
+    })
+  }
+}
+const getRecord = () => {
+  recordUrl.value = ""
+  axios.get("/controller/resultDetail/listAll", {
+    params: {
+      caseId: caseId.value,
+      resultId: route.params.resultId,
+      deviceId: deviceId.value,
+      type: 'record',
+    }
+  }).then(resp => {
+    if (resp['code'] === 2000 && resp['data'].length > 0) {
+      recordUrl.value = resp['data'][0].log
+    }
+  });
 }
 const getLegend = (data) => {
   let result = [];
@@ -94,8 +136,6 @@ const getTimes = (data) => {
   return result;
 }
 const getPerform = (cid, did) => {
-  echarts.init(document.getElementById('mem' + cid + did)).dispose();
-  echarts.init(document.getElementById('bat' + cid + did)).dispose();
   let mem = echarts.getInstanceByDom(document.getElementById('mem' + cid + did));
   if (mem == null) {
     mem = echarts.init(document.getElementById('mem' + cid + did));
@@ -212,7 +252,6 @@ const getPerform = (cid, did) => {
         yAxis: [{name: "单位(KB)"}],
       });
       mem.setOption(option);
-      mem.resize()
       let batLegend = getLegend(batList);
       let batData = getSeries(batList, batLegend)
       bat.setOption({
@@ -229,7 +268,6 @@ const getPerform = (cid, did) => {
         yAxis: [{name: "单位(%)", max: 100, min: 0}],
       });
       bat.setOption(option);
-      bat.resize()
       if (resizeFun !== undefined) {
         window.removeEventListener("resize", resizeFun);
       }
@@ -239,6 +277,18 @@ const getPerform = (cid, did) => {
       }
       window.addEventListener("resize", resizeFun);
     } else {
+      mem.showLoading({
+        text: '内存数据不足',
+        fontSize: 20,
+        textColor: '#606266',
+        showSpinner: false,
+      })
+      bat.showLoading({
+        text: '电量数据不足',
+        fontSize: 20,
+        textColor: '#606266',
+        showSpinner: false,
+      })
       ElMessage.info({
         message: "性能数据不足！",
       });
@@ -309,9 +359,52 @@ const getResultInfo = (id) => {
   })
 }
 const findCaseStatus = (id) => {
+  let chart = echarts.getInstanceByDom(document.getElementById('chart'));
+  if (chart == null) {
+    chart = echarts.init(document.getElementById('chart'));
+  }
+  let option = {
+    title: {
+      text: '用例运行状态分布',
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      orient: 'vertical',
+      right: 'right'
+    }
+  };
   axios.get("/controller/results/findCaseStatus", {params: {id}}).then(resp => {
     if (resp['code'] === 2000) {
       testCaseList.value = resp.data
+      let legend = [{value: 0, name: '未开始'},
+        {value: 0, name: '通过'},
+        {value: 0, name: '警告'},
+        {value: 0, name: '失败'},
+        {value: 0, name: '运行中'},]
+      for (let i in testCaseList.value) {
+        legend[testCaseList.value[i].status].value++
+      }
+      chart.setOption({
+        series: [
+          {
+            name: '用例状态',
+            type: 'pie',
+            radius: '50%',
+            data: legend
+          }
+        ]
+      })
+      chart.setOption(option)
+      if (resizeChart !== undefined) {
+        window.removeEventListener("resize", resizeChart);
+      }
+      resizeChart = () => {
+        chart.resize()
+      }
+      window.addEventListener("resize", resizeChart);
       if (testCaseList.value.length > 0) {
         caseId.value = testCaseList.value[0]['case'].id
         if (testCaseList.value[0]['device'].length > 0) {
@@ -324,6 +417,14 @@ const findCaseStatus = (id) => {
 onMounted(() => {
   getResultInfo(route.params.resultId)
 })
+onUnmounted(() => {
+  if (resizeChart !== undefined) {
+    window.removeEventListener("resize", resizeChart);
+  }
+  if (resizeFun !== undefined) {
+    window.removeEventListener("resize", resizeFun);
+  }
+})
 </script>
 <template>
   <el-page-header
@@ -332,12 +433,74 @@ onMounted(() => {
       style="margin-bottom: 20px"
   >
   </el-page-header>
-  {{ results.id }}
-  <el-card>
+  <el-row :gutter="20">
+    <el-col :span="12">
+      <el-card shadow="hover">
+        <template #header><strong>报告信息</strong></template>
+        <el-form
+            label-position="left"
+            class="demo-table-expand"
+            label-width="80px"
+            style="margin-left: 10px; word-break: break-all"
+            v-if="results['id']"
+        >
+          <el-form-item label="结果Id">
+            <span>{{ results['id'] }}</span>
+          </el-form-item>
+          <el-form-item label="测试套件">
+            <span>{{ results['suiteName'] }}</span>
+          </el-form-item>
+          <el-form-item label="执行用户">
+            <el-tag size="small" v-if="results['strike'] === 'SYSTEM'"
+            >定时任务
+            </el-tag
+            >
+            <span v-else>{{ results['strike'] }}</span>
+          </el-form-item>
+          <el-form-item label="运行状态">
+            <el-tag type="success" size="small" v-if="results['status'] === 1"
+            >测试通过
+            </el-tag
+            >
+            <el-tag type="info" size="small" v-if="results['status'] === 0"
+            ><i class="el-icon-loading"></i> 运行中
+            </el-tag
+            >
+            <el-tag type="danger" size="small" v-if="results['status'] === 3"
+            >测试失败
+            </el-tag
+            >
+            <el-tag type="warning" size="small" v-if="results['status']=== 2"
+            >测试告警
+            </el-tag
+            >
+          </el-form-item>
+          <el-form-item label="创建时间">
+            <span>{{ results['createTime'] }}</span>
+          </el-form-item>
+          <el-form-item label="结束时间">
+            <span v-if="results['endTime']">{{ results['endTime'] }}</span>
+            <span v-else>未知</span>
+          </el-form-item>
+          <el-form-item label="总耗时">
+            <span v-if="results['endTime']">{{ subTime(results['createTime'], results['endTime']) }}</span>
+            <span v-else>未知</span>
+          </el-form-item>
+        </el-form>
+      </el-card>
+    </el-col>
+    <el-col :span="12">
+      <el-card shadow="hover">
+        <div id="chart" style="width: 100%;height: 338px;"></div>
+      </el-card>
+    </el-col>
+  </el-row>
+  <el-divider><span style="color: #909399;">运行信息</span></el-divider>
+  <el-card shadow="hover">
     <el-collapse v-model="caseId" accordion @change="changeCase">
       <el-collapse-item v-for="c in testCaseList" :key="c" :name="c['case'].id" style="position: relative">
         <template #title>
-          <strong style="color: #606266">{{ c['case'].name }}</strong>
+          测试用例：<strong style="color: #606266">{{ c['case'].name }}</strong>
           <el-tag style="margin-left: 10px" size="small" :type="c.status===1?'success':
             c.status===2?'warning':
              c.status === 3 ? 'danger' : 'info'">
@@ -348,9 +511,18 @@ onMounted(() => {
                           c.status === 3 ? '失败' : '运行中'
             }}
           </el-tag>
-          <div style="position:absolute;right: 30px">
+          <div style="position:absolute;right: 30px;color: #606266">
+            <span v-if="c.startTime">
+            From
             <el-tag size="small">{{ c.startTime }}</el-tag>
+            </span>
+            <span v-if="c.endTime">
+            To
             <el-tag size="small">{{ c.endTime }}</el-tag>
+            </span>
+            <span v-if="c.startTime&&c.endTime" style="margin-left: 10px">耗时：{{
+                subTime(c.startTime, c.endTime)
+              }}</span>
           </div>
         </template>
         <el-tabs v-model="deviceId" type="border-card" tab-position="left" @tab-click="switchDevice">
@@ -389,8 +561,10 @@ onMounted(() => {
                 </el-card>
               </el-tab-pane>
               <el-tab-pane label="运行录像" name="record">
-                <vue-player-video style="height: 500px"
-                                  src="https://mp4.vjshi.com/2021-03-16/87254015980fe091ce51b6f3eae02a29.mp4"></vue-player-video>
+                <div v-if="recordUrl.length>0" class="flex-center">
+                  <vue-player-video style="width: 50%" :src="recordUrl"/>
+                </div>
+                <el-empty v-else description="暂无录像"></el-empty>
               </el-tab-pane>
             </el-tabs>
           </el-tab-pane>
