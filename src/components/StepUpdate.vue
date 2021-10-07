@@ -192,6 +192,7 @@ const getPublicStepList = () => {
   axios.get("/controller/publicSteps/findNameByProjectId", {
     params: {
       projectId: props.projectId,
+      platform: props.platform
     }
   }).then(resp => {
     publicStepList.value = resp.data

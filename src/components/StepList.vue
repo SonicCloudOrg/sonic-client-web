@@ -78,7 +78,7 @@ const sortStep = (e) => {
 }
 const steps = ref([]);
 const getStepsList = () => {
-  axios.get("/controller/steps/list", {
+  axios.get("/controller/steps/listAll", {
     params: {
       caseId: props.caseId,
     }

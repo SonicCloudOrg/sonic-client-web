@@ -84,7 +84,14 @@ const routes = [
                 component: () =>
                     import ("../views/ResultDetail.vue"),
                 meta: {title: "报告详情"}
-            }
+            },
+            {
+                path: 'PublicStep',
+                name: 'PublicStep',
+                component: () =>
+                    import ("../views/PublicStep.vue"),
+                meta: {title: "公共步骤"}
+            },
         ]
     }
 ]
