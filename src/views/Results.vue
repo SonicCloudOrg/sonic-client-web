@@ -80,7 +80,7 @@ onMounted(() => {
         align="center"
     >
     </el-table-column>
-    <el-table-column label="测试报告" width="160" align="center">
+    <el-table-column fixed="right" label="测试报告" width="160" align="center">
       <template #default="scope">
         <div style="text-align: center">
           <el-button
@@ -93,7 +93,7 @@ onMounted(() => {
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="操作" width="120" align="center">
+    <el-table-column fixed="right" label="操作" width="120" align="center">
       <template #default="scope">
         <el-popconfirm
             style="margin-left: 10px"

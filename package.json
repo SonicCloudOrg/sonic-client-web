@@ -15,6 +15,7 @@
         "vue-clipboard3": "^1.0.1",
         "vue-draggable-next": "^2.0.1",
         "vue-router": "^4.0.10",
+        "vue3-player-video": "^1.2.5",
         "vuex": "^4.0.2"
     },
     "devDependencies": {

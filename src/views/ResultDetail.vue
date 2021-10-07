@@ -3,6 +3,7 @@ import {useRoute, useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import axios from "../http/axios";
 import StepLog from '../components/StepLog.vue'
+import VuePlayerVideo from 'vue3-player-video'
 import * as echarts from 'echarts/core';
 import {
   TitleComponent,
@@ -35,6 +36,20 @@ const stepLoading = ref(false)
 const type = ref("log")
 let page = 1;
 let resizeFun = undefined;
+const changeCase = (e) => {
+  if (e !== "") {
+    page = 1;
+    done.value = false
+    stepList.value = []
+    type.value = "log"
+    for (let i in testCaseList.value) {
+      if (testCaseList.value[i]['case'].id === e) {
+        getDeviceList(testCaseList.value[i]['device'])
+        break;
+      }
+    }
+  }
+}
 const switchType = (e) => {
   if (e.props.name === "perform") {
     getPerform(caseId.value, deviceId.value);
@@ -201,7 +216,7 @@ const getPerform = (cid, did) => {
       let batLegend = getLegend(batList);
       let batData = getSeries(batList, batLegend)
       bat.setOption({
-        title: {text: "内存详情"},
+        title: {text: "电量详情"},
         series: batData,
         legend: {
           data: batLegend,
@@ -319,7 +334,7 @@ onMounted(() => {
   </el-page-header>
   {{ results.id }}
   <el-card>
-    <el-collapse v-model="caseId" accordion>
+    <el-collapse v-model="caseId" accordion @change="changeCase">
       <el-collapse-item v-for="c in testCaseList" :key="c" :name="c['case'].id" style="position: relative">
         <template #title>
           <strong style="color: #606266">{{ c['case'].name }}</strong>
@@ -339,7 +354,7 @@ onMounted(() => {
           </div>
         </template>
         <el-tabs v-model="deviceId" type="border-card" tab-position="left" @tab-click="switchDevice">
-          <el-tab-pane v-for="d in deviceList" :name="d.id+''">
+          <el-tab-pane v-for="d in deviceList" :name="d.id+''" lazy>
             <template #label>
               <div class="flex-center">
                 {{ d.model }}
@@ -355,7 +370,7 @@ onMounted(() => {
               </div>
             </template>
             <el-tabs v-model="type" type="border-card" @tab-click="switchType">
-              <el-tab-pane label="运行日志" name="log">
+              <el-tab-pane label="运行日志" name="log" lazy>
                 <step-log @loadMore="loadMore" :is-done="done" :is-read-only="true" :debug-loading="stepLoading"
                           :step-log="stepList"/>
               </el-tab-pane>
@@ -374,6 +389,8 @@ onMounted(() => {
                 </el-card>
               </el-tab-pane>
               <el-tab-pane label="运行录像" name="record">
+                <vue-player-video style="height: 500px"
+                                  src="https://mp4.vjshi.com/2021-03-16/87254015980fe091ce51b6f3eae02a29.mp4"></vue-player-video>
               </el-tab-pane>
             </el-tabs>
           </el-tab-pane>
