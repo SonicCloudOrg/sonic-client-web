@@ -17,6 +17,7 @@ import {
 import {
   CanvasRenderer
 } from 'echarts/renderers';
+import {ElMessage} from "element-plus";
 
 echarts.use(
     [ToolboxComponent, GridComponent, LegendComponent, LineChart, CanvasRenderer, TitleComponent, TooltipComponent]
@@ -33,9 +34,10 @@ const done = ref(false)
 const stepLoading = ref(false)
 const type = ref("log")
 let page = 1;
+let resizeFun = undefined;
 const switchType = (e) => {
   if (e.props.name === "perform") {
-    getPerform();
+    getPerform(caseId.value, deviceId.value);
   }
 }
 const getLegend = (data) => {
@@ -63,7 +65,7 @@ const getSeries = (data, legend) => {
         name: legend[j],
         type: "line",
         areaStyle: {},
-        data: d,
+        data: d
       });
     }
   }
@@ -76,16 +78,16 @@ const getTimes = (data) => {
   }
   return result;
 }
-const getPerform = () => {
-  echarts.init(document.getElementById('mem')).dispose();
-  echarts.init(document.getElementById('bat')).dispose();
-  let mem = echarts.getInstanceByDom(document.getElementById('mem'));
+const getPerform = (cid, did) => {
+  echarts.init(document.getElementById('mem' + cid + did)).dispose();
+  echarts.init(document.getElementById('bat' + cid + did)).dispose();
+  let mem = echarts.getInstanceByDom(document.getElementById('mem' + cid + did));
   if (mem == null) {
-    mem = echarts.init(document.getElementById('mem'));
+    mem = echarts.init(document.getElementById('mem' + cid + did));
   }
-  let bat = echarts.getInstanceByDom(document.getElementById('bat'));
+  let bat = echarts.getInstanceByDom(document.getElementById('bat' + cid + did));
   if (bat == null) {
-    bat = echarts.init(document.getElementById('bat'));
+    bat = echarts.init(document.getElementById('bat' + cid + did));
   }
   let option = {
     title: {
@@ -96,14 +98,13 @@ const getPerform = () => {
       y: "top",
     },
     tooltip: {
-      confine: true,
-      trigger: "axis",
+      trigger: 'axis',
       axisPointer: {
-        type: "cross",
+        type: 'cross',
         label: {
-          backgroundColor: "#606266",
-        },
-      },
+          backgroundColor: '#6a7985'
+        }
+      }
     },
     toolbox: {
       feature: {
@@ -114,7 +115,6 @@ const getPerform = () => {
       {
         type: "category",
         boundaryGap: false,
-        data: [],
         axisTick: {
           inside: true,
         },
@@ -132,7 +132,6 @@ const getPerform = () => {
     ],
     legend: {
       top: "8%",
-      data: [],
       textStyle: {
         color: "#606266",
       },
@@ -158,7 +157,6 @@ const getPerform = () => {
         },
       },
     ],
-    series: [],
   };
   mem.showLoading();
   bat.showLoading();
@@ -213,10 +211,22 @@ const getPerform = () => {
             data: getTimes(batList),
           },
         ],
-        yAxis: [{ name: "单位(%)", max: 100, min: 0 }],
+        yAxis: [{name: "单位(%)", max: 100, min: 0}],
       });
       bat.setOption(option);
       bat.resize()
+      if (resizeFun !== undefined) {
+        window.removeEventListener("resize", resizeFun);
+      }
+      resizeFun = () => {
+        mem.resize();
+        bat.resize();
+      }
+      window.addEventListener("resize", resizeFun);
+    } else {
+      ElMessage.info({
+        message: "性能数据不足！",
+      });
     }
   })
 }
@@ -352,13 +362,13 @@ onMounted(() => {
               <el-tab-pane label="性能信息" name="perform">
                 <el-card>
                   <div
-                      id="mem"
+                      :id="'mem'+c['case'].id+d.id"
                       style="width: 100%; height: 400px; margin-top: 20px"
                   ></div>
                 </el-card>
                 <el-card style="margin-top: 10px">
                   <div
-                      id="bat"
+                      :id="'bat'+c['case'].id+d.id"
                       style="width: 100%; height: 400px; margin-top: 20px"
                   ></div>
                 </el-card>
