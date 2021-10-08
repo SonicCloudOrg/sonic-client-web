@@ -42,6 +42,7 @@ const upload = (content) => {
           ElMessage.success({
             message: resp['message'],
           });
+          element.value.eleValue = resp['data']
         }
       });
 }
