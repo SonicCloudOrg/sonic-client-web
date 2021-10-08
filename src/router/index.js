@@ -92,6 +92,13 @@ const routes = [
                     import ("../views/PublicStep.vue"),
                 meta: {title: "公共步骤"}
             },
+            {
+                path: 'Elements',
+                name: 'Elements',
+                component: () =>
+                    import ("../views/Elements.vue"),
+                meta: {title: "控件元素"}
+            },
         ]
     }
 ]
