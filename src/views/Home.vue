@@ -71,7 +71,7 @@ onMounted(() => {
             <span>测试数据管理</span>
           </template>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Elements'">
-            <i class="el-icon-thumb"></i>元素管理
+            <i class="el-icon-thumb"></i>控件元素
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/PublicStep'">
             <i class="el-icon-star-off"></i>公共步骤
