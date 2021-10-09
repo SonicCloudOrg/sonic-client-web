@@ -99,6 +99,34 @@ const routes = [
                     import ("../views/Elements.vue"),
                 meta: {title: "控件元素"}
             },
+            {
+                path: 'GlobalParams',
+                name: 'GlobalParams',
+                component: () =>
+                    import ("../views/GlobalParams.vue"),
+                meta: {title: "全局参数"}
+            },
+            {
+                path: 'Modules',
+                name: 'Modules',
+                component: () =>
+                    import ("../views/Modules.vue"),
+                meta: {title: "模块管理"}
+            },
+            {
+                path: 'Versions',
+                name: 'Versions',
+                component: () =>
+                    import ("../views/Versions.vue"),
+                meta: {title: "版本迭代"}
+            },
+            {
+                path: 'Jobs',
+                name: 'Jobs',
+                component: () =>
+                    import ("../views/Jobs.vue"),
+                meta: {title: "定时任务"}
+            },
         ]
     }
 ]

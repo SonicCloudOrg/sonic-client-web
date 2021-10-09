@@ -261,3 +261,7 @@ body,
 .el-select-dropdown__wrap{
     max-height: 390px!important;
 }
+
+.el-table-filter__checkbox-group label.el-checkbox{
+    margin-bottom: 0px!important;
+}

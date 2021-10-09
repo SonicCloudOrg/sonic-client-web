@@ -113,7 +113,7 @@ onMounted(() => {
             <i class="el-icon-price-tag"></i>模块管理
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Versions'">
-            <i class="el-icon-coin"></i>迭代管理
+            <i class="el-icon-coin"></i>版本迭代
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/ProjectOption'">
             <i class="el-icon-key"></i>其他设置
