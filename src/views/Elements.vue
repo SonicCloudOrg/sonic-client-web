@@ -3,6 +3,8 @@ import {useRoute} from "vue-router";
 import ElementUpdate from '../components/ElementUpdate.vue'
 import {onMounted, ref, watch} from "vue";
 import axios from "../http/axios";
+import Pageable from '../components/Pageable.vue'
+import {ElMessage} from "element-plus";
 
 const route = useRoute()
 const dialogElement = ref(false)
@@ -11,8 +13,6 @@ const pageData = ref({});
 const pageSize = ref(15);
 const name = ref("")
 const types = ref([])
-import Pageable from '../components/Pageable.vue'
-import {ElMessage} from "element-plus";
 
 watch(dialogElement, (newValue, oldValue) => {
   if (!newValue) {
@@ -34,7 +34,7 @@ const getElementList = (pageNum, pSize) => {
   axios.get("/controller/elements/list", {
     params: {
       projectId: route.params.projectId,
-      types: types.value.length > 0 ? types.value : undefined,
+      eleTypes: types.value.length > 0 ? types.value : undefined,
       name: name.value,
       page: pageNum || 1,
       pageSize: pSize || pageSize.value,
@@ -58,8 +58,8 @@ const deleteEle = (id) => {
   })
 }
 const filter = (e) => {
-  types.value = e
-  console.log(types.value)
+  types.value = e.eleType
+  getElementList()
 }
 onMounted(() => {
   getElementList();
@@ -77,19 +77,21 @@ onMounted(() => {
       style="width: 100%; margin-top: 20px"
       border
   >
-    <el-table-column label="元素id" width="90" align="center" prop="id">
+    <el-table-column label="控件id" width="90" align="center" prop="id">
     </el-table-column>
 
     <el-table-column
         :show-overflow-tooltip="true"
-        label="元素名称"
         width="260"
         header-align="center"
         prop="eleName"
     >
+      <template #header>
+        <el-input v-model="name" size="mini" @input="getElementList()" placeholder="输入元素控件名称搜索"/>
+      </template>
     </el-table-column>
 
-    <el-table-column label="定位类型" width="130" align="center" :filters="[
+    <el-table-column column-key="eleType" label="定位类型" width="130" align="center" :filters="[
         { text: 'id（resource-id）', value: 'id' },
         { text: 'xpath', value: 'xpath' },
         { text: 'name', value: 'name' },
@@ -118,7 +120,7 @@ onMounted(() => {
 
     <el-table-column
         :show-overflow-tooltip="true"
-        label="元素值"
+        label="控件元素值"
         header-align="center"
     >
       <template #default="scope">
@@ -151,7 +153,7 @@ onMounted(() => {
             @confirm="deleteEle(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"
-            title="确定删除该元素吗？"
+            title="确定删除该控件元素吗？"
         >
           <template #reference>
             <el-button
