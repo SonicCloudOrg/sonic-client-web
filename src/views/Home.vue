@@ -3,6 +3,7 @@ import {onMounted} from "vue";
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import Header from "../components/Header.vue"
+import defaultLogo from '../assets/logo.png'
 
 const store = useStore();
 const route = useRoute();
@@ -31,14 +32,14 @@ onMounted(() => {
         <div class="flex-center" style="margin-bottom: 10px">
           <el-avatar
               :size="40"
-              :src="store.state.project['projectImg']"
+              :src="(store.state.project['projectImg']&&store.state.project['projectImg'].length>0)?store.state.project['projectImg']:defaultLogo"
               shape="square"
           ></el-avatar>
           <span class="project-name" v-if="!store.state.isCollapse">{{
               store.state.project['projectName']
             }}</span>
         </div>
-        <el-menu-item :index="'/' + route.params.projectId + '/ProjectIndex'">
+        <el-menu-item :index="'/Home/' + route.params.projectId + '/ProjectIndex'">
           <i class="el-icon-data-analysis"></i>
           <template #title>项目概况</template>
         </el-menu-item>
@@ -107,7 +108,7 @@ onMounted(() => {
         <el-sub-menu index="6">
           <template #title>
             <i class="el-icon-setting"></i>
-            <span>项目高级设置</span>
+            <span>项目相关设置</span>
           </template>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Modules'">
             <i class="el-icon-price-tag"></i>模块管理
@@ -116,7 +117,7 @@ onMounted(() => {
             <i class="el-icon-coin"></i>版本迭代
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/ProjectOption'">
-            <i class="el-icon-key"></i>其他设置
+            <i class="el-icon-key"></i>项目设置
           </el-menu-item>
         </el-sub-menu>
       </el-menu>

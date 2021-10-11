@@ -3,6 +3,7 @@ import {onMounted, ref} from "vue";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import {useStore} from "vuex";
+import defaultLogo from '../assets/logo.png'
 
 const img = import.meta.globEager("./../assets/img/*")
 const props = defineProps({
@@ -33,7 +34,7 @@ const getImg = (name) => {
   return result;
 }
 const platformList = [{name: "安卓", value: 1, img: "ANDROID"}
-  , {name: "iOS（暂不开放）", value: 2, img: "IOS", disabled: true}]
+  , {name: "iOS（即将开放）", value: 2, img: "IOS", disabled: true}]
 const emit = defineEmits(['flush']);
 const caseForm = ref(null);
 const summit = () => {
@@ -124,7 +125,7 @@ onMounted(() => {
             <el-avatar
                 style="margin-right: 10px"
                 :size="32"
-                :src="item['projectImg']"
+                :src="item['projectImg'].length>0?item['projectImg']:defaultLogo"
                 shape="square"
             ></el-avatar
             >

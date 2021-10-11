@@ -2,7 +2,6 @@
 import {onMounted, ref} from "vue";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
-import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 
 const route = useRoute()
@@ -21,8 +20,7 @@ const getImg = (name) => {
 }
 const suiteForm = ref(null)
 const platformList = [{name: "安卓", value: 1, img: "ANDROID"}
-  , {name: "iOS（暂不开放）", value: 2, img: "IOS", disabled: true}]
-const store = useStore()
+  , {name: "iOS（即将开放）", value: 2, img: "IOS", disabled: true}]
 const testSuite = ref({
   id: null,
   name: "",
@@ -45,7 +43,7 @@ const getDevice = (platform) => {
 const testCaseData = ref([])
 const getTestCaseList = (platform) => {
   axios
-      .get("/controller/testCases/listAll", {params: {platform}})
+      .get("/controller/testCases/listAll", {params: {platform, projectId: route.params.projectId}})
       .then((resp) => {
         if (resp['code'] === 2000) {
           testCaseData.value = resp.data;
@@ -108,39 +106,6 @@ onMounted(() => {
       <el-input v-model="testSuite.name" size="mini" placeholder="输入套件名称"/>
     </el-form-item>
     <el-form-item
-        prop="projectId"
-        label="所属项目"
-        :rules="{
-            required: true,
-            message: '请选择项目',
-            trigger: 'change',
-          }"
-    >
-      <el-select
-          style="width: 100%"
-          v-model="testSuite.projectId"
-          placeholder="请选择项目"
-      >
-        <el-option
-            v-for="item in store.state.projectList"
-            :key="item.id"
-            :value="item.id"
-            :label="item['projectName']"
-        >
-          <div style=" display: flex;align-items: center;">
-            <el-avatar
-                style="margin-right: 10px"
-                :size="32"
-                :src="item['projectImg']"
-                shape="square"
-            ></el-avatar
-            >
-            {{ item['projectName'] }}
-          </div>
-        </el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item
         prop="platform"
         label="平台"
         :rules="{
@@ -196,10 +161,9 @@ onMounted(() => {
         <el-option :value="2" label="设备覆盖"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="关联设备" v-if="testSuite.platform!==null">
+    <el-form-item prop="device" label="关联设备" v-if="testSuite.platform!==null">
       <el-select value-key="id"
                  clearable
-                 collapse-tags
                  filterable
                  style="width: 100%"
                  v-model="testSuite.devices"
@@ -229,9 +193,8 @@ onMounted(() => {
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="关联用例" v-if="testSuite.platform!==null">
+    <el-form-item prop="testCases" label="关联用例" v-if="testSuite.platform!==null">
       <el-select value-key="id"
-                 collapse-tags
                  clearable
                  filterable
                  style="width: 100%"

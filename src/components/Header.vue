@@ -5,12 +5,19 @@ import {onBeforeMount, onMounted, ref} from "vue";
 import axios from "../http/axios";
 import logo from "./../assets/logo.png";
 import {Fold, Expand} from "@element-plus/icons";
+import ProjectUpdate from '../components/ProjectUpdate.vue'
+import defaultLogo from '../assets/logo.png'
 
+const dialogVisible = ref(false)
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
 const projectData = ref([])
 const theme = ref("");
+const flush = () => {
+  dialogVisible.value = false
+  getProjectList();
+}
 const getProjectList = () => {
   axios
       .get("/controller/projects/list").then((resp) => {
@@ -21,8 +28,7 @@ const getProjectList = () => {
 const jump = (project) => {
   store.commit("saveProject", project);
   router.push({
-    path: "/Home/" + project.id + "/Test" +
-        "",
+    path: "/Home/" + project.id + "/ProjectIndex"
   });
 }
 const logout = () => {
@@ -225,6 +231,9 @@ onMounted(() => {
       </div>
     </el-header>
     <el-backtop :right="20" :bottom="20" target=".demo-tree-scrollbar .el-scrollbar__wrap"></el-backtop>
+    <el-dialog v-model="dialogVisible" title="项目信息" width="600px">
+      <project-update v-if="dialogVisible" :is-update="false" @flush="flush"/>
+    </el-dialog>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
       <el-main v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices'">
         <router-view/>
@@ -237,7 +246,10 @@ onMounted(() => {
             :closable="false"
         >
         </el-alert>
-        <el-row style="margin-top: 10px" justify="center" type="flex">
+        <div style="text-align: center">
+          <el-button type="primary" size="small" style="margin-top: 15px" @click="dialogVisible = true">新增项目</el-button>
+        </div>
+        <el-row style="margin-top: 10px" justify="center" type="flex" v-if="projectData.length>0">
           <el-col
               v-for="project in projectData"
               :key="project"
@@ -254,7 +266,7 @@ onMounted(() => {
               >
                 <div style="text-align: center">
                   <el-avatar
-                      :src="project['projectImg']"
+                      :src="project['projectImg'].length>0?project['projectImg']:defaultLogo"
                       :size="150"
                       shape="square"
                   ></el-avatar>
@@ -289,6 +301,7 @@ onMounted(() => {
             </div>
           </el-col>
         </el-row>
+        <el-empty v-else :image-size="200"></el-empty>
       </el-main>
     </el-scrollbar>
   </el-container>

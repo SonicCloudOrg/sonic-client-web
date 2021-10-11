@@ -327,28 +327,31 @@ const getStepList = () => {
   })
 }
 const getDeviceList = (ids) => {
-  axios.get("/controller/devices/findByIdIn", {
-    params: {
-      ids: ids.map(obj => {
-        return obj.deviceId;
-      })
-    }
-  }).then(async resp => {
-    if (resp['code'] === 2000) {
-      deviceList.value = resp.data
-      for (let i in ids) {
-        for (let j in deviceList.value) {
-          if (ids[i].deviceId === deviceList.value[j].id) {
-            deviceList.value[j].status = ids[i].status
+  let list = ids.map(obj => {
+    return obj.deviceId;
+  });
+  if (list.length > 0) {
+    axios.get("/controller/devices/findByIdIn", {
+      params: {
+        ids: list
+      }
+    }).then(async resp => {
+      if (resp['code'] === 2000) {
+        deviceList.value = resp.data
+        for (let i in ids) {
+          for (let j in deviceList.value) {
+            if (ids[i].deviceId === deviceList.value[j].id) {
+              deviceList.value[j].status = ids[i].status
+            }
           }
         }
+        if (deviceList.value.length > 0) {
+          deviceId.value = deviceList.value[0].id + ''
+          getStepList();
+        }
       }
-      if (deviceList.value.length > 0) {
-        deviceId.value = deviceList.value[0].id + ''
-        getStepList();
-      }
-    }
-  })
+    })
+  }
 }
 const getResultInfo = (id) => {
   axios.get("/controller/results", {params: {id}}).then(async resp => {
