@@ -27,7 +27,7 @@ const dialogVisible = ref(false)
 const stepId = ref(0)
 const tabValue = ref("select")
 const platformList = [{name: "安卓", value: 1, img: "ANDROID"}
-  , {name: "iOS（暂不开放）", value: 2, img: "IOS", disabled: true}]
+  , {name: "iOS（即将开放）", value: 2, img: "IOS", disabled: true}]
 const getImg = (name) => {
   let result;
   try {

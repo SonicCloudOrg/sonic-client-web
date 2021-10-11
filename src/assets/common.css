@@ -2,7 +2,7 @@
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 14px;
+    font-size: 14px !important;
     color: #909399;
 }
 
@@ -44,24 +44,24 @@ body,
 }
 
 .demo .el-switch__label--right {
-    top: 1px;
+    top: 1px !important;
     z-index: 1;
-    right: 13px;
+    right: 13px !important;
 }
 
 .demo .el-switch__label--left {
-    top: 1px;
+    top: 1px !important;
     z-index: 1;
-    left: 2px;
+    left: 2px !important;
 }
 
 .demo .el-switch__core {
     height: 10px !important;
-    margin-right: 10px;
+    margin-right: 10px !important;
 }
 
 .demo .el-switch.is-checked .el-switch__core .el-switch__action {
-    top: -6px;
+    top: -6px !important;
     margin-left: -19.5px !important;
     border: 2px solid #409EFF;
     width: 17px !important;
@@ -69,7 +69,7 @@ body,
 }
 
 .demo .el-switch .el-switch__core .el-switch__action {
-    top: -6px;
+    top: -6px !important;
     margin-left: -4px !important;
     border: 2px solid #ffd04b;
     width: 17px !important;
@@ -250,18 +250,26 @@ body,
 }
 
 .el-dialog,
-.el-card{
-    border-radius: 15px!important;
+.el-card {
+    border-radius: 15px !important;
 }
 
-.el-cascader-menu__wrap.el-scrollbar__wrap{
-    height: 280px!important;
+.el-cascader-menu__wrap.el-scrollbar__wrap {
+    height: 280px !important;
 }
 
-.el-select-dropdown__wrap{
-    max-height: 390px!important;
+.el-select-dropdown__wrap {
+    max-height: 390px !important;
 }
 
-.el-table-filter__checkbox-group label.el-checkbox{
-    margin-bottom: 0px!important;
+.el-table-filter__checkbox-group label.el-checkbox {
+    margin-bottom: 0px !important;
+}
+
+.project-table-expand label {
+    color: #99a9bf;
+}
+
+.project-table-expand .el-form-item {
+    display: flex;
 }

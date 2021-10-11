@@ -9,6 +9,7 @@ import StepList from '../components/StepList.vue'
 import TestCaseList from '../components/TestCaseList.vue'
 import StepLog from '../components/StepLog.vue'
 import ElementUpdate from '../components/ElementUpdate.vue'
+import defaultLogo from '../assets/logo.png'
 import {
   Download,
   Search,
@@ -1281,7 +1282,7 @@ onMounted(() => {
                     <el-avatar
                         style="margin-right: 10px"
                         :size="32"
-                        :src="item['projectImg']"
+                        :src="item['projectImg'].length>0?item['projectImg']:defaultLogo"
                         shape="square"
                     ></el-avatar
                     >
@@ -1308,7 +1309,7 @@ onMounted(() => {
                     <el-avatar
                         style="margin-right: 10px"
                         :size="27"
-                        :src="project['projectImg']"
+                        :src="project['projectImg'].length>0?project['projectImg']:defaultLogo"
                         shape="square"
                     ></el-avatar
                     >
@@ -1650,7 +1651,7 @@ onMounted(() => {
               </el-result>
             </el-card>
           </el-tab-pane>
-          <el-tab-pane label="WebView调试(暂不开放)" name="webview" disabled>xxx</el-tab-pane>
+          <el-tab-pane label="WebView调试(即将开放)" name="webview" disabled>xxx</el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>

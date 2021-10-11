@@ -60,8 +60,6 @@ $http.interceptors.response.use(response => {
     if (err.response) {
         switch (err.response.status) {
             case 401:
-            case 404:
-            case 500:
                 break;
             default:
                 ElMessage.error({

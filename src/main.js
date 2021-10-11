@@ -22,7 +22,7 @@ router.beforeEach((to, from, next) => {
                 },
             })
             .then((resp) => {
-                if (resp.code === 2000) {
+                if (resp['code'] === 2000) {
                     store.commit("saveProject", resp.data);
                 }
             });

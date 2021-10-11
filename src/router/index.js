@@ -29,7 +29,7 @@ const routes = [
         path: '/Home/:projectId(\\d+)',
         component: () =>
             import ("../views/Home.vue"),
-        redirect: {name: 'Test'},
+        redirect: {name: 'ProjectIndex'},
         children: [
             {
                 path: 'Devices',
@@ -42,13 +42,6 @@ const routes = [
                 component: () =>
                     import ("../views/AndroidRemote.vue"),
                 meta: {title: "远程控制"}
-            },
-            {
-                path: 'Test',
-                name: 'Test',
-                component: () =>
-                    import ("../views/Test.vue"),
-                meta: {title: "设备中心"}
             },
             {
                 path: 'AndroidTestCase',
@@ -126,6 +119,20 @@ const routes = [
                 component: () =>
                     import ("../views/Jobs.vue"),
                 meta: {title: "定时任务"}
+            },
+            {
+                path: 'ProjectOption',
+                name: 'ProjectOption',
+                component: () =>
+                    import ("../views/ProjectOption.vue"),
+                meta: {title: "项目设置"}
+            },
+            {
+                path: 'ProjectIndex',
+                name: 'ProjectIndex',
+                component: () =>
+                    import ("../views/ProjectIndex.vue"),
+                meta: {title: "项目首页"}
             },
         ]
     }
