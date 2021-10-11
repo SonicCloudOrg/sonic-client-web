@@ -18,10 +18,12 @@ import {
 import {
   CanvasRenderer
 } from 'echarts/renderers';
+import {useStore} from "vuex";
 
 echarts.use(
     [PieChart, ToolboxComponent, GridComponent, LegendComponent, LineChart, CanvasRenderer, TitleComponent, TooltipComponent]
 );
+const store = useStore()
 const img = import.meta.globEager("./../assets/img/*")
 const times = ref([]);
 const testCaseList = ref([])
@@ -153,93 +155,27 @@ const getDeviceInfo = (id) => {
   }
   return result
 }
+const setStatus = (data) => {
+  let result = [{name: 0, value: 0},
+    {name: 1, value: 0},
+    {name: 2, value: 0},
+    {name: 3, value: 0}]
+  for (let i in data) {
+    for (let j in result) {
+      if (result[j].name === data[i]['status']) {
+        result[j].value += data[i]['total'];
+        break
+      }
+    }
+  }
+  return result
+}
 const getData = () => {
   loading.value = true;
   let chart = echarts.getInstanceByDom(document.getElementById('projectChart'));
   if (chart == null) {
     chart = echarts.init(document.getElementById('projectChart'));
   }
-  let option = {
-    legend: {},
-    tooltip: {
-      trigger: 'axis',
-      showContent: false
-    },
-    dataset: {
-      source: [
-        ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
-        ['Milk Tea', 56.5, 82.1, 88.7, 70.1, 53.4, 85.1],
-        ['Matcha Latte', 51.1, 51.4, 55.1, 53.3, 73.8, 68.7],
-        ['Cheese Cocoa', 40.1, 62.2, 69.5, 36.4, 45.2, 32.5],
-        ['Walnut Brownie', 25.2, 37.1, 41.2, 18, 33.9, 49.1]
-      ]
-    },
-    xAxis: {type: 'category'},
-    yAxis: {gridIndex: 0},
-    grid: {top: '55%'},
-    series: [
-      {
-        type: 'line',
-        smooth: true,
-        seriesLayoutBy: 'row',
-        emphasis: {focus: 'series'}
-      },
-      {
-        type: 'line',
-        smooth: true,
-        seriesLayoutBy: 'row',
-        emphasis: {focus: 'series'}
-      },
-      {
-        type: 'line',
-        smooth: true,
-        seriesLayoutBy: 'row',
-        emphasis: {focus: 'series'}
-      },
-      {
-        type: 'line',
-        smooth: true,
-        seriesLayoutBy: 'row',
-        emphasis: {focus: 'series'}
-      },
-      {
-        type: 'pie',
-        id: 'pie',
-        radius: '30%',
-        center: ['50%', '25%'],
-        emphasis: {
-          focus: 'self'
-        },
-        label: {
-          formatter: '{b}: {@2012} ({d}%)'
-        },
-        encode: {
-          itemName: 'product',
-          value: '2012',
-          tooltip: '2012'
-        }
-      }
-    ]
-  };
-  chart.on('updateAxisPointer', function (event) {
-    const xAxisInfo = event.axesInfo[0];
-    if (xAxisInfo) {
-      const dimension = xAxisInfo.value + 1;
-      chart.setOption({
-        series: {
-          id: 'pie',
-          label: {
-            formatter: '{b}: {@[' + dimension + ']} ({d}%)'
-          },
-          encode: {
-            value: dimension,
-            tooltip: dimension
-          }
-        }
-      });
-    }
-  });
-  chart.setOption(option);
   axios.get("/controller/results/chart", {
     params: {
       startTime: times.value[0],
@@ -252,6 +188,75 @@ const getData = () => {
       result.value = resp['data']
       getCaseIds(result.value['case'])
       getDeviceIds(result.value['device'])
+      let option = {
+        animationDuration: 3000,
+        title: {
+          text: store.state.project.projectName + "运行情况总览",
+          subtext: times.value[0] + " ~ " + times.value[1],
+          textStyle: {
+            color: "#606266",
+          },
+          x: "center",
+          y: "top",
+        },
+        tooltip: {
+          trigger: 'axis',
+        },
+        grid: {top: '55%'},
+        toolbox: {
+          feature: {
+            saveAsImage: {show: true, title: "保存"},
+          },
+        },
+        xAxis: {
+          type: 'category',
+          data: result.value['pass'].map(obj => {
+            return obj['date'];
+          })
+        },
+        yAxis: [{name: "单位(%)", max: 100, min: 0}],
+        series: [
+          {
+            smooth: true,
+            name: '当天通过率',
+            type: 'line',
+            data: result.value['pass'].map(obj => {
+              return obj['rate'];
+            }),
+            itemStyle: {
+              color: '#67C23A'
+            },
+          },
+          {
+            name: '状态分布',
+            type: 'pie',
+            radius: [0, '30%'],
+            center: ['50%', '30%'],
+            data: setStatus(result.value['status']).map(obj => {
+              let name = "";
+              switch (obj['name']) {
+                case 0:
+                  name = "其他";
+                  break
+                case 1:
+                  name = "通过";
+                  break
+                case 2:
+                  name = "警告";
+                  break
+                case 3:
+                  name = "失败";
+                  break
+              }
+              return {name: name, value: obj['value']}
+            }),
+            label: {
+              formatter: '{b}: {@2012}次 ({d}%)'
+            },
+          }
+        ]
+      };
+      chart.setOption(option);
     }
   })
 }
@@ -340,7 +345,7 @@ onMounted(() => {
     </el-col>
     <el-col :span="16">
       <el-card shadow="hover">
-        <div id="projectChart" style="width: 100%;height: 338px;"></div>
+        <div id="projectChart" style="width: 100%;height: 650px;"></div>
       </el-card>
     </el-col>
   </el-row>
