@@ -1,11 +1,13 @@
 <script setup>
-import {ref, onMounted} from "vue";
+import {ref, onMounted, watch} from "vue";
 import {useRouter} from "vue-router";
 import Pageable from "../components/Pageable.vue";
 import axios from "../http/axios";
 import RenderStatus from "../components/RenderStatus.vue"
 import {ElMessage} from "element-plus";
+import useClipboard from "vue-clipboard3";
 
+const {toClipboard} = useClipboard();
 const img = import.meta.globEager("./../assets/img/*")
 const router = useRouter();
 const checkAllAndroid = ref(false);
@@ -81,6 +83,54 @@ const statusList = ref([
   },
 ]);
 const agentList = ref([]);
+const dialogAgent = ref(false)
+const updateAgentForm = ref(null)
+watch(dialogAgent, (newValue, oldValue) => {
+  if (!newValue) {
+    agent.value = {
+      id: 0,
+      name: ""
+    }
+  }
+})
+const agent = ref({
+  id: 0,
+  name: ""
+})
+const editAgent = async (id, name) => {
+  agent.value = {id, name}
+  await openAgent()
+}
+const openAgent = () => {
+  dialogAgent.value = true
+}
+const copy = (value) => {
+  try {
+    toClipboard(value);
+    ElMessage.success({
+      message: "复制成功！",
+    });
+  } catch (e) {
+    ElMessage.error({
+      message: "复制失败！",
+    });
+  }
+}
+const updateAgent = () => {
+  updateAgentForm['value'].validate((valid) => {
+    if (valid) {
+      axios.put("/controller/agents/updateName", agent.value).then(resp => {
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+          dialogAgent.value = false
+          getAllAgents()
+        }
+      })
+    }
+  })
+}
 const jump = (id) => {
   router.push({
     path: "AndroidRemote/" + id
@@ -273,338 +323,455 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-card>
-    <el-input
-        style="width: 300px"
-        v-model="name"
-        type="text"
-        size="small"
-        placeholder="输入要筛选的型号或设备序列号"
-        maxlength="20"
-        show-word-limit
-        clearable
-        @input="handleInput"
-    >
-    </el-input>
-    <el-popover placement="bottom-start" width="800px" trigger="click">
-      <template #reference>
-        <el-button size="small" type="primary" style="margin-left: 20px">高级筛选器</el-button>
-      </template>
-      <el-form
-          label-position="left"
-          class="demo-table-expand"
-          label-width="90px"
-          style="margin-left: 20px"
-      >
-        <el-form-item label="安卓系统">
-          <el-checkbox
-              label="全选"
-              :indeterminate="isAllAndroid"
-              v-model="checkAllAndroid"
-              @change="handleAndroid"
-          ></el-checkbox>
-          <el-checkbox-group
-              v-model="androidSystem"
-              @change="handleCheckedAndroid"
-              class="device-radio-p"
+  <el-tabs type="border-card" stretch>
+    <el-tab-pane label="设备中心">
+      <el-card>
+        <el-input
+            style="width: 300px"
+            v-model="name"
+            type="text"
+            size="small"
+            placeholder="输入要筛选的型号或设备序列号"
+            maxlength="20"
+            show-word-limit
+            clearable
+            @input="handleInput"
+        >
+        </el-input>
+        <el-popover placement="bottom-start" width="800px" trigger="click">
+          <template #reference>
+            <el-button size="small" type="primary" style="margin-left: 20px">高级筛选器</el-button>
+          </template>
+          <el-form
+              label-position="left"
+              class="demo-table-expand"
+              label-width="90px"
+              style="margin-left: 20px"
           >
-            <el-checkbox
-                v-for="version in androidSystemVersion"
-                :key="version"
-                :label="version"
-            >
-              <img
-                  width="30"
-                  :src="getImg('ANDROID')"
-              />
-              {{ version }}
-            </el-checkbox
-            >
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="iOS系统">
-          <el-checkbox
-              label="全选"
-              :indeterminate="isAlliOS"
-              v-model="checkAlliOS"
-              @change="handleIOS"
-          ></el-checkbox>
-          <el-checkbox-group class="device-radio-p" v-model="iOSSystem" @change="handleCheckedIOS">
-            <el-checkbox
-                v-for="version in iOSSystemVersion"
-                :key="version"
-                :label="version"
-            >
-              <img
-                  width="30"
-                  :src="getImg('IOS')"
-              />
-              {{ version }}
-            </el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="设备制造商">
-          <el-checkbox
-              label="全选"
-              :indeterminate="isAllMan"
-              v-model="checkAllMan"
-              @change="handleMan"
-          ></el-checkbox>
-          <el-checkbox-group
-              v-model="checkMan"
-              class="device-radio"
-              @change="handleCheckedMan"
-          >
-            <el-checkbox v-for="man in manufacturer" :key="man" :label="man">
-              <img
-                  v-if="
+            <el-form-item label="安卓系统">
+              <el-checkbox
+                  label="全选"
+                  :indeterminate="isAllAndroid"
+                  v-model="checkAllAndroid"
+                  @change="handleAndroid"
+              ></el-checkbox>
+              <el-checkbox-group
+                  v-model="androidSystem"
+                  @change="handleCheckedAndroid"
+                  class="device-radio-p"
+              >
+                <el-checkbox
+                    v-for="version in androidSystemVersion"
+                    :key="version"
+                    :label="version"
+                >
+                  <img
+                      width="30"
+                      :src="getImg('ANDROID')"
+                  />
+                  {{ version }}
+                </el-checkbox
+                >
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="iOS系统">
+              <el-checkbox
+                  label="全选"
+                  :indeterminate="isAlliOS"
+                  v-model="checkAlliOS"
+                  @change="handleIOS"
+              ></el-checkbox>
+              <el-checkbox-group class="device-radio-p" v-model="iOSSystem" @change="handleCheckedIOS">
+                <el-checkbox
+                    v-for="version in iOSSystemVersion"
+                    :key="version"
+                    :label="version"
+                >
+                  <img
+                      width="30"
+                      :src="getImg('IOS')"
+                  />
+                  {{ version }}
+                </el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="设备制造商">
+              <el-checkbox
+                  label="全选"
+                  :indeterminate="isAllMan"
+                  v-model="checkAllMan"
+                  @change="handleMan"
+              ></el-checkbox>
+              <el-checkbox-group
+                  v-model="checkMan"
+                  class="device-radio"
+                  @change="handleCheckedMan"
+              >
+                <el-checkbox v-for="man in manufacturer" :key="man" :label="man">
+                  <img
+                      v-if="
                   man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'||man === 'GIONEE'
                 "
-                  style="width: 80px"
-                  :src="getImg(man)"
-              />
-              <img
-                  v-else-if="man === 'Xiaomi' ||man === 'APPLE'"
-                  style="width: 30px"
-                  :src="getImg(man)"
-              />
-              <img
-                  v-else
-                  style="width: 70px"
-                  :src="getImg(man)"
-              />
-            </el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="CPU处理器">
-          <el-checkbox
-              label="全选"
-              :indeterminate="isAllCpu"
-              v-model="checkAllCpu"
-              @change="handleCpu"
-          ></el-checkbox>
-          <el-checkbox-group v-model="cpu" @change="handleCheckedCpu">
-            <el-checkbox v-for="c in cpus" :key="c" :label="c"></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="屏幕分辨率">
-          <el-checkbox
-              label="全选"
-              :indeterminate="isAllSize"
-              v-model="checkAllSize"
-              @change="handleSize"
-          ></el-checkbox>
-          <el-checkbox-group v-model="size" @change="handleCheckedSize">
-            <el-checkbox v-for="s in sizes" :key="s" :label="s"></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="所在位置">
-          <el-checkbox
-              label="全选"
-              :indeterminate="isAllAgent"
-              v-model="checkAllAgent"
-              @change="handleAgent"
-          ></el-checkbox>
-          <el-checkbox-group v-model="agentIds" @change="handleCheckedAgent">
-            <el-checkbox
-                v-for="agent in agentList"
-                :key="agent"
-                :label="agent.id"
-            >{{ agent.name }}
-            </el-checkbox
+                      style="width: 80px"
+                      :src="getImg(man)"
+                  />
+                  <img
+                      v-else-if="man === 'Xiaomi' ||man === 'APPLE'"
+                      style="width: 30px"
+                      :src="getImg(man)"
+                  />
+                  <img
+                      v-else
+                      style="width: 70px"
+                      :src="getImg(man)"
+                  />
+                </el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="CPU处理器">
+              <el-checkbox
+                  label="全选"
+                  :indeterminate="isAllCpu"
+                  v-model="checkAllCpu"
+                  @change="handleCpu"
+              ></el-checkbox>
+              <el-checkbox-group v-model="cpu" @change="handleCheckedCpu">
+                <el-checkbox v-for="c in cpus" :key="c" :label="c"></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="屏幕分辨率">
+              <el-checkbox
+                  label="全选"
+                  :indeterminate="isAllSize"
+                  v-model="checkAllSize"
+                  @change="handleSize"
+              ></el-checkbox>
+              <el-checkbox-group v-model="size" @change="handleCheckedSize">
+                <el-checkbox v-for="s in sizes" :key="s" :label="s"></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="所在位置">
+              <el-checkbox
+                  label="全选"
+                  :indeterminate="isAllAgent"
+                  v-model="checkAllAgent"
+                  @change="handleAgent"
+              ></el-checkbox>
+              <el-checkbox-group v-model="agentIds" @change="handleCheckedAgent">
+                <el-checkbox
+                    v-for="agent in agentList"
+                    :key="agent"
+                    :label="agent.id"
+                >{{ agent.name }}
+                </el-checkbox
+                >
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="设备状态">
+              <el-checkbox
+                  label="全选"
+                  :indeterminate="isAllStatus"
+                  v-model="checkAllStatus"
+                  @change="handleStatus"
+              ></el-checkbox>
+              <el-checkbox-group v-model="status" @change="handleCheckedStatus">
+                <el-checkbox
+                    v-for="statusDevice in statusList"
+                    :key="statusDevice"
+                    :label="statusDevice.value"
+                >{{ statusDevice.name }}
+                </el-checkbox
+                >
+              </el-checkbox-group>
+            </el-form-item>
+          </el-form>
+        </el-popover>
+        <div style="text-align: center;margin-top: 20px">
+          <el-divider class="device-card-divider">设备列表</el-divider>
+        </div>
+        <el-row :gutter="20">
+          <el-col
+              :xs="12"
+              :sm="12"
+              :md="12"
+              :lg="6"
+              :xl="6"
+              v-for="device in pageData.content"
+              :key="device"
+              style="margin-top: 20px"
+          >
+            <el-card
+                shadow="hover"
+                :body-style="{ padding: '10px 20px 15px 10px' }"
+                class="device-card"
             >
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="设备状态">
-          <el-checkbox
-              label="全选"
-              :indeterminate="isAllStatus"
-              v-model="checkAllStatus"
-              @change="handleStatus"
-          ></el-checkbox>
-          <el-checkbox-group v-model="status" @change="handleCheckedStatus">
-            <el-checkbox
-                v-for="statusDevice in statusList"
-                :key="statusDevice"
-                :label="statusDevice.value"
-            >{{ statusDevice.name }}
-            </el-checkbox
-            >
-          </el-checkbox-group>
-        </el-form-item>
-      </el-form>
-    </el-popover>
-    <div style="text-align: center;margin-top: 20px">
-      <el-divider class="device-card-divider">设备列表</el-divider>
-    </div>
-    <el-row :gutter="20">
-      <el-col
-          :xs="12"
-          :sm="12"
-          :md="12"
-          :lg="6"
-          :xl="6"
-          v-for="device in pageData.content"
-          :key="device"
-          style="margin-top: 20px"
-      >
-        <el-card
-            shadow="hover"
-            :body-style="{ padding: '10px 20px 15px 10px' }"
-            class="device-card"
-        >
-          <template #header>
+              <template #header>
               <span v-if="device.model">{{
                   device.model.length > 25
                       ? device.model.substring(0, 17) + "..."
                       : device.model
                 }}</span>
-            <RenderStatus :status="device.status"></RenderStatus>
-          </template>
-          <el-row>
-            <el-col :span="10">
-              <el-image
-                  style="height: 160px"
-                  fit="contain"
-                  :src="getImg(device.model)"
-                  :preview-src-list="[getImg(device.model)]"
-                  hide-on-click-modal
-              >
-              </el-image>
-            </el-col>
-            <el-col :span="14">
-              <el-form
-                  label-position="left"
-                  class="device-form"
-                  label-width="70px"
-                  style="margin: 0 0 15px 10px"
-              >
-                <el-form-item label="设备名称">
-                  <div>{{ device.name }}</div>
-                </el-form-item>
-                <el-form-item label="制造商">
-                  <img
-                      v-if="
+                <RenderStatus :status="device.status"></RenderStatus>
+              </template>
+              <el-row>
+                <el-col :span="10">
+                  <el-image
+                      style="height: 160px"
+                      fit="contain"
+                      :src="getImg(device.model)"
+                      :preview-src-list="[getImg(device.model)]"
+                      hide-on-click-modal
+                  >
+                  </el-image>
+                </el-col>
+                <el-col :span="14">
+                  <el-form
+                      label-position="left"
+                      class="device-form"
+                      label-width="70px"
+                      style="margin: 0 0 15px 10px"
+                  >
+                    <el-form-item label="设备名称">
+                      <div>{{ device.name }}</div>
+                    </el-form-item>
+                    <el-form-item label="制造商">
+                      <img
+                          v-if="
                   device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'
                 "
-                      style="width: 80px"
-                      :src="getImg(device.manufacturer)"
-                  />
-                  <img
-                      v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'"
-                      style="width: 30px"
-                      :src="getImg(device.manufacturer)"
-                  />
-                  <img
-                      v-else
-                      style="width: 70px"
-                      :src="getImg(device.manufacturer)"
-                  />
+                          style="width: 80px"
+                          :src="getImg(device.manufacturer)"
+                      />
+                      <img
+                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'"
+                          style="width: 30px"
+                          :src="getImg(device.manufacturer)"
+                      />
+                      <img
+                          v-else
+                          style="width: 70px"
+                          :src="getImg(device.manufacturer)"
+                      />
 
-                </el-form-item>
-                <el-form-item label="设备系统">
-                  <img
-                      style="width: 30px"
-                      :src="getImg(device.platform===1?'ANDROID':'IOS')"
-                  />
-                </el-form-item>
-                <el-form-item label="系统版本">
-                  <div>{{ device.version }}</div>
-                </el-form-item>
-                <el-form-item label="分辨率">
-                  <div>{{ device.size }}</div>
-                </el-form-item>
-                <el-form-item label="所在位置">
-                  <div>{{ findAgentById(device.agentId) }}</div>
-                </el-form-item>
-              </el-form>
-            </el-col>
-          </el-row>
-          <div style="text-align: center">
-            <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'" @click="jump(device.id)">马上使用
-            </el-button>
-            <el-popover placement="right-end" width="300px" trigger="hover">
-              <el-form
-                  label-position="left"
-                  class="demo-table-expand"
-                  label-width="90px"
-                  style="margin-left: 10px; word-break: break-all"
-                  v-if="device.id"
-              >
-                <el-form-item label="设备名称">
-                  <span>{{ device.name }}</span>
-                </el-form-item>
-                <el-form-item label="设备型号">
-                  <span>{{ device.model }}</span>
-                </el-form-item>
-                <el-form-item label="设备序列号">
-                  <span>{{ device.udId }}</span>
-                </el-form-item>
-                <el-form-item label="屏幕分辨率">
-                  <span>{{ device.size }}</span>
-                </el-form-item>
-                <el-form-item label="CPU类型">
-                  <span>{{ device.cpu }}</span>
-                </el-form-item>
-                <el-form-item label="安装密码">
-                  <el-input
-                      show-word-limit
-                      v-model="device.password"
-                      type="text"
-                      size="mini"
-                      placeholder="默认为Sonic123456"
-                      maxlength="30"
-                      style="position: absolute; top: 7px; bottom: 7px"
+                    </el-form-item>
+                    <el-form-item label="设备系统">
+                      <img
+                          style="width: 30px"
+                          :src="getImg(device.platform===1?'ANDROID':'IOS')"
+                      />
+                    </el-form-item>
+                    <el-form-item label="系统版本">
+                      <div>{{ device.version }}</div>
+                    </el-form-item>
+                    <el-form-item label="分辨率">
+                      <div>{{ device.size }}</div>
+                    </el-form-item>
+                    <el-form-item label="所在位置">
+                      <div>{{ findAgentById(device.agentId) }}</div>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+              </el-row>
+              <div style="text-align: center">
+                <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'" @click="jump(device.id)">马上使用
+                </el-button>
+                <el-popover placement="right-end" width="300px" trigger="hover">
+                  <el-form
+                      label-position="left"
+                      class="demo-table-expand"
+                      label-width="90px"
+                      style="margin-left: 10px; word-break: break-all"
+                      v-if="device.id"
                   >
-                    <template #append>
-                      <el-button
+                    <el-form-item label="设备名称">
+                      <span>{{ device.name }}</span>
+                    </el-form-item>
+                    <el-form-item label="设备型号">
+                      <span>{{ device.model }}</span>
+                    </el-form-item>
+                    <el-form-item label="设备序列号">
+                      <span>{{ device.udId }}</span>
+                    </el-form-item>
+                    <el-form-item label="屏幕分辨率">
+                      <span>{{ device.size }}</span>
+                    </el-form-item>
+                    <el-form-item label="CPU类型">
+                      <span>{{ device.cpu }}</span>
+                    </el-form-item>
+                    <el-form-item label="安装密码">
+                      <el-input
+                          show-word-limit
+                          v-model="device.password"
+                          type="text"
                           size="mini"
-                          @click="savePwd(device)"
-                      >保存
-                      </el-button
+                          placeholder="默认为Sonic123456"
+                          maxlength="30"
+                          style="position: absolute; top: 7px; bottom: 7px"
                       >
-                    </template>
-                  </el-input>
-                </el-form-item>
-                <el-form-item label="快捷操作">
-                  <el-popconfirm
-                      placement="top"
-                      confirmButtonText="确认"
-                      cancelButtonText="取消"
-                      @confirm="reboot(device.id)"
-                      icon="el-icon-warning"
-                      iconColor="red"
-                      title="确定重启该设备吗？"
-                  >
-                    <template #reference>
-                      <el-button
-                          type="danger"
-                          size="mini"
-                          :disabled="device.status !== 'ONLINE'
+                        <template #append>
+                          <el-button
+                              size="mini"
+                              @click="savePwd(device)"
+                          >保存
+                          </el-button
+                          >
+                        </template>
+                      </el-input>
+                    </el-form-item>
+                    <el-form-item label="快捷操作">
+                      <el-popconfirm
+                          placement="top"
+                          confirmButtonText="确认"
+                          cancelButtonText="取消"
+                          @confirm="reboot(device.id)"
+                          icon="el-icon-warning"
+                          iconColor="red"
+                          title="确定重启该设备吗？"
+                      >
+                        <template #reference>
+                          <el-button
+                              type="danger"
+                              size="mini"
+                              :disabled="device.status !== 'ONLINE'
                           &&device.status !== 'DEBUGGING'
                           &&device.status !== 'TESTING'
                            &&device.status !== 'ERROR'"
-                      >重启
-                      </el-button
-                      >
-                    </template>
-                  </el-popconfirm>
-                </el-form-item>
-              </el-form>
-              <template #reference>
-                <el-button size="mini">更多信息</el-button>
-              </template>
-            </el-popover>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-    <pageable
-        :isPageSet="false"
-        :total="pageData['totalElements']"
-        :current-page="pageData['number']+1"
-        :page-size="pageData['size']"
-        @change="findAll"
-    ></pageable>
-  </el-card>
+                          >重启
+                          </el-button
+                          >
+                        </template>
+                      </el-popconfirm>
+                    </el-form-item>
+                  </el-form>
+                  <template #reference>
+                    <el-button size="mini">更多信息</el-button>
+                  </template>
+                </el-popover>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+        <pageable
+            :isPageSet="false"
+            :total="pageData['totalElements']"
+            :current-page="pageData['number']+1"
+            :page-size="pageData['size']"
+            @change="findAll"
+        ></pageable>
+      </el-card>
+    </el-tab-pane>
+    <el-tab-pane label="Agent中心">
+      <el-button type="primary" size="mini" @click="openAgent">新增Agent</el-button>
+      <div style="text-align: center;margin-top: 20px">
+        <el-divider class="device-card-divider">Agent列表</el-divider>
+      </div>
+      <el-row :gutter="20">
+        <el-col
+            :xs="12"
+            :sm="12"
+            :md="12"
+            :lg="8"
+            :xl="8"
+            v-for="agent in agentList"
+            :key="agent"
+            style="margin-top: 20px"
+        >
+          <el-card
+              shadow="hover"
+              :body-style="{ padding: '10px 20px 15px 10px'}"
+          >
+            <template #header>
+              <strong>{{ agent.name }}</strong>
+              <div style="float: right">
+                <el-tag
+                    size="small"
+                    type="success"
+                    v-if="agent.status === 1"
+                >在线
+                </el-tag
+                >
+                <el-tag
+                    size="small"
+                    type="info"
+                    v-if="agent.status === 2"
+                >离线
+                </el-tag
+                >
+              </div>
+            </template>
+            <el-form
+                style="margin-left: 10px"
+                label-position="left"
+                class="demo-table-expand"
+                label-width="100px"
+            >
+              <el-form-item label="Agent ID">
+                <span>#{{ agent.id }}</span>
+              </el-form-item>
+              <el-form-item label="Agent所在IP">
+                <span>{{ agent.host }}</span>
+              </el-form-item>
+              <el-form-item label="部署系统">
+                <div style="display: flex; align-items: center">
+                  {{ agent['systemType'] }}
+                  <img
+                      style="margin-left: 10px"
+                      v-if="
+                     agent['systemType']!=='未知' &&
+                      (agent['systemType'].indexOf('Mac') !== -1 ||
+                        agent['systemType'].indexOf('Windows') !== -1)
+                    "
+                      height="20"
+                      :src="
+                      getImg(agent['systemType'].indexOf('Mac') !== -1
+                        ? 'Mac'
+                        : 'Windows')
+                    "
+                  />
+                </div>
+              </el-form-item>
+              <el-form-item label="开启端口">
+                <span>{{ agent.port }}</span>
+              </el-form-item>
+              <el-form-item label="Agent端版本">
+                <span>{{ agent.version }}</span>
+              </el-form-item>
+              <el-form-item label="AgentKey">
+                <div style="white-space: nowrap;cursor: pointer" @click="copy(agent['secretKey'])">{{
+                    agent['secretKey']
+                  }}
+                </div>
+              </el-form-item>
+              <el-form-item label="Agent操作">
+                <el-button size="mini" type="primary" @click="editAgent(agent.id,agent.name)">编辑</el-button>
+              </el-form-item>
+            </el-form>
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-tab-pane>
+  </el-tabs>
+  <el-dialog v-model="dialogAgent" title="Agent信息" width="500px">
+    <el-form v-if="dialogAgent" ref="updateAgentForm" :model="agent" size="small" class="demo-table-expand"
+             label-width="90px"
+             label-position="left">
+      <el-form-item
+          prop="name"
+          label="Agent名称"
+          :rules="{
+          required: true,
+          message: 'Agent名称不能为空',
+          trigger: 'blur',
+        }"
+      >
+        <el-input
+            v-model="agent.name"
+            placeholder="请输入Agent名称"
+        ></el-input>
+      </el-form-item>
+    </el-form>
+    <div style="text-align: center">
+      <el-button size="small" type="primary" @click="updateAgent">确 定</el-button>
+    </div>
+  </el-dialog>
 </template>
