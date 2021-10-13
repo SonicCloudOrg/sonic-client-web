@@ -7,6 +7,7 @@ import logo from "./../assets/logo.png";
 import {Fold, Expand} from "@element-plus/icons";
 import ProjectUpdate from '../components/ProjectUpdate.vue'
 import defaultLogo from '../assets/logo.png'
+import {Cellphone} from "@element-plus/icons";
 
 const dialogVisible = ref(false)
 const store = useStore();
@@ -62,98 +63,29 @@ onMounted(() => {
             <Expand/>
           </el-icon>
         </div>
+      </div>
+      <div class="flex-center demo">
+        <!--        <el-tooltip :content="'当前主题: '+theme.toUpperCase()" placement="bottom">-->
+        <!--          <el-switch v-model="theme" @change="toggleClass"-->
+        <!--                     style="margin-right: 10px;"-->
+        <!--                     :width="33"-->
+        <!--                     active-value="light"-->
+        <!--                     inactive-value="dark"-->
+        <!--                     active-color="#C0C4CC" inactive-color="#ffffff"-->
+        <!--                     active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>-->
+        <!--        </el-tooltip>-->
         <el-menu :background-color="store.state.menuBack" :text-color="store.state.menuText"
                  :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
                  :default-active="route.path" router>
-          <!-- <el-sub-menu index="1">
-                  <template #title>
-                    <i class="el-icon-monitor" style="margin-right: 0"></i>
-                    <span>Agent状态</span>
-                    <el-badge
-                      :value="onlineNum"
-                      type="success"
-                      style="margin-top: -4px; margin-left: 3px"
-                    >
-                    </el-badge>
-                  </template>
-                  <el-menu-item
-                    v-for="agent in resourceList"
-                    :key="agent.id"
-                    @click="findByWebHost(agent)"
-                  >
-                    <div style="width: 360px">
-                      <el-image
-                        style="
-                          width: 35px;
-                          position: absolute;
-                          top: 0px;
-                          bottom: 0px;
-                          margin: auto;
-                        "
-                        fit="contain"
-                        :src="require('../../src/assets/img/agent.png')"
-                      >
-                      </el-image>
-                      <span style="margin-left: 38px"
-                        >{{ agent.agentName }}
-                        <span
-                          style="
-                            color: #8492a6;
-                            font-size: 10px;
-                            font-style: italic;
-                          "
-                          >v{{ agent.version }}</span
-                        ></span
-                      >
-                      <span style="position: absolute; right: 10px">
-                        <span
-                          style="
-                            color: #8492a6;
-                            font-size: 10px;
-                            font-style: italic;
-                          "
-                          >IP：{{ agent.ip }}</span
-                        >
-                        <el-tag
-                          size="small"
-                          type="success"
-                          style="margin-left: 7px"
-                          v-if="agent.status === 'ONLINE'"
-                          >在线</el-tag
-                        >
-                        <el-tag
-                          size="small"
-                          type="info"
-                          style="margin-left: 7px"
-                          v-if="agent.status === 'OFFLINE'"
-                          >离线</el-tag
-                        >
-                      </span>
-                    </div>
-                  </el-menu-item>
-                </el-sub-menu> -->
           <el-menu-item
               :index="route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices'"
           >
+            <el-icon :size="16" style="vertical-align: middle;margin-right: 5px">
+              <Cellphone/>
+            </el-icon>
             设备中心
           </el-menu-item>
-        </el-menu>
-      </div>
-      <div class="flex-center demo">
-        <el-tooltip :content="'当前主题: '+theme.toUpperCase()" placement="bottom">
-          <el-switch v-model="theme" @change="toggleClass"
-                     style="margin-right: 10px;"
-                     :width="33"
-                     active-value="light"
-                     inactive-value="dark"
-                     active-color="#C0C4CC" inactive-color="#ffffff"
-                     active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>
-        </el-tooltip>
-        <el-menu :background-color="store.state.menuBack" :text-color="store.state.menuText"
-                 :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
-                 default-active="0">
           <el-menu-item :index="'/Index'" v-if="route.params.projectId|| route.fullPath==='/Index/Devices'"
-                        @click="router.push('/Index')"
           >回到首页
           </el-menu-item>
           <el-sub-menu index="1">

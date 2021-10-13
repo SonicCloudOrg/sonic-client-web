@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import axios from "../http/axios";
 import moment from "moment";
 import {useRoute} from "vue-router";
@@ -23,6 +23,7 @@ import {useStore} from "vuex";
 echarts.use(
     [PieChart, ToolboxComponent, GridComponent, LegendComponent, LineChart, CanvasRenderer, TitleComponent, TooltipComponent]
 );
+let resizeFun = undefined
 const store = useStore()
 const img = import.meta.globEager("./../assets/img/*")
 const times = ref([]);
@@ -257,6 +258,13 @@ const getData = () => {
         ]
       };
       chart.setOption(option);
+      if (resizeFun !== undefined) {
+        window.removeEventListener("resize", resizeFun);
+      }
+      resizeFun = () => {
+        chart.resize();
+      }
+      window.addEventListener("resize", resizeFun);
     }
   })
 }
@@ -265,6 +273,11 @@ onMounted(() => {
   const start = moment(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 7)).format("YYYY-MM-DD HH:mm:ss")
   times.value = [start, end];
   getData()
+})
+onUnmounted(() => {
+  if (resizeFun !== undefined) {
+    window.removeEventListener("resize", resizeFun);
+  }
 })
 </script>
 <template>

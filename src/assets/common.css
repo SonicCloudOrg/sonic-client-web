@@ -6,6 +6,17 @@
     color: #909399;
 }
 
+.login {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: #53a4fa !important;
+    background-position: left bottom;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 html,
 body,
 #app,
