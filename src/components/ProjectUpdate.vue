@@ -83,8 +83,11 @@ const summit = () => {
     }
   })
 }
+const fullscreenLoading = ref(false)
 const delProject = () => {
-  axios.get("/controller/projects", {params: {id: route.params.projectId}}).then(resp => {
+  fullscreenLoading.value = true
+  axios.delete("/controller/projects", {params: {id: route.params.projectId}}).then(resp => {
+    fullscreenLoading.value = false
     if (resp['code'] === 2000) {
       ElMessage.success({
         message: resp['message'],
@@ -212,7 +215,8 @@ onMounted(() => {
     </div>
     <template #footer>
       <el-button size="small" @click="dialogDel = false">取 消</el-button>
-      <el-button size="small" type="danger" @click="delProject">确 定</el-button>
+      <el-button size="small" type="danger" @click="delProject" v-loading.fullscreen.lock="fullscreenLoading">确 定
+      </el-button>
     </template>
   </el-dialog>
 </template>

@@ -7,8 +7,9 @@ import logo from "./../assets/logo.png";
 import {Fold, Expand} from "@element-plus/icons";
 import ProjectUpdate from '../components/ProjectUpdate.vue'
 import defaultLogo from '../assets/logo.png'
-import {Cellphone} from "@element-plus/icons";
+import {Cellphone, HomeFilled} from "@element-plus/icons";
 
+const dialogUserInfo = ref(false)
 const dialogVisible = ref(false)
 const store = useStore();
 const router = useRouter();
@@ -32,7 +33,14 @@ const jump = (project) => {
     path: "/Home/" + project.id + "/ProjectIndex"
   });
 }
+const pushIndex = (path) => {
+  router.push({
+    path
+  });
+}
 const logout = () => {
+  store.commit("clearAuth");
+  router.replace({path: "/Login"})
 }
 const goToUrl = (url) => {
   window.open(url, "_blank");
@@ -53,7 +61,7 @@ onMounted(() => {
 <template>
   <el-container direction="vertical">
     <el-header>
-      <div class="flex-center">
+      <div class="flex-center demo">
         <div style="margin:0 20px;cursor:pointer" @click="store.commit('changeCollapse')"
              v-if="route.params.projectId">
           <el-icon :size="20" style="vertical-align: middle;" v-if="store.state.isCollapse === false">
@@ -63,108 +71,115 @@ onMounted(() => {
             <Expand/>
           </el-icon>
         </div>
+
+        <el-tooltip :content="'当前主题: '+theme.toUpperCase()" placement="bottom">
+          <el-switch v-model="theme" @change="toggleClass"
+                     style="margin-left: 15px;"
+                     :width="33"
+                     active-value="light"
+                     inactive-value="dark"
+                     active-color="#C0C4CC" inactive-color="#ffffff"
+                     active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>
+        </el-tooltip>
       </div>
-      <div class="flex-center demo">
-        <!--        <el-tooltip :content="'当前主题: '+theme.toUpperCase()" placement="bottom">-->
-        <!--          <el-switch v-model="theme" @change="toggleClass"-->
-        <!--                     style="margin-right: 10px;"-->
-        <!--                     :width="33"-->
-        <!--                     active-value="light"-->
-        <!--                     inactive-value="dark"-->
-        <!--                     active-color="#C0C4CC" inactive-color="#ffffff"-->
-        <!--                     active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>-->
-        <!--        </el-tooltip>-->
+      <div class="flex-center">
+
         <el-menu :background-color="store.state.menuBack" :text-color="store.state.menuText"
                  :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
-                 :default-active="route.path" router>
-          <el-menu-item
-              :index="route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices'"
+                 :default-active="route.path">
+          <el-menu-item :index="route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices'"
+                        @click="pushIndex(route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices')"
           >
-            <el-icon :size="16" style="vertical-align: middle;margin-right: 5px">
+            <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
               <Cellphone/>
             </el-icon>
             设备中心
           </el-menu-item>
-          <el-menu-item :index="'/Index'" v-if="route.params.projectId|| route.fullPath==='/Index/Devices'"
-          >回到首页
+          <el-menu-item index="/Index" @click="pushIndex('/Index')"
+                        v-if="route.params.projectId|| route.fullPath==='/Index/Devices'"
+          >
+            <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
+              <HomeFilled/>
+            </el-icon>
+            回到首页
           </el-menu-item>
           <el-sub-menu index="1">
             <template #title
-            ><i class="el-icon-user"></i
-            >{{
-                store.state.userInfo.name
+            >
+              <el-avatar size="medium"
+                         style="background: #409eff!important; margin-right: 5px"
+              >
+                {{
+                  (store.state.userInfo.userName && store.state.userInfo.userName.length > 1) ? store.state.userInfo.userName.substring(store.state.userInfo.userName.length - 2) : store.state.userInfo.userName
+                }}
+              </el-avatar
+              >
+              {{
+                store.state.userInfo.userName
               }}
             </template
             >
-            <div style="padding: 0 10px">
-              <el-divider class="about"
-              ><span class="font title"
-              >个人中心</span
-              ></el-divider
-              >
-              <el-menu-item>我的信息</el-menu-item>
-              <el-divider class="about"
-              ><span
-                  class="flex-center font title"
-              ><img
-                  style="margin-right: 5px"
-                  width="20"
-                  :src="logo"
-              />关于Sonic</span
-              ></el-divider
-              >
-              <el-menu-item
-                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-              >Sonic官方网站
-              </el-menu-item
-              >
-              <el-menu-item
-                  @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
-              >版本更新记录
-                <el-badge
-                    value="New"
-                    style="margin: 0 0 5px 5px"
-                ></el-badge
-                >
-              </el-menu-item>
-              <el-divider class="about"
-              ><span class="font title"
-              >其他</span
-              ></el-divider
-              >
-              <el-menu-item @click="goToUrl('http://localhost:8094/doc.html')">
-                REST API
-              </el-menu-item>
-              <el-menu-item @click="logout"> 注销</el-menu-item>
-            </div>
+            <el-menu-item index="1-1" @click="dialogUserInfo = true">我的信息</el-menu-item>
+            <el-menu-item index="1-2">修改密码</el-menu-item>
+            <el-menu-item index="1-3" @click="logout"> 注销</el-menu-item>
           </el-sub-menu>
-          <!--          <el-sub-menu index="2">-->
-          <!--            <template #title-->
-          <!--            ><span-->
-          <!--                class="flex-center font title"-->
-          <!--            ><img-->
-          <!--                style="margin-right: 5px"-->
-          <!--                width="20"-->
-          <!--                :src="logo"-->
-          <!--            />关于Sonic</span-->
-          <!--            >-->
-          <!--            </template-->
-          <!--            >-->
-          <!--          </el-sub-menu>-->
-          <!--          <el-sub-menu index="3">-->
-          <!--            <template #title-->
-          <!--            ><span class="font title"-->
-          <!--            >其他</span-->
-          <!--            >-->
-          <!--            </template-->
-          <!--            >-->
-          <!--          </el-sub-menu>-->
+          <el-sub-menu index="2">
+            <template #title
+            ><span
+                class="flex-center font title"
+            ><img
+                style="margin-right: 5px"
+                width="20"
+                :src="logo"
+            />关于Sonic</span
+            >
+            </template
+            >
+            <el-menu-item index="2-1"
+                          @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+            >Sonic官方网站
+            </el-menu-item
+            >
+            <el-menu-item index="2-2"
+                          @click="goToUrl('https://github.com/ZhouYixun/sonic-server')"
+            >版本更新记录
+              <el-badge
+                  value="New"
+                  style="margin: 0 0 5px 5px"
+              ></el-badge
+              >
+            </el-menu-item>
+            <el-menu-item index="2-3"
+                          @click="goToUrl(axios.defaults.baseURL.substring(0,axios.defaults.baseURL.length-4)+'/doc.html')">
+              REST API
+            </el-menu-item>
+          </el-sub-menu>
         </el-menu>
       </div>
     </el-header>
     <el-backtop :right="20" :bottom="20" target=".demo-tree-scrollbar .el-scrollbar__wrap"></el-backtop>
     <el-dialog v-model="dialogVisible" title="项目信息" width="600px">
       <project-update v-if="dialogVisible" :is-update="false" @flush="flush"/>
+    </el-dialog>
+    <el-dialog
+        title="我的信息"
+        v-model="dialogUserInfo"
+        width="420px"
+        center
+    >
+      <el-form
+          label-position="left"
+          class="demo-table-expand"
+          label-width="90px"
+          style="margin-left: 10px; word-break: break-all"
+      >
+        <el-form-item label="用户名">
+          <span>{{ store.state.userInfo.userName }}</span>
+        </el-form-item>
+        <el-form-item label="角色">
+          <el-tag size="small">{{ store.state.userInfo.role === 2 ? '测试工程师' : '开发工程师' }}</el-tag>
+        </el-form-item>
+      </el-form>
     </el-dialog>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
       <el-main v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices'">
@@ -181,7 +196,7 @@ onMounted(() => {
         <div style="text-align: center">
           <el-button type="primary" size="small" style="margin-top: 15px" @click="dialogVisible = true">新增项目</el-button>
         </div>
-        <el-row style="margin-top: 10px" justify="center" type="flex" v-if="projectData.length>0">
+        <el-row style="margin-top: 10px" justify="center" type="flex" v-if="projectData&&projectData.length>0">
           <el-col
               v-for="project in projectData"
               :key="project"

@@ -1,18 +1,72 @@
 <script setup>
 import background from "../../src/assets/img/background.svg";
 import logo from "../../src/assets/img/logo2.png";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import axios from "../http/axios";
+import {ElMessage} from "element-plus";
+import {useRoute, useRouter} from "vue-router";
+import {useStore} from "vuex";
 
+const router = useRouter()
+const route = useRoute()
+const store = useStore()
 const user = ref({
-  username: "",
+  userName: "",
   password: ""
 })
 const register = ref({
-  username: "",
+  userName: "",
   password: "",
-  role: 1
+  role: 2
 })
+const loginForm = ref(null)
+const loginPost = (u) => {
+  loading.value = true
+  axios.post("/controller/users/login", u).then(resp => {
+    loading.value = false
+    if (resp['code'] === 2000) {
+      store.commit("changeLogin", resp.data);
+      if (route.query.redirect) {
+        let redirect = route.query.redirect;
+        router.replace(redirect);
+      } else {
+        router.replace({path: "/"});
+      }
+    }
+  })
+}
+const login = () => {
+  loginForm['value'].validate(async (valid) => {
+    if (valid) {
+      await store.commit("clearAuth");
+      await loginPost(user.value)
+    }
+  })
+}
+const registerForm = ref(null)
+const registerIn = () => {
+  registerForm['value'].validate(async (valid) => {
+    if (valid) {
+      await store.commit("clearAuth");
+      loading.value = true
+      await axios.post("/controller/users/register", register.value).then(resp => {
+        loading.value = false
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+          loginPost({userName: register.value.userName, password: register.value.password})
+        }
+      })
+    }
+  })
+}
 const loading = ref(false)
+onMounted(() => {
+  ElMessage.error({
+    message: '请先登录！',
+  });
+})
 </script>
 <template>
   <div
@@ -33,15 +87,15 @@ const loading = ref(false)
         <el-tab-pane label="登 录">
           <el-form
               style="margin-top: 10px"
-              ref="form"
+              ref="loginForm"
               :model="user"
               size="small"
-              @keyup.enter.native="loginIn(user)"
+              @keyup.enter.native="login"
           >
             <el-form-item prop="username">
               <el-input
                   prefix-icon="el-icon-user"
-                  v-model="user.username"
+                  v-model="user.userName"
                   placeholder="请输入账户名"
               ></el-input>
             </el-form-item>
@@ -58,7 +112,7 @@ const loading = ref(false)
                 size="small"
                 type="primary"
                 style="width: 100%"
-                @click="loginIn(user)"
+                @click="login"
                 :loading="loading"
             >登 入
             </el-button
@@ -68,15 +122,14 @@ const loading = ref(false)
         <el-tab-pane label="注 册">
           <el-form
               style="margin-top: 10px"
-              ref="form"
-              :model="user"
+              ref="registerForm"
+              :model="register"
               size="small"
-              @keyup.enter.native="loginIn(user)"
           >
             <el-form-item prop="username">
               <el-input
                   prefix-icon="el-icon-user"
-                  v-model="user.username"
+                  v-model="register.userName"
                   placeholder="请输入账户名"
               ></el-input>
             </el-form-item>
@@ -85,17 +138,23 @@ const loading = ref(false)
                   prefix-icon="el-icon-lock"
                   type="password"
                   show-password
-                  v-model="user.password"
+                  v-model="register.password"
                   placeholder="请输入密码"
               ></el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-select style="width: 100%;" v-model="register.role">
+                <el-option label="测试工程师" :value="2"></el-option>
+                <el-option label="开发工程师" :value="3"></el-option>
+              </el-select>
             </el-form-item>
             <el-button
                 size="small"
                 type="primary"
                 style="width: 100%"
-                @click="loginIn(user)"
+                @click="registerIn"
                 :loading="loading"
-            >注册
+            >注 册
             </el-button
             >
           </el-form>
