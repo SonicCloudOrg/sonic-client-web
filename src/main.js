@@ -27,16 +27,16 @@ router.beforeEach((to, from, next) => {
                 }
             });
     }
-    if (!store.state.userInfo.token && store.state.userInfo.token.length !== 0) {
-        // axios.get("/user").then((res) => {
-        //     if (res.data.code === 2000) {
-        //         store.commit("setUserInfo", res.data.data);
-        //         ElMessage.success({
-        //             message: '欢迎回来！' + store.state.userInfo.name,
-        //         });
-        //         next();
-        //     }
-        // });
+    if (store.state.token.length !== 0 && !store.state.userInfo.userName) {
+        axios.get("/controller/users").then((resp) => {
+            if (resp['code'] === 2000) {
+                store.commit("setUserInfo", resp.data);
+                ElMessage.success({
+                    message: '欢迎回来！' + store.state.userInfo.userName,
+                });
+                next();
+            }
+        });
     } else {
         next();
     }

@@ -575,7 +575,7 @@ onMounted(() => {
               <div style="text-align: center">
                 <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'" @click="jump(device.id)">马上使用
                 </el-button>
-                <el-popover placement="right-end" width="300px" trigger="hover">
+                <el-popover placement="top" width="300px" trigger="hover">
                   <el-form
                       label-position="left"
                       class="demo-table-expand"
@@ -719,13 +719,14 @@ onMounted(() => {
                       v-if="
                      agent['systemType']!=='未知' &&
                       (agent['systemType'].indexOf('Mac') !== -1 ||
-                        agent['systemType'].indexOf('Windows') !== -1)
+                        agent['systemType'].indexOf('Windows') !== -1 ||
+                        agent['systemType'].indexOf('Linux') !== -1)
                     "
                       height="20"
                       :src="
                       getImg(agent['systemType'].indexOf('Mac') !== -1
                         ? 'Mac'
-                        : 'Windows')
+                        : agent['systemType'].indexOf('Linux') !== -1?'Linux':'Windows')
                     "
                   />
                 </div>

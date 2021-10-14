@@ -3,9 +3,8 @@ import {createStore} from 'vuex'
 export default createStore({
     state() {
         return {
-            userInfo: {
-                token: localStorage.getItem('SonicToken') ? localStorage.getItem('SonicToken') : '',
-            },
+            userInfo: {},
+            token: localStorage.getItem('SonicToken') ? localStorage.getItem('SonicToken') : '',
             isCollapse: false,
             project: {},
             projectList: [],
@@ -40,14 +39,16 @@ export default createStore({
                 state.isCollapse = !state.isCollapse;
             }
         },
+        changeLogin(state, sonicToken) {
+            state.token = sonicToken;
+            localStorage.setItem('SonicToken', sonicToken);
+        },
         setUserInfo(state, userInfo) {
             state.userInfo = userInfo;
-            if (userInfo.token) {
-                localStorage.setItem('SonicToken', userInfo.token);
-            }
         },
-        clear(state) {
-            state.userInfo = {token: ""};
+        clearAuth(state) {
+            state.token = '';
+            state.userInfo = {};
             localStorage.removeItem('SonicToken');
         }
     },
