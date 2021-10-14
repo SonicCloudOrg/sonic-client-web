@@ -719,13 +719,14 @@ onMounted(() => {
                       v-if="
                      agent['systemType']!=='未知' &&
                       (agent['systemType'].indexOf('Mac') !== -1 ||
-                        agent['systemType'].indexOf('Windows') !== -1)
+                        agent['systemType'].indexOf('Windows') !== -1 ||
+                        agent['systemType'].indexOf('Linux') !== -1)
                     "
                       height="20"
                       :src="
                       getImg(agent['systemType'].indexOf('Mac') !== -1
                         ? 'Mac'
-                        : 'Windows')
+                        : agent['systemType'].indexOf('Linux') !== -1?'Linux':'Windows')
                     "
                   />
                 </div>

@@ -1,14 +1,58 @@
 <script setup>
 import {useStore} from "vuex";
 import {useRoute, useRouter} from "vue-router";
-import {onBeforeMount, onMounted, ref} from "vue";
+import {onBeforeMount, onMounted, ref, watch} from "vue";
 import axios from "../http/axios";
 import logo from "./../assets/logo.png";
 import {Fold, Expand} from "@element-plus/icons";
 import ProjectUpdate from '../components/ProjectUpdate.vue'
 import defaultLogo from '../assets/logo.png'
 import {Cellphone, HomeFilled} from "@element-plus/icons";
+import {ElMessage} from "element-plus";
 
+const changePwdForm = ref(null)
+const changePwd = ref({
+  oldPwd: "",
+  newPwd: "",
+  newPwdSec: ""
+})
+const validatePass = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('不能为空！'))
+  } else {
+    if (changePwd.value.newPwd !== changePwd.value.newPwdSec) {
+      callback(new Error('两次输入不一致！'))
+    }
+    callback()
+  }
+}
+const dialogChangePwd = ref(false)
+watch(dialogChangePwd, (newValue, oldValue) => {
+  if (!newValue) {
+    changePwd.value = {
+      oldPwd: "",
+      newPwd: "",
+      newPwdSec: ""
+    }
+  }
+})
+const changePwdSummit = () => {
+  changePwdForm['value'].validate((valid) => {
+    if (valid) {
+      axios.put("/controller/users", {
+        oldPwd: changePwd.value.oldPwd,
+        newPwd: changePwd.value.newPwd
+      }).then(resp => {
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+          dialogChangePwd.value = false
+        }
+      })
+    }
+  })
+}
 const dialogUserInfo = ref(false)
 const dialogVisible = ref(false)
 const store = useStore();
@@ -120,7 +164,7 @@ onMounted(() => {
             </template
             >
             <el-menu-item index="1-1" @click="dialogUserInfo = true">我的信息</el-menu-item>
-            <el-menu-item index="1-2">修改密码</el-menu-item>
+            <el-menu-item index="1-2" @click="dialogChangePwd = true">修改密码</el-menu-item>
             <el-menu-item index="1-3" @click="logout"> 注销</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="2">
@@ -180,6 +224,63 @@ onMounted(() => {
           <el-tag size="small">{{ store.state.userInfo.role === 2 ? '测试工程师' : '开发工程师' }}</el-tag>
         </el-form-item>
       </el-form>
+    </el-dialog>
+    <el-dialog
+        title="修改密码"
+        v-model="dialogChangePwd"
+        width="520px"
+    >
+      <el-form
+          v-if="dialogChangePwd"
+          ref="changePwdForm"
+          label-position="left"
+          class="demo-table-expand"
+          label-width="70px"
+          size="small"
+          :model="changePwd"
+      >
+        <el-form-item :rules="{
+          required: true,
+          message: '旧密码不能为空',
+          trigger: 'blur',
+        }" prop="oldPwd" label="旧密码">
+          <el-input
+              prefix-icon="el-icon-lock"
+              type="password"
+              show-password
+              v-model="changePwd.oldPwd"
+              placeholder="请输入旧密码"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :rules="{
+          required: true,
+          message: '新密码不能为空',
+          trigger: 'blur',
+        }" prop="newPwd" label="新密码">
+          <el-input
+              prefix-icon="el-icon-lock"
+              type="password"
+              show-password
+              v-model="changePwd.newPwd"
+              placeholder="请输入新密码"
+          ></el-input>
+        </el-form-item>
+        <el-form-item prop="newPwdSec" :rules="{
+          validator:validatePass,
+          trigger: 'blur',
+        }">
+          <el-input
+              prefix-icon="el-icon-lock"
+              type="password"
+              show-password
+              v-model="changePwd.newPwdSec"
+              placeholder="请再次输入新密码"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div style="text-align: center">
+        <el-button size="small" type="primary" @click="changePwdSummit">确 定</el-button>
+      </div>
     </el-dialog>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
       <el-main v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices'">
