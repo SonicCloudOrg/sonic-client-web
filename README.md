@@ -4,7 +4,7 @@
 <p align="center">🎉Front end of Sonic cloud real machine testing platform</p>
 <p align="center">
   <span>English |</span>
-  <a href="https://github.com/ZhouYixun/sonic-agent/blob/main/README_CN.md">  
+  <a href="https://github.com/ZhouYixun/sonic-client-web/blob/main/README_CN.md">  
      简体中文
   </a>
 </p>
