@@ -31,6 +31,8 @@
   </a>
 </p>
 
+### Official Website
+[Sonic Official Website](http://zhouyixun.gitee.io/sonic-official-website)
 ## Background
 
 #### What is sonic ?
