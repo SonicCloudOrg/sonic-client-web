@@ -37,6 +37,12 @@ router.beforeEach((to, from, next) => {
                 next();
             }
         });
+    }
+    if (store.state.token.length === 0 && to.path !== '/Login') {
+        next({
+            path: '/Login',
+            query: { redirect: to.fullPath }
+        })
     } else {
         next();
     }
