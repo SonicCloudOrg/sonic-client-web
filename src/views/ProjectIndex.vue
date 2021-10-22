@@ -34,12 +34,12 @@ const defaultTime = ref([
   new Date(2000, 1, 1, 0, 0, 0),
   new Date(2000, 2, 1, 23, 59, 59),
 ])
-const getImg = (name) => {
+const getPhoneImg = (name) => {
   let result;
   try {
     result = img['./../assets/img/' + name + '.jpg'].default
   } catch {
-    result = img['./../assets/img/unName.jpg'].default
+    result = img['./../assets/img/sdk_gphone_x86_arm.jpg'].default
   }
   return result;
 }
@@ -328,14 +328,16 @@ onUnmounted(() => {
             <template #default="scope">
               <img v-if="scope.$index<=3" width="30" :src="getIndexImg(scope.$index)"
                    style="position: absolute;left: 0px;top:0px;z-index: 1000">
-              <el-image
-                  style="height: 100%"
-                  fit="contain"
-                  :src="getImg(getDeviceInfo(scope.row['device_id']).model)"
-                  :preview-src-list="[getImg(getDeviceInfo(scope.row['device_id']).model)]"
-                  hide-on-click-modal
-              >
-              </el-image>
+              <div style="text-align: center">
+                <el-image
+                    style="height: 100%"
+                    fit="contain"
+                    :src="getPhoneImg(getDeviceInfo(scope.row['device_id']).model)"
+                    :preview-src-list="[getPhoneImg(getDeviceInfo(scope.row['device_id']).model)]"
+                    hide-on-click-modal
+                >
+                </el-image>
+              </div>
             </template>
           </el-table-column>
           <el-table-column align="center" width="100" label="设备型号" show-overflow-tooltip>

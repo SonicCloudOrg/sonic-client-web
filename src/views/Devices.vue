@@ -309,10 +309,22 @@ const reboot = (id) => {
 }
 const getImg = (name) => {
   let result;
+  if (name === 'meizu') {
+    name = 'Meizu'
+  }
   try {
     result = img['./../assets/img/' + name + '.jpg'].default
   } catch {
     result = img['./../assets/img/unName.jpg'].default
+  }
+  return result;
+}
+const getPhoneImg = (name) => {
+  let result;
+  try {
+    result = img['./../assets/img/' + name + '.jpg'].default
+  } catch {
+    result = img['./../assets/img/sdk_gphone_x86_arm.jpg'].default
   }
   return result;
 }
@@ -502,7 +514,7 @@ onMounted(() => {
           >
             <el-card
                 shadow="hover"
-                :body-style="{ padding: '10px 20px 15px 10px' }"
+                :body-style="{ padding: '15px 20px 15px 10px' }"
                 class="device-card"
             >
               <template #header>
@@ -515,14 +527,16 @@ onMounted(() => {
               </template>
               <el-row>
                 <el-col :span="10">
-                  <el-image
-                      style="height: 160px"
-                      fit="contain"
-                      :src="getImg(device.model)"
-                      :preview-src-list="[getImg(device.model)]"
-                      hide-on-click-modal
-                  >
-                  </el-image>
+                  <div style="text-align: center">
+                    <el-image
+                        style="height: 160px"
+                        fit="contain"
+                        :src="getPhoneImg(device.model)"
+                        :preview-src-list="[getPhoneImg(device.model)]"
+                        hide-on-click-modal
+                    >
+                    </el-image>
+                  </div>
                 </el-col>
                 <el-col :span="14">
                   <el-form
