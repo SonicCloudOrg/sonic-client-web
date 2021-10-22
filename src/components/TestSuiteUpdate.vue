@@ -11,10 +11,22 @@ const props = defineProps({
 const img = import.meta.globEager("./../assets/img/*")
 const getImg = (name) => {
   let result;
+  if (name === 'meizu') {
+    name = 'Meizu'
+  }
   try {
     result = img['./../assets/img/' + name + '.jpg'].default
   } catch {
     result = img['./../assets/img/unName.jpg'].default
+  }
+  return result;
+}
+const getPhoneImg = (name) => {
+  let result;
+  try {
+    result = img['./../assets/img/' + name + '.jpg'].default
+  } catch {
+    result = img['./../assets/img/sdk_gphone_x86_arm.jpg'].default
   }
   return result;
 }
@@ -177,7 +189,7 @@ onMounted(() => {
           <el-image
               style="height: 80%;float: left"
               fit="contain"
-              :src="getImg(item.model)"
+              :src="getPhoneImg(item.model)"
           >
           </el-image>
           <span style="float: left;margin-left: 10px">{{ item.model }}</span>

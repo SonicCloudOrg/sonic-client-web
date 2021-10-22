@@ -24,6 +24,9 @@ const dialogDel = ref(false)
 const img = import.meta.globEager("./../assets/img/*")
 const getImg = (name) => {
   let result;
+  if (name === 'meizu') {
+    name = 'Meizu'
+  }
   try {
     result = img['./../assets/img/' + name + '.jpg'].default
   } catch {

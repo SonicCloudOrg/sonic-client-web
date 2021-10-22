@@ -10,6 +10,9 @@ const router = useRouter()
 const testCase = ref({})
 const getImg = (name) => {
   let result;
+  if (name === 'meizu') {
+    name = 'Meizu'
+  }
   try {
     result = img['./../assets/img/' + name + '.jpg'].default
   } catch {

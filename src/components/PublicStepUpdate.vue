@@ -30,6 +30,9 @@ const platformList = [{name: "安卓", value: 1, img: "ANDROID"}
   , {name: "iOS（即将开放）", value: 2, img: "IOS", disabled: true}]
 const getImg = (name) => {
   let result;
+  if (name === 'meizu') {
+    name = 'Meizu'
+  }
   try {
     result = img['./../assets/img/' + name + '.jpg'].default
   } catch {
