@@ -86,9 +86,10 @@ const dialogImgElement = ref(false)
 const imgElementUrl = ref(null)
 const updateImgEle = ref(null)
 const webViewListDetail = ref([])
-const myIframe = ref(null);
 const isWebView = ref(true)
 const iframeUrl = ref("")
+const debugPort = ref(0)
+const title = ref("")
 const element = ref({
   id: null,
   eleName: "",
@@ -96,14 +97,17 @@ const element = ref({
   eleValue: "",
   projectId: 0
 })
-const tabWebView =(port,webkit,id)=>{
+const tabWebView =(port,id,transtitle)=>{
+  title.value = transtitle
   isWebView.value = false;
     iframeUrl.value =
-       "https://chrome-devtools-frontend.appspot.com/serve_rev/@"+webkit+"/inspector.html?ws="+agent.value['host']+":"+agent.value['port']
-       +"/websockets/webView/"+ agent.value['secretKey']+"/"+port+"/"+id;
-  setTimeout(() => {
-    iFrameHeight.value = window.innerHeight - myIframe.value.$el.offsetTop - 220
-  }, 100)
+       "http://"+agent.value['host']+":"+debugPort.value
+        +"/devtools/inspector.html?ws="+agent.value['host']
+        +":"+agent.value['port']+"/websockets/webView/"
+        + agent.value['secretKey']+"/"+port+"/"+id;
+  nextTick(()=>{
+    iFrameHeight.value = document.getElementById("pressKey").offsetTop;
+  })
 }
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null;
@@ -283,7 +287,8 @@ const websocketOnmessage = (message) => {
         ElMessage.info({
           message: '获取成功！',
         })
-        webViewListDetail.value = JSON.parse(message.data)['detail']
+        webViewListDetail.value = JSON.parse(message.data)['detail'];
+        debugPort.value = JSON.parse(message.data)['debugPort']
         break
       }
       case "eleScreen": {
@@ -1706,13 +1711,15 @@ onMounted(() => {
                     </div>
                     <div style="color: #909399">{{ w.url.length > 50 ? w.url.substring(0, 50) + '...' : w.url }}</div>
                     </div>
-                    <el-button type="primary" size="mini" @click="tabWebView(web.port,web.webkit,w.id)">马上调试</el-button>
+                    <el-button type="primary" size="mini" @click="tabWebView(web.port,w.id,(w.title.length > 0 ? w.title : '无标题'))">马上调试</el-button>
                   </div>
                 </el-card>
               </el-card>
             </div>
-            <div ref="myIframe" v-else>
-              <iframe :style="'border: 0px;width: 100%;height: '+1000+'px'"
+            <div v-else>
+              <el-button size="mini" @click="isWebView = true">返回</el-button>
+              <div>当前页面：{{title}}</div>
+              <iframe :style="'border: 0px;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                       :src="iframeUrl">
               </iframe>
             </div>
