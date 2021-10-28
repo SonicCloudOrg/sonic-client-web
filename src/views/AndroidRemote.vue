@@ -44,6 +44,7 @@ const {toClipboard} = useClipboard();
 const route = useRoute()
 const store = useStore()
 const router = useRouter()
+const iFrameHeight = ref(0)
 const caseList = ref(null)
 const loading = ref(false)
 const device = ref({})
@@ -84,6 +85,10 @@ const dialogElement = ref(false)
 const dialogImgElement = ref(false)
 const imgElementUrl = ref(null)
 const updateImgEle = ref(null)
+const webViewListDetail = ref([])
+const myIframe = ref(null);
+const isWebView = ref(true)
+const iframeUrl = ref("")
 const element = ref({
   id: null,
   eleName: "",
@@ -91,6 +96,15 @@ const element = ref({
   eleValue: "",
   projectId: 0
 })
+const tabWebView =(port,webkit,id)=>{
+  isWebView.value = false;
+    iframeUrl.value =
+       "https://chrome-devtools-frontend.appspot.com/serve_rev/@"+webkit+"/inspector.html?ws="+agent.value['host']+":"+agent.value['port']
+       +"/websockets/webView/"+ agent.value['secretKey']+"/"+port+"/"+id;
+  setTimeout(() => {
+    iFrameHeight.value = window.innerHeight - myIframe.value.$el.offsetTop - 220
+  }, 100)
+}
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null;
 const saveEle = () => {
@@ -265,6 +279,13 @@ const websocketOnmessage = (message) => {
         })
         break
       }
+      case "forwardView": {
+        ElMessage.info({
+          message: '获取成功！',
+        })
+        webViewListDetail.value = JSON.parse(message.data)['detail']
+        break
+      }
       case "eleScreen": {
         if (JSON.parse(message.data).img) {
           ElMessage.success({
@@ -399,7 +420,7 @@ const mousedown = (event) => {
 const mousemove = (event) => {
   if (devicePlatformVersion < 9) {
     if (isPress === true) {
-      if (mouseMoveTime < 5) {
+      if (mouseMoveTime < 4) {
         mouseMoveTime++;
         return;
       } else {
@@ -642,6 +663,13 @@ const getElement = () => {
       })
   );
 }
+const getWebViewForward = () => {
+  websocket.send(
+      JSON.stringify({
+        type: "forwardView",
+      })
+  );
+}
 const close = () => {
   if (websocket !== null) {
     websocket.close()
@@ -684,6 +712,7 @@ const getDeviceById = (id) => {
     }
   })
 }
+
 onMounted(() => {
   if (store.state.project.id) {
     project.value = store.state.project
@@ -1654,7 +1683,40 @@ onMounted(() => {
               </el-result>
             </el-card>
           </el-tab-pane>
-          <el-tab-pane label="WebView调试(即将开放)" name="webview" disabled>xxx</el-tab-pane>
+          <el-tab-pane label="WebView调试" name="webview">
+            <div v-if="isWebView">
+              <el-button @click="getWebViewForward" type="primary" size="mini">重新获取webView进程</el-button>
+              <el-card style="margin-top: 15px" v-for="web in webViewListDetail" class="device-card"
+                       :body-style="{ padding: '0px 10px 10px 10px' }">
+                <template #header>
+                  <div>
+                    <div style="display: flex;align-items: center;">
+                      <img :src="getImg('chrome')" width="20"/> <strong style="margin-left: 10px">{{ web['package'] }}
+                      ({{ web['version'] }})</strong>
+                    </div>
+                  </div>
+                </template>
+                <el-card :body-style="{ padding: '15px' }" v-for="w in web.children"
+                         style="margin-top: 10px; word-wrap: break-word;overflow: hidden;">
+                  <div style="display: flex;align-items: center;justify-content: space-between">
+                    <div>
+                    <div style="display: flex;align-items: center;">
+                      <img :src="w.favicon" v-if="w.favicon" width="15" style="margin-right: 5px"/>
+                      <strong>{{ w.title.length > 0 ? w.title : '无标题' }}</strong>
+                    </div>
+                    <div style="color: #909399">{{ w.url.length > 50 ? w.url.substring(0, 50) + '...' : w.url }}</div>
+                    </div>
+                    <el-button type="primary" size="mini" @click="tabWebView(web.port,web.webkit,w.id)">马上调试</el-button>
+                  </div>
+                </el-card>
+              </el-card>
+            </div>
+            <div ref="myIframe" v-else>
+              <iframe :style="'border: 0px;width: 100%;height: '+1000+'px'"
+                      :src="iframeUrl">
+              </iframe>
+            </div>
+          </el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
