@@ -88,8 +88,8 @@ const updateImgEle = ref(null)
 const webViewListDetail = ref([])
 const isWebView = ref(true)
 const iframeUrl = ref("")
-const debugPort = ref(0)
 const title = ref("")
+const webViewLoading = ref(false)
 const element = ref({
   id: null,
   eleName: "",
@@ -97,16 +97,16 @@ const element = ref({
   eleValue: "",
   projectId: 0
 })
-const tabWebView =(port,id,transtitle)=>{
+const tabWebView = (port, id, transtitle) => {
   title.value = transtitle
   isWebView.value = false;
-    iframeUrl.value =
-       "http://"+agent.value['host']+":"+debugPort.value
-        +"/devtools/inspector.html?ws="+agent.value['host']
-        +":"+agent.value['port']+"/websockets/webView/"
-        + agent.value['secretKey']+"/"+port+"/"+id;
-  nextTick(()=>{
-    iFrameHeight.value = document.getElementById("pressKey").offsetTop;
+  iframeUrl.value =
+      "http://" + agent.value['host'] + ":" + agent.value['port']
+      + "/agent/inspector.html?ws=" + agent.value['host']
+      + ":" + agent.value['port'] + "/websockets/webView/"
+      + agent.value['secretKey'] + "/" + port + "/" + id;
+  nextTick(() => {
+    iFrameHeight.value = document.getElementById("pressKey").offsetTop - 50;
   })
 }
 const img = import.meta.globEager("./../assets/img/*")
@@ -284,11 +284,11 @@ const websocketOnmessage = (message) => {
         break
       }
       case "forwardView": {
-        ElMessage.info({
+        webViewLoading.value = false
+        ElMessage.success({
           message: '获取成功！',
         })
         webViewListDetail.value = JSON.parse(message.data)['detail'];
-        debugPort.value = JSON.parse(message.data)['debugPort']
         break
       }
       case "eleScreen": {
@@ -669,6 +669,7 @@ const getElement = () => {
   );
 }
 const getWebViewForward = () => {
+  webViewLoading.value = true;
   websocket.send(
       JSON.stringify({
         type: "forwardView",
@@ -1690,40 +1691,88 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane label="WebView调试" name="webview">
             <div v-if="isWebView">
-              <el-button @click="getWebViewForward" type="primary" size="mini">重新获取webView进程</el-button>
-              <el-card style="margin-top: 15px" v-for="web in webViewListDetail" class="device-card"
-                       :body-style="{ padding: '0px 10px 10px 10px' }">
-                <template #header>
-                  <div>
-                    <div style="display: flex;align-items: center;">
-                      <img :src="getImg('chrome')" width="20"/> <strong style="margin-left: 10px">{{ web['package'] }}
-                      ({{ web['version'] }})</strong>
-                    </div>
-                  </div>
-                </template>
-                <el-card :body-style="{ padding: '15px' }" v-for="w in web.children"
-                         style="margin-top: 10px; word-wrap: break-word;overflow: hidden;">
-                  <div style="display: flex;align-items: center;justify-content: space-between">
+              <div v-if="webViewListDetail.length==0">
+                <el-result icon="info" title="提示" subTitle="暂无webView进程">
+                  <template #extra>
+                    <el-button
+                        type="primary"
+                        size="mini"
+                        :loading="webViewLoading"
+                        @click="getWebViewForward"
+                    >
+                      <el-icon :size="12" style="vertical-align: middle;">
+                        <Search/>
+                      </el-icon>
+                      获取webView进程
+                    </el-button
+                    >
+                  </template>
+                </el-result>
+              </div>
+              <div v-else>
+                <el-button @click="getWebViewForward" :loading="webViewLoading" type="primary" size="mini">
+                  重新获取webView进程
+                </el-button>
+                <el-card style="margin-top: 15px" v-for="web in webViewListDetail" class="device-card"
+                         :body-style="{ padding: '0px 10px 10px 10px' }">
+                  <template #header>
                     <div>
-                    <div style="display: flex;align-items: center;">
-                      <img :src="w.favicon" v-if="w.favicon" width="15" style="margin-right: 5px"/>
-                      <strong>{{ w.title.length > 0 ? w.title : '无标题' }}</strong>
+                      <div style="display: flex;align-items: center;">
+                        <img :src="getImg('chrome')" width="20"/> <strong style="margin-left: 10px">{{ web['package'] }}
+                        ({{ web['version'] }})</strong>
+                      </div>
                     </div>
-                    <div style="color: #909399">{{ w.url.length > 50 ? w.url.substring(0, 50) + '...' : w.url }}</div>
+                  </template>
+                  <el-card :body-style="{ padding: '15px' }" v-for="w in web.children"
+                           style="margin-top: 10px; word-wrap: break-word;overflow: hidden;">
+                    <div style="display: flex;align-items: center;justify-content: space-between">
+                      <div>
+                        <div style="display: flex;align-items: center;">
+                          <img :src="w.favicon" v-if="w.favicon" width="15" style="margin-right: 5px"/>
+                          <strong>{{ w.title.length > 0 ? w.title : '无标题' }}</strong>
+                        </div>
+                        <div style="color: #909399">{{
+                            w.url.length > 50 ? w.url.substring(0, 50) + '...' : w.url
+                          }}
+                        </div>
+                      </div>
+                      <el-button type="primary" size="mini"
+                                 @click="tabWebView(web.port,w.id,(w.title.length > 0 ? w.title : '无标题'))">马上调试
+                      </el-button>
                     </div>
-                    <el-button type="primary" size="mini" @click="tabWebView(web.port,w.id,(w.title.length > 0 ? w.title : '无标题'))">马上调试</el-button>
-                  </div>
+                  </el-card>
                 </el-card>
-              </el-card>
+              </div>
             </div>
             <div v-else>
-              <el-button size="mini" @click="isWebView = true">返回</el-button>
-              <div>当前页面：{{title}}</div>
-              <iframe :style="'border: 0px;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
+              <div style="display: flex;align-items: center;">
+                <el-page-header icon="el-icon-arrow-left" @back="isWebView = true">
+                  <template #title>
+                    <span style="color: #606266">返回</span>
+                  </template>
+                  <template #content>
+                    当前页面：<strong>{{ title }}</strong>
+                  </template>
+                </el-page-header>
+              </div>
+              <el-alert type="info" show-icon style="margin-top: 15px" close-text="Get!">
+                <template #title>
+                  <div style="display: flex;align-items: center;">
+                    <span>如果您的浏览器不兼容该功能，请您及时反馈到</span>
+                    <el-link style="font-size: 13px;margin-left: 5px" type="primary" target="_blank"
+                             href="https://github.com/ZhouYixun/sonic-agent/issues/47">
+                      这里
+                    </el-link>
+                  </div>
+                </template>
+              </el-alert>
+              <iframe v-if="!isWebView"
+                      :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                       :src="iframeUrl">
               </iframe>
             </div>
           </el-tab-pane>
+          <el-tab-pane label="poco编辑器(即将开放)" name="poco" disabled></el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
