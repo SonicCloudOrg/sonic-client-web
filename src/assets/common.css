@@ -284,3 +284,11 @@ body,
 .project-table-expand .el-form-item {
     display: flex;
 }
+
+.remote-tab * .el-tabs__item.is-left.is-active{
+    border-right:2px solid #409EFF!important;
+}
+
+.el-tabs--left .el-tabs__header.is-left{
+    margin-right: 0px!important;
+}

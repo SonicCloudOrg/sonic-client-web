@@ -90,6 +90,7 @@ const isWebView = ref(true)
 const iframeUrl = ref("")
 const title = ref("")
 const webViewLoading = ref(false)
+let oldBlob = undefined;
 const element = ref({
   id: null,
   eleName: "",
@@ -174,8 +175,16 @@ const copy = (value) => {
 }
 const setImgData = (data) => {
   const img = new Image();
-  imgUrl.value = data;
-  img.src = data;
+  if (data === undefined) {
+    const blob = new Blob([oldBlob], {type: "image/jpeg"});
+    const URL = window.URL || window.webkitURL;
+    const u = URL.createObjectURL(blob);
+    imgUrl.value = u;
+    img.src = u;
+  } else {
+    imgUrl.value = data;
+    img.src = data;
+  }
   const canvas = document.getElementById("debugPic"),
       g = canvas.getContext("2d");
   const parent = canvas.parentNode;
@@ -202,6 +211,7 @@ const openSocket = (host, port, udId, key) => {
 }
 const websocketOnmessage = (message) => {
   if (typeof message.data === "object") {
+    oldBlob = message.data
     const blob = new Blob([message.data], {type: "image/jpeg"});
     const URL = window.URL || window.webkitURL;
     const img = new Image();
@@ -229,13 +239,16 @@ const websocketOnmessage = (message) => {
         ElMessage.success({
           message: "获取控件元素成功！",
         });
+        let result = JSON.parse(message.data);
         currentId.value = [1]
-        elementData.value = JSON.parse(message.data).detail;
+        elementData.value = result.detail;
         isShowTree.value = true;
         elementLoading.value = false
-        setImgData(JSON.parse(message.data).img)
-        webViewData.value = JSON.parse(message.data)['webView']
-        activity.value = JSON.parse(message.data)['activity']
+        if (result.img) {
+          setImgData(result.img)
+        }
+        webViewData.value = result['webView']
+        activity.value = result['activity']
         break
       }
       case "treeFail": {
@@ -661,10 +674,14 @@ const install = (apk, pkg) => {
 }
 const getElement = () => {
   elementLoading.value = true;
+  if (oldBlob !== undefined) {
+    setImgData(undefined);
+  }
   websocket.send(
       JSON.stringify({
         type: "debug",
         detail: "tree",
+        hasScreen: oldBlob !== undefined,
       })
   );
 }
@@ -1305,7 +1322,9 @@ onMounted(() => {
         </el-card>
       </el-col>
       <el-col :span="18">
-        <el-tabs type="border-card" v-model="activeTab">
+        <el-tabs stretch class="remote-tab" type="border-card" v-model="activeTab" tab-position="left">
+          <el-tab-pane label="控制主页" name="main"></el-tab-pane>
+          <el-tab-pane label="Terminal" name="terminal"></el-tab-pane>
           <el-tab-pane label="用例详情" name="case">
             <div v-if="!testCase['id']">
               <span style="color: #909399;margin-right: 10px">关联项目</span>
@@ -1689,7 +1708,7 @@ onMounted(() => {
               </el-result>
             </el-card>
           </el-tab-pane>
-          <el-tab-pane label="WebView调试" name="webview">
+          <el-tab-pane label="网页调试" name="webview">
             <div v-if="isWebView">
               <div v-if="webViewListDetail.length==0">
                 <el-result icon="info" title="提示" subTitle="暂无webView进程">
@@ -1772,7 +1791,7 @@ onMounted(() => {
               </iframe>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="poco编辑器(即将开放)" name="poco" disabled></el-tab-pane>
+          <el-tab-pane label="poco控件" name="poco" disabled></el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
