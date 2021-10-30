@@ -106,6 +106,7 @@ const getTag = (status) => {
                   :z-index="5000"
                   fit="contain"
                   style="width: 100px; height: 100%; margin-top: 10px"
+                  hide-on-click-modal
                   :src="scope.row.log"
                   :preview-src-list="[
                             scope.row.log,

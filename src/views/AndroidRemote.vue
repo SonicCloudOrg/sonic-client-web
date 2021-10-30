@@ -78,7 +78,8 @@ const currentId = ref([])
 const filterText = ref("")
 const project = ref(null)
 const testCase = ref({})
-const activeTab = ref('case')
+const activeTab = ref('main')
+const activeTab2 = ref('step')
 const stepLog = ref([])
 const debugLoading = ref(false)
 const dialogElement = ref(false)
@@ -584,7 +585,7 @@ const setStepLog = (data) => {
 }
 const runStep = () => {
   debugLoading.value = true
-  activeTab.value = 'log'
+  activeTab2.value = 'log'
   websocket.send(
       JSON.stringify({
         type: "debug",
@@ -1325,8 +1326,64 @@ onMounted(() => {
         <el-tabs stretch class="remote-tab" type="border-card" v-model="activeTab" tab-position="left">
           <el-tab-pane label="控制主页" name="main"></el-tab-pane>
           <el-tab-pane label="Terminal" name="terminal"></el-tab-pane>
-          <el-tab-pane label="用例详情" name="case">
-            <div v-if="!testCase['id']">
+          <el-tab-pane label="UI自动化" name="auto">
+            <div v-if="testCase['id']">
+              <el-collapse accordion style="margin-bottom: 20px">
+                <el-collapse-item>
+                  <template #title>
+                    <div style="display: flex; align-items: center;width: 100%;justify-content: space-between;">
+                      <strong style="font-size: 15px;color: #909399;margin-left: 10px">用例详情</strong>
+                      <el-button style="margin-right: 10px" type="danger" size="mini" @click="removeCase">取消关联
+                      </el-button>
+                    </div>
+                  </template>
+                  <el-descriptions :column="2" size="medium" border>
+                    <el-descriptions-item width="100px" label="用例Id">{{ testCase['id'] }}</el-descriptions-item>
+                    <el-descriptions-item width="100px" label="用例名称">{{ testCase.name }}</el-descriptions-item>
+                    <el-descriptions-item label="所属项目">
+                      <div style=" display: flex;align-items: center;">
+                        <el-avatar
+                            style="margin-right: 10px"
+                            :size="27"
+                            :src="project['projectImg'].length>0?project['projectImg']:defaultLogo"
+                            shape="square"
+                        ></el-avatar
+                        >
+                        {{ project['projectName'] }}
+                      </div>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="所属平台">
+                      <div style=" display: flex;align-items: center;">
+                        <el-avatar
+                            style="margin-right: 10px"
+                            :size="27"
+                            :src="getImg(testCase['platform']===1?'ANDROID':'IOS')"
+                            shape="square"
+                        ></el-avatar
+                        >
+                        {{ testCase['platform'] === 1 ? '安卓' : 'iOS' }}
+                      </div>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="模块">{{ testCase['module'] }}</el-descriptions-item>
+                    <el-descriptions-item label="版本名称">{{ testCase['version'] }}</el-descriptions-item>
+                    <el-descriptions-item label="设计人">{{ testCase['designer'] }}</el-descriptions-item>
+                    <el-descriptions-item label="最后修改日期">{{ testCase['editTime'] }}</el-descriptions-item>
+                    <el-descriptions-item label="用例描述">{{ testCase['des'] }}</el-descriptions-item>
+                  </el-descriptions>
+                </el-collapse-item>
+              </el-collapse>
+              <el-tabs type="border-card" stretch v-model="activeTab2">
+                <el-tab-pane label="步骤列表" name="step">
+                  <step-list :is-show-run="true" :platform="1" :is-driver-finish="isDriverFinish" :case-id="testCase['id']"
+                             :project-id="project['id']"
+                             @runStep="runStep"/>
+                </el-tab-pane>
+                <el-tab-pane label="运行日志" name="log">
+                  <step-log :is-read-only="false" :debug-loading="debugLoading" :step-log="stepLog" @clearLog="clearLog"/>
+                </el-tab-pane>
+              </el-tabs>
+            </div>
+            <div v-else>
               <span style="color: #909399;margin-right: 10px">关联项目</span>
               <el-select size="mini" v-model="project" value-key="id" placeholder="请选择关联项目">
                 <el-option
@@ -1356,62 +1413,11 @@ onMounted(() => {
                               :platform="1"
                               :is-read-only="true"
                               @select-case="selectCase"></test-case-list>
+              <el-card style="height: 100%;margin-top:20px">
+                <el-result icon="info" title="提示" subTitle="该功能需要先从上方关联测试用例">
+                </el-result>
+              </el-card>
             </div>
-            <div v-else>
-              <el-descriptions title="用例详情" :column="2" size="medium" border>
-                <el-descriptions-item width="100px" label="用例Id">{{ testCase['id'] }}</el-descriptions-item>
-                <el-descriptions-item width="100px" label="用例名称">{{ testCase.name }}</el-descriptions-item>
-                <el-descriptions-item label="所属项目">
-                  <div style=" display: flex;align-items: center;">
-                    <el-avatar
-                        style="margin-right: 10px"
-                        :size="27"
-                        :src="project['projectImg'].length>0?project['projectImg']:defaultLogo"
-                        shape="square"
-                    ></el-avatar
-                    >
-                    {{ project['projectName'] }}
-                  </div>
-                </el-descriptions-item>
-                <el-descriptions-item label="所属平台">
-                  <div style=" display: flex;align-items: center;">
-                    <el-avatar
-                        style="margin-right: 10px"
-                        :size="27"
-                        :src="getImg(testCase['platform']===1?'ANDROID':'IOS')"
-                        shape="square"
-                    ></el-avatar
-                    >
-                    {{ testCase['platform'] === 1 ? '安卓' : 'iOS' }}
-                  </div>
-                </el-descriptions-item>
-                <el-descriptions-item label="模块">{{ testCase['module'] }}</el-descriptions-item>
-                <el-descriptions-item label="版本名称">{{ testCase['version'] }}</el-descriptions-item>
-                <el-descriptions-item label="设计人">{{ testCase['designer'] }}</el-descriptions-item>
-                <el-descriptions-item label="最后修改日期">{{ testCase['editTime'] }}</el-descriptions-item>
-                <el-descriptions-item label="用例描述">{{ testCase['des'] }}</el-descriptions-item>
-                <template #extra>
-                  <el-button type="danger" size="mini" @click="removeCase">取消关联</el-button>
-                </template>
-              </el-descriptions>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="UI自动化" name="step">
-            <div v-if="testCase['id']">
-              <step-list :is-show-run="true" :platform="1" :is-driver-finish="isDriverFinish" :case-id="testCase['id']"
-                         :project-id="project['id']"
-                         @runStep="runStep"/>
-            </div>
-            <el-card style="height: 100%" v-else>
-              <el-result icon="info" title="提示" subTitle="该功能需要先关联测试用例">
-                <template #extra>
-                  <el-button type="primary" size="mini" @click="activeTab = 'case'">马上关联</el-button>
-                </template>
-              </el-result>
-            </el-card>
-          </el-tab-pane>
-          <el-tab-pane label="运行日志" name="log">
-            <step-log :is-read-only="false" :debug-loading="debugLoading" :step-log="stepLog" @clearLog="clearLog"/>
           </el-tab-pane>
           <el-tab-pane label="控件元素" name="ele">
             <div v-show="isShowImg">
