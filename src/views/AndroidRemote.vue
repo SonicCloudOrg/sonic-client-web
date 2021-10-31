@@ -45,6 +45,7 @@ const route = useRoute()
 const store = useStore()
 const router = useRouter()
 const iFrameHeight = ref(0)
+const terminalHeight = ref(0)
 const caseList = ref(null)
 const loading = ref(false)
 const device = ref({})
@@ -94,6 +95,8 @@ const webViewLoading = ref(false)
 const cmdInput = ref("");
 const cmdOutPut = ref([]);
 const cmdUser = ref("");
+const terScroll = ref(null);
+const cmdIsDone = ref(true);
 let oldBlob = undefined;
 const element = ref({
   id: null,
@@ -102,6 +105,11 @@ const element = ref({
   eleValue: "",
   projectId: 0
 })
+const switchTabs = (e) => {
+  if (e.props.name === 'terminal') {
+    terminalHeight.value = document.getElementById("pressKey").offsetTop - 50;
+  }
+}
 const img = import.meta.globEager("./../assets/img/*")
 let websocket = null;
 let terminalWebsocket = null;
@@ -220,12 +228,25 @@ const openSocket = (host, port, udId, key) => {
   terminalWebsocket.onclose = (e) => {
   };
 }
-const sendCmd = ()=>{
-  cmdOutPut.value.push(JSON.parse(JSON.stringify(cmdUser.value+":/ $ "+cmdInput.value)));
+const sendCmd = () => {
+  if (cmdInput.value.length > 0 && cmdIsDone.value === true) {
+    cmdIsDone.value = false;
+    cmdOutPut.value+=(JSON.parse(JSON.stringify(
+        "<span style='color: #409EFF'>" + cmdUser.value + "</span>:/ $ " + cmdInput.value)));
+    terminalWebsocket.send(
+        JSON.stringify({
+          type: "command",
+          detail: cmdInput.value,
+        })
+    );
+    cmdInput.value = ""
+  }
+}
+const stopCmd = () => {
+  cmdIsDone.value = true;
   terminalWebsocket.send(
       JSON.stringify({
-        type: "command",
-        detail: cmdInput.value,
+        type: "stopCmd",
       })
   );
 }
@@ -237,10 +258,21 @@ const terminalWebsocketOnmessage = (message) => {
       break;
     case "terResp":
       cmdOutPut.value.push(JSON.parse(message.data)['detail']);
+      nextTick(() => {
+        terScroll['value'].wrap.scrollTop =
+            terScroll['value'].wrap.scrollHeight;
+      });
       break;
     case "terDone":
+      cmdIsDone.value = true
+      break;
     case "error":
-      console.log(JSON.parse(message.data))
+      ElMessage.error({
+        message: "系统出现异常！已断开远程控制！",
+      });
+      close()
+      router.go(-1)
+      break
   }
 }
 const websocketOnmessage = (message) => {
@@ -1360,16 +1392,29 @@ onMounted(() => {
         </el-card>
       </el-col>
       <el-col :span="18">
-        <el-tabs stretch class="remote-tab" type="border-card" v-model="activeTab" tab-position="left">
+        <el-tabs @tab-click="switchTabs" stretch class="remote-tab" type="border-card" v-model="activeTab"
+                 tab-position="left">
           <el-tab-pane label="控制主页" name="main"></el-tab-pane>
           <el-tab-pane label="Terminal" name="terminal">
-            <el-card>
-              <div v-for="c in cmdOutPut" style="white-space: pre-wrap">
-                {{c}}</div>
+            <el-card
+                style="border: 0px"
+                :body-style="{color:'#FFFFFF',backgroundColor:'#303133'}">
+              <el-scrollbar noresize ref="terScroll" :style="'height:'+terminalHeight+'px'">
+                <div v-html="cmdOutPut" style="white-space: pre-wrap">
+                </div>
+              </el-scrollbar>
+              <div style="display: flex;margin-top: 10px">
+                <el-input @keyup.enter="sendCmd" size="mini" v-model="cmdInput" placeholder="输入指令后，点击Send或回车发送">
+                  <template #prepend>{{ cmdUser + ':/ $' }}</template>
+                </el-input>
+                <el-button size="mini" @click="sendCmd" :disabled="cmdInput.length===0||!cmdIsDone"
+                           style="margin-left: 5px" type="primary">Send
+                </el-button>
+                <el-button size="mini" @click="stopCmd" :disabled="cmdIsDone"
+                           style="margin-left: 5px" type="danger">Stop
+                </el-button>
+              </div>
             </el-card>
-
-            {{cmdUser}}<el-input v-model="cmdInput"></el-input>
-            <el-button @click="sendCmd" :disabled="cmdInput.length===0">send</el-button>
           </el-tab-pane>
           <el-tab-pane label="UI自动化" name="auto">
             <div v-if="testCase['id']">

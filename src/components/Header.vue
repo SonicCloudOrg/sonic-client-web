@@ -185,7 +185,7 @@ onMounted(() => {
             </el-menu-item
             >
             <el-menu-item index="2-2"
-                          @click="goToUrl('https://github.com/ZhouYixun/sonic-server/releases/tag/release')"
+                          @click="goToUrl('http://zhouyixun.gitee.io/sonic-official-website/#/Version')"
             >版本更新记录
               <el-badge
                   value="New"

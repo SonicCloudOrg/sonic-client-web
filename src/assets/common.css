@@ -288,3 +288,7 @@ body,
 .remote-tab * .el-tabs__item.is-left.is-active {
     border-right: 3px solid #409EFF !important;
 }
+
+.el-tabs--left .el-tabs__header.is-left{
+    margin-right: 0px!important;
+}
