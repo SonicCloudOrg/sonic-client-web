@@ -95,8 +95,14 @@ const webViewLoading = ref(false)
 const cmdInput = ref("");
 const cmdOutPut = ref([]);
 const cmdUser = ref("");
+const logcatOutPut = ref([]);
 const terScroll = ref(null);
+const logcatScroll = ref(null);
 const cmdIsDone = ref(true);
+const logcatFilter = ref({
+  level: 'E',
+  filter: ""
+})
 let oldBlob = undefined;
 const element = ref({
   id: null,
@@ -231,7 +237,7 @@ const openSocket = (host, port, udId, key) => {
 const sendCmd = () => {
   if (cmdInput.value.length > 0 && cmdIsDone.value === true) {
     cmdIsDone.value = false;
-    cmdOutPut.value+=(JSON.parse(JSON.stringify(
+    cmdOutPut.value.push(JSON.parse(JSON.stringify(
         "<span style='color: #409EFF'>" + cmdUser.value + "</span>:/ $ " + cmdInput.value)));
     terminalWebsocket.send(
         JSON.stringify({
@@ -252,6 +258,16 @@ const stopCmd = () => {
 }
 const terminalWebsocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
+    case "logcat":
+      logcatOutPut.value.push("连接成功！");
+      break;
+    case "logcatResp":
+      logcatOutPut.value.push(JSON.parse(message.data)['detail']);
+      nextTick(() => {
+        logcatScroll['value'].wrap.scrollTop =
+            logcatScroll['value'].wrap.scrollHeight;
+      });
+      break;
     case "terminal":
       cmdUser.value = JSON.parse(message.data)['user'];
       cmdOutPut.value.push("连接成功！");
@@ -1396,25 +1412,50 @@ onMounted(() => {
                  tab-position="left">
           <el-tab-pane label="控制主页" name="main"></el-tab-pane>
           <el-tab-pane label="Terminal" name="terminal">
-            <el-card
-                style="border: 0px"
-                :body-style="{color:'#FFFFFF',backgroundColor:'#303133'}">
-              <el-scrollbar noresize ref="terScroll" :style="'height:'+terminalHeight+'px'">
-                <div v-html="cmdOutPut" style="white-space: pre-wrap">
-                </div>
-              </el-scrollbar>
-              <div style="display: flex;margin-top: 10px">
-                <el-input @keyup.enter="sendCmd" size="mini" v-model="cmdInput" placeholder="输入指令后，点击Send或回车发送">
-                  <template #prepend>{{ cmdUser + ':/ $' }}</template>
-                </el-input>
-                <el-button size="mini" @click="sendCmd" :disabled="cmdInput.length===0||!cmdIsDone"
-                           style="margin-left: 5px" type="primary">Send
-                </el-button>
-                <el-button size="mini" @click="stopCmd" :disabled="cmdIsDone"
-                           style="margin-left: 5px" type="danger">Stop
-                </el-button>
-              </div>
-            </el-card>
+            <el-tabs stretch type="border-card">
+              <el-tab-pane label="Shell">
+                <el-card
+                    style="border: 0px"
+                    :body-style="{color:'#FFFFFF',backgroundColor:'#303133'}">
+                  <el-scrollbar noresize ref="terScroll" :style="'height:'+terminalHeight+'px'">
+                    <div v-html="c" v-for="c in cmdOutPut" style="white-space: pre-wrap">
+                    </div>
+                  </el-scrollbar>
+                  <div style="display: flex;margin-top: 10px">
+                    <el-input @keyup.enter="sendCmd" size="mini" v-model="cmdInput" placeholder="输入指令后，点击Send或回车发送">
+                      <template #prepend>{{ cmdUser + ':/ $' }}</template>
+                    </el-input>
+                    <el-button size="mini" @click="sendCmd" :disabled="cmdInput.length===0||!cmdIsDone"
+                               style="margin-left: 5px" type="primary">Send
+                    </el-button>
+                    <el-button size="mini" @click="stopCmd" :disabled="cmdIsDone"
+                               style="margin-left: 5px" type="danger">Stop
+                    </el-button>
+                  </div>
+                </el-card>
+              </el-tab-pane>
+              <el-tab-pane label="Logcat">
+                <el-card
+                    style="border: 0px"
+                    :body-style="{color:'#FFFFFF',backgroundColor:'#303133'}">
+                  <el-scrollbar noresize ref="logcatScroll" :style="'height:'+terminalHeight+'px'">
+                    <div v-html="l" v-for="l in logcatOutPut" style="white-space: pre-wrap">
+                    </div>
+                  </el-scrollbar>
+                  <!--                  <div style="display: flex;margin-top: 10px">-->
+                  <!--                    <el-input @keyup.enter="sendCmd" size="mini" v-model="cmdInput" placeholder="输入指令后，点击Send或回车发送">-->
+                  <!--                      <template #prepend>{{ cmdUser + ':/ $' }}</template>-->
+                  <!--                    </el-input>-->
+                  <!--                    <el-button size="mini" @click="sendCmd" :disabled="cmdInput.length===0||!cmdIsDone"-->
+                  <!--                               style="margin-left: 5px" type="primary">Send-->
+                  <!--                    </el-button>-->
+                  <!--                    <el-button size="mini" @click="stopCmd" :disabled="cmdIsDone"-->
+                  <!--                               style="margin-left: 5px" type="danger">Stop-->
+                  <!--                    </el-button>-->
+                  <!--                  </div>-->
+                </el-card>
+              </el-tab-pane>
+            </el-tabs>
           </el-tab-pane>
           <el-tab-pane label="UI自动化" name="auto">
             <div v-if="testCase['id']">
