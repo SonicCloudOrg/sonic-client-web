@@ -286,5 +286,5 @@ body,
 }
 
 .remote-tab * .el-tabs__item.is-left.is-active {
-    border-right: 2px solid #409EFF !important;
+    border-right: 3px solid #409EFF !important;
 }

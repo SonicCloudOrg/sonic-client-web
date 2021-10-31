@@ -91,6 +91,9 @@ const isWebView = ref(true)
 const iframeUrl = ref("")
 const title = ref("")
 const webViewLoading = ref(false)
+const cmdInput = ref("");
+const cmdOutPut = ref([]);
+const cmdUser = ref("");
 let oldBlob = undefined;
 const element = ref({
   id: null,
@@ -99,6 +102,9 @@ const element = ref({
   eleValue: "",
   projectId: 0
 })
+const img = import.meta.globEager("./../assets/img/*")
+let websocket = null;
+let terminalWebsocket = null;
 const tabWebView = (port, id, transtitle) => {
   title.value = transtitle
   isWebView.value = false;
@@ -111,8 +117,6 @@ const tabWebView = (port, id, transtitle) => {
     iFrameHeight.value = document.getElementById("pressKey").offsetTop - 50;
   })
 }
-const img = import.meta.globEager("./../assets/img/*")
-let websocket = null;
 const saveEle = () => {
   updateImgEle['value'].validate((valid) => {
     if (valid) {
@@ -203,12 +207,41 @@ const openSocket = (host, port, udId, key) => {
     websocket = new WebSocket(
         "ws://" + host + ":" + port + "/websockets/android/" + udId + "/" + key
     );
+    terminalWebsocket = new WebSocket(
+        "ws://" + host + ":" + port + "/websockets/terminal/" + udId + "/" + key
+    );
   } else {
     console.error("不支持WebSocket");
   }
   websocket.onmessage = websocketOnmessage;
   websocket.onclose = (e) => {
   };
+  terminalWebsocket.onmessage = terminalWebsocketOnmessage;
+  terminalWebsocket.onclose = (e) => {
+  };
+}
+const sendCmd = ()=>{
+  cmdOutPut.value.push(JSON.parse(JSON.stringify(cmdUser.value+":/ $ "+cmdInput.value)));
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: "command",
+        detail: cmdInput.value,
+      })
+  );
+}
+const terminalWebsocketOnmessage = (message) => {
+  switch (JSON.parse(message.data)['msg']) {
+    case "terminal":
+      cmdUser.value = JSON.parse(message.data)['user'];
+      cmdOutPut.value.push("连接成功！");
+      break;
+    case "terResp":
+      cmdOutPut.value.push(JSON.parse(message.data)['detail']);
+      break;
+    case "terDone":
+    case "error":
+      console.log(JSON.parse(message.data))
+  }
 }
 const websocketOnmessage = (message) => {
   if (typeof message.data === "object") {
@@ -698,6 +731,10 @@ const close = () => {
   if (websocket !== null) {
     websocket.close()
     websocket = null
+  }
+  if (terminalWebsocket !== null) {
+    terminalWebsocket.close()
+    terminalWebsocket = null
   }
 }
 onBeforeUnmount(() => {
@@ -1325,7 +1362,15 @@ onMounted(() => {
       <el-col :span="18">
         <el-tabs stretch class="remote-tab" type="border-card" v-model="activeTab" tab-position="left">
           <el-tab-pane label="控制主页" name="main"></el-tab-pane>
-          <el-tab-pane label="Terminal" name="terminal"></el-tab-pane>
+          <el-tab-pane label="Terminal" name="terminal">
+            <el-card>
+              <div v-for="c in cmdOutPut" style="white-space: pre-wrap">
+                {{c}}</div>
+            </el-card>
+
+            {{cmdUser}}<el-input v-model="cmdInput"></el-input>
+            <el-button @click="sendCmd" :disabled="cmdInput.length===0">send</el-button>
+          </el-tab-pane>
           <el-tab-pane label="UI自动化" name="auto">
             <div v-if="testCase['id']">
               <el-collapse accordion style="margin-bottom: 20px">
@@ -1374,12 +1419,14 @@ onMounted(() => {
               </el-collapse>
               <el-tabs type="border-card" stretch v-model="activeTab2">
                 <el-tab-pane label="步骤列表" name="step">
-                  <step-list :is-show-run="true" :platform="1" :is-driver-finish="isDriverFinish" :case-id="testCase['id']"
+                  <step-list :is-show-run="true" :platform="1" :is-driver-finish="isDriverFinish"
+                             :case-id="testCase['id']"
                              :project-id="project['id']"
                              @runStep="runStep"/>
                 </el-tab-pane>
                 <el-tab-pane label="运行日志" name="log">
-                  <step-log :is-read-only="false" :debug-loading="debugLoading" :step-log="stepLog" @clearLog="clearLog"/>
+                  <step-log :is-read-only="false" :debug-loading="debugLoading" :step-log="stepLog"
+                            @clearLog="clearLog"/>
                 </el-tab-pane>
               </el-tabs>
             </div>
