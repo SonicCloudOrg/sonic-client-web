@@ -15,7 +15,6 @@ import {
   Search,
   UploadFilled,
   SwitchButton,
-  Edit,
   Position,
   Camera,
   Sunny,
@@ -113,7 +112,12 @@ const element = ref({
 })
 const switchTabs = (e) => {
   if (e.props.name === 'terminal') {
-    terminalHeight.value = document.getElementById("pressKey").offsetTop - 50;
+    terminalHeight.value = document.getElementById("pressKey").offsetTop - 200;
+  }
+  if (e.props.name === 'webview') {
+    if (webViewListDetail.value.length === 0) {
+      getWebViewForward()
+    }
   }
 }
 const img = import.meta.globEager("./../assets/img/*")
@@ -234,6 +238,25 @@ const openSocket = (host, port, udId, key) => {
   terminalWebsocket.onclose = (e) => {
   };
 }
+const sendLogcat = () => {
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: "logcat",
+        level: logcatFilter.value.level,
+        filter: logcatFilter.value.filter,
+      })
+  );
+}
+const clearLogcat = () => {
+  logcatOutPut.value = [];
+}
+const stopLogcat = () => {
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: "stopLogcat",
+      })
+  );
+}
 const sendCmd = () => {
   if (cmdInput.value.length > 0 && cmdIsDone.value === true) {
     cmdIsDone.value = false;
@@ -247,6 +270,9 @@ const sendCmd = () => {
     );
     cmdInput.value = ""
   }
+}
+const clearCmd = () => {
+  cmdOutPut.value = [];
 }
 const stopCmd = () => {
   cmdIsDone.value = true;
@@ -262,7 +288,15 @@ const terminalWebsocketOnmessage = (message) => {
       logcatOutPut.value.push("连接成功！");
       break;
     case "logcatResp":
-      logcatOutPut.value.push(JSON.parse(message.data)['detail']);
+      logcatOutPut.value.push(
+          JSON.parse(message.data)['detail']
+              .replaceAll(" I ", "<span style='color: #0d84ff'> I </span>")
+              .replaceAll(" I ", "<span style='color: #0d84ff'> I </span>")
+              .replaceAll(" D ", "<span style='color: #0d84ff'> D </span>")
+              .replaceAll(" W ", "<span style='color: #E6A23C'> W </span>")
+              .replaceAll(" E ", "<span style='color: #F56C6C'> E </span>")
+              .replaceAll(" F ", "<span style='color: #F56C6C'> F </span>")
+      );
       nextTick(() => {
         logcatScroll['value'].wrap.scrollTop =
             logcatScroll['value'].wrap.scrollHeight;
@@ -705,6 +739,44 @@ const changePic = (type) => {
       })
   );
 }
+const beforeAvatarUpload = (file) => {
+  if (file.name.endsWith(".jpg") || file.name.endsWith(".png")) {
+    return true;
+  } else {
+    ElMessage.error({
+      message: "文件格式有误！",
+    });
+    return false;
+  }
+}
+const limitOut = () => {
+  ElMessage.error({
+    message: "只能添加一个文件！请先移除旧文件",
+  });
+}
+const uploadScan = (content) => {
+  let formData = new FormData();
+  formData.append("file", content.file);
+  formData.append("type", 'imageFiles');
+  axios
+      .post("/folder/upload", formData, {headers: {"Content-type": "multipart/form-data"}})
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+          scan(resp['data'])
+        }
+      });
+}
+const scan = (url) => {
+  websocket.send(
+      JSON.stringify({
+        type: "scan",
+        url
+      })
+  );
+}
 const screen = (type, p) => {
   if (p !== 'abort') {
     loading.value = true
@@ -884,7 +956,7 @@ onMounted(() => {
       style="margin-bottom: 20px"
   >
   </el-page-header>
-  <el-card>
+  <el-card shadow="never">
     <el-row :gutter="20">
       <el-col :span="6">
         <el-card v-loading="loading"
@@ -1268,56 +1340,6 @@ onMounted(() => {
               </div>
             </el-tooltip>
             <el-tooltip
-                :enterable="false"
-                effect="dark"
-                content="发送文本"
-                placement="right"
-                :offset="15"
-            >
-              <div>
-                <el-dropdown
-                    :hide-on-click="false"
-                    trigger="click"
-                    placement="right"
-                    style="margin-top: 4px"
-                >
-                  <el-button
-                      size="small"
-                      type="primary"
-                      circle
-                  >
-                    <el-icon :size="12" style="vertical-align: middle;">
-                      <Edit/>
-                    </el-icon>
-                  </el-button>
-                  <template #dropdown>
-                    <el-dropdown-menu class="divider">
-                      <el-form size="small" :model="text">
-                        <el-form-item
-                        >
-                          <el-input
-                              clearable
-                              v-model="text.content"
-                              size="small"
-                              placeholder="请输入要发送的文本"
-                          ></el-input>
-                        </el-form-item>
-                      </el-form>
-                      <div style="text-align: center;">
-                        <el-button
-                            size="mini"
-                            type="primary"
-                            @click="sendText(text.content)"
-                        >发送
-                        </el-button
-                        >
-                      </div>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </div>
-            </el-tooltip>
-            <el-tooltip
                 effect="dark"
                 content="锁定/解锁屏幕"
                 placement="right"
@@ -1408,16 +1430,126 @@ onMounted(() => {
         </el-card>
       </el-col>
       <el-col :span="18">
-        <el-tabs @tab-click="switchTabs" stretch class="remote-tab" type="border-card" v-model="activeTab"
+        <el-tabs @tab-click="switchTabs" stretch class="remote-tab" v-model="activeTab"
                  tab-position="left">
-          <el-tab-pane label="控制主页" name="main"></el-tab-pane>
+          <el-tab-pane label="远控面板" name="main">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-card>
+                  <template #header>
+                    <strong>输入文本</strong>
+                  </template>
+                  <el-form size="small" :model="text">
+                    <el-form-item
+                    >
+                      <el-input
+                          clearable
+                          v-model="text.content"
+                          size="small"
+                          placeholder="请输入要发送的文本，支持简体中文"
+                      ></el-input>
+                    </el-form-item>
+                  </el-form>
+                  <div style="text-align: center;">
+                    <el-button
+                        size="mini"
+                        type="primary"
+                        @click="sendText(text.content)"
+                    >发送
+                    </el-button>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="12">
+                <el-card>
+                  <template #header>
+                    <strong>录制屏幕（即将开放）</strong>
+                  </template>
+                  <div style="text-align: center">
+                    <el-button size="mini" type="success" disabled>开始录制</el-button>
+                    <el-button size="mini" type="info" disabled>暂停录制</el-button>
+                    <el-button size="mini" type="danger" disabled>结束录制</el-button>
+                    <div style="margin-top: 20px">
+                      <el-button size="mini" type="primary" disabled>下载录像</el-button>
+                    </div>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="12" style="margin-top: 20px">
+                <el-card>
+                  <template #header>
+                    <strong>扫描二维码</strong>
+                  </template>
+                  <div style="text-align: center">
+                    <el-upload
+                        drag
+                        action=""
+                        :with-credentials="true"
+                        :limit="1"
+                        :before-upload="beforeAvatarUpload"
+                        :on-exceed="limitOut"
+                        :http-request="uploadScan"
+                        list-type="picture"
+                    >
+                      <i class="el-icon-upload"></i>
+                      <div class="el-upload__text">将二维码图片拖到此处，或<em>点击上传</em></div>
+                      <template #tip>
+                        <div class="el-upload__tip">只能上传jpg/png文件</div>
+                      </template>
+                    </el-upload>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="12" style="margin-top: 20px">
+                <el-card>
+                  <template #header>
+                    <strong>安装APK</strong>
+                  </template>
+                  <el-tabs type="border-card">
+                    <el-tab-pane label="上传安装">
+                      <div style="text-align: center">
+                        <el-upload
+                            drag
+                            action=""
+                            :with-credentials="true"
+                            :limit="1"
+                            :before-upload="beforeAvatarUpload"
+                            :on-exceed="limitOut"
+                            :http-request="uploadScan"
+                            list-type="picture"
+                        >
+                          <i class="el-icon-upload"></i>
+                          <div class="el-upload__text">将APK文件拖到此处，或<em>点击上传</em></div>
+                          <template #tip>
+                            <div class="el-upload__tip">只能上传apk文件</div>
+                          </template>
+                        </el-upload>
+                      </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="URL安装">
+                    </el-tab-pane>
+                    <el-tab-pane label="已有包安装（即将开放）">
+                    </el-tab-pane>
+                  </el-tabs>
+                </el-card>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
           <el-tab-pane label="Terminal" name="terminal">
+            <el-alert
+                title="注意事项"
+                type="warning"
+                description="该功能仍处于Beta测试中，暂时屏蔽reboot、rm、su等风险指令"
+                show-icon
+                :closable="false"
+                style="margin-bottom: 10px"
+            />
             <el-tabs stretch type="border-card">
               <el-tab-pane label="Shell">
                 <el-card
                     style="border: 0px"
-                    :body-style="{color:'#FFFFFF',backgroundColor:'#303133'}">
-                  <el-scrollbar noresize ref="terScroll" :style="'height:'+terminalHeight+'px'">
+                    :body-style="{color:'#FFFFFF',backgroundColor:'#303133',lineHeight:'1.5'}">
+                  <el-scrollbar noresize ref="terScroll" :style="'height:'+terminalHeight+'px;min-height:450px'">
                     <div v-html="c" v-for="c in cmdOutPut" style="white-space: pre-wrap">
                     </div>
                   </el-scrollbar>
@@ -1431,28 +1563,44 @@ onMounted(() => {
                     <el-button size="mini" @click="stopCmd" :disabled="cmdIsDone"
                                style="margin-left: 5px" type="danger">Stop
                     </el-button>
+                    <el-button size="mini" @click="clearCmd"
+                               style="margin-left: 5px" type="warning">Clear
+                    </el-button>
                   </div>
                 </el-card>
               </el-tab-pane>
               <el-tab-pane label="Logcat">
                 <el-card
                     style="border: 0px"
-                    :body-style="{color:'#FFFFFF',backgroundColor:'#303133'}">
-                  <el-scrollbar noresize ref="logcatScroll" :style="'height:'+terminalHeight+'px'">
+                    :body-style="{color:'#FFFFFF',backgroundColor:'#303133',lineHeight:'1.5'}">
+                  <div style="display: flex;margin-bottom: 10px">
+                    <el-select size="mini" v-model="logcatFilter.level">
+                      <el-option label="VERBOSE" value="V"></el-option>
+                      <el-option label="DEBUG" value="D"></el-option>
+                      <el-option label="INFO" value="I"></el-option>
+                      <el-option label="WARN" value="W"></el-option>
+                      <el-option label="ERROR" value="E"></el-option>
+                      <el-option label="FATAL" value="F"></el-option>
+                      <el-option label="SILENT" value="S"></el-option>
+                    </el-select>
+                    <el-input style="margin-left: 5px" size="mini" v-model="logcatFilter.filter"
+                              placeholder="请输入输入过滤文本">
+                      <template #prepend>| grep</template>
+                    </el-input>
+                    <el-button size="mini" @click="sendLogcat"
+                               style="margin-left: 5px" type="primary">Search
+                    </el-button>
+                    <el-button size="mini" @click="stopLogcat"
+                               style="margin-left: 5px" type="danger">Stop
+                    </el-button>
+                    <el-button size="mini" @click="clearLogcat"
+                               style="margin-left: 5px" type="warning">Clear
+                    </el-button>
+                  </div>
+                  <el-scrollbar noresize ref="logcatScroll" :style="'height:'+terminalHeight+'px;min-height:450px'">
                     <div v-html="l" v-for="l in logcatOutPut" style="white-space: pre-wrap">
                     </div>
                   </el-scrollbar>
-                  <!--                  <div style="display: flex;margin-top: 10px">-->
-                  <!--                    <el-input @keyup.enter="sendCmd" size="mini" v-model="cmdInput" placeholder="输入指令后，点击Send或回车发送">-->
-                  <!--                      <template #prepend>{{ cmdUser + ':/ $' }}</template>-->
-                  <!--                    </el-input>-->
-                  <!--                    <el-button size="mini" @click="sendCmd" :disabled="cmdInput.length===0||!cmdIsDone"-->
-                  <!--                               style="margin-left: 5px" type="primary">Send-->
-                  <!--                    </el-button>-->
-                  <!--                    <el-button size="mini" @click="stopCmd" :disabled="cmdIsDone"-->
-                  <!--                               style="margin-left: 5px" type="danger">Stop-->
-                  <!--                    </el-button>-->
-                  <!--                  </div>-->
                 </el-card>
               </el-tab-pane>
             </el-tabs>
@@ -1930,7 +2078,6 @@ onMounted(() => {
               </iframe>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="poco控件" name="poco" disabled></el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
