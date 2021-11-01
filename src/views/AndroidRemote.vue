@@ -13,7 +13,6 @@ import defaultLogo from '../assets/logo.png'
 import {
   Download,
   Search,
-  UploadFilled,
   SwitchButton,
   Position,
   Camera,
@@ -49,9 +48,8 @@ const caseList = ref(null)
 const loading = ref(false)
 const device = ref({})
 const agent = ref({})
-const upload = ref({apk: "", pkg: ""})
+const uploadUrl = ref("")
 const text = ref({content: ""})
-const installFrom = ref(null)
 let imgWidth = 0
 let imgHeight = 0
 let moveX = 0
@@ -98,6 +96,7 @@ const logcatOutPut = ref([]);
 const terScroll = ref(null);
 const logcatScroll = ref(null);
 const cmdIsDone = ref(true);
+const uploadLoading = ref(false)
 const logcatFilter = ref({
   level: 'E',
   filter: ""
@@ -749,10 +748,34 @@ const beforeAvatarUpload = (file) => {
     return false;
   }
 }
+const beforeAvatarUpload2 = (file) => {
+  if (file.name.endsWith(".apk")) {
+    return true;
+  } else {
+    ElMessage.error({
+      message: "文件格式有误！",
+    });
+    return false;
+  }
+}
 const limitOut = () => {
   ElMessage.error({
     message: "只能添加一个文件！请先移除旧文件",
   });
+}
+const uploadPackage = (content) => {
+  uploadLoading.value = true;
+  let formData = new FormData();
+  formData.append("file", content.file);
+  formData.append("type", 'packageFiles');
+  axios
+      .post("/folder/upload", formData, {headers: {"Content-type": "multipart/form-data"}})
+      .then((resp) => {
+        uploadLoading.value = false;
+        if (resp['code'] === 2000) {
+          install(resp['data'])
+        }
+      });
 }
 const uploadScan = (content) => {
   let formData = new FormData();
@@ -809,22 +832,19 @@ const sendText = (text) => {
       })
   );
 }
-const install = (apk, pkg) => {
-  installFrom['value'].validate((valid) => {
-    if (valid) {
-      websocket.send(
-          JSON.stringify({
-            type: "debug",
-            detail: "install",
-            apk,
-            pkg,
-          })
-      );
-      ElMessage.success({
-        message: "开始安装！请稍后...",
-      });
-    }
-  });
+const install = (apk) => {
+  if (apk.length > 0) {
+    websocket.send(
+        JSON.stringify({
+          type: "debug",
+          detail: "install",
+          apk,
+        })
+    );
+    ElMessage.success({
+      message: "开始安装！请稍后...",
+    });
+  }
 }
 const getElement = () => {
   elementLoading.value = true;
@@ -1357,75 +1377,6 @@ onMounted(() => {
                 </el-button>
               </div>
             </el-tooltip>
-            <el-tooltip
-                :enterable="false"
-                effect="dark"
-                content="安装apk"
-                placement="right"
-                :offset="15"
-            >
-              <div>
-                <el-dropdown
-                    :hide-on-click="false"
-                    trigger="click"
-                    placement="right"
-                    style="margin-top: 4px"
-                >
-                  <el-button
-                      size="small"
-                      type="success"
-                      circle
-                  >
-                    <el-icon :size="12" style="vertical-align: middle;">
-                      <UploadFilled/>
-                    </el-icon>
-                  </el-button>
-                  <template #dropdown>
-                    <el-dropdown-menu class="divider">
-                      <el-form ref="installFrom" size="small" :model="upload">
-                        <el-form-item
-                            prop="pkg"
-                            :rules="{
-                      required: true,
-                      message: '包名不能为空',
-                      trigger: 'blur',
-                    }"
-                        >
-                          <el-input
-                              v-model="upload.pkg"
-                              size="small"
-                              placeholder="请输入app包名"
-                          ></el-input>
-                        </el-form-item>
-                        <el-form-item
-                            prop="apk"
-                            :rules="{
-                      required: true,
-                      message: 'apk下载链接不能为空',
-                      trigger: 'blur',
-                    }"
-                        >
-                          <el-input
-                              v-model="upload.apk"
-                              size="small"
-                              placeholder="请输入apk下载链接"
-                          ></el-input>
-                        </el-form-item>
-                      </el-form>
-                      <div style="text-align: center;">
-                        <el-button
-                            size="mini"
-                            type="primary"
-                            @click="install(upload.apk, upload.pkg)"
-                        >开始安装
-                        </el-button
-                        >
-                      </div>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </div>
-            </el-tooltip>
           </div>
         </el-card>
       </el-col>
@@ -1505,18 +1456,18 @@ onMounted(() => {
                   <template #header>
                     <strong>安装APK</strong>
                   </template>
-                  <el-tabs type="border-card">
+                  <el-tabs type="border-card" v-loading="!isDriverFinish">
                     <el-tab-pane label="上传安装">
                       <div style="text-align: center">
                         <el-upload
+                            v-loading="uploadLoading"
                             drag
                             action=""
                             :with-credentials="true"
                             :limit="1"
-                            :before-upload="beforeAvatarUpload"
+                            :before-upload="beforeAvatarUpload2"
                             :on-exceed="limitOut"
-                            :http-request="uploadScan"
-                            list-type="picture"
+                            :http-request="uploadPackage"
                         >
                           <i class="el-icon-upload"></i>
                           <div class="el-upload__text">将APK文件拖到此处，或<em>点击上传</em></div>
@@ -1527,8 +1478,23 @@ onMounted(() => {
                       </div>
                     </el-tab-pane>
                     <el-tab-pane label="URL安装">
+                      <el-input
+                          clearable
+                          v-model="uploadUrl"
+                          size="small"
+                          placeholder="请输入apk下载链接或本地路径"
+                      ></el-input>
+                      <div style="text-align: center;margin-top: 20px">
+                        <el-button
+                            size="mini"
+                            type="primary"
+                            :disabled="uploadUrl.length===0"
+                            @click="install(uploadUrl)"
+                        >发送
+                        </el-button>
+                      </div>
                     </el-tab-pane>
-                    <el-tab-pane label="已有包安装（即将开放）">
+                    <el-tab-pane label="已有包安装（即将开放）" disabled>
                     </el-tab-pane>
                   </el-tabs>
                 </el-card>
