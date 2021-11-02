@@ -37,6 +37,7 @@ const getImg = (name) => {
 const robotType = ref(1)
 const robotList = [{name: "钉钉群机器人", value: 1, img: "DingTalk"}
   , {name: "企业微信机器人(即将开放)", value: 2, img: "WeChat", disabled: true},
+  {name: "友空间机器人(即将开放)", value: 2, img: "You", disabled: true},
   {name: "飞书群机器人(即将开放)", value: 3, img: "FeiShu", disabled: true}]
 const beforeAvatarUpload = (file) => {
   if (file.name.endsWith(".jpg") || file.name.endsWith(".png")) {

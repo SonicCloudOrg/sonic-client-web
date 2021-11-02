@@ -11,6 +11,7 @@ import StepLog from '../components/StepLog.vue'
 import ElementUpdate from '../components/ElementUpdate.vue'
 import defaultLogo from '../assets/logo.png'
 import {
+  Aim,
   Download,
   Search,
   SwitchButton,
@@ -61,6 +62,7 @@ let time = 0
 let isLongPress = false
 let mouseMoveTime = 0
 const pic = ref("中");
+const fixScreenTor = ref(0)
 const elementLoading = ref(false)
 const isShowImg = ref(false)
 const isDriverFinish = ref(false)
@@ -800,6 +802,33 @@ const scan = (url) => {
       })
   );
 }
+const fixScreen = (type) => {
+  loading.value = true
+  let pic;
+  switch (type) {
+    case "低":
+      pic = "low";
+      break;
+    case "中":
+      pic = "middle";
+      break;
+    case "高":
+      pic = "high";
+      break;
+  }
+  if (fixScreenTor.value == 3) {
+    fixScreenTor.value = 0;
+  } else {
+    fixScreenTor.value++;
+  }
+  websocket.send(
+      JSON.stringify({
+        type: "fixScreen",
+        s: fixScreenTor.value,
+        detail: pic
+      })
+  );
+}
 const screen = (type, p) => {
   if (p !== 'abort') {
     loading.value = true
@@ -1130,6 +1159,24 @@ onMounted(() => {
               </div>
             </el-tooltip>
             <el-tooltip
+                effect="dark"
+                content="校准画面"
+                placement="right"
+            >
+              <div style="margin-top: 4px">
+                <el-button
+                    size="small"
+                    type="info"
+                    circle
+                    @click="fixScreen(pic)"
+                >
+                  <el-icon :size="12" style="vertical-align: middle;">
+                    <Aim/>
+                  </el-icon>
+                </el-button>
+              </div>
+            </el-tooltip>
+            <el-tooltip
                 :enterable="false"
                 effect="dark"
                 content="设备转向"
@@ -1431,7 +1478,9 @@ onMounted(() => {
                   <template #header>
                     <strong>扫描二维码</strong>
                   </template>
-                  <div style="text-align: center">
+                  <el-alert title="OPPO、vivo部分机型上传二维码后不出现在相册，需要重启后生效" type="info" show-icon :closable="false">
+                  </el-alert>
+                  <div style="text-align: center;margin-top: 20px">
                     <el-upload
                         drag
                         action=""
