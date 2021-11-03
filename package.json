@@ -8,21 +8,21 @@
     },
     "dependencies": {
         "@element-plus/icons": "0.0.11",
-        "axios": "^0.21.4",
-        "echarts": "^5.2.1",
-        "element-plus": "^1.1.0-beta.24",
-        "moment": "^2.29.1",
-        "rollup-plugin-copy": "^3.4.0",
-        "vue": "^3.2.14",
-        "vue-clipboard3": "^1.0.1",
-        "vue-draggable-next": "^2.0.1",
-        "vue-router": "^4.0.10",
-        "vue3-player-video": "^1.2.5",
-        "vuex": "^4.0.2"
+        "axios": "0.21.4",
+        "echarts": "5.2.1",
+        "element-plus": "1.1.0-beta.24",
+        "moment": "2.29.1",
+        "rollup-plugin-copy": "3.4.0",
+        "vue": "3.2.14",
+        "vue-clipboard3": "1.0.1",
+        "vue-draggable-next": "2.0.1",
+        "vue-router": "4.0.10",
+        "vue3-player-video": "1.2.5",
+        "vuex": "4.0.2"
     },
     "devDependencies": {
-        "@vitejs/plugin-vue": "^1.9.0",
-        "@vue/compiler-sfc": "^3.2.14",
-        "vite": "^2.5.10"
+        "@vitejs/plugin-vue": "1.9.0",
+        "@vue/compiler-sfc": "3.2.14",
+        "vite": "2.5.10"
     }
 }
