@@ -10,13 +10,13 @@
 </p>
 <p align="center">
   <a href="#">  
-    <img src="https://img.shields.io/badge/release-v1.0.0-orange">
+    <img src="https://img.shields.io/badge/release-v1.1.0-orange">
   </a>
   <a href="#">  
     <img src="https://img.shields.io/badge/vue-3.2.14-success">
   </a>
   <a href="#">  
-    <img src="https://img.shields.io/badge/elementPlus-1.1.0/beta.20-success">
+    <img src="https://img.shields.io/badge/elementPlus-1.1.0/beta.24-success">
   </a>
 </p>
 <p align="center">
