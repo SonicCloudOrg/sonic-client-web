@@ -128,7 +128,7 @@ onMounted(() => {
       </div>
       <div class="flex-center">
 
-        <el-menu :background-color="store.state.menuBack" :text-color="store.state.menuText"
+        <el-menu :ellipsis="false" :background-color="store.state.menuBack" :text-color="store.state.menuText"
                  :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
                  :default-active="route.path">
           <el-menu-item :index="route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices'"
@@ -166,37 +166,37 @@ onMounted(() => {
             <el-menu-item index="1-1" @click="dialogUserInfo = true">我的信息</el-menu-item>
             <el-menu-item index="1-2" @click="dialogChangePwd = true">修改密码</el-menu-item>
             <el-menu-item index="1-3" @click="logout"> 注销</el-menu-item>
-          </el-sub-menu>
-          <el-sub-menu index="2">
-            <template #title
-            ><span
-                class="flex-center font title"
-            ><img
-                style="margin-right: 5px"
-                width="20"
-                :src="logo"
-            />关于Sonic</span
-            >
-            </template
-            >
-            <el-menu-item index="2-1"
-                          @click="goToUrl('http://zhouyixun.gitee.io/sonic-official-website/#/Home')"
-            >Sonic官方网站
-            </el-menu-item
-            >
-            <el-menu-item index="2-2"
-                          @click="goToUrl('https://github.com/ZhouYixun/sonic-server/releases/tag/release')"
-            >版本更新记录
-              <el-badge
-                  value="New"
-                  style="margin: 0 0 5px 5px"
-              ></el-badge
+            <el-sub-menu index="2">
+              <template #title
+              ><span
+                  class="flex-center font title"
+              ><img
+                  style="margin-right: 5px"
+                  width="20"
+                  :src="logo"
+              />关于Sonic</span
               >
-            </el-menu-item>
-            <el-menu-item index="2-3"
-                          @click="goToUrl(axios.defaults.baseURL.substring(0,axios.defaults.baseURL.length-4)+'/doc.html')">
-              REST API
-            </el-menu-item>
+              </template
+              >
+              <el-menu-item index="2-1"
+                            @click="goToUrl('http://zhouyixun.gitee.io/sonic-official-website/#/Home')"
+              >Sonic官方网站
+              </el-menu-item
+              >
+              <el-menu-item index="2-2"
+                            @click="goToUrl('http://zhouyixun.gitee.io/sonic-official-website/#/Version')"
+              >版本更新记录
+                <el-badge
+                    value="New"
+                    style="margin: 0 0 5px 5px"
+                ></el-badge
+                >
+              </el-menu-item>
+              <el-menu-item index="2-3"
+                            @click="goToUrl(axios.defaults.baseURL.substring(0,axios.defaults.baseURL.length-4)+'/doc.html')">
+                REST API
+              </el-menu-item>
+            </el-sub-menu>
           </el-sub-menu>
         </el-menu>
       </div>

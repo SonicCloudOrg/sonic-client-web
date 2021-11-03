@@ -609,20 +609,6 @@ onMounted(() => {
 
     <div v-if="step.stepType === 'install'">
       <el-form-item
-          prop="content"
-          label="应用包名"
-          :rules="{
-            required: true,
-            message: '包名不能为空',
-            trigger: 'blur',
-          }"
-      >
-        <el-input
-            v-model="step.content"
-            placeholder="请输入应用包名"
-        ></el-input>
-      </el-form-item>
-      <el-form-item
           prop="text"
           label="安装路径"
           :rules="{
