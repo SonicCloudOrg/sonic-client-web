@@ -347,10 +347,18 @@ const websocketOnmessage = (message) => {
     img.src = u;
   } else {
     switch (JSON.parse(message.data)['msg']) {
+      case "support": {
+        ElMessage.error({
+          message: JSON.parse(message.data).text,
+        });
+        loading.value = false;
+        break;
+      }
       case "size": {
         imgWidth = JSON.parse(message.data).width;
         imgHeight = JSON.parse(message.data).height;
-        break
+        loading.value = false;
+        break;
       }
       case "tree": {
         ElMessage.success({
@@ -388,7 +396,6 @@ const websocketOnmessage = (message) => {
         break
       }
       case "openDriver": {
-        loading.value = false;
         ElMessage({
           type: JSON.parse(message.data).status,
           message: JSON.parse(message.data).detail
@@ -1700,7 +1707,7 @@ onMounted(() => {
                   </div>
                 </el-option>
               </el-select>
-              <el-button size="mini" type="primary" round style="position: absolute;right: 20px"
+              <el-button v-if="project!==null" size="mini" type="primary" round style="position: absolute;right: 20px"
                          @click="caseList.open()">
                 新增用例
               </el-button>
@@ -1991,7 +1998,7 @@ onMounted(() => {
               </el-row>
             </div>
             <el-card style="height: 100%" v-show="!isShowImg">
-              <el-result icon="info" title="提示" subTitle="请先获取控件元素">
+              <el-result icon="info" title="提示" subTitle="请先获取控件元素，该功能需要初始化Driver">
                 <template #extra>
                   <el-button
                       type="primary"
