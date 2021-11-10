@@ -111,6 +111,15 @@ const element = ref({
   eleValue: "",
   projectId: 0
 })
+const computedCenter = (b1, b2) => {
+  let x1 = b1.substring(0, b1.indexOf(","));
+  let y1 = b1.substring(b1.indexOf(",") + 1);
+  let x2 = b2.substring(0, b2.indexOf(","));
+  let y2 = b2.substring(b2.indexOf(",") + 1);
+  let x = parseInt((parseInt(x2) + parseInt(x1)) / 2);
+  let y = parseInt((parseInt(y1) + parseInt(y2)) / 2);
+  return x + "," + y;
+}
 const switchTabs = (e) => {
   if (e.props.name === 'terminal') {
     terminalHeight.value = document.getElementById("pressKey").offsetTop - 200;
@@ -347,10 +356,18 @@ const websocketOnmessage = (message) => {
     img.src = u;
   } else {
     switch (JSON.parse(message.data)['msg']) {
+      case "support": {
+        ElMessage.error({
+          message: JSON.parse(message.data).text,
+        });
+        loading.value = false;
+        break;
+      }
       case "size": {
         imgWidth = JSON.parse(message.data).width;
         imgHeight = JSON.parse(message.data).height;
-        break
+        loading.value = false;
+        break;
       }
       case "tree": {
         ElMessage.success({
@@ -388,7 +405,6 @@ const websocketOnmessage = (message) => {
         break
       }
       case "openDriver": {
-        loading.value = false;
         ElMessage({
           type: JSON.parse(message.data).status,
           message: JSON.parse(message.data).detail
@@ -1700,7 +1716,7 @@ onMounted(() => {
                   </div>
                 </el-option>
               </el-select>
-              <el-button size="mini" type="primary" round style="position: absolute;right: 20px"
+              <el-button v-if="project!==null" size="mini" type="primary" round style="position: absolute;right: 20px"
                          @click="caseList.open()">
                 新增用例
               </el-button>
@@ -1907,6 +1923,10 @@ onMounted(() => {
                           >
                             <span>{{ elementDetail['package'] }}</span>
                           </el-form-item>
+                          <el-form-item label="中心坐标" style="cursor: pointer"
+                                        @click="copy(computedCenter(elementDetail['bStart'], elementDetail['bEnd']))">
+                            <span>{{ computedCenter(elementDetail['bStart'], elementDetail['bEnd']) }}</span>
+                          </el-form-item>
                           <el-form-item label="index">
                             <span>{{ elementDetail['index'] }}</span>
                           </el-form-item>
@@ -1991,7 +2011,7 @@ onMounted(() => {
               </el-row>
             </div>
             <el-card style="height: 100%" v-show="!isShowImg">
-              <el-result icon="info" title="提示" subTitle="请先获取控件元素">
+              <el-result icon="info" title="提示" subTitle="请先获取控件元素，该功能需要初始化Driver">
                 <template #extra>
                   <el-button
                       type="primary"
