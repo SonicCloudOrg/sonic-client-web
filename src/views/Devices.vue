@@ -353,7 +353,7 @@ onMounted(() => {
         </el-input>
         <el-popover placement="bottom-start" width="800px" trigger="click">
           <template #reference>
-            <el-button size="small" type="primary" style="margin-left: 20px">高级筛选器</el-button>
+            <el-button size="mini" type="primary" style="margin-left: 20px">高级筛选器</el-button>
           </template>
           <el-form
               label-position="left"
@@ -499,6 +499,7 @@ onMounted(() => {
             </el-form-item>
           </el-form>
         </el-popover>
+        <el-button size="mini" style="float: right" @click="findAll()">刷新</el-button>
         <div style="text-align: center;margin-top: 20px">
           <el-divider class="device-card-divider">设备列表</el-divider>
         </div>

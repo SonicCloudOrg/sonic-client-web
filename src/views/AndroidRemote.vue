@@ -12,6 +12,8 @@ import ElementUpdate from '../components/ElementUpdate.vue'
 import defaultLogo from '../assets/logo.png'
 import {
   Aim,
+  Place,
+  FullScreen,
   Download,
   Search,
   SwitchButton,
@@ -98,7 +100,8 @@ const logcatOutPut = ref([]);
 const terScroll = ref(null);
 const logcatScroll = ref(null);
 const cmdIsDone = ref(true);
-const uploadLoading = ref(false)
+const uploadLoading = ref(false);
+const location = ref(false);
 const logcatFilter = ref({
   level: 'E',
   filter: ""
@@ -161,6 +164,12 @@ const saveEle = () => {
           });
     }
   });
+}
+const switchLocation = () => {
+  location.value = !location.value
+  ElMessage.success({
+    message: "校准完毕！"
+  })
 }
 const selectCase = (val) => {
   ElMessage.success({
@@ -462,7 +471,7 @@ const websocketOnmessage = (message) => {
   }
 }
 const mouseup = (event) => {
-  if (devicePlatformVersion < 9) {
+  if (devicePlatformVersion < 10) {
     if (isPress === true) {
       isPress = false;
       websocket.send(
@@ -477,14 +486,27 @@ const mouseup = (event) => {
     time = 0;
     const canvas = document.getElementById("canvas");
     const rect = canvas.getBoundingClientRect();
-    const x = parseInt(
-        (event.clientX - rect.left * (canvas.width / rect.width)) *
-        (imgWidth / rect.width)
-    );
-    const y = parseInt(
-        (event.clientY - rect.top * (canvas.height / rect.height)) *
-        (imgHeight / rect.height)
-    );
+    let x;
+    let y;
+    if (location.value === true) {
+      x = parseInt(
+          (event.clientX - rect.left * (canvas.width / rect.width)) *
+          (imgHeight / rect.width)
+      );
+      y = parseInt(
+          (event.clientY - rect.top * (canvas.height / rect.height)) *
+          (imgWidth / rect.height)
+      );
+    } else {
+      x = parseInt(
+          (event.clientX - rect.left * (canvas.width / rect.width)) *
+          (imgWidth / rect.width)
+      );
+      y = parseInt(
+          (event.clientY - rect.top * (canvas.height / rect.height)) *
+          (imgHeight / rect.height)
+      );
+    }
     if (moveX === x && moveY === y) {
       if (isLongPress === false) {
         websocket.send(
@@ -494,6 +516,7 @@ const mouseup = (event) => {
               point: x + "," + y,
             })
         );
+        // }
       }
     } else {
       websocket.send(
@@ -509,7 +532,7 @@ const mouseup = (event) => {
   }
 }
 const mouseleave = () => {
-  if (devicePlatformVersion >= 9) {
+  if (devicePlatformVersion >= 10) {
     clearInterval(loop);
     isLongPress = false;
   } else {
@@ -527,15 +550,28 @@ const mouseleave = () => {
 const mousedown = (event) => {
   const canvas = document.getElementById("canvas");
   const rect = canvas.getBoundingClientRect();
-  if (devicePlatformVersion < 9) {
-    const x = parseInt(
-        (event.clientX - rect.left * (canvas.width / rect.width)) *
-        (imgWidth / rect.width)
-    );
-    const y = parseInt(
-        (event.clientY - rect.top * (canvas.height / rect.height)) *
-        (imgHeight / rect.height)
-    );
+  if (devicePlatformVersion < 10) {
+    let x;
+    let y;
+    if (location.value === true) {
+      x = parseInt(
+          (event.clientX - rect.left * (canvas.width / rect.width)) *
+          (imgHeight / rect.width)
+      );
+      y = parseInt(
+          (event.clientY - rect.top * (canvas.height / rect.height)) *
+          (imgWidth / rect.height)
+      );
+    } else {
+      x = parseInt(
+          (event.clientX - rect.left * (canvas.width / rect.width)) *
+          (imgWidth / rect.width)
+      );
+      y = parseInt(
+          (event.clientY - rect.top * (canvas.height / rect.height)) *
+          (imgHeight / rect.height)
+      );
+    }
     isPress = true;
     websocket.send(
         JSON.stringify({
@@ -544,14 +580,25 @@ const mousedown = (event) => {
         })
     );
   } else {
-    moveX = parseInt(
-        (event.clientX - rect.left * (canvas.width / rect.width)) *
-        (imgWidth / rect.width)
-    );
-    moveY = parseInt(
-        (event.clientY - rect.top * (canvas.height / rect.height)) *
-        (imgHeight / rect.height)
-    );
+    if (location.value === true) {
+      moveX = parseInt(
+          (event.clientX - rect.left * (canvas.width / rect.width)) *
+          (imgHeight / rect.width)
+      );
+      moveY = parseInt(
+          (event.clientY - rect.top * (canvas.height / rect.height)) *
+          (imgWidth / rect.height)
+      );
+    } else {
+      moveX = parseInt(
+          (event.clientX - rect.left * (canvas.width / rect.width)) *
+          (imgWidth / rect.width)
+      );
+      moveY = parseInt(
+          (event.clientY - rect.top * (canvas.height / rect.height)) *
+          (imgHeight / rect.height)
+      );
+    }
     clearInterval(loop);
     loop = setInterval(() => {
       time += 500;
@@ -569,7 +616,7 @@ const mousedown = (event) => {
   }
 }
 const mousemove = (event) => {
-  if (devicePlatformVersion < 9) {
+  if (devicePlatformVersion < 10) {
     if (isPress === true) {
       if (mouseMoveTime < 4) {
         mouseMoveTime++;
@@ -577,14 +624,27 @@ const mousemove = (event) => {
       } else {
         const canvas = document.getElementById("canvas");
         const rect = canvas.getBoundingClientRect();
-        const x = parseInt(
-            (event.clientX - rect.left * (canvas.width / rect.width)) *
-            (imgWidth / rect.width)
-        );
-        const y = parseInt(
-            (event.clientY - rect.top * (canvas.height / rect.height)) *
-            (imgHeight / rect.height)
-        );
+        let x;
+        let y;
+        if (location.value === true) {
+          x = parseInt(
+              (event.clientX - rect.left * (canvas.width / rect.width)) *
+              (imgHeight / rect.width)
+          );
+          y = parseInt(
+              (event.clientY - rect.top * (canvas.height / rect.height)) *
+              (imgWidth / rect.height)
+          );
+        } else {
+          x = parseInt(
+              (event.clientX - rect.left * (canvas.width / rect.width)) *
+              (imgWidth / rect.width)
+          );
+          y = parseInt(
+              (event.clientY - rect.top * (canvas.height / rect.height)) *
+              (imgHeight / rect.height)
+          );
+        }
         websocket.send(
             JSON.stringify({
               type: "touch",
@@ -747,6 +807,9 @@ const changePic = (type) => {
       break;
     case "高":
       pic = "high";
+      break;
+    case "fixed":
+      pic = "fixed";
       break;
   }
   websocket.send(
@@ -1142,7 +1205,7 @@ onMounted(() => {
             <el-tooltip
                 :enterable="false"
                 effect="dark"
-                content="画质帧数"
+                content="投屏帧数"
                 placement="right"
                 :offset="15"
             >
@@ -1175,21 +1238,84 @@ onMounted(() => {
               </div>
             </el-tooltip>
             <el-tooltip
+                :enterable="false"
                 effect="dark"
-                content="校准画面"
+                content="手动校准"
                 placement="right"
+                :offset="15"
             >
-              <div style="margin-top: 4px">
-                <el-button
-                    size="small"
-                    type="info"
-                    circle
-                    @click="fixScreen(pic)"
+              <div>
+                <el-dropdown
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
                 >
-                  <el-icon :size="12" style="vertical-align: middle;">
-                    <Aim/>
-                  </el-icon>
-                </el-button>
+                  <el-button
+                      size="small"
+                      type="info"
+                      circle
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <Place/>
+                    </el-icon>
+                  </el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu class="divider" v-loading="loading"
+                                      element-loading-background="rgba(255, 255, 255, 1)">
+                      <el-button-group>
+                        <el-tooltip
+                            effect="dark"
+                            content="校准图像"
+                            placement="top"
+                        >
+                          <el-button
+                              size="small"
+                              type="info"
+                              circle
+                              @click="fixScreen(pic)"
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <FullScreen/>
+                            </el-icon>
+                          </el-button>
+                        </el-tooltip>
+                        <el-tooltip
+                            effect="dark"
+                            content="校准坐标"
+                            placement="top"
+                        >
+                          <el-button
+                              size="small"
+                              type="info"
+                              circle
+                              @click="switchLocation"
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <Aim/>
+                            </el-icon>
+                          </el-button>
+                        </el-tooltip>
+                        <el-tooltip
+                            effect="dark"
+                            content="修复黑屏"
+                            placement="top"
+                        >
+                          <el-button
+                              size="small"
+                              type="info"
+                              circle
+                              @click="changePic('fixed')"
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <Cellphone/>
+                            </el-icon>
+                          </el-button>
+                        </el-tooltip>
+                      </el-button-group>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
               </div>
             </el-tooltip>
             <el-tooltip
