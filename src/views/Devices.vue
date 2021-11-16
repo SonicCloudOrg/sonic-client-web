@@ -320,14 +320,38 @@ const getImg = (name) => {
   }
   return result;
 }
-const getPhoneImg = (name) => {
+const getPhoneImg = (name, url) => {
   let result;
-  try {
-    result = img['./../assets/img/' + name + '.jpg'].default
-  } catch {
-    result = img['./../assets/img/sdk_gphone_x86_arm.jpg'].default
+  if (url === null || url.length === 0) {
+    result = "https://gitee.com/ZhouYixun/sonic-agent-images/raw/master/devices/" + name + ".jpg";
+  } else {
+    result = url;
   }
   return result;
+}
+const beforeAvatarUpload = (file) => {
+  if (file.name.endsWith(".jpg") || file.name.endsWith(".png")) {
+    return true;
+  } else {
+    ElMessage.error({
+      message: "文件格式有误！",
+    });
+    return false;
+  }
+}
+const upload = (content) => {
+  let formData = new FormData();
+  formData.append("file", content.file);
+  formData.append("type", 'keepFiles');
+  axios
+      .post("/folder/upload", formData, {headers: {"Content-type": "multipart/form-data"}})
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+        }
+      });
 }
 onMounted(() => {
   findAll();
@@ -533,10 +557,19 @@ onMounted(() => {
                     <el-image
                         style="height: 160px"
                         fit="contain"
-                        :src="getPhoneImg(device.model)"
-                        :preview-src-list="[getPhoneImg(device.model)]"
+                        :src="getPhoneImg(device.model,device['imgUrl'])"
+                        :preview-src-list="[getPhoneImg(device.model,device['imgUrl'])]"
                         hide-on-click-modal
                     >
+                      <template #error>
+                        <el-image
+                            style="height: 160px"
+                            fit="contain"
+                            src="https://gitee.com/ZhouYixun/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg"
+                            :preview-src-list="['https://gitee.com/ZhouYixun/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg']"
+                            hide-on-click-modal
+                        ></el-image>
+                      </template>
                     </el-image>
                   </div>
                 </el-col>
@@ -599,6 +632,22 @@ onMounted(() => {
                       style="margin-left: 10px; word-break: break-all"
                       v-if="device.id"
                   >
+                    <el-form-item label="设备图片">
+                      <el-upload
+                          style="width: 30px"
+                          action=""
+                          :with-credentials="true"
+                          :before-upload="beforeAvatarUpload"
+                          :http-request="upload"
+                          :show-file-list="false"
+                      >
+                        <el-button
+                            type="primary"
+                            size="mini">点击上传
+                        </el-button
+                        >
+                      </el-upload>
+                    </el-form-item>
                     <el-form-item label="设备名称">
                       <span>{{ device.name }}</span>
                     </el-form-item>

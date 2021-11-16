@@ -21,12 +21,12 @@ const getImg = (name) => {
   }
   return result;
 }
-const getPhoneImg = (name) => {
+const getPhoneImg = (name, url) => {
   let result;
-  try {
-    result = img['./../assets/img/' + name + '.jpg'].default
-  } catch {
-    result = img['./../assets/img/sdk_gphone_x86_arm.jpg'].default
+  if (url === null || url.length === 0) {
+    result = "https://gitee.com/ZhouYixun/sonic-agent-images/raw/master/devices/" + name + ".jpg";
+  } else {
+    result = url;
   }
   return result;
 }
@@ -189,8 +189,15 @@ onMounted(() => {
           <el-image
               style="height: 80%;float: left"
               fit="contain"
-              :src="getPhoneImg(item.model)"
+              :src="getPhoneImg(item.model,item['imgUrl'])"
           >
+            <template #error>
+              <el-image
+                  style="height: 100%;float: left"
+                  fit="contain"
+                  src="https://gitee.com/ZhouYixun/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg"
+              ></el-image>
+            </template>
           </el-image>
           <span style="float: left;margin-left: 10px">{{ item.model }}</span>
           <span style="

@@ -883,6 +883,7 @@ const scan = (url) => {
 }
 const fixScreen = (type) => {
   loading.value = true
+  location.value = !location.value
   let pic;
   switch (type) {
     case "低":
@@ -1334,7 +1335,7 @@ onMounted(() => {
                 >
                   <el-button
                       size="small"
-                      type="info"
+                      type="primary"
                       circle
                   >
                     <el-icon :size="12" style="vertical-align: middle;">
@@ -1415,7 +1416,7 @@ onMounted(() => {
                 >
                   <el-button
                       size="small"
-                      type="info"
+                      type="primary"
                       circle
                   >
                     <el-icon :size="12" style="vertical-align: middle;">
