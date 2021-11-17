@@ -34,12 +34,12 @@ const defaultTime = ref([
   new Date(2000, 1, 1, 0, 0, 0),
   new Date(2000, 2, 1, 23, 59, 59),
 ])
-const getPhoneImg = (name) => {
+const getPhoneImg = (name, url) => {
   let result;
-  try {
-    result = img['./../assets/img/' + name + '.jpg'].default
-  } catch {
-    result = img['./../assets/img/sdk_gphone_x86_arm.jpg'].default
+  if (url === null || (url && url.length === 0)) {
+    result = "https://gitee.com/ZhouYixun/sonic-agent-images/raw/master/devices/" + name + ".jpg";
+  } else {
+    result = url;
   }
   return result;
 }
@@ -332,10 +332,19 @@ onUnmounted(() => {
                 <el-image
                     style="height: 100%"
                     fit="contain"
-                    :src="getPhoneImg(getDeviceInfo(scope.row['device_id']).model)"
-                    :preview-src-list="[getPhoneImg(getDeviceInfo(scope.row['device_id']).model)]"
+                    :src="getPhoneImg(getDeviceInfo(scope.row['device_id']).model,getDeviceInfo(scope.row['device_id'])['imgUrl'])"
+                    :preview-src-list="[getPhoneImg(getDeviceInfo(scope.row['device_id']).model,getDeviceInfo(scope.row['device_id'])['imgUrl'])]"
                     hide-on-click-modal
                 >
+                  <template #error>
+                    <el-image
+                        style="height: 100%"
+                        fit="contain"
+                        src="https://gitee.com/ZhouYixun/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg"
+                        :preview-src-list="['https://gitee.com/ZhouYixun/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg']"
+                        hide-on-click-modal
+                    ></el-image>
+                  </template>
                 </el-image>
               </div>
             </template>
