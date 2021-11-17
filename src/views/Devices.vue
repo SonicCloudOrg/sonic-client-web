@@ -347,9 +347,19 @@ const upload = (content) => {
       .post("/folder/upload", formData, {headers: {"Content-type": "multipart/form-data"}})
       .then((resp) => {
         if (resp['code'] === 2000) {
+          updateImg(content.data.id, resp.data)
+        }
+      });
+}
+const updateImg = (id, imgUrl) => {
+  axios
+      .put("/controller/devices/updateImg", {id, imgUrl})
+      .then((resp) => {
+        if (resp['code'] === 2000) {
           ElMessage.success({
             message: resp['message'],
           });
+          findAll();
         }
       });
 }
@@ -635,6 +645,7 @@ onMounted(() => {
                     <el-form-item label="设备图片">
                       <el-upload
                           style="width: 30px"
+                          :data="{id:device.id}"
                           action=""
                           :with-credentials="true"
                           :before-upload="beforeAvatarUpload"

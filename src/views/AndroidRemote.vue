@@ -18,6 +18,7 @@ import {
   Search,
   SwitchButton,
   Position,
+  Pointer,
   Camera,
   Sunny,
   Phone,
@@ -170,6 +171,19 @@ const switchLocation = () => {
   ElMessage.success({
     message: "校准完毕！"
   })
+}
+let oldVersion = 0;
+const fixTouch = () => {
+  if (oldVersion === 0) {
+    oldVersion = devicePlatformVersion;
+    devicePlatformVersion = 20;
+  } else {
+    devicePlatformVersion = oldVersion;
+    oldVersion = 0;
+  }
+}
+const switchIsWebView = ()=>{
+  isWebView.value = true;
 }
 const selectCase = (val) => {
   ElMessage.success({
@@ -1313,6 +1327,22 @@ onMounted(() => {
                             </el-icon>
                           </el-button>
                         </el-tooltip>
+                        <el-tooltip
+                            effect="dark"
+                            content="修复触控"
+                            placement="top"
+                        >
+                          <el-button
+                              size="small"
+                              type="info"
+                              circle
+                              @click="fixTouch"
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <Pointer/>
+                            </el-icon>
+                          </el-button>
+                        </el-tooltip>
                       </el-button-group>
                     </el-dropdown-menu>
                   </template>
@@ -2214,7 +2244,7 @@ onMounted(() => {
             </div>
             <div v-else>
               <div style="display: flex;align-items: center;">
-                <el-page-header icon="el-icon-arrow-left" @back="isWebView = true">
+                <el-page-header icon="el-icon-arrow-left" @back="switchIsWebView">
                   <template #title>
                     <span style="color: #606266">返回</span>
                   </template>
