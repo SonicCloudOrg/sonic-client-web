@@ -36,7 +36,7 @@ const defaultTime = ref([
 ])
 const getPhoneImg = (name, url) => {
   let result;
-  if (url === null || url.length === 0) {
+  if (url === null || (url && url.length === 0)) {
     result = "https://gitee.com/ZhouYixun/sonic-agent-images/raw/master/devices/" + name + ".jpg";
   } else {
     result = url;
