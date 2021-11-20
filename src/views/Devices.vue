@@ -51,6 +51,7 @@ const manufacturer = ref([
   "360",
   "Yulong",
   "LGE",
+  "Sony",
   "GIONEE"
 ]);
 const statusList = ref([

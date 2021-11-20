@@ -485,7 +485,7 @@ const websocketOnmessage = (message) => {
   }
 }
 const mouseup = (event) => {
-  if (devicePlatformVersion < 10) {
+  if (devicePlatformVersion < 200) {
     if (isPress === true) {
       isPress = false;
       websocket.send(
@@ -546,7 +546,7 @@ const mouseup = (event) => {
   }
 }
 const mouseleave = () => {
-  if (devicePlatformVersion >= 10) {
+  if (devicePlatformVersion >= 200) {
     clearInterval(loop);
     isLongPress = false;
   } else {
@@ -564,7 +564,7 @@ const mouseleave = () => {
 const mousedown = (event) => {
   const canvas = document.getElementById("canvas");
   const rect = canvas.getBoundingClientRect();
-  if (devicePlatformVersion < 10) {
+  if (devicePlatformVersion < 200) {
     let x;
     let y;
     if (location.value === true) {
@@ -630,9 +630,9 @@ const mousedown = (event) => {
   }
 }
 const mousemove = (event) => {
-  if (devicePlatformVersion < 10) {
+  if (devicePlatformVersion < 200) {
     if (isPress === true) {
-      if (mouseMoveTime < 4) {
+      if (mouseMoveTime < 2) {
         mouseMoveTime++;
         return;
       } else {
