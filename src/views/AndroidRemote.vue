@@ -58,7 +58,7 @@ let imgWidth = 0
 let imgHeight = 0
 let moveX = 0
 let moveY = 0
-let devicePlatformVersion = 0
+let isFixTouch = false
 let isPress = false
 let loop = null
 let time = 0
@@ -172,15 +172,8 @@ const switchLocation = () => {
     message: "校准完毕！"
   })
 }
-let oldVersion = 0;
 const fixTouch = () => {
-  if (oldVersion === 0) {
-    oldVersion = devicePlatformVersion;
-    devicePlatformVersion = 20;
-  } else {
-    devicePlatformVersion = oldVersion;
-    oldVersion = 0;
-  }
+  isFixTouch = !isFixTouch
 }
 const switchIsWebView = ()=>{
   isWebView.value = true;
@@ -485,7 +478,7 @@ const websocketOnmessage = (message) => {
   }
 }
 const mouseup = (event) => {
-  if (devicePlatformVersion < 200) {
+  if (!isFixTouch) {
     if (isPress) {
       isPress = false;
       websocket.send(
@@ -546,7 +539,7 @@ const mouseup = (event) => {
   }
 }
 const mouseleave = () => {
-  if (devicePlatformVersion >= 200) {
+  if (isFixTouch) {
     clearInterval(loop);
     isLongPress = false;
   } else {
@@ -564,7 +557,7 @@ const mouseleave = () => {
 const mousedown = (event) => {
   const canvas = document.getElementById("canvas");
   const rect = canvas.getBoundingClientRect();
-  if (devicePlatformVersion < 200) {
+  if (!isFixTouch) {
     let x;
     let y;
     if (location.value) {
@@ -630,8 +623,8 @@ const mousedown = (event) => {
   }
 }
 const mousemove = (event) => {
-  if (devicePlatformVersion < 200) {
-    if (isPress === true) {
+  if (!isFixTouch) {
+    if (isPress) {
       if (mouseMoveTime < 2) {
         mouseMoveTime++;
         return;
@@ -771,6 +764,13 @@ const print = (data) => {
       eleStartY * (canvas.height / imgHeight),
       (eleEndX - eleStartX) * (canvas.width / imgWidth),
       (eleEndY - eleStartY) * (canvas.height / imgHeight)
+  );
+}
+const searchDevice = ()=>{
+  websocket.send(
+      JSON.stringify({
+        type: "find"
+      })
   );
 }
 const getEleScreen = (xpath) => {
@@ -1015,15 +1015,6 @@ const getDeviceById = (id) => {
         });
         router.replace("/Index")
         return
-      }
-      if (device.value['version'].indexOf(".") === -1) {
-        devicePlatformVersion = parseInt(
-            device.value['version'].replace(" ", "")
-        );
-      } else {
-        devicePlatformVersion = parseInt(
-            device.value['version'].substring(0, device.value['version'].indexOf("."))
-        );
       }
       axios
           .get("/controller/agents", {params: {id: device.value['agentId']}}).then((resp) => {
@@ -1347,6 +1338,24 @@ onMounted(() => {
                     </el-dropdown-menu>
                   </template>
                 </el-dropdown>
+              </div>
+            </el-tooltip>
+            <el-tooltip
+                effect="dark"
+                content="物理查找"
+                placement="right"
+            >
+              <div style="margin-top: 4px">
+                <el-button
+                    size="small"
+                    type="info"
+                    circle
+                    @click="searchDevice"
+                >
+                  <el-icon :size="12" style="vertical-align: middle;">
+                    <Search/>
+                  </el-icon>
+                </el-button>
               </div>
             </el-tooltip>
             <el-tooltip
