@@ -486,7 +486,7 @@ const websocketOnmessage = (message) => {
 }
 const mouseup = (event) => {
   if (devicePlatformVersion < 200) {
-    if (isPress === true) {
+    if (isPress) {
       isPress = false;
       websocket.send(
           JSON.stringify({
@@ -502,7 +502,7 @@ const mouseup = (event) => {
     const rect = canvas.getBoundingClientRect();
     let x;
     let y;
-    if (location.value === true) {
+    if (location.value) {
       x = parseInt(
           (event.clientX - rect.left * (canvas.width / rect.width)) *
           (imgHeight / rect.width)
@@ -522,7 +522,7 @@ const mouseup = (event) => {
       );
     }
     if (moveX === x && moveY === y) {
-      if (isLongPress === false) {
+      if (!isLongPress) {
         websocket.send(
             JSON.stringify({
               type: "debug",
@@ -550,7 +550,7 @@ const mouseleave = () => {
     clearInterval(loop);
     isLongPress = false;
   } else {
-    if (isPress === true) {
+    if (isPress) {
       isPress = false;
       websocket.send(
           JSON.stringify({
@@ -567,7 +567,7 @@ const mousedown = (event) => {
   if (devicePlatformVersion < 200) {
     let x;
     let y;
-    if (location.value === true) {
+    if (location.value) {
       x = parseInt(
           (event.clientX - rect.left * (canvas.width / rect.width)) *
           (imgHeight / rect.width)
@@ -594,7 +594,7 @@ const mousedown = (event) => {
         })
     );
   } else {
-    if (location.value === true) {
+    if (location.value) {
       moveX = parseInt(
           (event.clientX - rect.left * (canvas.width / rect.width)) *
           (imgHeight / rect.width)
@@ -640,7 +640,7 @@ const mousemove = (event) => {
         const rect = canvas.getBoundingClientRect();
         let x;
         let y;
-        if (location.value === true) {
+        if (location.value) {
           x = parseInt(
               (event.clientX - rect.left * (canvas.width / rect.width)) *
               (imgHeight / rect.width)
