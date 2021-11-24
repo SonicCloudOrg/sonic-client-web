@@ -2,14 +2,14 @@
 import { useRoute, useRouter } from 'vue-router';
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import axios from '../http/axios';
+import axios from '@/http/axios';
 import { ElMessage } from 'element-plus';
 import useClipboard from 'vue-clipboard3';
-import StepList from '../components/StepList.vue';
-import TestCaseList from '../components/TestCaseList.vue';
-import StepLog from '../components/StepLog.vue';
-import ElementUpdate from '../components/ElementUpdate.vue';
-import defaultLogo from '../assets/logo.png';
+import StepList from '@/components/StepList.vue';
+import TestCaseList from '@/components/TestCaseList.vue';
+import StepLog from '@/components/StepLog.vue';
+import ElementUpdate from '@/components/ElementUpdate.vue';
+import defaultLogo from '@/assets/logo.png';
 import {
   Aim,
   Place,
@@ -58,8 +58,8 @@ let imgWidth = 0;
 let imgHeight = 0;
 let moveX = 0;
 let moveY = 0;
-let devicePlatformVersion = 0;
-let isPress = true;
+let isFixTouch = false;
+let isPress = false;
 let loop = null;
 let time = 0;
 let isLongPress = false;
@@ -134,9 +134,21 @@ const switchTabs = (e) => {
     }
   }
 };
-const img = import.meta.globEager('./../assets/img/*');
+const img = import.meta.globEager('../../assets/img/*');
 let websocket = null;
 let terminalWebsocket = null;
+
+defineProps({
+  tabPosition: String,
+  canvasRectInfo: Object,
+  layoutSplitInfo: Object,
+  isSplitPressing: Boolean,
+  lineMouseup: Function,
+  lineMousemove: Function,
+  lineMousedown: Function,
+  lineMouseleave: Function,
+});
+
 const tabWebView = (port, id, transtitle) => {
   title.value = transtitle;
   isWebView.value = false;
@@ -172,15 +184,8 @@ const switchLocation = () => {
     message: '校准完毕！',
   });
 };
-let oldVersion = 0;
 const fixTouch = () => {
-  if (oldVersion === 0) {
-    oldVersion = devicePlatformVersion;
-    devicePlatformVersion = 20;
-  } else {
-    devicePlatformVersion = oldVersion;
-    oldVersion = 0;
-  }
+  isFixTouch = !isFixTouch;
 };
 const switchIsWebView = () => {
   isWebView.value = true;
@@ -200,9 +205,9 @@ const getImg = (name) => {
     name = 'Meizu';
   }
   try {
-    result = img['./../assets/img/' + name + '.jpg'].default;
+    result = img['../../assets/img/' + name + '.jpg'].default;
   } catch {
-    result = img['./../assets/img/unName.jpg'].default;
+    result = img['../../assets/img/unName.jpg'].default;
   }
   return result;
 };
@@ -485,8 +490,8 @@ const websocketOnmessage = (message) => {
   }
 };
 const mouseup = (event) => {
-  if (devicePlatformVersion < 10) {
-    if (isPress === true) {
+  if (!isFixTouch) {
+    if (isPress) {
       isPress = false;
       websocket.send(
           JSON.stringify({
@@ -502,7 +507,7 @@ const mouseup = (event) => {
     const rect = canvas.getBoundingClientRect();
     let x;
     let y;
-    if (location.value === true) {
+    if (location.value) {
       x = parseInt(
           (event.clientX - rect.left * (canvas.width / rect.width)) *
           (imgHeight / rect.width),
@@ -522,7 +527,7 @@ const mouseup = (event) => {
       );
     }
     if (moveX === x && moveY === y) {
-      if (isLongPress === false) {
+      if (!isLongPress) {
         websocket.send(
             JSON.stringify({
               type: 'debug',
@@ -546,11 +551,11 @@ const mouseup = (event) => {
   }
 };
 const mouseleave = () => {
-  if (devicePlatformVersion >= 10) {
+  if (isFixTouch) {
     clearInterval(loop);
     isLongPress = false;
   } else {
-    if (isPress === true) {
+    if (isPress) {
       isPress = false;
       websocket.send(
           JSON.stringify({
@@ -564,10 +569,10 @@ const mouseleave = () => {
 const mousedown = (event) => {
   const canvas = document.getElementById('canvas');
   const rect = canvas.getBoundingClientRect();
-  if (devicePlatformVersion < 10) {
+  if (!isFixTouch) {
     let x;
     let y;
-    if (location.value === true) {
+    if (location.value) {
       x = parseInt(
           (event.clientX - rect.left * (canvas.width / rect.width)) *
           (imgHeight / rect.width),
@@ -594,7 +599,7 @@ const mousedown = (event) => {
         }),
     );
   } else {
-    if (location.value === true) {
+    if (location.value) {
       moveX = parseInt(
           (event.clientX - rect.left * (canvas.width / rect.width)) *
           (imgHeight / rect.width),
@@ -630,9 +635,9 @@ const mousedown = (event) => {
   }
 };
 const mousemove = (event) => {
-  if (devicePlatformVersion < 10) {
-    if (isPress === true) {
-      if (mouseMoveTime < 4) {
+  if (!isFixTouch) {
+    if (isPress) {
+      if (mouseMoveTime < 2) {
         mouseMoveTime++;
         return;
       } else {
@@ -640,7 +645,7 @@ const mousemove = (event) => {
         const rect = canvas.getBoundingClientRect();
         let x;
         let y;
-        if (location.value === true) {
+        if (location.value) {
           x = parseInt(
               (event.clientX - rect.left * (canvas.width / rect.width)) *
               (imgHeight / rect.width),
@@ -771,6 +776,13 @@ const print = (data) => {
       eleStartY * (canvas.height / imgHeight),
       (eleEndX - eleStartX) * (canvas.width / imgWidth),
       (eleEndY - eleStartY) * (canvas.height / imgHeight),
+  );
+};
+const searchDevice = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'find',
+      }),
   );
 };
 const getEleScreen = (xpath) => {
@@ -1016,15 +1028,6 @@ const getDeviceById = (id) => {
         router.replace('/Index');
         return;
       }
-      if (device.value['version'].indexOf('.') === -1) {
-        devicePlatformVersion = parseInt(
-            device.value['version'].replace(' ', ''),
-        );
-      } else {
-        devicePlatformVersion = parseInt(
-            device.value['version'].substring(0, device.value['version'].indexOf('.')),
-        );
-      }
       axios
           .get('/controller/agents', { params: { id: device.value['agentId'] } }).then((resp) => {
         if (resp['code'] === 2000) {
@@ -1100,13 +1103,25 @@ onMounted(() => {
   >
   </el-page-header>
   <el-card shadow="never">
-    <el-row :gutter="20">
-      <el-col :span="6">
+    <el-row
+        :gutter="24"
+        @mouseup="lineMouseup"
+        @mouseleave="lineMouseleave"
+        @mousemove="lineMousemove"
+    >
+      <el-col
+          :span="tabPosition == 'left' ? 12 : 24"
+          :style="{
+            flexBasis: tabPosition == 'left' ? layoutSplitInfo.left + '%' : '',
+             maxWidth: 'none'
+          }"
+      >
         <el-card v-loading="loading"
                  element-loading-text="准备图像中..."
                  element-loading-background="rgba(255, 255, 255, 1)"
                  style="font-size: 14px"
-                 :body-style="{ padding: '10px', background: '#ccc', position: 'relative',minHeight: '340px' }">
+                 :body-style="{ padding: '10px', background: '#ccc', position: 'relative',minHeight: '340px' }"
+        >
           <template #header>
             <div style="position: relative; display: flex;align-items: center;">
               <el-icon :size="14" style="vertical-align: middle;">
@@ -1165,13 +1180,15 @@ onMounted(() => {
               </el-popover>
             </div>
           </template>
-          <div style="margin-right: 40px">
+          <div style="margin-right: 40px; text-align: center">
             <canvas
                 id="canvas"
                 @mouseup="mouseup"
                 @mousemove="mousemove"
                 @mousedown="mousedown"
                 @mouseleave="mouseleave"
+                style="display: inline-block"
+                :style="canvasRectInfo"
             ></canvas>
             <el-button-group id="pressKey">
               <el-button
@@ -1242,7 +1259,12 @@ onMounted(() => {
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
-                      <el-radio-group v-loading="loading" v-model="pic" size="mini" @change="changePic">
+                      <el-radio-group
+                          v-loading="loading"
+                          v-model="pic"
+                          size="mini"
+                          @change="changePic"
+                      >
                         <el-radio-button label="低"></el-radio-button>
                         <el-radio-button label="中"></el-radio-button>
                         <el-radio-button label="高"></el-radio-button>
@@ -1347,6 +1369,24 @@ onMounted(() => {
                     </el-dropdown-menu>
                   </template>
                 </el-dropdown>
+              </div>
+            </el-tooltip>
+            <el-tooltip
+                effect="dark"
+                content="物理查找"
+                placement="right"
+            >
+              <div style="margin-top: 4px">
+                <el-button
+                    size="small"
+                    type="info"
+                    circle
+                    @click="searchDevice"
+                >
+                  <el-icon :size="12" style="vertical-align: middle;">
+                    <Search />
+                  </el-icon>
+                </el-button>
               </div>
             </el-tooltip>
             <el-tooltip
@@ -1600,9 +1640,26 @@ onMounted(() => {
           </div>
         </el-card>
       </el-col>
-      <el-col :span="18">
-        <el-tabs @tab-click="switchTabs" stretch class="remote-tab" v-model="activeTab"
-                 tab-position="left">
+
+      <div
+          :class="{ line: tabPosition == 'left', lineVertical: tabPosition == 'top' }"
+          @mousedown="lineMousedown"
+      />
+
+      <el-col
+          :span="tabPosition == 'left' ? 12 : 24"
+          :style="{
+            flexBasis: tabPosition == 'left' ?  100 - Number(layoutSplitInfo.left) + '%' : '',
+             maxWidth: 'none'
+          }"
+      >
+        <el-tabs
+            @tab-click="switchTabs"
+            stretch
+            class="remote-tab"
+            v-model="activeTab"
+            :tab-position="tabPosition"
+        >
           <el-tab-pane label="远控面板" name="main">
             <el-row :gutter="20">
               <el-col :span="12">
@@ -2277,3 +2334,49 @@ onMounted(() => {
     </el-row>
   </el-card>
 </template>
+<style scoped lang="less">
+.line {
+  width: 2px;
+  height: inherit;
+  background: #ccc;
+  text-align: center;
+  border-radius: 1px;
+  margin-right: -2px;
+  position: relative;
+  z-index: 9;
+  cursor: e-resize;
+  &::after{
+    content: '';
+    position: absolute;
+    top: 48%;
+    left: -14px;
+    display: block;
+    width: 30px;
+    height: 30px;
+    background: url("@/assets/img/drag.png") no-repeat center;
+    transform: rotate(90deg);
+    background-size: 100% 100%;
+  }
+}
+
+.lineVertical {
+  width: 100%;
+  height: 2px;
+  background: #ccc;
+  text-align: center;
+  position: relative;
+  cursor: n-resize;
+  margin: 1em calc(var(--el-card-padding) - 4px);
+  &::after{
+    content: '';
+    position: absolute;
+    left: 48%;
+    top: -14px;
+    display: block;
+    width: 30px;
+    height: 30px;
+    background: url("@/assets/img/drag.png") no-repeat center;
+    background-size: 100% 100%;
+  }
+}
+</style>
