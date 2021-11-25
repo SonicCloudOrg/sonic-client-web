@@ -90,6 +90,7 @@ const dialogImgElement = ref(false);
 const imgElementUrl = ref(null);
 const updateImgEle = ref(null);
 const webViewListDetail = ref([]);
+const chromePort = ref(0);
 const isWebView = ref(true);
 const iframeUrl = ref('');
 const title = ref('');
@@ -153,8 +154,8 @@ const tabWebView = (port, id, transTitle) => {
   title.value = transTitle;
   isWebView.value = false;
   iframeUrl.value =
-      'http://' + agent.value['host'] + ':' + agent.value['port']
-      + '/agent/inspector.html?ws=' + agent.value['host']
+      'http://' + agent.value['host'] + ':' + chromePort.value
+      + '/devtools/inspector.html?ws=' + agent.value['host']
       + ':' + agent.value['port'] + '/websockets/webView/'
       + agent.value['secretKey'] + '/' + port + '/' + id;
   nextTick(() => {
@@ -463,6 +464,7 @@ const websocketOnmessage = (message) => {
           message: '获取成功！',
         });
         webViewListDetail.value = JSON.parse(message.data)['detail'];
+        chromePort.value = JSON.parse(message.data)['chromePort'];
         break;
       }
       case 'eleScreen': {
