@@ -537,7 +537,6 @@ const mouseup = (event) => {
               point: x + ',' + y,
             }),
         );
-        // }
       }
     } else {
       websocket.send(
