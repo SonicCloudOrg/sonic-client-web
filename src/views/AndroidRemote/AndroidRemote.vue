@@ -1,9 +1,9 @@
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { useStore } from 'vuex';
+import {useRoute, useRouter} from 'vue-router';
+import {nextTick, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {useStore} from 'vuex';
 import axios from '@/http/axios';
-import { ElMessage } from 'element-plus';
+import {ElMessage} from 'element-plus';
 import useClipboard from 'vue-clipboard3';
 import StepList from '@/components/StepList.vue';
 import TestCaseList from '@/components/TestCaseList.vue';
@@ -42,7 +42,7 @@ import {
   InfoFilled,
 } from '@element-plus/icons';
 
-const { toClipboard } = useClipboard();
+const {toClipboard} = useClipboard();
 const route = useRoute();
 const store = useStore();
 const router = useRouter();
@@ -53,7 +53,7 @@ const loading = ref(false);
 const device = ref({});
 const agent = ref({});
 const uploadUrl = ref('');
-const text = ref({ content: '' });
+const text = ref({content: ''});
 let imgWidth = 0;
 let imgHeight = 0;
 let moveX = 0;
@@ -237,7 +237,7 @@ const copy = (value) => {
 const setImgData = (data) => {
   const img = new Image();
   if (data === undefined) {
-    const blob = new Blob([oldBlob], { type: 'image/jpeg' });
+    const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
     const u = URL.createObjectURL(blob);
     imgUrl.value = u;
@@ -366,7 +366,7 @@ const terminalWebsocketOnmessage = (message) => {
 const websocketOnmessage = (message) => {
   if (typeof message.data === 'object') {
     oldBlob = message.data;
-    const blob = new Blob([message.data], { type: 'image/jpeg' });
+    const blob = new Blob([message.data], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
     const img = new Image();
     const canvas = document.getElementById('canvas'),
@@ -509,21 +509,21 @@ const mouseup = (event) => {
     let y;
     if (location.value) {
       x = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgHeight / rect.width),
+          (event.clientX - rect.left) *
+          (imgHeight / canvas.width),
       );
       y = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgWidth / rect.height),
+          (event.clientY - rect.top) *
+          (imgWidth / canvas.height),
       );
     } else {
       x = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgWidth / rect.width),
+          (event.clientX - rect.left) *
+          (imgWidth / canvas.width),
       );
       y = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgHeight / rect.height),
+          (event.clientY - rect.top) *
+          (imgHeight / canvas.height),
       );
     }
     if (moveX === x && moveY === y) {
@@ -574,21 +574,21 @@ const mousedown = (event) => {
     let y;
     if (location.value) {
       x = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgHeight / rect.width),
+          (event.clientX - rect.left) *
+          (imgHeight / canvas.width),
       );
       y = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgWidth / rect.height),
+          (event.clientY - rect.top) *
+          (imgWidth / canvas.height),
       );
     } else {
       x = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgWidth / rect.width),
+          (event.clientX - rect.left) *
+          (imgWidth / canvas.width),
       );
       y = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgHeight / rect.height),
+          (event.clientY - rect.top) *
+          (imgHeight / canvas.height),
       );
     }
     isPress = true;
@@ -601,21 +601,21 @@ const mousedown = (event) => {
   } else {
     if (location.value) {
       moveX = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgHeight / rect.width),
+          (event.clientX - rect.left) *
+          (imgHeight / canvas.width),
       );
       moveY = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgWidth / rect.height),
+          (event.clientY - rect.top) *
+          (imgWidth / canvas.height),
       );
     } else {
       moveX = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgWidth / rect.width),
+          (event.clientX - rect.left) *
+          (imgWidth / canvas.width),
       );
       moveY = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgHeight / rect.height),
+          (event.clientY - rect.top) *
+          (imgHeight / canvas.height),
       );
     }
     clearInterval(loop);
@@ -647,21 +647,21 @@ const mousemove = (event) => {
         let y;
         if (location.value) {
           x = parseInt(
-              (event.clientX - rect.left * (canvas.width / rect.width)) *
-              (imgHeight / rect.width),
+              (event.clientX - rect.left) *
+              (imgHeight / canvas.width),
           );
           y = parseInt(
-              (event.clientY - rect.top * (canvas.height / rect.height)) *
-              (imgWidth / rect.height),
+              (event.clientY - rect.top) *
+              (imgWidth / canvas.height),
           );
         } else {
           x = parseInt(
-              (event.clientX - rect.left * (canvas.width / rect.width)) *
-              (imgWidth / rect.width),
+              (event.clientX - rect.left) *
+              (imgWidth / canvas.width),
           );
           y = parseInt(
-              (event.clientY - rect.top * (canvas.height / rect.height)) *
-              (imgHeight / rect.height),
+              (event.clientY - rect.top) *
+              (imgHeight / canvas.height),
           );
         }
         websocket.send(
@@ -876,7 +876,7 @@ const uploadPackage = (content) => {
   formData.append('file', content.file);
   formData.append('type', 'packageFiles');
   axios
-      .post('/folder/upload', formData, { headers: { 'Content-type': 'multipart/form-data' } })
+      .post('/folder/upload', formData, {headers: {'Content-type': 'multipart/form-data'}})
       .then((resp) => {
         uploadLoading.value = false;
         if (resp['code'] === 2000) {
@@ -889,7 +889,7 @@ const uploadScan = (content) => {
   formData.append('file', content.file);
   formData.append('type', 'imageFiles');
   axios
-      .post('/folder/upload', formData, { headers: { 'Content-type': 'multipart/form-data' } })
+      .post('/folder/upload', formData, {headers: {'Content-type': 'multipart/form-data'}})
       .then((resp) => {
         if (resp['code'] === 2000) {
           ElMessage.success({
@@ -1018,7 +1018,7 @@ onBeforeUnmount(() => {
 const getDeviceById = (id) => {
   loading.value = true;
   axios
-      .get('/controller/devices', { params: { id: id } }).then((resp) => {
+      .get('/controller/devices', {params: {id: id}}).then((resp) => {
     if (resp['code'] === 2000) {
       device.value = resp.data;
       if (device.value['status'] !== 'ONLINE') {
@@ -1029,7 +1029,7 @@ const getDeviceById = (id) => {
         return;
       }
       axios
-          .get('/controller/agents', { params: { id: device.value['agentId'] } }).then((resp) => {
+          .get('/controller/agents', {params: {id: device.value['agentId']}}).then((resp) => {
         if (resp['code'] === 2000) {
           agent.value = resp.data;
           openSocket(agent.value['host'], agent.value['port']
@@ -1094,7 +1094,7 @@ onMounted(() => {
   </el-dialog>
   <el-dialog v-model="dialogElement" title="控件元素信息" width="600px">
     <element-update v-if="dialogElement" :project-id="project['id']"
-                    :element-id="0" @flush="dialogElement = false" />
+                    :element-id="0" @flush="dialogElement = false"/>
   </el-dialog>
   <el-page-header
       @back="router.go(-1)"
@@ -1125,7 +1125,7 @@ onMounted(() => {
           <template #header>
             <div style="position: relative; display: flex;align-items: center;">
               <el-icon :size="14" style="vertical-align: middle;">
-                <Cellphone />
+                <Cellphone/>
               </el-icon>
               <span style="color: #e6a23c; margin-left: 5px">{{
                   device['model']
@@ -1173,7 +1173,7 @@ onMounted(() => {
                 <template #reference>
                   <div style="position: absolute;right:0px;color: #909399;">
                     <el-icon :size="15" style="vertical-align: middle;">
-                      <InfoFilled />
+                      <InfoFilled/>
                     </el-icon>
                   </div>
                 </template>
@@ -1198,7 +1198,7 @@ onMounted(() => {
                   @click="pressKey(82)"
               >
                 <el-icon :size="13" style="vertical-align: middle;">
-                  <Menu />
+                  <Menu/>
                 </el-icon>
               </el-button>
               <el-button
@@ -1208,7 +1208,7 @@ onMounted(() => {
                   @click="pressKey(187)"
               >
                 <el-icon :size="13" style="vertical-align: middle;">
-                  <CopyDocument />
+                  <CopyDocument/>
                 </el-icon>
               </el-button>
               <el-button
@@ -1218,7 +1218,7 @@ onMounted(() => {
                   @click="pressKey(3)"
               >
                 <el-icon :size="13" style="vertical-align: middle;">
-                  <House />
+                  <House/>
                 </el-icon>
               </el-button>
               <el-button
@@ -1228,7 +1228,7 @@ onMounted(() => {
                   @click="pressKey(4)"
               >
                 <el-icon :size="13" style="vertical-align: middle;">
-                  <Back />
+                  <Back/>
                 </el-icon>
               </el-button>
             </el-button-group>
@@ -1254,7 +1254,7 @@ onMounted(() => {
                       circle
                   >
                     <el-icon :size="12" style="vertical-align: middle;">
-                      <View />
+                      <View/>
                     </el-icon>
                   </el-button>
                   <template #dropdown>
@@ -1294,7 +1294,7 @@ onMounted(() => {
                       circle
                   >
                     <el-icon :size="12" style="vertical-align: middle;">
-                      <Place />
+                      <Place/>
                     </el-icon>
                   </el-button>
                   <template #dropdown>
@@ -1313,7 +1313,7 @@ onMounted(() => {
                               @click="fixScreen(pic)"
                           >
                             <el-icon :size="14" style="vertical-align: middle;">
-                              <FullScreen />
+                              <FullScreen/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
@@ -1329,7 +1329,7 @@ onMounted(() => {
                               @click="switchLocation"
                           >
                             <el-icon :size="14" style="vertical-align: middle;">
-                              <Aim />
+                              <Aim/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
@@ -1345,7 +1345,7 @@ onMounted(() => {
                               @click="changePic('fixed')"
                           >
                             <el-icon :size="14" style="vertical-align: middle;">
-                              <Cellphone />
+                              <Cellphone/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
@@ -1361,7 +1361,7 @@ onMounted(() => {
                               @click="fixTouch"
                           >
                             <el-icon :size="14" style="vertical-align: middle;">
-                              <Pointer />
+                              <Pointer/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
@@ -1384,7 +1384,7 @@ onMounted(() => {
                     @click="searchDevice"
                 >
                   <el-icon :size="12" style="vertical-align: middle;">
-                    <Search />
+                    <Search/>
                   </el-icon>
                 </el-button>
               </div>
@@ -1409,7 +1409,7 @@ onMounted(() => {
                       circle
                   >
                     <el-icon :size="12" style="vertical-align: middle;">
-                      <Wallet />
+                      <Wallet/>
                     </el-icon>
                   </el-button>
                   <template #dropdown>
@@ -1428,7 +1428,7 @@ onMounted(() => {
                               @click="screen(pic,'sub')"
                           >
                             <el-icon :size="14" style="vertical-align: middle;">
-                              <RefreshLeft />
+                              <RefreshLeft/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
@@ -1444,7 +1444,7 @@ onMounted(() => {
                               @click="screen(pic,'abort')"
                           >
                             <el-icon :size="14" style="vertical-align: middle;">
-                              <Refresh />
+                              <Refresh/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
@@ -1460,7 +1460,7 @@ onMounted(() => {
                               @click="screen(pic,'add')"
                           >
                             <el-icon :size="14" style="vertical-align: middle;">
-                              <RefreshRight />
+                              <RefreshRight/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
@@ -1490,14 +1490,14 @@ onMounted(() => {
                       circle
                   >
                     <el-icon :size="12" style="vertical-align: middle;">
-                      <Operation />
+                      <Operation/>
                     </el-icon>
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
                       <div style="text-align: center">
                         <el-icon :size="14" style="color: #909399;vertical-align: middle;">
-                          <Sunny />
+                          <Sunny/>
                         </el-icon>
                         <el-divider direction="vertical"></el-divider>
                         <el-button-group>
@@ -1508,7 +1508,7 @@ onMounted(() => {
                               @click="pressKey(220)"
                           >
                             <el-icon :size="12" style="vertical-align: middle;">
-                              <CaretLeft />
+                              <CaretLeft/>
                             </el-icon>
                           </el-button>
                           <el-button
@@ -1518,14 +1518,14 @@ onMounted(() => {
                               @click="pressKey(221)"
                           >
                             <el-icon :size="12" style="vertical-align: middle;">
-                              <CaretRight />
+                              <CaretRight/>
                             </el-icon>
                           </el-button>
                         </el-button-group>
                       </div>
                       <el-divider></el-divider>
                       <el-icon :size="14" style="color: #909399;vertical-align: middle;">
-                        <Phone />
+                        <Phone/>
                       </el-icon>
                       <el-divider direction="vertical"></el-divider>
                       <el-button-group>
@@ -1536,7 +1536,7 @@ onMounted(() => {
                             @click="pressKey(24)"
                         >
                           <el-icon :size="12" style="vertical-align: middle;">
-                            <Plus />
+                            <Plus/>
                           </el-icon>
                         </el-button>
                         <el-button
@@ -1546,7 +1546,7 @@ onMounted(() => {
                             @click="pressKey(164)"
                         >
                           <el-icon :size="12" style="vertical-align: middle;">
-                            <MuteNotification />
+                            <MuteNotification/>
                           </el-icon>
                         </el-button>
                         <el-button
@@ -1556,7 +1556,7 @@ onMounted(() => {
                             @click="pressKey(25)"
                         >
                           <el-icon :size="12" style="vertical-align: middle;">
-                            <Minus />
+                            <Minus/>
                           </el-icon>
                         </el-button>
                       </el-button-group>
@@ -1578,7 +1578,7 @@ onMounted(() => {
                     @click="pressKey(5)"
                 >
                   <el-icon :size="12" style="vertical-align: middle;">
-                    <PhoneFilled />
+                    <PhoneFilled/>
                   </el-icon>
                 </el-button>
               </div>
@@ -1596,7 +1596,7 @@ onMounted(() => {
                     @click="pressKey(27)"
                 >
                   <el-icon :size="12" style="vertical-align: middle;">
-                    <Camera />
+                    <Camera/>
                   </el-icon>
                 </el-button>
               </div>
@@ -1614,7 +1614,7 @@ onMounted(() => {
                     @click="pressKey(64)"
                 >
                   <el-icon :size="12" style="vertical-align: middle;">
-                    <Position />
+                    <Position/>
                   </el-icon>
                 </el-button>
               </div>
@@ -1632,7 +1632,7 @@ onMounted(() => {
                     @click="pressKey(26)"
                 >
                   <el-icon :size="12" style="vertical-align: middle;">
-                    <SwitchButton />
+                    <SwitchButton/>
                   </el-icon>
                 </el-button>
               </div>
@@ -1901,11 +1901,11 @@ onMounted(() => {
                   <step-list :is-show-run="true" :platform="1" :is-driver-finish="isDriverFinish"
                              :case-id="testCase['id']"
                              :project-id="project['id']"
-                             @runStep="runStep" />
+                             @runStep="runStep"/>
                 </el-tab-pane>
                 <el-tab-pane label="运行日志" name="log">
                   <step-log :is-read-only="false" :debug-loading="debugLoading" :step-log="stepLog"
-                            @clearLog="clearLog" />
+                            @clearLog="clearLog"/>
                 </el-tab-pane>
               </el-tabs>
             </div>
@@ -1956,7 +1956,7 @@ onMounted(() => {
                     :disabled="isDriverFinish === false"
                 >
                   <el-icon :size="12" style="vertical-align: middle;">
-                    <Search />
+                    <Search/>
                   </el-icon>
                   重新获取控件元素
                 </el-button
@@ -1982,7 +1982,7 @@ onMounted(() => {
                     <div style="text-align: center;margin-top: 10px">
                       <el-button type="primary" plain size="mini" @click="downloadImg">
                         <el-icon :size="12" style="vertical-align: middle;">
-                          <Download />
+                          <Download/>
                         </el-icon>
                         保存图片
                       </el-button>
@@ -2085,7 +2085,7 @@ onMounted(() => {
                       >
                     </div>
                     <el-alert style="margin-bottom: 10px" v-else title="关联项目后即可保存控件" type="info" show-icon
-                              close-text="Get!" />
+                              close-text="Get!"/>
                     <div style="height: 655px">
                       <el-scrollbar
                           style="height: 100%"
@@ -2235,7 +2235,7 @@ onMounted(() => {
                       :disabled="isDriverFinish === false"
                   >
                     <el-icon :size="12" style="vertical-align: middle;">
-                      <Search />
+                      <Search/>
                     </el-icon>
                     获取控件元素
                   </el-button
@@ -2256,7 +2256,7 @@ onMounted(() => {
                         @click="getWebViewForward"
                     >
                       <el-icon :size="12" style="vertical-align: middle;">
-                        <Search />
+                        <Search/>
                       </el-icon>
                       获取webView进程
                     </el-button
@@ -2273,7 +2273,7 @@ onMounted(() => {
                   <template #header>
                     <div>
                       <div style="display: flex;align-items: center;">
-                        <img :src="getImg('chrome')" width="20" /> <strong style="margin-left: 10px">{{
+                        <img :src="getImg('chrome')" width="20"/> <strong style="margin-left: 10px">{{
                           web['package']
                         }}
                         ({{ web['version'] }})</strong>
@@ -2285,7 +2285,7 @@ onMounted(() => {
                     <div style="display: flex;align-items: center;justify-content: space-between">
                       <div>
                         <div style="display: flex;align-items: center;">
-                          <img :src="w.favicon" v-if="w.favicon" width="15" style="margin-right: 5px" />
+                          <img :src="w.favicon" v-if="w.favicon" width="15" style="margin-right: 5px"/>
                           <strong>{{ w.title.length > 0 ? w.title : '无标题' }}</strong>
                         </div>
                         <div style="color: #909399">{{
@@ -2345,7 +2345,8 @@ onMounted(() => {
   position: relative;
   z-index: 9;
   cursor: e-resize;
-  &::after{
+
+  &::after {
     content: '';
     position: absolute;
     top: 48%;
@@ -2367,7 +2368,8 @@ onMounted(() => {
   position: relative;
   cursor: n-resize;
   margin: 1em calc(var(--el-card-padding) - 4px);
-  &::after{
+
+  &::after {
     content: '';
     position: absolute;
     left: 48%;
