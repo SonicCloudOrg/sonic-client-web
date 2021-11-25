@@ -149,8 +149,8 @@ defineProps({
   lineMouseleave: Function,
 });
 
-const tabWebView = (port, id, transtitle) => {
-  title.value = transtitle;
+const tabWebView = (port, id, transTitle) => {
+  title.value = transTitle;
   isWebView.value = false;
   iframeUrl.value =
       'http://' + agent.value['host'] + ':' + agent.value['port']
