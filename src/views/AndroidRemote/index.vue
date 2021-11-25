@@ -6,7 +6,7 @@ import store from '../../store';
 
 let isPress = false;
 let mouseMoveTime = 0;
-let startPositon = { x: 0, y: 0 };
+let startPosition = { x: 0, y: 0 };
 let parentNode = null;
 
 const tabPosition = ref('left'); // left,top
@@ -59,8 +59,8 @@ const lineMousedown = (event) => {
   event.preventDefault()
   event.stopPropagation()
   isPress = true;
-  startPositon.x = event.clientX;
-  startPositon.y = event.clientY;
+  startPosition.x = event.clientX;
+  startPosition.y = event.clientY;
   parentNode = event.target.parentNode; // 记录分割线的父组件，防止移动的时候变化
 };
 const lineMousemove = (event) => {
@@ -73,12 +73,12 @@ const lineMousemove = (event) => {
       return;
     } else {
       if (tabPosition.value == 'left') { // 水平移动
-        const deltaX = event.clientX - startPositon.x;
+        const deltaX = event.clientX - startPosition.x;
         // console.log('deltaX', deltaX);
         handleSplit(deltaX)
       }
       else if (tabPosition.value == 'top') { // 垂直移动
-        const deltaY = event.clientY - startPositon.y;
+        const deltaY = event.clientY - startPosition.y;
         // console.log('deltaY', deltaY);
         handleSplit(deltaY)
       }
@@ -157,7 +157,7 @@ const handleSplit = (variate) => {
     width: 30px;
     height: 30px;
     background: url("@/assets/img/left.png") no-repeat center;
-    background-size: 100% 100%;
+    background-size: 70% 70%;
     cursor: pointer;
     &:focus{
       outline: 0;
