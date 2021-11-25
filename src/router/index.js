@@ -26,7 +26,7 @@ const routes = [
             {
                 path: 'AndroidRemote/:deviceId(\\d+)',
                 component: () =>
-                    import ("../views/AndroidRemote.vue"),
+                    import ("../views/AndroidRemote/index.vue"),
                 meta: {title: "远程控制"}
             },
         ]
@@ -46,7 +46,7 @@ const routes = [
             {
                 path: 'AndroidRemote/:deviceId(\\d+)',
                 component: () =>
-                    import ("../views/AndroidRemote.vue"),
+                  import ("../views/AndroidRemote/index.vue"),
                 meta: {title: "远程控制"}
             },
             {
