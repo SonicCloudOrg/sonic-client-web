@@ -1,21 +1,24 @@
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import AndroidRemote from './AndroidRemote.vue'
 import { ElMessage } from 'element-plus';
-import store from '../../store';
 
 let isPress = false;
 let mouseMoveTime = 0;
 let startPosition = { x: 0, y: 0 };
 let parentNode = null;
+const _layoutSplitInfo = window.localStorage.getItem('layoutSplitInfo');
+const _tabPosition = window.localStorage.getItem('tabPosition');
 
-const tabPosition = ref('left'); // left,top
+const tabPosition = ref( _tabPosition || 'left'); // left,top
 const canvasRectInfo = ref({ width: '100%', height: 'auto' });
-const layoutSplitInfo = ref({ // 分屏默认值
-  left: 33,
-  last_left: 33,
-  top: 316,
-  last_top: 316,
+// 分屏默认值
+const layoutSplitInfo = ref(_layoutSplitInfo ?
+  JSON.parse(_layoutSplitInfo) : {
+    left: 33,
+    last_left: 33,
+    top: 316,
+    last_top: 316,
 });
 const swithLayout = () => {
   console.log('swithLayout!!', tabPosition.value);
@@ -31,6 +34,7 @@ const swithLayout = () => {
     tabPosition.value = 'left';
     canvasRectInfo.value = { width: '100%', height: 'auto' }
   }
+  window.localStorage.setItem('tabPosition', tabPosition.value)
   ElMessage.success({
     message: '切换成功！',
   });
@@ -38,21 +42,25 @@ const swithLayout = () => {
 const lineMouseup = (event) => {
   console.log('lineMouseup', event.clientX, event.clientY);
   isPress = false;
-  //
   if (tabPosition.value == 'left') {
     layoutSplitInfo.value.last_left = layoutSplitInfo.value.left;
   }
   else if (tabPosition.value == 'top') {
     layoutSplitInfo.value.last_top = layoutSplitInfo.value.top;
   }
+  saveLastSplitObj();
 };
 const lineMouseleave = (event) => {
+  if (!isPress) {
+    return;
+  }
   // console.log('lineMouseleave', event.clientX, event.clientY);
   // 由于左右滑动有可能误触发该事件，所以只处理上下滑动的情况
   if (tabPosition.value == 'top') {
     isPress = false;
     layoutSplitInfo.value.last_top = layoutSplitInfo.value.top;
   }
+  saveLastSplitObj();
 };
 const lineMousedown = (event) => {
   console.log('lineMousedown', event.clientX, event.clientY);
@@ -119,6 +127,10 @@ const handleSplit = (variate) => {
     canvasRectInfo.value.height = layoutSplitInfo.value.top + 'px';
     console.log('variate', percent, layoutSplitInfo.value.top);
   }
+}
+const saveLastSplitObj = () => {
+  // 储存最后比例
+  window.localStorage.setItem('layoutSplitInfo', JSON.stringify(layoutSplitInfo.value))
 }
 
 </script>
