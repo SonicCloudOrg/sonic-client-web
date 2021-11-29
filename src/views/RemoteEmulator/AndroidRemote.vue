@@ -392,6 +392,13 @@ const websocketOnmessage = (message) => {
     img.src = u;
   } else {
     switch (JSON.parse(message.data)['msg']) {
+      case 'rotation': {
+        ElMessage.success({
+          message: '检测到屏幕旋转！请稍后...',
+        });
+        loading.value = true;
+        break;
+      }
       case 'support': {
         ElMessage.error({
           message: JSON.parse(message.data).text,
