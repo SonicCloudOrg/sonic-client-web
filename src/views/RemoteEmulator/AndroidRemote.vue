@@ -56,6 +56,16 @@ const uploadUrl = ref('');
 const text = ref({content: ''});
 let imgWidth = 0;
 let imgHeight = 0;
+// 旋转状态 // 0 90 180 270
+let directionStatus = {
+  value: 0,
+  // calcMap: {
+  //   0: 1,
+  //   90: 1,
+  //   180: 1,
+  //   270: -1,
+  // }
+};
 let moveX = 0;
 let moveY = 0;
 let isFixTouch = false;
@@ -63,7 +73,7 @@ let isPress = false;
 let loop = null;
 let time = 0;
 let isLongPress = false;
-let isRotated = false; // 是否转向
+// let isRotated = 0; // 是否转向 // 0 90 180 270
 let mouseMoveTime = 0;
 const pic = ref('中');
 const fixScreenTor = ref(0);
@@ -375,7 +385,8 @@ const websocketOnmessage = (message) => {
       canvas.height = height;
       g.drawImage(img, 0, 0, width, height);
       // TODO 判断转向
-      isRotated = height < width;
+      // directionStatus.value = height < width ? 270 : 0;
+      // directionStatus.value =  90;
     };
     const u = URL.createObjectURL(blob);
     img.src = u;
@@ -392,6 +403,10 @@ const websocketOnmessage = (message) => {
         imgWidth = JSON.parse(message.data).width;
         imgHeight = JSON.parse(message.data).height;
         loading.value = false;
+        break;
+      }
+      case 'rotation': {
+        directionStatus.value = JSON.parse(message.data.value); // TODO
         break;
       }
       case 'tree': {
@@ -487,6 +502,43 @@ const websocketOnmessage = (message) => {
     }
   }
 };
+const getCurLocation = () => {
+  let x, y;
+  let _x, _y;
+  const canvas = document.getElementById('canvas');
+  const rect = canvas.getBoundingClientRect();
+  if (directionStatus.value != 0 && directionStatus.value != 180) { // 左右旋转
+    _x = parseInt(
+        (event.clientY - rect.top) *
+        (imgWidth / canvas.clientHeight),
+    );
+    x = (directionStatus.value == 90) ? imgWidth - _x : _x;
+    //
+    _y = parseInt(
+        (event.clientX - rect.left) *
+        (imgHeight / canvas.clientWidth),
+    );
+    y = (directionStatus.value == 270) ? imgHeight - _y : _y;
+  } else {
+    _x = parseInt(
+        (event.clientX - rect.left) *
+        (imgWidth / canvas.clientWidth),
+    );
+    x = (directionStatus.value == 180) ? imgWidth - _x : _x;
+    //
+    _y = parseInt(
+        (event.clientY - rect.top) *
+        (imgHeight / canvas.clientHeight),
+    );
+    y = (directionStatus.value == 180) ? imgHeight - _y : _y;
+  }
+  console.log('xy', {
+    x, y
+  });
+  return({
+    x, y
+  })
+}
 const mouseup = (event) => {
   if (!isFixTouch) {
     if (isPress) {
@@ -567,31 +619,7 @@ const mousedown = (event) => {
   const canvas = document.getElementById('canvas');
   const rect = canvas.getBoundingClientRect();
   if (!isFixTouch) { // 安卓高版本
-    let x;
-    let y;
-    if (isRotated) {
-      y = parseInt(
-          (event.clientX - rect.left) *
-          (imgHeight / canvas.clientWidth),
-      );
-      const _x = parseInt(
-          (event.clientY - rect.top) *
-          (imgWidth / canvas.clientHeight),
-      );
-      const direction = 1; // TODO 向右旋转
-      x = imgWidth - direction * _x ;
-    } else {
-      // 使用真实css宽
-      x = parseInt(
-          (event.clientX - rect.left) *
-          (imgWidth / canvas.clientWidth),
-      );
-      y = parseInt(
-          (event.clientY - rect.top) *
-          (imgHeight / canvas.clientHeight),
-      );
-    }
-    // console.log('isFixTouch', isRotated, event.clientX - rect.left, x, y);
+    const { x, y } = getCurLocation();
     isPress = true;
     websocket.send(
         JSON.stringify({
@@ -643,31 +671,7 @@ const mousemove = (event) => {
         mouseMoveTime++;
         return;
       } else {
-        const canvas = document.getElementById('canvas');
-        const rect = canvas.getBoundingClientRect();
-        let x;
-        let y;
-        if (isRotated) {
-          y = parseInt(
-              (event.clientX - rect.left) *
-              (imgHeight / canvas.clientWidth),
-          );
-          const _x = parseInt(
-              (event.clientY - rect.top) *
-              (imgWidth / canvas.clientHeight),
-          );
-          const direction = 1; // TODO 向右旋转
-          x = imgWidth - direction * _x ;
-        } else {
-          x = parseInt(
-              (event.clientX - rect.left) *
-              (imgWidth / canvas.clientWidth),
-          );
-          y = parseInt(
-              (event.clientY - rect.top) *
-              (imgHeight / canvas.clientHeight),
-          );
-        }
+        const { x, y } = getCurLocation();
         websocket.send(
             JSON.stringify({
               type: 'touch',
@@ -1193,7 +1197,7 @@ onMounted(() => {
                 @mouseleave="mouseleave"
                 style="display: inline-block"
                 :style="canvasRectInfo"
-            ></canvas>
+            />
             <el-button-group id="pressKey">
               <el-button
                   size="small"
