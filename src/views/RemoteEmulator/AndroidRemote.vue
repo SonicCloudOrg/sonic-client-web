@@ -1287,7 +1287,7 @@ onMounted(() => {
             <el-tooltip
                 :enterable="false"
                 effect="dark"
-                content="手动校准"
+                content="手动修复"
                 :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
@@ -1311,38 +1311,38 @@ onMounted(() => {
                     <el-dropdown-menu class="divider" v-loading="loading"
                                       element-loading-background="rgba(255, 255, 255, 1)">
                       <el-button-group>
-                        <el-tooltip
-                            effect="dark"
-                            content="校准图像"
-                            placement="top"
-                        >
-                          <el-button
-                              size="small"
-                              type="info"
-                              circle
-                              @click="fixScreen(pic)"
-                          >
-                            <el-icon :size="14" style="vertical-align: middle;">
-                              <FullScreen/>
-                            </el-icon>
-                          </el-button>
-                        </el-tooltip>
-                        <el-tooltip
-                            effect="dark"
-                            content="校准坐标"
-                            placement="top"
-                        >
-                          <el-button
-                              size="small"
-                              type="info"
-                              circle
-                              @click="switchLocation"
-                          >
-                            <el-icon :size="14" style="vertical-align: middle;">
-                              <Aim/>
-                            </el-icon>
-                          </el-button>
-                        </el-tooltip>
+<!--                        <el-tooltip-->
+<!--                            effect="dark"-->
+<!--                            content="校准图像"-->
+<!--                            placement="top"-->
+<!--                        >-->
+<!--                          <el-button-->
+<!--                              size="small"-->
+<!--                              type="info"-->
+<!--                              circle-->
+<!--                              @click="fixScreen(pic)"-->
+<!--                          >-->
+<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+<!--                              <FullScreen/>-->
+<!--                            </el-icon>-->
+<!--                          </el-button>-->
+<!--                        </el-tooltip>-->
+<!--                        <el-tooltip-->
+<!--                            effect="dark"-->
+<!--                            content="校准坐标"-->
+<!--                            placement="top"-->
+<!--                        >-->
+<!--                          <el-button-->
+<!--                              size="small"-->
+<!--                              type="info"-->
+<!--                              circle-->
+<!--                              @click="switchLocation"-->
+<!--                          >-->
+<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+<!--                              <Aim/>-->
+<!--                            </el-icon>-->
+<!--                          </el-button>-->
+<!--                        </el-tooltip>-->
                         <el-tooltip
                             effect="dark"
                             content="修复黑屏"
