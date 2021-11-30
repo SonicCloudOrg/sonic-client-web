@@ -56,6 +56,16 @@ const uploadUrl = ref('');
 const text = ref({content: ''});
 let imgWidth = 0;
 let imgHeight = 0;
+// 旋转状态 // 0 90 180 270
+let directionStatus = {
+  value: 0,
+  // calcMap: {
+  //   0: 1,
+  //   90: 1,
+  //   180: 1,
+  //   270: -1,
+  // }
+};
 let moveX = 0;
 let moveY = 0;
 let isFixTouch = false;
@@ -63,6 +73,7 @@ let isPress = false;
 let loop = null;
 let time = 0;
 let isLongPress = false;
+// let isRotated = 0; // 是否转向 // 0 90 180 270
 let mouseMoveTime = 0;
 const pic = ref('中');
 const fixScreenTor = ref(0);
@@ -247,15 +258,10 @@ const setImgData = (data) => {
     imgUrl.value = data;
     img.src = data;
   }
-  const canvas = document.getElementById('debugPic'),
-      g = canvas.getContext('2d');
-  const parent = canvas.parentNode;
+  const canvas = document.getElementById('debugPic');
   img.onload = function () {
-    const per = img.height / img.width;
-    const width = parseInt(parent.offsetWidth);
-    const height = parseInt(width * per);
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = img.width;
+    canvas.height = img.height;
   };
   isShowImg.value = true;
 };
@@ -372,11 +378,9 @@ const websocketOnmessage = (message) => {
     const img = new Image();
     const canvas = document.getElementById('canvas'),
         g = canvas.getContext('2d');
-    const brother = document.getElementById('pressKey');
     img.onload = function () {
-      const per = img.height / img.width;
-      const width = parseInt(brother.offsetWidth) - 2;
-      const height = parseInt(width * per);
+      // 不根据按钮组，使用数据源的分辨率点对点
+      const width = img.width, height = img.height;
       canvas.width = width;
       canvas.height = height;
       g.drawImage(img, 0, 0, width, height);
@@ -386,10 +390,14 @@ const websocketOnmessage = (message) => {
   } else {
     switch (JSON.parse(message.data)['msg']) {
       case 'rotation': {
+        directionStatus.value = JSON.parse(message.data).value; // TODO
+        if (!window.isInit) {
+          window.isInit = true;
+          break;
+        }
         ElMessage.success({
           message: '检测到屏幕旋转！请稍后...',
         });
-        loading.value = true;
         break;
       }
       case 'support': {
@@ -498,6 +506,43 @@ const websocketOnmessage = (message) => {
     }
   }
 };
+const getCurLocation = () => {
+  let x, y;
+  let _x, _y;
+  const canvas = document.getElementById('canvas');
+  const rect = canvas.getBoundingClientRect();
+  if (directionStatus.value != 0 && directionStatus.value != 180) { // 左右旋转
+    _x = parseInt(
+        (event.clientY - rect.top) *
+        (imgWidth / canvas.clientHeight),
+    );
+    x = (directionStatus.value == 90) ? imgWidth - _x : _x;
+    //
+    _y = parseInt(
+        (event.clientX - rect.left) *
+        (imgHeight / canvas.clientWidth),
+    );
+    y = (directionStatus.value == 270) ? imgHeight - _y : _y;
+  } else {
+    _x = parseInt(
+        (event.clientX - rect.left) *
+        (imgWidth / canvas.clientWidth),
+    );
+    x = (directionStatus.value == 180) ? imgWidth - _x : _x;
+    //
+    _y = parseInt(
+        (event.clientY - rect.top) *
+        (imgHeight / canvas.clientHeight),
+    );
+    y = (directionStatus.value == 180) ? imgHeight - _y : _y;
+  }
+  console.log('xy', {
+    x, y
+  });
+  return({
+    x, y
+  })
+}
 const mouseup = (event) => {
   if (!isFixTouch) {
     if (isPress) {
@@ -519,20 +564,20 @@ const mouseup = (event) => {
     if (location.value) {
       x = parseInt(
           (event.clientX - rect.left) *
-          (imgHeight / canvas.width),
+          (imgHeight / canvas.clientWidth),
       );
       y = parseInt(
           (event.clientY - rect.top) *
-          (imgWidth / canvas.height),
+          (imgWidth / canvas.clientHeight),
       );
     } else {
       x = parseInt(
           (event.clientX - rect.left) *
-          (imgWidth / canvas.width),
+          (imgWidth / canvas.clientWidth),
       );
       y = parseInt(
           (event.clientY - rect.top) *
-          (imgHeight / canvas.height),
+          (imgHeight / canvas.clientHeight),
       );
     }
     if (moveX === x && moveY === y) {
@@ -577,28 +622,8 @@ const mouseleave = () => {
 const mousedown = (event) => {
   const canvas = document.getElementById('canvas');
   const rect = canvas.getBoundingClientRect();
-  if (!isFixTouch) {
-    let x;
-    let y;
-    if (location.value) {
-      x = parseInt(
-          (event.clientX - rect.left) *
-          (imgHeight / canvas.width),
-      );
-      y = parseInt(
-          (event.clientY - rect.top) *
-          (imgWidth / canvas.height),
-      );
-    } else {
-      x = parseInt(
-          (event.clientX - rect.left) *
-          (imgWidth / canvas.width),
-      );
-      y = parseInt(
-          (event.clientY - rect.top) *
-          (imgHeight / canvas.height),
-      );
-    }
+  if (!isFixTouch) { // 安卓高版本
+    const { x, y } = getCurLocation();
     isPress = true;
     websocket.send(
         JSON.stringify({
@@ -606,24 +631,25 @@ const mousedown = (event) => {
           detail: 'd 0 ' + x + ' ' + y + ' 50\n',
         }),
     );
-  } else {
+  }
+  else {
     if (location.value) {
       moveX = parseInt(
           (event.clientX - rect.left) *
-          (imgHeight / canvas.width),
+          (imgHeight / canvas.clientWidth),
       );
       moveY = parseInt(
           (event.clientY - rect.top) *
-          (imgWidth / canvas.height),
+          (imgWidth / canvas.clientHeight),
       );
     } else {
       moveX = parseInt(
           (event.clientX - rect.left) *
-          (imgWidth / canvas.width),
+          (imgWidth / canvas.clientWidth),
       );
       moveY = parseInt(
           (event.clientY - rect.top) *
-          (imgHeight / canvas.height),
+          (imgHeight / canvas.clientHeight),
       );
     }
     clearInterval(loop);
@@ -649,29 +675,7 @@ const mousemove = (event) => {
         mouseMoveTime++;
         return;
       } else {
-        const canvas = document.getElementById('canvas');
-        const rect = canvas.getBoundingClientRect();
-        let x;
-        let y;
-        if (location.value) {
-          x = parseInt(
-              (event.clientX - rect.left) *
-              (imgHeight / canvas.width),
-          );
-          y = parseInt(
-              (event.clientY - rect.top) *
-              (imgWidth / canvas.height),
-          );
-        } else {
-          x = parseInt(
-              (event.clientX - rect.left) *
-              (imgWidth / canvas.width),
-          );
-          y = parseInt(
-              (event.clientY - rect.top) *
-              (imgHeight / canvas.height),
-          );
-        }
+        const { x, y } = getCurLocation();
         websocket.send(
             JSON.stringify({
               type: 'touch',
@@ -1197,7 +1201,7 @@ onMounted(() => {
                 @mouseleave="mouseleave"
                 style="display: inline-block"
                 :style="canvasRectInfo"
-            ></canvas>
+            />
             <el-button-group id="pressKey">
               <el-button
                   size="small"
@@ -1246,7 +1250,7 @@ onMounted(() => {
                 :enterable="false"
                 effect="dark"
                 content="投屏帧数"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
               <div>
@@ -1286,7 +1290,7 @@ onMounted(() => {
                 :enterable="false"
                 effect="dark"
                 content="手动校准"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
               <div>
@@ -1382,7 +1386,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="物理查找"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1397,92 +1401,92 @@ onMounted(() => {
                 </el-button>
               </div>
             </el-tooltip>
-            <el-tooltip
-                :enterable="false"
-                effect="dark"
-                content="设备转向"
-                placement="right"
-                :offset="15"
-            >
-              <div>
-                <el-dropdown
-                    :hide-on-click="false"
-                    trigger="click"
-                    placement="right"
-                    style="margin-top: 4px"
-                >
-                  <el-button
-                      size="small"
-                      type="primary"
-                      circle
-                  >
-                    <el-icon :size="12" style="vertical-align: middle;">
-                      <Wallet/>
-                    </el-icon>
-                  </el-button>
-                  <template #dropdown>
-                    <el-dropdown-menu class="divider" v-loading="loading"
-                                      element-loading-background="rgba(255, 255, 255, 1)">
-                      <el-button-group>
-                        <el-tooltip
-                            effect="dark"
-                            content="左转90度"
-                            placement="top"
-                        >
-                          <el-button
-                              size="small"
-                              type="info"
-                              circle
-                              @click="screen(pic,'sub')"
-                          >
-                            <el-icon :size="14" style="vertical-align: middle;">
-                              <RefreshLeft/>
-                            </el-icon>
-                          </el-button>
-                        </el-tooltip>
-                        <el-tooltip
-                            effect="dark"
-                            content="取消自动旋转"
-                            placement="top"
-                        >
-                          <el-button
-                              size="small"
-                              type="info"
-                              circle
-                              @click="screen(pic,'abort')"
-                          >
-                            <el-icon :size="14" style="vertical-align: middle;">
-                              <Refresh/>
-                            </el-icon>
-                          </el-button>
-                        </el-tooltip>
-                        <el-tooltip
-                            effect="dark"
-                            content="右转90度"
-                            placement="top"
-                        >
-                          <el-button
-                              size="small"
-                              type="info"
-                              circle
-                              @click="screen(pic,'add')"
-                          >
-                            <el-icon :size="14" style="vertical-align: middle;">
-                              <RefreshRight/>
-                            </el-icon>
-                          </el-button>
-                        </el-tooltip>
-                      </el-button-group>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </div>
-            </el-tooltip>
+<!--            <el-tooltip-->
+<!--                :enterable="false"-->
+<!--                effect="dark"-->
+<!--                content="设备转向"-->
+<!--                :placement="tabPosition == 'left' ? 'right' : 'left'"-->
+<!--                :offset="15"-->
+<!--            >-->
+<!--              <div>-->
+<!--                <el-dropdown-->
+<!--                    :hide-on-click="false"-->
+<!--                    trigger="click"-->
+<!--                    placement="right"-->
+<!--                    style="margin-top: 4px"-->
+<!--                >-->
+<!--                  <el-button-->
+<!--                      size="small"-->
+<!--                      type="primary"-->
+<!--                      circle-->
+<!--                  >-->
+<!--                    <el-icon :size="12" style="vertical-align: middle;">-->
+<!--                      <Wallet/>-->
+<!--                    </el-icon>-->
+<!--                  </el-button>-->
+<!--                  <template #dropdown>-->
+<!--                    <el-dropdown-menu class="divider" v-loading="loading"-->
+<!--                                      element-loading-background="rgba(255, 255, 255, 1)">-->
+<!--                      <el-button-group>-->
+<!--                        <el-tooltip-->
+<!--                            effect="dark"-->
+<!--                            content="左转90度"-->
+<!--                            placement="top"-->
+<!--                        >-->
+<!--                          <el-button-->
+<!--                              size="small"-->
+<!--                              type="info"-->
+<!--                              circle-->
+<!--                              @click="screen(pic,'sub')"-->
+<!--                          >-->
+<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+<!--                              <RefreshLeft/>-->
+<!--                            </el-icon>-->
+<!--                          </el-button>-->
+<!--                        </el-tooltip>-->
+<!--                        <el-tooltip-->
+<!--                            effect="dark"-->
+<!--                            content="取消自动旋转"-->
+<!--                            placement="top"-->
+<!--                        >-->
+<!--                          <el-button-->
+<!--                              size="small"-->
+<!--                              type="info"-->
+<!--                              circle-->
+<!--                              @click="screen(pic,'abort')"-->
+<!--                          >-->
+<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+<!--                              <Refresh/>-->
+<!--                            </el-icon>-->
+<!--                          </el-button>-->
+<!--                        </el-tooltip>-->
+<!--                        <el-tooltip-->
+<!--                            effect="dark"-->
+<!--                            content="右转90度"-->
+<!--                            placement="top"-->
+<!--                        >-->
+<!--                          <el-button-->
+<!--                              size="small"-->
+<!--                              type="info"-->
+<!--                              circle-->
+<!--                              @click="screen(pic,'add')"-->
+<!--                          >-->
+<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+<!--                              <RefreshRight/>-->
+<!--                            </el-icon>-->
+<!--                          </el-button>-->
+<!--                        </el-tooltip>-->
+<!--                      </el-button-group>-->
+<!--                    </el-dropdown-menu>-->
+<!--                  </template>-->
+<!--                </el-dropdown>-->
+<!--              </div>-->
+<!--            </el-tooltip>-->
             <el-tooltip
                 :enterable="false"
                 effect="dark"
                 content="亮度/音量"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
               <div>
@@ -1576,7 +1580,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="拨号"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1594,7 +1598,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="拍照"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1612,7 +1616,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="浏览器"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1630,7 +1634,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="锁定/解锁屏幕"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button

@@ -57,6 +57,16 @@ const text = ref({content: ''});
 const sid = ref(0);
 let imgWidth = 0;
 let imgHeight = 0;
+// 旋转状态 // 0 90 180 270
+let directionStatus = {
+  value: 0,
+  // calcMap: {
+  //   0: 1,
+  //   90: 1,
+  //   180: 1,
+  //   270: -1,
+  // }
+};
 let moveX = 0;
 let moveY = 0;
 let isFixTouch = false;
@@ -224,6 +234,10 @@ const websocketOnmessage = (message) => {
         loading.value = false;
         break;
       }
+      case 'rotation': {
+        directionStatus.value = JSON.parse(message.data.value); // TODO
+        break;
+      }
       case 'tree': {
         ElMessage.success({
           message: '获取控件元素成功！',
@@ -305,6 +319,43 @@ const websocketOnmessage = (message) => {
       }
     }
 };
+const getCurLocation = () => {
+  let x, y;
+  let _x, _y;
+  const canvas = document.getElementById('canvas');
+  const rect = canvas.getBoundingClientRect();
+  if (directionStatus.value != 0 && directionStatus.value != 180) { // 左右旋转
+    _x = parseInt(
+        (event.clientY - rect.top) *
+        (imgWidth / canvas.clientHeight),
+    );
+    x = (directionStatus.value == 90) ? imgWidth - _x : _x;
+    //
+    _y = parseInt(
+        (event.clientX - rect.left) *
+        (imgHeight / canvas.clientWidth),
+    );
+    y = (directionStatus.value == 270) ? imgHeight - _y : _y;
+  } else {
+    _x = parseInt(
+        (event.clientX - rect.left) *
+        (imgWidth / canvas.clientWidth),
+    );
+    x = (directionStatus.value == 180) ? imgWidth - _x : _x;
+    //
+    _y = parseInt(
+        (event.clientY - rect.top) *
+        (imgHeight / canvas.clientHeight),
+    );
+    y = (directionStatus.value == 180) ? imgHeight - _y : _y;
+  }
+  console.log('xy', {
+    x, y
+  });
+  return({
+    x, y
+  })
+}
 const mouseup = (event) => {
   if (!isFixTouch) {
     if (isPress) {
@@ -384,28 +435,8 @@ const mouseleave = () => {
 const mousedown = (event) => {
   const canvas = document.getElementById('canvas');
   const rect = canvas.getBoundingClientRect();
-  if (!isFixTouch) {
-    let x;
-    let y;
-    if (location.value) {
-      x = parseInt(
-          (event.clientX - rect.left) *
-          (imgHeight / canvas.width),
-      );
-      y = parseInt(
-          (event.clientY - rect.top) *
-          (imgWidth / canvas.height),
-      );
-    } else {
-      x = parseInt(
-          (event.clientX - rect.left) *
-          (imgWidth / canvas.width),
-      );
-      y = parseInt(
-          (event.clientY - rect.top) *
-          (imgHeight / canvas.height),
-      );
-    }
+  if (!isFixTouch) { // 安卓高版本
+    const { x, y } = getCurLocation();
     isPress = true;
     websocket.send(
         JSON.stringify({
@@ -456,29 +487,7 @@ const mousemove = (event) => {
         mouseMoveTime++;
         return;
       } else {
-        const canvas = document.getElementById('canvas');
-        const rect = canvas.getBoundingClientRect();
-        let x;
-        let y;
-        if (location.value) {
-          x = parseInt(
-              (event.clientX - rect.left) *
-              (imgHeight / canvas.width),
-          );
-          y = parseInt(
-              (event.clientY - rect.top) *
-              (imgWidth / canvas.height),
-          );
-        } else {
-          x = parseInt(
-              (event.clientX - rect.left) *
-              (imgWidth / canvas.width),
-          );
-          y = parseInt(
-              (event.clientY - rect.top) *
-              (imgHeight / canvas.height),
-          );
-        }
+        const { x, y } = getCurLocation();
         websocket.send(
             JSON.stringify({
               type: 'touch',
@@ -813,6 +822,9 @@ onMounted(() => {
   <el-card shadow="never">
     <el-row
         :gutter="24"
+        @mouseup="lineMouseup"
+        @mouseleave="lineMouseleave"
+        @mousemove="lineMousemove"
     >
       <el-col
           :span="tabPosition == 'left' ? 12 : 24"
@@ -894,6 +906,8 @@ onMounted(() => {
                 @mousedown="mousedown"
                 @mouseleave="mouseleave"
                 @mouseup="mouseup"
+                style="display: inline-block"
+                :style="canvasRectInfo"
             />
             <el-button-group id="pressKey">
               <el-button
@@ -943,7 +957,7 @@ onMounted(() => {
                 :enterable="false"
                 effect="dark"
                 content="手动校准"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
               <div>
@@ -992,7 +1006,7 @@ onMounted(() => {
                 :enterable="false"
                 effect="dark"
                 content="亮度/音量"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
               <div>
@@ -1086,7 +1100,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="拨号"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1104,7 +1118,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="拍照"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1122,7 +1136,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="浏览器"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1140,7 +1154,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="锁定/解锁屏幕"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1852,3 +1866,51 @@ onMounted(() => {
     </el-row>
   </el-card>
 </template>
+<style scoped lang="less">
+.line {
+  width: 2px;
+  height: inherit;
+  background: #ccc;
+  text-align: center;
+  border-radius: 1px;
+  margin-right: -2px;
+  position: relative;
+  z-index: 9;
+  cursor: e-resize;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 48%;
+    left: -14px;
+    display: block;
+    width: 30px;
+    height: 30px;
+    background: url("@/assets/img/drag.png") no-repeat center;
+    transform: rotate(90deg);
+    background-size: 100% 100%;
+  }
+}
+
+.lineVertical {
+  width: 100%;
+  height: 2px;
+  background: #ccc;
+  text-align: center;
+  position: relative;
+  cursor: n-resize;
+  margin: 1em calc(var(--el-card-padding) - 4px);
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 48%;
+    top: -14px;
+    display: block;
+    width: 30px;
+    height: 30px;
+    background: url("@/assets/img/drag.png") no-repeat center;
+    background-size: 100% 100%;
+  }
+}
+</style>
