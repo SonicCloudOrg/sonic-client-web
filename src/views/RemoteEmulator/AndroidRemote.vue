@@ -58,7 +58,7 @@ let imgWidth = 0;
 let imgHeight = 0;
 // 旋转状态 // 0 90 180 270
 let directionStatus = {
-  value: 0,
+  value: -1,
   // calcMap: {
   //   0: 1,
   //   90: 1,
@@ -390,14 +390,13 @@ const websocketOnmessage = (message) => {
   } else {
     switch (JSON.parse(message.data)['msg']) {
       case 'rotation': {
-        directionStatus.value = JSON.parse(message.data).value; // TODO
-        if (!window.isInit) {
-          window.isInit = true;
-          break;
+        if (directionStatus.value !== -1) {
+          loading.value = true;
+          ElMessage.success({
+            message: '检测到屏幕旋转！请稍后...',
+          });
         }
-        ElMessage.success({
-          message: '检测到屏幕旋转！请稍后...',
-        });
+        directionStatus.value = JSON.parse(message.data).value; // TODO
         break;
       }
       case 'support': {
@@ -539,7 +538,7 @@ const getCurLocation = () => {
   console.log('xy', {
     x, y
   });
-  return({
+  return ({
     x, y
   })
 }
@@ -623,7 +622,7 @@ const mousedown = (event) => {
   const canvas = document.getElementById('canvas');
   const rect = canvas.getBoundingClientRect();
   if (!isFixTouch) { // 安卓高版本
-    const { x, y } = getCurLocation();
+    const {x, y} = getCurLocation();
     isPress = true;
     websocket.send(
         JSON.stringify({
@@ -631,8 +630,7 @@ const mousedown = (event) => {
           detail: 'd 0 ' + x + ' ' + y + ' 50\n',
         }),
     );
-  }
-  else {
+  } else {
     if (location.value) {
       moveX = parseInt(
           (event.clientX - rect.left) *
@@ -675,7 +673,7 @@ const mousemove = (event) => {
         mouseMoveTime++;
         return;
       } else {
-        const { x, y } = getCurLocation();
+        const {x, y} = getCurLocation();
         websocket.send(
             JSON.stringify({
               type: 'touch',
@@ -1401,87 +1399,87 @@ onMounted(() => {
                 </el-button>
               </div>
             </el-tooltip>
-<!--            <el-tooltip-->
-<!--                :enterable="false"-->
-<!--                effect="dark"-->
-<!--                content="设备转向"-->
-<!--                :placement="tabPosition == 'left' ? 'right' : 'left'"-->
-<!--                :offset="15"-->
-<!--            >-->
-<!--              <div>-->
-<!--                <el-dropdown-->
-<!--                    :hide-on-click="false"-->
-<!--                    trigger="click"-->
-<!--                    placement="right"-->
-<!--                    style="margin-top: 4px"-->
-<!--                >-->
-<!--                  <el-button-->
-<!--                      size="small"-->
-<!--                      type="primary"-->
-<!--                      circle-->
-<!--                  >-->
-<!--                    <el-icon :size="12" style="vertical-align: middle;">-->
-<!--                      <Wallet/>-->
-<!--                    </el-icon>-->
-<!--                  </el-button>-->
-<!--                  <template #dropdown>-->
-<!--                    <el-dropdown-menu class="divider" v-loading="loading"-->
-<!--                                      element-loading-background="rgba(255, 255, 255, 1)">-->
-<!--                      <el-button-group>-->
-<!--                        <el-tooltip-->
-<!--                            effect="dark"-->
-<!--                            content="左转90度"-->
-<!--                            placement="top"-->
-<!--                        >-->
-<!--                          <el-button-->
-<!--                              size="small"-->
-<!--                              type="info"-->
-<!--                              circle-->
-<!--                              @click="screen(pic,'sub')"-->
-<!--                          >-->
-<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
-<!--                              <RefreshLeft/>-->
-<!--                            </el-icon>-->
-<!--                          </el-button>-->
-<!--                        </el-tooltip>-->
-<!--                        <el-tooltip-->
-<!--                            effect="dark"-->
-<!--                            content="取消自动旋转"-->
-<!--                            placement="top"-->
-<!--                        >-->
-<!--                          <el-button-->
-<!--                              size="small"-->
-<!--                              type="info"-->
-<!--                              circle-->
-<!--                              @click="screen(pic,'abort')"-->
-<!--                          >-->
-<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
-<!--                              <Refresh/>-->
-<!--                            </el-icon>-->
-<!--                          </el-button>-->
-<!--                        </el-tooltip>-->
-<!--                        <el-tooltip-->
-<!--                            effect="dark"-->
-<!--                            content="右转90度"-->
-<!--                            placement="top"-->
-<!--                        >-->
-<!--                          <el-button-->
-<!--                              size="small"-->
-<!--                              type="info"-->
-<!--                              circle-->
-<!--                              @click="screen(pic,'add')"-->
-<!--                          >-->
-<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
-<!--                              <RefreshRight/>-->
-<!--                            </el-icon>-->
-<!--                          </el-button>-->
-<!--                        </el-tooltip>-->
-<!--                      </el-button-group>-->
-<!--                    </el-dropdown-menu>-->
-<!--                  </template>-->
-<!--                </el-dropdown>-->
-<!--              </div>-->
-<!--            </el-tooltip>-->
+            <!--            <el-tooltip-->
+            <!--                :enterable="false"-->
+            <!--                effect="dark"-->
+            <!--                content="设备转向"-->
+            <!--                :placement="tabPosition == 'left' ? 'right' : 'left'"-->
+            <!--                :offset="15"-->
+            <!--            >-->
+            <!--              <div>-->
+            <!--                <el-dropdown-->
+            <!--                    :hide-on-click="false"-->
+            <!--                    trigger="click"-->
+            <!--                    placement="right"-->
+            <!--                    style="margin-top: 4px"-->
+            <!--                >-->
+            <!--                  <el-button-->
+            <!--                      size="small"-->
+            <!--                      type="primary"-->
+            <!--                      circle-->
+            <!--                  >-->
+            <!--                    <el-icon :size="12" style="vertical-align: middle;">-->
+            <!--                      <Wallet/>-->
+            <!--                    </el-icon>-->
+            <!--                  </el-button>-->
+            <!--                  <template #dropdown>-->
+            <!--                    <el-dropdown-menu class="divider" v-loading="loading"-->
+            <!--                                      element-loading-background="rgba(255, 255, 255, 1)">-->
+            <!--                      <el-button-group>-->
+            <!--                        <el-tooltip-->
+            <!--                            effect="dark"-->
+            <!--                            content="左转90度"-->
+            <!--                            placement="top"-->
+            <!--                        >-->
+            <!--                          <el-button-->
+            <!--                              size="small"-->
+            <!--                              type="info"-->
+            <!--                              circle-->
+            <!--                              @click="screen(pic,'sub')"-->
+            <!--                          >-->
+            <!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+            <!--                              <RefreshLeft/>-->
+            <!--                            </el-icon>-->
+            <!--                          </el-button>-->
+            <!--                        </el-tooltip>-->
+            <!--                        <el-tooltip-->
+            <!--                            effect="dark"-->
+            <!--                            content="取消自动旋转"-->
+            <!--                            placement="top"-->
+            <!--                        >-->
+            <!--                          <el-button-->
+            <!--                              size="small"-->
+            <!--                              type="info"-->
+            <!--                              circle-->
+            <!--                              @click="screen(pic,'abort')"-->
+            <!--                          >-->
+            <!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+            <!--                              <Refresh/>-->
+            <!--                            </el-icon>-->
+            <!--                          </el-button>-->
+            <!--                        </el-tooltip>-->
+            <!--                        <el-tooltip-->
+            <!--                            effect="dark"-->
+            <!--                            content="右转90度"-->
+            <!--                            placement="top"-->
+            <!--                        >-->
+            <!--                          <el-button-->
+            <!--                              size="small"-->
+            <!--                              type="info"-->
+            <!--                              circle-->
+            <!--                              @click="screen(pic,'add')"-->
+            <!--                          >-->
+            <!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+            <!--                              <RefreshRight/>-->
+            <!--                            </el-icon>-->
+            <!--                          </el-button>-->
+            <!--                        </el-tooltip>-->
+            <!--                      </el-button-group>-->
+            <!--                    </el-dropdown-menu>-->
+            <!--                  </template>-->
+            <!--                </el-dropdown>-->
+            <!--              </div>-->
+            <!--            </el-tooltip>-->
             <el-tooltip
                 :enterable="false"
                 effect="dark"
