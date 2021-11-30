@@ -148,12 +148,12 @@ const saveEle = () => {
     }
   });
 };
-const switchLocation = () => {
-  location.value = !location.value;
-  ElMessage.success({
-    message: '校准完毕！',
-  });
-};
+// const switchLocation = () => {
+//   location.value = !location.value;
+//   ElMessage.success({
+//     message: '校准完毕！',
+//   });
+// };
 const selectCase = (val) => {
   ElMessage.success({
     message: '关联成功！',
@@ -200,9 +200,9 @@ const copy = (value) => {
 };
 const setImgData = (data) => {
   const img = new Image();
-    imgUrl.value = data;
-    img.src = data;
-  const canvas = document.getElementById('debugPic'),
+  imgUrl.value = data;
+  img.src = data;
+  const canvas = document.getElementById('debugPicIOS'),
       g = canvas.getContext('2d');
   const parent = canvas.parentNode;
   img.onload = function () {
@@ -217,7 +217,7 @@ const setImgData = (data) => {
 const openSocket = (host, port, udId, key) => {
   if ('WebSocket' in window) {
     websocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/android/' + udId + '/' + key,
+        'ws://' + host + ':' + port + '/websockets/ios/' + udId + '/' + key,
     );
   } else {
     console.error('不支持WebSocket');
@@ -227,97 +227,98 @@ const openSocket = (host, port, udId, key) => {
   };
 };
 const websocketOnmessage = (message) => {
-    switch (JSON.parse(message.data)['msg']) {
-      case 'size': {
-        imgWidth = JSON.parse(message.data).width;
-        imgHeight = JSON.parse(message.data).height;
-        loading.value = false;
-        break;
+  switch (JSON.parse(message.data)['msg']) {
+      // case 'size': {
+      //   imgWidth = JSON.parse(message.data).width;
+      //   imgHeight = JSON.parse(message.data).height;
+      //   loading.value = false;
+      //   break;
+      // }
+      // case 'rotation': {
+      //   directionStatus.value = JSON.parse(message.data.value); // TODO
+      //   break;
+      // }
+    case 'tree': {
+      ElMessage.success({
+        message: '获取控件元素成功！',
+      });
+      let result = JSON.parse(message.data);
+      currentId.value = [1];
+      elementData.value = result.detail;
+      isShowTree.value = true;
+      elementLoading.value = false;
+      if (result.img) {
+        setImgData(result.img);
       }
-      case 'rotation': {
-        directionStatus.value = JSON.parse(message.data.value); // TODO
-        break;
-      }
-      case 'tree': {
-        ElMessage.success({
-          message: '获取控件元素成功！',
-        });
-        let result = JSON.parse(message.data);
-        currentId.value = [1];
-        elementData.value = result.detail;
-        isShowTree.value = true;
-        elementLoading.value = false;
-        if (result.img) {
-          setImgData(result.img);
-        }
-        break;
-      }
-      case 'treeFail': {
-        ElMessage.error({
-          message: '获取控件元素失败！请重新获取',
-        });
-        elementLoading.value = false;
-        break;
-      }
-      case 'installFinish': {
-        if (JSON.parse(message.data).status === 'success') {
-          ElMessage.success({
-            message: '安装成功！',
-          });
-        } else {
-          ElMessage.error({
-            message: '安装失败！',
-          });
-        }
-        break;
-      }
-      case 'openDriver': {
-        ElMessage({
-          type: JSON.parse(message.data).status,
-          message: JSON.parse(message.data).detail,
-        });
-        if (JSON.parse(message.data).status === 'success') {
-          isDriverFinish.value = true;
-        }
-        break;
-      }
-      case 'picFinish': {
-        loading.value = false;
-        break;
-      }
-      case 'step': {
-        setStepLog(JSON.parse(message.data));
-        break;
-      }
-      case 'status': {
-        debugLoading.value = false;
-        ElMessage.info({
-          message: '运行完毕！',
-        });
-        break;
-      }
-      case 'eleScreen': {
-        if (JSON.parse(message.data).img) {
-          ElMessage.success({
-            message: '获取快照成功！',
-          });
-          imgElementUrl.value = JSON.parse(message.data)['img'];
-          dialogImgElement.value = true;
-        } else {
-          ElMessage.error(JSON.parse(message.data)['errMsg']);
-        }
-        elementScreenLoading.value = false;
-        break;
-      }
-      case 'error': {
-        ElMessage.error({
-          message: '系统出现异常！已断开远程控制！',
-        });
-        close();
-        router.go(-1);
-        break;
-      }
+      break;
     }
+    case 'treeFail': {
+      ElMessage.error({
+        message: '获取控件元素失败！请重新获取',
+      });
+      elementLoading.value = false;
+      break;
+    }
+    case 'installFinish': {
+      if (JSON.parse(message.data).status === 'success') {
+        ElMessage.success({
+          message: '安装成功！',
+        });
+      } else {
+        ElMessage.error({
+          message: '安装失败！',
+        });
+      }
+      break;
+    }
+    case 'openDriver': {
+      ElMessage({
+        type: JSON.parse(message.data).status,
+        message: JSON.parse(message.data).detail,
+      });
+      if (JSON.parse(message.data).status === 'success') {
+        sid.value = JSON.parse(message.data).port
+        isDriverFinish.value = true;
+      }
+      break;
+    }
+    case 'picFinish': {
+      loading.value = false;
+      break;
+    }
+    case 'step': {
+      setStepLog(JSON.parse(message.data));
+      break;
+    }
+    case 'status': {
+      debugLoading.value = false;
+      ElMessage.info({
+        message: '运行完毕！',
+      });
+      break;
+    }
+    case 'eleScreen': {
+      if (JSON.parse(message.data).img) {
+        ElMessage.success({
+          message: '获取快照成功！',
+        });
+        imgElementUrl.value = JSON.parse(message.data)['img'];
+        dialogImgElement.value = true;
+      } else {
+        ElMessage.error(JSON.parse(message.data)['errMsg']);
+      }
+      elementScreenLoading.value = false;
+      break;
+    }
+    case 'error': {
+      ElMessage.error({
+        message: '系统出现异常！已断开远程控制！',
+      });
+      close();
+      router.go(-1);
+      break;
+    }
+  }
 };
 const getCurLocation = () => {
   let x, y;
@@ -352,162 +353,108 @@ const getCurLocation = () => {
   console.log('xy', {
     x, y
   });
-  return({
+  return ({
     x, y
   })
 }
 const mouseup = (event) => {
-  if (!isFixTouch) {
-    if (isPress) {
-      isPress = false;
-      websocket.send(
-          JSON.stringify({
-            type: 'touch',
-            detail: 'u 0\n',
-          }),
-      );
-    }
+  clearInterval(loop);
+  time = 0;
+  const canvas = document.getElementById('canvas');
+  const rect = canvas.getBoundingClientRect();
+  let x;
+  let y;
+  if (location.value) {
+    x = parseInt(
+        (event.clientX - rect.left) *
+        (imgHeight / canvas.width),
+    );
+    y = parseInt(
+        (event.clientY - rect.top) *
+        (imgWidth / canvas.height),
+    );
   } else {
-    clearInterval(loop);
-    time = 0;
-    const canvas = document.getElementById('canvas');
-    const rect = canvas.getBoundingClientRect();
-    let x;
-    let y;
-    if (location.value) {
-      x = parseInt(
-          (event.clientX - rect.left) *
-          (imgHeight / canvas.width),
-      );
-      y = parseInt(
-          (event.clientY - rect.top) *
-          (imgWidth / canvas.height),
-      );
-    } else {
-      x = parseInt(
-          (event.clientX - rect.left) *
-          (imgWidth / canvas.width),
-      );
-      y = parseInt(
-          (event.clientY - rect.top) *
-          (imgHeight / canvas.height),
-      );
-    }
-    if (moveX === x && moveY === y) {
-      if (!isLongPress) {
-        websocket.send(
-            JSON.stringify({
-              type: 'debug',
-              detail: 'tap',
-              point: x + ',' + y,
-            }),
-        );
-      }
-    } else {
+    x = parseInt(
+        (event.clientX - rect.left) *
+        (imgWidth / canvas.width),
+    );
+    y = parseInt(
+        (event.clientY - rect.top) *
+        (imgHeight / canvas.height),
+    );
+  }
+  if (moveX === x && moveY === y) {
+    if (!isLongPress) {
       websocket.send(
           JSON.stringify({
             type: 'debug',
-            detail: 'swipe',
-            pointA: moveX + ',' + moveY,
-            pointB: x + ',' + y,
+            detail: 'tap',
+            point: x + ',' + y,
           }),
       );
     }
-    isLongPress = false;
+  } else {
+    websocket.send(
+        JSON.stringify({
+          type: 'debug',
+          detail: 'swipe',
+          pointA: moveX + ',' + moveY,
+          pointB: x + ',' + y,
+        }),
+    );
   }
+  isLongPress = false;
 };
 const mouseleave = () => {
-  if (isFixTouch) {
-    clearInterval(loop);
-    isLongPress = false;
-  } else {
-    if (isPress) {
-      isPress = false;
-      websocket.send(
-          JSON.stringify({
-            type: 'touch',
-            detail: 'u 0\n',
-          }),
-      );
-    }
-  }
+  clearInterval(loop);
+  isLongPress = false;
 };
 const mousedown = (event) => {
   const canvas = document.getElementById('canvas');
   const rect = canvas.getBoundingClientRect();
-  if (!isFixTouch) { // 安卓高版本
-    const { x, y } = getCurLocation();
-    isPress = true;
-    websocket.send(
-        JSON.stringify({
-          type: 'touch',
-          detail: 'd 0 ' + x + ' ' + y + ' 50\n',
-        }),
+  if (location.value) {
+    moveX = parseInt(
+        (event.clientX - rect.left) *
+        (imgHeight / canvas.width),
+    );
+    moveY = parseInt(
+        (event.clientY - rect.top) *
+        (imgWidth / canvas.height),
     );
   } else {
-    if (location.value) {
-      moveX = parseInt(
-          (event.clientX - rect.left) *
-          (imgHeight / canvas.width),
-      );
-      moveY = parseInt(
-          (event.clientY - rect.top) *
-          (imgWidth / canvas.height),
-      );
-    } else {
-      moveX = parseInt(
-          (event.clientX - rect.left) *
-          (imgWidth / canvas.width),
-      );
-      moveY = parseInt(
-          (event.clientY - rect.top) *
-          (imgHeight / canvas.height),
-      );
-    }
-    clearInterval(loop);
-    loop = setInterval(() => {
-      time += 500;
-      if (time >= 1000 && isLongPress === false) {
-        websocket.send(
-            JSON.stringify({
-              type: 'debug',
-              detail: 'longPress',
-              point: moveX + ',' + moveY,
-            }),
-        );
-        isLongPress = true;
-      }
-    }, 500);
+    moveX = parseInt(
+        (event.clientX - rect.left) *
+        (imgWidth / canvas.width),
+    );
+    moveY = parseInt(
+        (event.clientY - rect.top) *
+        (imgHeight / canvas.height),
+    );
   }
-};
-const mousemove = (event) => {
-  if (!isFixTouch) {
-    if (isPress) {
-      if (mouseMoveTime < 2) {
-        mouseMoveTime++;
-        return;
-      } else {
-        const { x, y } = getCurLocation();
-        websocket.send(
-            JSON.stringify({
-              type: 'touch',
-              detail: 'm 0 ' + x + ' ' + y + ' 50\n',
-            }),
-        );
-        mouseMoveTime = 0;
-      }
+  clearInterval(loop);
+  loop = setInterval(() => {
+    time += 500;
+    if (time >= 1000 && isLongPress === false) {
+      websocket.send(
+          JSON.stringify({
+            type: 'debug',
+            detail: 'longPress',
+            point: moveX + ',' + moveY,
+          }),
+      );
+      isLongPress = true;
     }
-  }
+  }, 500);
 };
 const touchstart = async (event) => {
-  const debugPic = document.getElementById('debugPic');
-  const rect = debugPic.getBoundingClientRect();
+  const debugPicIOS = document.getElementById('debugPicIOS');
+  const rect = debugPicIOS.getBoundingClientRect();
   const x = parseInt(
-      (event.clientX - rect.left * (debugPic.width / rect.width)) *
+      (event.clientX - rect.left * (debugPicIOS.width / rect.width)) *
       (imgWidth / rect.width),
   );
   const y = parseInt(
-      (event.clientY - rect.top * (debugPic.height / rect.height)) *
+      (event.clientY - rect.top * (debugPicIOS.height / rect.height)) *
       (imgHeight / rect.height),
   );
   await nextTick(() => {
@@ -538,24 +485,15 @@ const findMinSize = (data) => {
 const findElementByPoint = (ele, x, y) => {
   let result = [];
   for (let i in ele) {
-    const eleStartX = ele[i].detail['bStart'].substring(
-        0,
-        ele[i].detail['bStart'].indexOf(','),
-    );
-    const eleStartY = ele[i].detail['bStart'].substring(
-        ele[i].detail['bStart'].indexOf(',') + 1,
-    );
-    const eleEndX = ele[i].detail['bEnd'].substring(
-        0,
-        ele[i].detail['bEnd'].indexOf(','),
-    );
-    const eleEndY = ele[i].detail['bEnd'].substring(
-        ele[i].detail['bEnd'].indexOf(',') + 1,
-    );
+    const eleStartX = parseInt(ele[i].detail['x']);
+    const eleStartY = parseInt(ele[i].detail['y']);
+    const eleEndX = parseInt(ele[i].detail.x) + parseInt(ele[i].detail.width);
+    const eleEndY = parseInt(ele[i].detail.y) + parseInt(ele[i].detail.height);
     if (x >= eleStartX && x <= eleEndX && y >= eleStartY && y <= eleEndY) {
       result.push({
         ele: ele[i],
-        size: (eleEndY - eleStartY) * (eleEndX - eleStartX),
+        size: parseInt(ele[i].detail.height) *
+            parseInt(ele[i].detail.width),
       });
     }
     if (ele[i].children) {
@@ -574,23 +512,13 @@ const handleNodeClick = (data) => {
   }
 };
 const print = (data) => {
-  const canvas = document.getElementById('debugPic'),
+  const canvas = document.getElementById('debugPicIOS'),
       g = canvas.getContext('2d');
   g.clearRect(0, 0, canvas.width, canvas.height);
-  const eleStartX = data.detail['bStart'].substring(
-      0,
-      data.detail['bStart'].indexOf(','),
-  );
-  const eleStartY = data.detail['bStart'].substring(
-      data.detail['bStart'].indexOf(',') + 1,
-  );
-  const eleEndX = data.detail['bEnd'].substring(
-      0,
-      data.detail['bEnd'].indexOf(','),
-  );
-  const eleEndY = data.detail['bEnd'].substring(
-      data.detail['bEnd'].indexOf(',') + 1,
-  );
+  const eleStartX = parseInt(data.detail['x']);
+  const eleStartY = parseInt(data.detail['y']);
+  const eleEndX = parseInt(data.detail.x) + parseInt(data.detail.width);
+  const eleEndY = parseInt(data.detail.y) + parseInt(data.detail.height);
   let a = Math.round(Math.random() * 255);
   let b = Math.round(Math.random() * 255);
   let c = Math.round(Math.random() * 255);
@@ -618,23 +546,24 @@ const clearLog = () => {
 const setStepLog = (data) => {
   stepLog.value.push(data);
 };
-const runStep = () => {
-  debugLoading.value = true;
-  activeTab2.value = 'log';
+// const runStep = () => {
+//   debugLoading.value = true;
+//   activeTab2.value = 'log';
+//   websocket.send(
+//       JSON.stringify({
+//         type: 'debug',
+//         detail: 'runStep',
+//         caseId: testCase.value['id'],
+//         pwd: device.value['password'],
+//       }),
+//   );
+// };
+const pressKey = (key) => {
   websocket.send(
       JSON.stringify({
         type: 'debug',
-        detail: 'runStep',
-        caseId: testCase.value['id'],
-        pwd: device.value['password'],
-      }),
-  );
-};
-const pressKey = (keyNum) => {
-  websocket.send(
-      JSON.stringify({
-        type: 'keyEvent',
-        detail: keyNum,
+        detail: 'keyEvent',
+        key
       }),
   );
 };
@@ -909,103 +838,73 @@ onMounted(() => {
                 style="display: inline-block"
                 :style="canvasRectInfo"
             />
-            <el-button-group id="pressKey">
+            <el-button-group id="iOSpressKey">
               <el-button
                   size="small"
                   style="width: 25%"
                   type="info"
-                  @click="pressKey(82)"
-              >
-                <el-icon :size="13" style="vertical-align: middle;">
-                  <Menu/>
-                </el-icon>
-              </el-button>
-              <el-button
-                  size="small"
-                  style="width: 25%"
-                  type="info"
-                  @click="pressKey(187)"
-              >
-                <el-icon :size="13" style="vertical-align: middle;">
-                  <CopyDocument/>
-                </el-icon>
-              </el-button>
-              <el-button
-                  size="small"
-                  style="width: 25%"
-                  type="info"
-                  @click="pressKey(3)"
+                  @click="pressKey('home')"
               >
                 <el-icon :size="13" style="vertical-align: middle;">
                   <House/>
                 </el-icon>
               </el-button>
-              <el-button
-                  size="small"
-                  style="width: 25%"
-                  type="info"
-                  @click="pressKey(4)"
-              >
-                <el-icon :size="13" style="vertical-align: middle;">
-                  <Back/>
-                </el-icon>
-              </el-button>
             </el-button-group>
           </div>
           <div style="position: absolute; right: 5px; top: 10px">
+            <!--            <el-tooltip-->
+            <!--                :enterable="false"-->
+            <!--                effect="dark"-->
+            <!--                content="手动校准"-->
+            <!--                :placement="tabPosition == 'left' ? 'right' : 'left'"-->
+            <!--                :offset="15"-->
+            <!--            >-->
+            <!--              <div>-->
+            <!--                <el-dropdown-->
+            <!--                    :hide-on-click="false"-->
+            <!--                    trigger="click"-->
+            <!--                    placement="right"-->
+            <!--                    style="margin-top: 4px"-->
+            <!--                >-->
+            <!--                  <el-button-->
+            <!--                      size="small"-->
+            <!--                      type="info"-->
+            <!--                      circle-->
+            <!--                  >-->
+            <!--                    <el-icon :size="12" style="vertical-align: middle;">-->
+            <!--                      <Place/>-->
+            <!--                    </el-icon>-->
+            <!--                  </el-button>-->
+            <!--                  <template #dropdown>-->
+            <!--                    <el-dropdown-menu class="divider" v-loading="loading"-->
+            <!--                                      element-loading-background="rgba(255, 255, 255, 1)">-->
+            <!--                      <el-button-group>-->
+            <!--                        <el-tooltip-->
+            <!--                            effect="dark"-->
+            <!--                            content="校准坐标"-->
+            <!--                            placement="top"-->
+            <!--                        >-->
+            <!--                          <el-button-->
+            <!--                              size="small"-->
+            <!--                              type="info"-->
+            <!--                              circle-->
+            <!--                              @click="switchLocation"-->
+            <!--                          >-->
+            <!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+            <!--                              <Aim/>-->
+            <!--                            </el-icon>-->
+            <!--                          </el-button>-->
+            <!--                        </el-tooltip>-->
+            <!--                      </el-button-group>-->
+            <!--                    </el-dropdown-menu>-->
+            <!--                  </template>-->
+            <!--                </el-dropdown>-->
+            <!--              </div>-->
+            <!--            </el-tooltip>-->
             <el-tooltip
                 :enterable="false"
                 effect="dark"
-                content="手动校准"
-                :placement="tabPosition == 'left' ? 'right' : 'left'"
-                :offset="15"
-            >
-              <div>
-                <el-dropdown
-                    :hide-on-click="false"
-                    trigger="click"
-                    placement="right"
-                    style="margin-top: 4px"
-                >
-                  <el-button
-                      size="small"
-                      type="info"
-                      circle
-                  >
-                    <el-icon :size="12" style="vertical-align: middle;">
-                      <Place/>
-                    </el-icon>
-                  </el-button>
-                  <template #dropdown>
-                    <el-dropdown-menu class="divider" v-loading="loading"
-                                      element-loading-background="rgba(255, 255, 255, 1)">
-                      <el-button-group>
-                        <el-tooltip
-                            effect="dark"
-                            content="校准坐标"
-                            placement="top"
-                        >
-                          <el-button
-                              size="small"
-                              type="info"
-                              circle
-                              @click="switchLocation"
-                          >
-                            <el-icon :size="14" style="vertical-align: middle;">
-                              <Aim/>
-                            </el-icon>
-                          </el-button>
-                        </el-tooltip>
-                      </el-button-group>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </div>
-            </el-tooltip>
-            <el-tooltip
-                :enterable="false"
-                effect="dark"
-                content="亮度/音量"
+                content="音量"
                 :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
@@ -1037,7 +936,7 @@ onMounted(() => {
                               size="small"
                               type="info"
                               circle
-                              @click="pressKey(220)"
+                              @click="pressKey('volumeup')"
                           >
                             <el-icon :size="12" style="vertical-align: middle;">
                               <CaretLeft/>
@@ -1047,7 +946,7 @@ onMounted(() => {
                               size="small"
                               type="info"
                               circle
-                              @click="pressKey(221)"
+                              @click="pressKey('volumedown')"
                           >
                             <el-icon :size="12" style="vertical-align: middle;">
                               <CaretRight/>
@@ -1055,43 +954,6 @@ onMounted(() => {
                           </el-button>
                         </el-button-group>
                       </div>
-                      <el-divider></el-divider>
-                      <el-icon :size="14" style="color: #909399;vertical-align: middle;">
-                        <Phone/>
-                      </el-icon>
-                      <el-divider direction="vertical"></el-divider>
-                      <el-button-group>
-                        <el-button
-                            size="small"
-                            type="info"
-                            circle
-                            @click="pressKey(24)"
-                        >
-                          <el-icon :size="12" style="vertical-align: middle;">
-                            <Plus/>
-                          </el-icon>
-                        </el-button>
-                        <el-button
-                            size="small"
-                            type="info"
-                            circle
-                            @click="pressKey(164)"
-                        >
-                          <el-icon :size="12" style="vertical-align: middle;">
-                            <MuteNotification/>
-                          </el-icon>
-                        </el-button>
-                        <el-button
-                            size="small"
-                            type="info"
-                            circle
-                            @click="pressKey(25)"
-                        >
-                          <el-icon :size="12" style="vertical-align: middle;">
-                            <Minus/>
-                          </el-icon>
-                        </el-button>
-                      </el-button-group>
                     </el-dropdown-menu>
                   </template>
                 </el-dropdown>
@@ -1107,7 +969,7 @@ onMounted(() => {
                     size="small"
                     type="primary"
                     circle
-                    @click="pressKey(5)"
+                    @click="pressKey('mobilephone')"
                 >
                   <el-icon :size="12" style="vertical-align: middle;">
                     <PhoneFilled/>
@@ -1125,7 +987,7 @@ onMounted(() => {
                     size="small"
                     type="primary"
                     circle
-                    @click="pressKey(27)"
+                    @click="pressKey('camera')"
                 >
                   <el-icon :size="12" style="vertical-align: middle;">
                     <Camera/>
@@ -1143,7 +1005,7 @@ onMounted(() => {
                     size="small"
                     type="primary"
                     circle
-                    @click="pressKey(64)"
+                    @click="pressKey('mobilesafari')"
                 >
                   <el-icon :size="12" style="vertical-align: middle;">
                     <Position/>
@@ -1161,7 +1023,7 @@ onMounted(() => {
                     size="small"
                     type="primary"
                     circle
-                    @click="pressKey(26)"
+                    @click="pressKey('lock')"
                 >
                   <el-icon :size="12" style="vertical-align: middle;">
                     <SwitchButton/>
@@ -1192,7 +1054,7 @@ onMounted(() => {
             v-model="activeTab"
             :tab-position="tabPosition"
         >
-          <el-tab-pane label="远控面板" name="main">
+          <el-tab-pane label="远控面板" name="main" disabled>
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-card>
@@ -1312,7 +1174,7 @@ onMounted(() => {
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="Terminal" name="terminal">
+          <el-tab-pane label="Terminal" name="terminal" disabled>
             <el-alert
                 title="注意事项"
                 type="warning"
@@ -1382,7 +1244,7 @@ onMounted(() => {
               </el-tab-pane>
             </el-tabs>
           </el-tab-pane>
-          <el-tab-pane label="UI自动化" name="auto">
+          <el-tab-pane label="UI自动化" name="auto" disabled>
             <div v-if="testCase['id']">
               <el-collapse accordion style="margin-bottom: 20px">
                 <el-collapse-item>
@@ -1493,9 +1355,9 @@ onMounted(() => {
                   重新获取控件元素
                 </el-button
                 >
-                <span style="margin-right:10px;color: #909399;font-size: 14px; cursor: pointer"
-                      @click="copy(activity)"
-                      v-if="activity.length > 0">当前Activity： {{ activity }}</span>
+                <!--                <span style="margin-right:10px;color: #909399;font-size: 14px; cursor: pointer"-->
+                <!--                      @click="copy(activity)"-->
+                <!--                      v-if="activity.length > 0">当前Activity： {{ activity }}</span>-->
               </div>
               <el-row
                   :gutter="10"
@@ -1509,7 +1371,7 @@ onMounted(() => {
                       ');background-size:cover;'
                     "
                     >
-                      <canvas id="debugPic" @mousedown="touchstart"></canvas>
+                      <canvas id="debugPicIOS" @mousedown="touchstart"></canvas>
                     </div>
                     <div style="text-align: center;margin-top: 10px">
                       <el-button type="primary" plain size="mini" @click="downloadImg">
@@ -1520,29 +1382,29 @@ onMounted(() => {
                       </el-button>
                     </div>
                   </el-card>
-                  <el-card
-                      :body-style="{ padding: '12px' }"
-                      shadow="hover"
-                      v-if="webViewData.length > 0"
-                      style="margin-top: 10px"
-                  >
-                    <el-table :data="webViewData" border>
-                      <el-table-column
-                          label="WebView列表"
-                          align="center"
-                          :show-overflow-tooltip="true"
-                      >
-                        <template #default="scope">
-                        <span
-                            style="cursor: pointer"
-                            @click="copy(scope.row)"
-                        >
-                          {{ scope.row }}</span
-                        >
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </el-card>
+                  <!--                  <el-card-->
+                  <!--                      :body-style="{ padding: '12px' }"-->
+                  <!--                      shadow="hover"-->
+                  <!--                      v-if="webViewData.length > 0"-->
+                  <!--                      style="margin-top: 10px"-->
+                  <!--                  >-->
+                  <!--                    <el-table :data="webViewData" border>-->
+                  <!--                      <el-table-column-->
+                  <!--                          label="WebView列表"-->
+                  <!--                          align="center"-->
+                  <!--                          :show-overflow-tooltip="true"-->
+                  <!--                      >-->
+                  <!--                        <template #default="scope">-->
+                  <!--                        <span-->
+                  <!--                            style="cursor: pointer"-->
+                  <!--                            @click="copy(scope.row)"-->
+                  <!--                        >-->
+                  <!--                          {{ scope.row }}</span-->
+                  <!--                        >-->
+                  <!--                        </template>-->
+                  <!--                      </el-table-column>-->
+                  <!--                    </el-table>-->
+                  <!--                  </el-card>-->
                 </el-col>
                 <el-col :span="9">
                   <el-card
@@ -1552,7 +1414,7 @@ onMounted(() => {
                     <el-input
                         style="margin-bottom: 10px"
                         size="mini"
-                        placeholder="输入class或resource-id进行过滤"
+                        placeholder="输入class进行过滤"
                         v-model="filterText"
                     ></el-input>
                     <div style="height: 660px">
@@ -1630,87 +1492,45 @@ onMounted(() => {
                             v-if="elementDetail !== null"
                         >
                           <el-form-item
-                              label="class"
+                              label="type"
                               style="cursor: pointer"
-                              @click="copy(elementDetail['class'])"
+                              @click="copy(elementDetail['type'])"
                           >
-                            <span>{{ elementDetail['class'] }}</span>
+                            <span>{{ elementDetail['type'] }}</span>
                           </el-form-item>
                           <el-form-item
-                              label="resource-id"
+                              label="accessibilityId"
                               style="cursor: pointer"
-                              v-if="elementDetail['resource-id']"
-                              @click="copy(elementDetail['resource-id'])"
+                              v-if="elementDetail['name']"
+                              @click="copy(elementDetail['name'])"
                           >
-                            <span>{{ elementDetail['resource-id'] }}</span>
+                            <span>{{ elementDetail['name'] }}</span>
                           </el-form-item>
                           <el-form-item label="xpath">
                             <span>{{ elementDetail['xpath'] }}</span>
                           </el-form-item>
                           <el-form-item
-                              label="text"
+                              label="name"
                               style="cursor: pointer"
-                              @click="copy(elementDetail['text'])"
+                              @click="copy(elementDetail['name'])"
                           >
-                            <span>{{ elementDetail['text'] }}</span>
+                            <span>{{ elementDetail['name'] }}</span>
                           </el-form-item>
                           <el-form-item
-                              label="content-desc"
+                              label="label"
                               style="cursor: pointer"
-                              v-if="elementDetail['content-desc']"
-                              @click="copy(elementDetail['content-desc'])"
+                              v-if="elementDetail['label']"
+                              @click="copy(elementDetail['label'])"
                           >
-                            <span>{{ elementDetail['content-desc'] }}</span>
+                            <span>{{ elementDetail['label'] }}</span>
                           </el-form-item>
-                          <el-form-item
-                              label="package"
-                              style="cursor: pointer"
-                              @click="copy(elementDetail['package'])"
-                          >
-                            <span>{{ elementDetail['package'] }}</span>
-                          </el-form-item>
-                          <el-form-item label="中心坐标" style="cursor: pointer"
-                                        @click="copy(computedCenter(elementDetail['bStart'], elementDetail['bEnd']))">
-                            <span>{{ computedCenter(elementDetail['bStart'], elementDetail['bEnd']) }}</span>
-                          </el-form-item>
-                          <el-form-item label="index">
-                            <span>{{ elementDetail['index'] }}</span>
-                          </el-form-item>
-                          <el-form-item label="是否可勾选">
-                            <el-switch
-                                :value="JSON.parse(elementDetail['checkable'])"
-                                disabled
-                            >
-                            </el-switch>
-                          </el-form-item>
-                          <el-form-item label="是否勾选">
-                            <el-switch
-                                :value="JSON.parse(elementDetail['checked'])"
-                                disabled
-                            >
-                            </el-switch>
-                          </el-form-item>
-                          <el-form-item label="是否可点击">
-                            <el-switch
-                                :value="JSON.parse(elementDetail['clickable'])"
-                                disabled
-                            >
-                            </el-switch>
-                          </el-form-item>
-                          <el-form-item label="是否被选">
-                            <el-switch
-                                :value="JSON.parse(elementDetail['selected'])"
-                                disabled
-                            >
-                            </el-switch>
-                          </el-form-item>
-                          <el-form-item label="是否显示">
-                            <el-switch
-                                :value="JSON.parse(elementDetail['displayed'])"
-                                disabled
-                            >
-                            </el-switch>
-                          </el-form-item>
+                          <!--                          <el-form-item label="中心坐标" style="cursor: pointer"-->
+                          <!--                                        @click="copy(computedCenter(elementDetail['bStart'], elementDetail['bEnd']))">-->
+                          <!--                            <span>{{ computedCenter(elementDetail['bStart'], elementDetail['bEnd']) }}</span>-->
+                          <!--                          </el-form-item>-->
+                          <!--                          <el-form-item label="index">-->
+                          <!--                            <span>{{ elementDetail['index'] }}</span>-->
+                          <!--                          </el-form-item>-->
                           <el-form-item label="是否可用">
                             <el-switch
                                 :value="JSON.parse(elementDetail['enabled'])"
@@ -1718,36 +1538,24 @@ onMounted(() => {
                             >
                             </el-switch>
                           </el-form-item>
-                          <el-form-item label="是否可聚焦">
+                          <el-form-item label="是否显示">
                             <el-switch
-                                :value="JSON.parse(elementDetail['focusable'])"
+                                :value="JSON.parse(elementDetail['visible'])"
                                 disabled
                             >
                             </el-switch>
                           </el-form-item>
-                          <el-form-item label="是否聚焦">
-                            <el-switch
-                                :value="JSON.parse(elementDetail['focused'])"
-                                disabled
-                            >
-                            </el-switch>
+                          <el-form-item label="x">
+                            <span>{{ elementDetail['x'] }}</span>
                           </el-form-item>
-                          <el-form-item label="是否支持长按">
-                            <el-switch
-                                :value="JSON.parse(elementDetail['long-clickable'])"
-                                disabled
-                            >
-                            </el-switch>
+                          <el-form-item label="y">
+                            <span>{{ elementDetail['y'] }}</span>
                           </el-form-item>
-                          <el-form-item label="是否支持滚动">
-                            <el-switch
-                                :value="JSON.parse(elementDetail['scrollable'])"
-                                disabled
-                            >
-                            </el-switch>
+                          <el-form-item label="width">
+                            <span>{{ elementDetail['width'] }}</span>
                           </el-form-item>
-                          <el-form-item label="Bounds">
-                            <span>{{ elementDetail['bounds'] }}</span>
+                          <el-form-item label="height">
+                            <span>{{ elementDetail['height'] }}</span>
                           </el-form-item>
                         </el-form>
                       </el-scrollbar>
@@ -1776,7 +1584,7 @@ onMounted(() => {
               </el-result>
             </el-card>
           </el-tab-pane>
-          <el-tab-pane label="网页调试" name="webview">
+          <el-tab-pane label="网页调试" name="webview" disabled>
             <div v-if="isWebView">
               <div v-if="webViewListDetail.length==0">
                 <el-result icon="info" title="提示" subTitle="暂无webView进程">
@@ -1867,6 +1675,18 @@ onMounted(() => {
   </el-card>
 </template>
 <style scoped lang="less">
+#iOSpressKey {
+  padding: 3px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+#iosCap {
+  border: 3px solid #303133;
+  border-radius: 15px;
+  cursor: url("@/assets/img/pointer.png") 12 12, crosshair;
+}
+
 .line {
   width: 2px;
   height: inherit;
