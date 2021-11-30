@@ -26,7 +26,13 @@ const routes = [
             {
                 path: 'AndroidRemote/:deviceId(\\d+)',
                 component: () =>
-                    import ("../views/AndroidRemote.vue"),
+                    import ("../views/RemoteEmulator/index.vue"),
+                meta: {title: "远程控制"}
+            },
+            {
+                path: 'IOSRemote/:deviceId(\\d+)',
+                component: () =>
+                    import ("../views/RemoteEmulator/indexIOS.vue"),
                 meta: {title: "远程控制"}
             },
         ]
@@ -46,7 +52,13 @@ const routes = [
             {
                 path: 'AndroidRemote/:deviceId(\\d+)',
                 component: () =>
-                    import ("../views/AndroidRemote.vue"),
+                    import ("../views/RemoteEmulator/index.vue"),
+                meta: {title: "远程控制"}
+            },
+            {
+                path: 'IOSRemote/:deviceId(\\d+)',
+                component: () =>
+                    import ("../views/RemoteEmulator/indexIOS.vue"),
                 meta: {title: "远程控制"}
             },
             {

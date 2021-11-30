@@ -51,6 +51,7 @@ const manufacturer = ref([
   "360",
   "Yulong",
   "LGE",
+  "Sony",
   "GIONEE"
 ]);
 const statusList = ref([
@@ -132,10 +133,16 @@ const updateAgent = () => {
     }
   })
 }
-const jump = (id) => {
-  router.push({
-    path: "AndroidRemote/" + id
-  });
+const jump = (id, platform) => {
+  if (platform === 1) {
+    router.push({
+      path: "AndroidRemote/" + id
+    });
+  } else {
+    router.push({
+      path: "IOSRemote/" + id
+    });
+  }
 }
 const handleAndroid = (val) => {
   androidSystem.value = val ? androidSystemVersion.value : [];
@@ -632,7 +639,8 @@ onMounted(() => {
                 </el-col>
               </el-row>
               <div style="text-align: center">
-                <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'" @click="jump(device.id)">马上使用
+                <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'"
+                           @click="jump(device.id,device.platform)">马上使用
                 </el-button>
                 <el-popover placement="top" width="300px" trigger="hover">
                   <el-form

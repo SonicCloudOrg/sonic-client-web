@@ -1,0 +1,53 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\yarn\bin\yarn.js add less less-loader
+
+PATH: 
+  C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\Administrator\bin;D:\cxhwork\sonic\sonic-client-web\node_modules\.bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Git\cmd;C:\Users\Administrator\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Users\Administrator\AppData\Local\Android\android-sdk;C:\Program Files\MySQL\MySQL Shell 8.0\bin;C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps;C:\Users\Administrator\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\Administrator\AppData\Local\Android\android-sdk;C:\Users\Administrator\AppData\Local\Android\android-sdk\platform-tools;C:\Users\Administrator\AppData\Local\Android\android-sdk\tools
+
+Yarn version: 
+  1.22.17
+
+Node version: 
+  16.13.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: EPERM: operation not permitted, unlink 'D:\cxhwork\sonic\sonic-client-web\node_modules\esbuild\esbuild.exe'
+
+npm manifest: 
+  {
+      "name": "sonic-client-web",
+      "version": "1.0.0",
+      "scripts": {
+          "dev": "vite",
+          "build": "vite build",
+          "serve": "vite preview"
+      },
+      "dependencies": {
+          "@element-plus/icons": "0.0.11",
+          "axios": "0.21.4",
+          "echarts": "5.2.1",
+          "element-plus": "1.1.0-beta.24",
+          "moment": "2.29.1",
+          "rollup-plugin-copy": "3.4.0",
+          "vue": "3.2.14",
+          "vue-clipboard3": "1.0.1",
+          "vue-draggable-next": "2.0.1",
+          "vue-router": "4.0.10",
+          "vue3-player-video": "1.2.5",
+          "vuex": "4.0.2"
+      },
+      "devDependencies": {
+          "@vitejs/plugin-vue": "1.9.0",
+          "@vue/compiler-sfc": "3.2.14",
+          "vite": "2.5.10"
+      }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

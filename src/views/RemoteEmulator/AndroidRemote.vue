@@ -1,15 +1,15 @@
 <script setup>
-import {useRoute, useRouter} from "vue-router";
-import {nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
-import {useStore} from "vuex";
-import axios from "../http/axios";
-import {ElMessage} from "element-plus";
+import {useRoute, useRouter} from 'vue-router';
+import {nextTick, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {useStore} from 'vuex';
+import axios from '@/http/axios';
+import {ElMessage} from 'element-plus';
 import useClipboard from 'vue-clipboard3';
-import StepList from '../components/StepList.vue'
-import TestCaseList from '../components/TestCaseList.vue'
-import StepLog from '../components/StepLog.vue'
-import ElementUpdate from '../components/ElementUpdate.vue'
-import defaultLogo from '../assets/logo.png'
+import StepList from '@/components/StepList.vue';
+import TestCaseList from '@/components/TestCaseList.vue';
+import StepLog from '@/components/StepLog.vue';
+import ElementUpdate from '@/components/ElementUpdate.vue';
+import defaultLogo from '@/assets/logo.png';
 import {
   Aim,
   Place,
@@ -39,64 +39,76 @@ import {
   House,
   Back,
   View,
-  InfoFilled
-} from "@element-plus/icons";
+  InfoFilled,
+} from '@element-plus/icons';
 
 const {toClipboard} = useClipboard();
-const route = useRoute()
-const store = useStore()
-const router = useRouter()
-const iFrameHeight = ref(0)
-const terminalHeight = ref(0)
-const caseList = ref(null)
-const loading = ref(false)
-const device = ref({})
-const agent = ref({})
-const uploadUrl = ref("")
-const text = ref({content: ""})
-let imgWidth = 0
-let imgHeight = 0
-let moveX = 0
-let moveY = 0
-let devicePlatformVersion = 0
-let isPress = true
-let loop = null
-let time = 0
-let isLongPress = false
-let mouseMoveTime = 0
-const pic = ref("中");
-const fixScreenTor = ref(0)
-const elementLoading = ref(false)
-const isShowImg = ref(false)
-const isDriverFinish = ref(false)
-const imgUrl = ref("")
-const activity = ref("")
-const webViewData = ref([])
-const isShowTree = ref(false)
-const elementData = ref([])
-const elementDetail = ref(null)
-const elementScreenLoading = ref(false)
-const tree = ref(null)
-const currentId = ref([])
-const filterText = ref("")
-const project = ref(null)
-const testCase = ref({})
-const activeTab = ref('main')
-const activeTab2 = ref('step')
-const stepLog = ref([])
-const debugLoading = ref(false)
-const dialogElement = ref(false)
-const dialogImgElement = ref(false)
-const imgElementUrl = ref(null)
-const updateImgEle = ref(null)
-const webViewListDetail = ref([])
-const isWebView = ref(true)
-const iframeUrl = ref("")
-const title = ref("")
-const webViewLoading = ref(false)
-const cmdInput = ref("");
+const route = useRoute();
+const store = useStore();
+const router = useRouter();
+const iFrameHeight = ref(0);
+const terminalHeight = ref(0);
+const caseList = ref(null);
+const loading = ref(false);
+const device = ref({});
+const agent = ref({});
+const uploadUrl = ref('');
+const text = ref({content: ''});
+let imgWidth = 0;
+let imgHeight = 0;
+// 旋转状态 // 0 90 180 270
+let directionStatus = {
+  value: -1,
+  // calcMap: {
+  //   0: 1,
+  //   90: 1,
+  //   180: 1,
+  //   270: -1,
+  // }
+};
+let moveX = 0;
+let moveY = 0;
+let isFixTouch = false;
+let isPress = false;
+let loop = null;
+let time = 0;
+let isLongPress = false;
+// let isRotated = 0; // 是否转向 // 0 90 180 270
+let mouseMoveTime = 0;
+const pic = ref('中');
+const fixScreenTor = ref(0);
+const elementLoading = ref(false);
+const isShowImg = ref(false);
+const isDriverFinish = ref(false);
+const imgUrl = ref('');
+const activity = ref('');
+const webViewData = ref([]);
+const isShowTree = ref(false);
+const elementData = ref([]);
+const elementDetail = ref(null);
+const elementScreenLoading = ref(false);
+const tree = ref(null);
+const currentId = ref([]);
+const filterText = ref('');
+const project = ref(null);
+const testCase = ref({});
+const activeTab = ref('main');
+const activeTab2 = ref('step');
+const stepLog = ref([]);
+const debugLoading = ref(false);
+const dialogElement = ref(false);
+const dialogImgElement = ref(false);
+const imgElementUrl = ref(null);
+const updateImgEle = ref(null);
+const webViewListDetail = ref([]);
+const chromePort = ref(0);
+const isWebView = ref(true);
+const iframeUrl = ref('');
+const title = ref('');
+const webViewLoading = ref(false);
+const cmdInput = ref('');
 const cmdOutPut = ref([]);
-const cmdUser = ref("");
+const cmdUser = ref('');
 const logcatOutPut = ref([]);
 const terScroll = ref(null);
 const logcatScroll = ref(null);
@@ -105,56 +117,68 @@ const uploadLoading = ref(false);
 const location = ref(false);
 const logcatFilter = ref({
   level: 'E',
-  filter: ""
-})
+  filter: '',
+});
 let oldBlob = undefined;
 const element = ref({
   id: null,
-  eleName: "",
-  eleType: "image",
-  eleValue: "",
-  projectId: 0
-})
+  eleName: '',
+  eleType: 'image',
+  eleValue: '',
+  projectId: 0,
+});
 const computedCenter = (b1, b2) => {
-  let x1 = b1.substring(0, b1.indexOf(","));
-  let y1 = b1.substring(b1.indexOf(",") + 1);
-  let x2 = b2.substring(0, b2.indexOf(","));
-  let y2 = b2.substring(b2.indexOf(",") + 1);
+  let x1 = b1.substring(0, b1.indexOf(','));
+  let y1 = b1.substring(b1.indexOf(',') + 1);
+  let x2 = b2.substring(0, b2.indexOf(','));
+  let y2 = b2.substring(b2.indexOf(',') + 1);
   let x = parseInt((parseInt(x2) + parseInt(x1)) / 2);
   let y = parseInt((parseInt(y1) + parseInt(y2)) / 2);
-  return x + "," + y;
-}
+  return x + ',' + y;
+};
 const switchTabs = (e) => {
   if (e.props.name === 'terminal') {
-    terminalHeight.value = document.getElementById("pressKey").offsetTop - 200;
+    terminalHeight.value = document.getElementById('pressKey').offsetTop - 200;
   }
   if (e.props.name === 'webview') {
     if (webViewListDetail.value.length === 0) {
-      getWebViewForward()
+      getWebViewForward();
     }
   }
-}
-const img = import.meta.globEager("./../assets/img/*")
+};
+const img = import.meta.globEager('../../assets/img/*');
 let websocket = null;
 let terminalWebsocket = null;
-const tabWebView = (port, id, transtitle) => {
-  title.value = transtitle
+
+defineProps({
+  tabPosition: String,
+  canvasRectInfo: Object,
+  layoutSplitInfo: Object,
+  isSplitPressing: Boolean,
+  lineMouseup: Function,
+  lineMousemove: Function,
+  lineMousedown: Function,
+  lineMouseleave: Function,
+});
+
+const tabWebView = (port, id, transTitle) => {
+  title.value = transTitle;
   isWebView.value = false;
   iframeUrl.value =
-      "http://" + agent.value['host'] + ":" + agent.value['port']
-      + "/agent/inspector.html?ws=" + agent.value['host']
-      + ":" + agent.value['port'] + "/websockets/webView/"
-      + agent.value['secretKey'] + "/" + port + "/" + id;
+      'http://' + agent.value['host'] + ':' + chromePort.value
+      + '/devtools/inspector.html?ws=' + agent.value['host']
+      + ':' + agent.value['port'] + '/websockets/webView/'
+      + agent.value['secretKey'] + '/' + port + '/' + id;
   nextTick(() => {
-    iFrameHeight.value = document.getElementById("pressKey").offsetTop - 50;
-  })
-}
+    iFrameHeight.value = document.getElementById('pressKey').offsetTop - 50;
+  });
+};
 const saveEle = () => {
   updateImgEle['value'].validate((valid) => {
     if (valid) {
       element.value.eleValue = imgElementUrl.value;
-      element.value.projectId = project.value['id']
-      axios.put("/controller/elements", element.value)
+      element.value.projectId = project.value['id'];
+      axios.put('/controller/elements', element.value)
           .then((resp) => {
             if (resp['code'] === 2000) {
               ElMessage.success({
@@ -165,74 +189,67 @@ const saveEle = () => {
           });
     }
   });
-}
+};
 const switchLocation = () => {
-  location.value = !location.value
+  location.value = !location.value;
   ElMessage.success({
-    message: "校准完毕！"
-  })
-}
-let oldVersion = 0;
+    message: '校准完毕！',
+  });
+};
 const fixTouch = () => {
-  if (oldVersion === 0) {
-    oldVersion = devicePlatformVersion;
-    devicePlatformVersion = 20;
-  } else {
-    devicePlatformVersion = oldVersion;
-    oldVersion = 0;
-  }
-}
-const switchIsWebView = ()=>{
+  isFixTouch = !isFixTouch;
+};
+const switchIsWebView = () => {
   isWebView.value = true;
-}
+};
 const selectCase = (val) => {
   ElMessage.success({
-    message: "关联成功！"
-  })
-  testCase.value = val
-}
+    message: '关联成功！',
+  });
+  testCase.value = val;
+};
 const removeCase = () => {
   testCase.value = {};
-}
+};
 const getImg = (name) => {
   let result;
   if (name === 'meizu') {
-    name = 'Meizu'
+    name = 'Meizu';
   }
   try {
-    result = img['./../assets/img/' + name + '.jpg'].default
+    result = img['../../assets/img/' + name + '.jpg'].default;
   } catch {
-    result = img['./../assets/img/unName.jpg'].default
+    result = img['../../assets/img/unName.jpg'].default;
   }
   return result;
-}
+};
 watch(filterText, (newValue, oldValue) => {
   tree['value'].filter(newValue);
-})
+});
 const filterNode = (value, data) => {
   if (!value) return true;
   return (data.label.indexOf(value) !== -1) ||
       (data.detail['resource-id'] ? data.detail['resource-id'].indexOf(value) !== -1 : false);
-}
+};
 const downloadImg = () => {
-  window.open(imgUrl.value, "_blank");
-}
+  window.open(imgUrl.value, '_blank');
+};
 const copy = (value) => {
   try {
     toClipboard(value);
     ElMessage.success({
-      message: "复制成功！",
+      message: '复制成功！',
     });
   } catch (e) {
     ElMessage.error({
-      message: "复制失败！",
+      message: '复制失败！',
     });
   }
-}
+};
 const setImgData = (data) => {
   const img = new Image();
   if (data === undefined) {
-    const blob = new Blob([oldBlob], {type: "image/jpeg"});
+    const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
     const u = URL.createObjectURL(blob);
     imgUrl.value = u;
@@ -241,28 +258,23 @@ const setImgData = (data) => {
     imgUrl.value = data;
     img.src = data;
   }
-  const canvas = document.getElementById("debugPic"),
-      g = canvas.getContext("2d");
-  const parent = canvas.parentNode;
+  const canvas = document.getElementById('debugPic');
   img.onload = function () {
-    const per = img.height / img.width;
-    const width = parseInt(parent.offsetWidth);
-    const height = parseInt(width * per);
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = img.width;
+    canvas.height = img.height;
   };
   isShowImg.value = true;
-}
+};
 const openSocket = (host, port, udId, key) => {
-  if ("WebSocket" in window) {
+  if ('WebSocket' in window) {
     websocket = new WebSocket(
-        "ws://" + host + ":" + port + "/websockets/android/" + udId + "/" + key
+        'ws://' + host + ':' + port + '/websockets/android/' + udId + '/' + key,
     );
     terminalWebsocket = new WebSocket(
-        "ws://" + host + ":" + port + "/websockets/terminal/" + udId + "/" + key
+        'ws://' + host + ':' + port + '/websockets/terminal/' + udId + '/' + key,
     );
   } else {
-    console.error("不支持WebSocket");
+    console.error('不支持WebSocket');
   }
   websocket.onmessage = websocketOnmessage;
   websocket.onclose = (e) => {
@@ -270,107 +282,105 @@ const openSocket = (host, port, udId, key) => {
   terminalWebsocket.onmessage = terminalWebsocketOnmessage;
   terminalWebsocket.onclose = (e) => {
   };
-}
+};
 const sendLogcat = () => {
   terminalWebsocket.send(
       JSON.stringify({
-        type: "logcat",
+        type: 'logcat',
         level: logcatFilter.value.level,
         filter: logcatFilter.value.filter,
-      })
+      }),
   );
-}
+};
 const clearLogcat = () => {
   logcatOutPut.value = [];
-}
+};
 const stopLogcat = () => {
   terminalWebsocket.send(
       JSON.stringify({
-        type: "stopLogcat",
-      })
+        type: 'stopLogcat',
+      }),
   );
-}
+};
 const sendCmd = () => {
   if (cmdInput.value.length > 0 && cmdIsDone.value === true) {
     cmdIsDone.value = false;
     cmdOutPut.value.push(JSON.parse(JSON.stringify(
-        "<span style='color: #409EFF'>" + cmdUser.value + "</span>:/ $ " + cmdInput.value)));
+        '<span style=\'color: #409EFF\'>' + cmdUser.value + '</span>:/ $ ' + cmdInput.value)));
     terminalWebsocket.send(
         JSON.stringify({
-          type: "command",
+          type: 'command',
           detail: cmdInput.value,
-        })
+        }),
     );
-    cmdInput.value = ""
+    cmdInput.value = '';
   }
-}
+};
 const clearCmd = () => {
   cmdOutPut.value = [];
-}
+};
 const stopCmd = () => {
   cmdIsDone.value = true;
   terminalWebsocket.send(
       JSON.stringify({
-        type: "stopCmd",
-      })
+        type: 'stopCmd',
+      }),
   );
-}
+};
 const terminalWebsocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
-    case "logcat":
-      logcatOutPut.value.push("连接成功！");
+    case 'logcat':
+      logcatOutPut.value.push('连接成功！');
       break;
-    case "logcatResp":
+    case 'logcatResp':
       logcatOutPut.value.push(
           JSON.parse(message.data)['detail']
-              .replaceAll(" I ", "<span style='color: #0d84ff'> I </span>")
-              .replaceAll(" I ", "<span style='color: #0d84ff'> I </span>")
-              .replaceAll(" D ", "<span style='color: #0d84ff'> D </span>")
-              .replaceAll(" W ", "<span style='color: #E6A23C'> W </span>")
-              .replaceAll(" E ", "<span style='color: #F56C6C'> E </span>")
-              .replaceAll(" F ", "<span style='color: #F56C6C'> F </span>")
+              .replaceAll(' I ', '<span style=\'color: #0d84ff\'> I </span>')
+              .replaceAll(' I ', '<span style=\'color: #0d84ff\'> I </span>')
+              .replaceAll(' D ', '<span style=\'color: #0d84ff\'> D </span>')
+              .replaceAll(' W ', '<span style=\'color: #E6A23C\'> W </span>')
+              .replaceAll(' E ', '<span style=\'color: #F56C6C\'> E </span>')
+              .replaceAll(' F ', '<span style=\'color: #F56C6C\'> F </span>'),
       );
       nextTick(() => {
         logcatScroll['value'].wrap.scrollTop =
             logcatScroll['value'].wrap.scrollHeight;
       });
       break;
-    case "terminal":
+    case 'terminal':
       cmdUser.value = JSON.parse(message.data)['user'];
-      cmdOutPut.value.push("连接成功！");
+      cmdOutPut.value.push('连接成功！');
       break;
-    case "terResp":
+    case 'terResp':
       cmdOutPut.value.push(JSON.parse(message.data)['detail']);
       nextTick(() => {
         terScroll['value'].wrap.scrollTop =
             terScroll['value'].wrap.scrollHeight;
       });
       break;
-    case "terDone":
-      cmdIsDone.value = true
+    case 'terDone':
+      cmdIsDone.value = true;
       break;
-    case "error":
+    case 'error':
       ElMessage.error({
-        message: "系统出现异常！已断开远程控制！",
+        message: '系统出现异常！已断开远程控制！',
       });
-      close()
-      router.go(-1)
-      break
+      close();
+      router.go(-1);
+      break;
   }
-}
+};
 const websocketOnmessage = (message) => {
-  if (typeof message.data === "object") {
-    oldBlob = message.data
-    const blob = new Blob([message.data], {type: "image/jpeg"});
+  if (typeof message.data === 'object') {
+    oldBlob = message.data;
+    const blob = new Blob([message.data], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
     const img = new Image();
-    const canvas = document.getElementById("canvas"),
-        g = canvas.getContext("2d");
-    const brother = document.getElementById("pressKey");
+    const canvas = document.getElementById('canvas'),
+        g = canvas.getContext('2d');
     img.onload = function () {
-      const per = img.height / img.width;
-      const width = parseInt(brother.offsetWidth) - 2;
-      const height = parseInt(width * per);
+      // 不根据按钮组，使用数据源的分辨率点对点
+      const width = img.width, height = img.height;
       canvas.width = width;
       canvas.height = height;
       g.drawImage(img, 0, 0, width, height);
@@ -379,91 +389,102 @@ const websocketOnmessage = (message) => {
     img.src = u;
   } else {
     switch (JSON.parse(message.data)['msg']) {
-      case "support": {
+      case 'rotation': {
+        if (directionStatus.value !== -1) {
+          loading.value = true;
+          ElMessage.success({
+            message: '检测到屏幕旋转！请稍后...',
+          });
+        }
+        directionStatus.value = JSON.parse(message.data).value; // TODO
+        break;
+      }
+      case 'support': {
         ElMessage.error({
           message: JSON.parse(message.data).text,
         });
         loading.value = false;
         break;
       }
-      case "size": {
+      case 'size': {
         imgWidth = JSON.parse(message.data).width;
         imgHeight = JSON.parse(message.data).height;
         loading.value = false;
         break;
       }
-      case "tree": {
+      case 'tree': {
         ElMessage.success({
-          message: "获取控件元素成功！",
+          message: '获取控件元素成功！',
         });
         let result = JSON.parse(message.data);
-        currentId.value = [1]
+        currentId.value = [1];
         elementData.value = result.detail;
         isShowTree.value = true;
-        elementLoading.value = false
+        elementLoading.value = false;
         if (result.img) {
-          setImgData(result.img)
+          setImgData(result.img);
         }
-        webViewData.value = result['webView']
-        activity.value = result['activity']
-        break
+        webViewData.value = result['webView'];
+        activity.value = result['activity'];
+        break;
       }
-      case "treeFail": {
+      case 'treeFail': {
         ElMessage.error({
-          message: "获取控件元素失败！请重新获取"
+          message: '获取控件元素失败！请重新获取',
         });
-        elementLoading.value = false
-        break
+        elementLoading.value = false;
+        break;
       }
-      case "installFinish": {
-        if (JSON.parse(message.data).status === "success") {
+      case 'installFinish': {
+        if (JSON.parse(message.data).status === 'success') {
           ElMessage.success({
-            message: "安装成功！",
+            message: '安装成功！',
           });
         } else {
           ElMessage.error({
-            message: "安装失败！",
+            message: '安装失败！',
           });
         }
-        break
+        break;
       }
-      case "openDriver": {
+      case 'openDriver': {
         ElMessage({
           type: JSON.parse(message.data).status,
-          message: JSON.parse(message.data).detail
+          message: JSON.parse(message.data).detail,
         });
         if (JSON.parse(message.data).status === 'success') {
           isDriverFinish.value = true;
         }
-        break
+        break;
       }
-      case "picFinish": {
+      case 'picFinish': {
         loading.value = false;
-        break
+        break;
       }
-      case "step": {
-        setStepLog(JSON.parse(message.data))
-        break
+      case 'step': {
+        setStepLog(JSON.parse(message.data));
+        break;
       }
-      case "status": {
-        debugLoading.value = false
+      case 'status': {
+        debugLoading.value = false;
         ElMessage.info({
           message: '运行完毕！',
-        })
-        break
+        });
+        break;
       }
-      case "forwardView": {
-        webViewLoading.value = false
+      case 'forwardView': {
+        webViewLoading.value = false;
         ElMessage.success({
           message: '获取成功！',
-        })
+        });
         webViewListDetail.value = JSON.parse(message.data)['detail'];
-        break
+        chromePort.value = JSON.parse(message.data)['chromePort'];
+        break;
       }
-      case "eleScreen": {
+      case 'eleScreen': {
         if (JSON.parse(message.data).img) {
           ElMessage.success({
-            message: "获取快照成功！",
+            message: '获取快照成功！',
           });
           imgElementUrl.value = JSON.parse(message.data)['img'];
           dialogImgElement.value = true;
@@ -471,146 +492,162 @@ const websocketOnmessage = (message) => {
           ElMessage.error(JSON.parse(message.data)['errMsg']);
         }
         elementScreenLoading.value = false;
-        break
+        break;
       }
-      case "error": {
+      case 'error': {
         ElMessage.error({
-          message: "系统出现异常！已断开远程控制！",
+          message: '系统出现异常！已断开远程控制！',
         });
-        close()
-        router.go(-1)
-        break
+        close();
+        router.go(-1);
+        break;
       }
     }
   }
+};
+const getCurLocation = () => {
+  let x, y;
+  let _x, _y;
+  const canvas = document.getElementById('canvas');
+  const rect = canvas.getBoundingClientRect();
+  if (directionStatus.value != 0 && directionStatus.value != 180) { // 左右旋转
+    _x = parseInt(
+        (event.clientY - rect.top) *
+        (imgWidth / canvas.clientHeight),
+    );
+    x = (directionStatus.value == 90) ? imgWidth - _x : _x;
+    //
+    _y = parseInt(
+        (event.clientX - rect.left) *
+        (imgHeight / canvas.clientWidth),
+    );
+    y = (directionStatus.value == 270) ? imgHeight - _y : _y;
+  } else {
+    _x = parseInt(
+        (event.clientX - rect.left) *
+        (imgWidth / canvas.clientWidth),
+    );
+    x = (directionStatus.value == 180) ? imgWidth - _x : _x;
+    //
+    _y = parseInt(
+        (event.clientY - rect.top) *
+        (imgHeight / canvas.clientHeight),
+    );
+    y = (directionStatus.value == 180) ? imgHeight - _y : _y;
+  }
+  console.log('xy', {
+    x, y
+  });
+  return ({
+    x, y
+  })
 }
 const mouseup = (event) => {
-  if (devicePlatformVersion < 10) {
-    if (isPress === true) {
+  if (!isFixTouch) {
+    if (isPress) {
       isPress = false;
       websocket.send(
           JSON.stringify({
-            type: "touch",
-            detail: "u 0\n",
-          })
+            type: 'touch',
+            detail: 'u 0\n',
+          }),
       );
     }
   } else {
     clearInterval(loop);
     time = 0;
-    const canvas = document.getElementById("canvas");
+    const canvas = document.getElementById('canvas');
     const rect = canvas.getBoundingClientRect();
     let x;
     let y;
-    if (location.value === true) {
+    if (location.value) {
       x = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgHeight / rect.width)
+          (event.clientX - rect.left) *
+          (imgHeight / canvas.clientWidth),
       );
       y = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgWidth / rect.height)
+          (event.clientY - rect.top) *
+          (imgWidth / canvas.clientHeight),
       );
     } else {
       x = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgWidth / rect.width)
+          (event.clientX - rect.left) *
+          (imgWidth / canvas.clientWidth),
       );
       y = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgHeight / rect.height)
+          (event.clientY - rect.top) *
+          (imgHeight / canvas.clientHeight),
       );
     }
     if (moveX === x && moveY === y) {
-      if (isLongPress === false) {
+      if (!isLongPress) {
         websocket.send(
             JSON.stringify({
-              type: "debug",
-              detail: "tap",
-              point: x + "," + y,
-            })
+              type: 'debug',
+              detail: 'tap',
+              point: x + ',' + y,
+            }),
         );
-        // }
       }
     } else {
       websocket.send(
           JSON.stringify({
-            type: "debug",
-            detail: "swipe",
-            pointA: moveX + "," + moveY,
-            pointB: x + "," + y,
-          })
+            type: 'debug',
+            detail: 'swipe',
+            pointA: moveX + ',' + moveY,
+            pointB: x + ',' + y,
+          }),
       );
     }
     isLongPress = false;
   }
-}
+};
 const mouseleave = () => {
-  if (devicePlatformVersion >= 10) {
+  if (isFixTouch) {
     clearInterval(loop);
     isLongPress = false;
   } else {
-    if (isPress === true) {
+    if (isPress) {
       isPress = false;
       websocket.send(
           JSON.stringify({
-            type: "touch",
-            detail: "u 0\n",
-          })
+            type: 'touch',
+            detail: 'u 0\n',
+          }),
       );
     }
   }
-}
+};
 const mousedown = (event) => {
-  const canvas = document.getElementById("canvas");
+  const canvas = document.getElementById('canvas');
   const rect = canvas.getBoundingClientRect();
-  if (devicePlatformVersion < 10) {
-    let x;
-    let y;
-    if (location.value === true) {
-      x = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgHeight / rect.width)
-      );
-      y = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgWidth / rect.height)
-      );
-    } else {
-      x = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgWidth / rect.width)
-      );
-      y = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgHeight / rect.height)
-      );
-    }
+  if (!isFixTouch) { // 安卓高版本
+    const {x, y} = getCurLocation();
     isPress = true;
     websocket.send(
         JSON.stringify({
-          type: "touch",
-          detail: "d 0 " + x + " " + y + " 50\n",
-        })
+          type: 'touch',
+          detail: 'd 0 ' + x + ' ' + y + ' 50\n',
+        }),
     );
   } else {
-    if (location.value === true) {
+    if (location.value) {
       moveX = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgHeight / rect.width)
+          (event.clientX - rect.left) *
+          (imgHeight / canvas.clientWidth),
       );
       moveY = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgWidth / rect.height)
+          (event.clientY - rect.top) *
+          (imgWidth / canvas.clientHeight),
       );
     } else {
       moveX = parseInt(
-          (event.clientX - rect.left * (canvas.width / rect.width)) *
-          (imgWidth / rect.width)
+          (event.clientX - rect.left) *
+          (imgWidth / canvas.clientWidth),
       );
       moveY = parseInt(
-          (event.clientY - rect.top * (canvas.height / rect.height)) *
-          (imgHeight / rect.height)
+          (event.clientY - rect.top) *
+          (imgHeight / canvas.clientHeight),
       );
     }
     clearInterval(loop);
@@ -619,75 +656,53 @@ const mousedown = (event) => {
       if (time >= 1000 && isLongPress === false) {
         websocket.send(
             JSON.stringify({
-              type: "debug",
-              detail: "longPress",
-              point: moveX + "," + moveY,
-            })
+              type: 'debug',
+              detail: 'longPress',
+              point: moveX + ',' + moveY,
+            }),
         );
         isLongPress = true;
       }
     }, 500);
   }
-}
+};
 const mousemove = (event) => {
-  if (devicePlatformVersion < 10) {
-    if (isPress === true) {
-      if (mouseMoveTime < 4) {
+  if (!isFixTouch) {
+    if (isPress) {
+      if (mouseMoveTime < 2) {
         mouseMoveTime++;
         return;
       } else {
-        const canvas = document.getElementById("canvas");
-        const rect = canvas.getBoundingClientRect();
-        let x;
-        let y;
-        if (location.value === true) {
-          x = parseInt(
-              (event.clientX - rect.left * (canvas.width / rect.width)) *
-              (imgHeight / rect.width)
-          );
-          y = parseInt(
-              (event.clientY - rect.top * (canvas.height / rect.height)) *
-              (imgWidth / rect.height)
-          );
-        } else {
-          x = parseInt(
-              (event.clientX - rect.left * (canvas.width / rect.width)) *
-              (imgWidth / rect.width)
-          );
-          y = parseInt(
-              (event.clientY - rect.top * (canvas.height / rect.height)) *
-              (imgHeight / rect.height)
-          );
-        }
+        const {x, y} = getCurLocation();
         websocket.send(
             JSON.stringify({
-              type: "touch",
-              detail: "m 0 " + x + " " + y + " 50\n",
-            })
+              type: 'touch',
+              detail: 'm 0 ' + x + ' ' + y + ' 50\n',
+            }),
         );
         mouseMoveTime = 0;
       }
     }
   }
-}
+};
 const touchstart = async (event) => {
-  const debugPic = document.getElementById("debugPic");
+  const debugPic = document.getElementById('debugPic');
   const rect = debugPic.getBoundingClientRect();
   const x = parseInt(
       (event.clientX - rect.left * (debugPic.width / rect.width)) *
-      (imgWidth / rect.width)
+      (imgWidth / rect.width),
   );
   const y = parseInt(
       (event.clientY - rect.top * (debugPic.height / rect.height)) *
-      (imgHeight / rect.height)
+      (imgHeight / rect.height),
   );
   await nextTick(() => {
     tree['value'].setCurrentKey(
-        findMinSize(findElementByPoint(elementData.value, x, y))
+        findMinSize(findElementByPoint(elementData.value, x, y)),
     );
   });
   await handleNodeClick(tree['value'].getCurrentNode());
-}
+};
 const findMinSize = (data) => {
   if (data.length === 0) {
     return null;
@@ -705,23 +720,23 @@ const findMinSize = (data) => {
   }
   currentId.value = [result.ele.id];
   return result.ele.id;
-}
+};
 const findElementByPoint = (ele, x, y) => {
   let result = [];
   for (let i in ele) {
     const eleStartX = ele[i].detail['bStart'].substring(
         0,
-        ele[i].detail['bStart'].indexOf(",")
+        ele[i].detail['bStart'].indexOf(','),
     );
     const eleStartY = ele[i].detail['bStart'].substring(
-        ele[i].detail['bStart'].indexOf(",") + 1
+        ele[i].detail['bStart'].indexOf(',') + 1,
     );
     const eleEndX = ele[i].detail['bEnd'].substring(
         0,
-        ele[i].detail['bEnd'].indexOf(",")
+        ele[i].detail['bEnd'].indexOf(','),
     );
     const eleEndY = ele[i].detail['bEnd'].substring(
-        ele[i].detail['bEnd'].indexOf(",") + 1
+        ele[i].detail['bEnd'].indexOf(',') + 1,
     );
     if (x >= eleStartX && x <= eleEndX && y >= eleStartY && y <= eleEndY) {
       result.push({
@@ -737,177 +752,184 @@ const findElementByPoint = (ele, x, y) => {
     }
   }
   return result;
-}
+};
 const handleNodeClick = (data) => {
   if (data !== null) {
     elementDetail.value = data.detail;
     print(data);
   }
-}
+};
 const print = (data) => {
-  const canvas = document.getElementById("debugPic"),
-      g = canvas.getContext("2d");
+  const canvas = document.getElementById('debugPic'),
+      g = canvas.getContext('2d');
   g.clearRect(0, 0, canvas.width, canvas.height);
   const eleStartX = data.detail['bStart'].substring(
       0,
-      data.detail['bStart'].indexOf(",")
+      data.detail['bStart'].indexOf(','),
   );
   const eleStartY = data.detail['bStart'].substring(
-      data.detail['bStart'].indexOf(",") + 1
+      data.detail['bStart'].indexOf(',') + 1,
   );
   const eleEndX = data.detail['bEnd'].substring(
       0,
-      data.detail['bEnd'].indexOf(",")
+      data.detail['bEnd'].indexOf(','),
   );
   const eleEndY = data.detail['bEnd'].substring(
-      data.detail['bEnd'].indexOf(",") + 1
+      data.detail['bEnd'].indexOf(',') + 1,
   );
   let a = Math.round(Math.random() * 255);
   let b = Math.round(Math.random() * 255);
   let c = Math.round(Math.random() * 255);
-  g.fillStyle = "rgba(" + a + ", " + b + ", " + c + ", 0.6)";
+  g.fillStyle = 'rgba(' + a + ', ' + b + ', ' + c + ', 0.6)';
   g.fillRect(
       eleStartX * (canvas.width / imgWidth),
       eleStartY * (canvas.height / imgHeight),
       (eleEndX - eleStartX) * (canvas.width / imgWidth),
-      (eleEndY - eleStartY) * (canvas.height / imgHeight)
+      (eleEndY - eleStartY) * (canvas.height / imgHeight),
   );
-}
-const getEleScreen = (xpath) => {
-  elementScreenLoading.value = true
+};
+const searchDevice = () => {
   websocket.send(
       JSON.stringify({
-        type: "debug",
-        detail: "eleScreen",
-        xpath,
-      })
+        type: 'find',
+      }),
   );
-}
+};
+const getEleScreen = (xpath) => {
+  elementScreenLoading.value = true;
+  websocket.send(
+      JSON.stringify({
+        type: 'debug',
+        detail: 'eleScreen',
+        xpath,
+      }),
+  );
+};
 const clearLog = () => {
   stepLog.value = [];
-}
+};
 const setStepLog = (data) => {
   stepLog.value.push(data);
-}
+};
 const runStep = () => {
-  debugLoading.value = true
-  activeTab2.value = 'log'
+  debugLoading.value = true;
+  activeTab2.value = 'log';
   websocket.send(
       JSON.stringify({
-        type: "debug",
-        detail: "runStep",
+        type: 'debug',
+        detail: 'runStep',
         caseId: testCase.value['id'],
-        pwd: device.value['password']
-      })
+        pwd: device.value['password'],
+      }),
   );
-}
+};
 const pressKey = (keyNum) => {
   websocket.send(
       JSON.stringify({
-        type: "keyEvent",
+        type: 'keyEvent',
         detail: keyNum,
-      })
+      }),
   );
-}
+};
 const changePic = (type) => {
-  loading.value = true
+  loading.value = true;
   let pic;
   switch (type) {
-    case "低":
-      pic = "low";
+    case '低':
+      pic = 'low';
       break;
-    case "中":
-      pic = "middle";
+    case '中':
+      pic = 'middle';
       break;
-    case "高":
-      pic = "high";
+    case '高':
+      pic = 'high';
       break;
-    case "fixed":
-      pic = "fixed";
+    case 'fixed':
+      pic = 'fixed';
       break;
   }
   websocket.send(
       JSON.stringify({
-        type: "pic",
+        type: 'pic',
         detail: pic,
-      })
+      }),
   );
-}
+};
 const beforeAvatarUpload = (file) => {
-  if (file.name.endsWith(".jpg") || file.name.endsWith(".png")) {
+  if (file.name.endsWith('.jpg') || file.name.endsWith('.png')) {
     return true;
   } else {
     ElMessage.error({
-      message: "文件格式有误！",
+      message: '文件格式有误！',
     });
     return false;
   }
-}
+};
 const beforeAvatarUpload2 = (file) => {
-  if (file.name.endsWith(".apk")) {
+  if (file.name.endsWith('.apk')) {
     return true;
   } else {
     ElMessage.error({
-      message: "文件格式有误！",
+      message: '文件格式有误！',
     });
     return false;
   }
-}
+};
 const limitOut = () => {
   ElMessage.error({
-    message: "只能添加一个文件！请先移除旧文件",
+    message: '只能添加一个文件！请先移除旧文件',
   });
-}
+};
 const uploadPackage = (content) => {
   uploadLoading.value = true;
   let formData = new FormData();
-  formData.append("file", content.file);
-  formData.append("type", 'packageFiles');
+  formData.append('file', content.file);
+  formData.append('type', 'packageFiles');
   axios
-      .post("/folder/upload", formData, {headers: {"Content-type": "multipart/form-data"}})
+      .post('/folder/upload', formData, {headers: {'Content-type': 'multipart/form-data'}})
       .then((resp) => {
         uploadLoading.value = false;
         if (resp['code'] === 2000) {
-          install(resp['data'])
+          install(resp['data']);
         }
       });
-}
+};
 const uploadScan = (content) => {
   let formData = new FormData();
-  formData.append("file", content.file);
-  formData.append("type", 'imageFiles');
+  formData.append('file', content.file);
+  formData.append('type', 'imageFiles');
   axios
-      .post("/folder/upload", formData, {headers: {"Content-type": "multipart/form-data"}})
+      .post('/folder/upload', formData, {headers: {'Content-type': 'multipart/form-data'}})
       .then((resp) => {
         if (resp['code'] === 2000) {
           ElMessage.success({
             message: resp['message'],
           });
-          scan(resp['data'])
+          scan(resp['data']);
         }
       });
-}
+};
 const scan = (url) => {
   websocket.send(
       JSON.stringify({
-        type: "scan",
-        url
-      })
+        type: 'scan',
+        url,
+      }),
   );
-}
+};
 const fixScreen = (type) => {
-  loading.value = true
-  location.value = !location.value
+  loading.value = true;
+  location.value = !location.value;
   let pic;
   switch (type) {
-    case "低":
-      pic = "low";
+    case '低':
+      pic = 'low';
       break;
-    case "中":
-      pic = "middle";
+    case '中':
+      pic = 'middle';
       break;
-    case "高":
-      pic = "high";
+    case '高':
+      pic = 'high';
       break;
   }
   if (fixScreenTor.value == 3) {
@@ -917,58 +939,58 @@ const fixScreen = (type) => {
   }
   websocket.send(
       JSON.stringify({
-        type: "fixScreen",
+        type: 'fixScreen',
         s: fixScreenTor.value,
-        detail: pic
-      })
+        detail: pic,
+      }),
   );
-}
+};
 const screen = (type, p) => {
   if (p !== 'abort') {
-    loading.value = true
+    loading.value = true;
   }
   let pic;
   switch (type) {
-    case "低":
-      pic = "low";
+    case '低':
+      pic = 'low';
       break;
-    case "中":
-      pic = "middle";
+    case '中':
+      pic = 'middle';
       break;
-    case "高":
-      pic = "high";
+    case '高':
+      pic = 'high';
       break;
   }
   websocket.send(
       JSON.stringify({
-        type: "screen",
+        type: 'screen',
         s: p,
-        detail: pic
-      })
+        detail: pic,
+      }),
   );
-}
+};
 const sendText = (text) => {
   websocket.send(
       JSON.stringify({
-        type: "text",
+        type: 'text',
         detail: text,
-      })
+      }),
   );
-}
+};
 const install = (apk) => {
   if (apk.length > 0) {
     websocket.send(
         JSON.stringify({
-          type: "debug",
-          detail: "install",
+          type: 'debug',
+          detail: 'install',
           apk,
-        })
+        }),
     );
     ElMessage.success({
-      message: "开始安装！请稍后...",
+      message: '开始安装！请稍后...',
     });
   }
-}
+};
 const getElement = () => {
   elementLoading.value = true;
   if (oldBlob !== undefined) {
@@ -976,74 +998,65 @@ const getElement = () => {
   }
   websocket.send(
       JSON.stringify({
-        type: "debug",
-        detail: "tree",
+        type: 'debug',
+        detail: 'tree',
         hasScreen: oldBlob !== undefined,
-      })
+      }),
   );
-}
+};
 const getWebViewForward = () => {
   webViewLoading.value = true;
   websocket.send(
       JSON.stringify({
-        type: "forwardView",
-      })
+        type: 'forwardView',
+      }),
   );
-}
+};
 const close = () => {
   if (websocket !== null) {
-    websocket.close()
-    websocket = null
+    websocket.close();
+    websocket = null;
   }
   if (terminalWebsocket !== null) {
-    terminalWebsocket.close()
-    terminalWebsocket = null
+    terminalWebsocket.close();
+    terminalWebsocket = null;
   }
-}
+};
 onBeforeUnmount(() => {
-  close()
-})
+  close();
+});
 const getDeviceById = (id) => {
   loading.value = true;
   axios
-      .get("/controller/devices", {params: {id: id}}).then((resp) => {
+      .get('/controller/devices', {params: {id: id}}).then((resp) => {
     if (resp['code'] === 2000) {
-      device.value = resp.data
+      device.value = resp.data;
       if (device.value['status'] !== 'ONLINE') {
         ElMessage.error({
-          message: "该设备暂时不可使用！",
+          message: '该设备暂时不可使用！',
         });
-        router.replace("/Index")
-        return
-      }
-      if (device.value['version'].indexOf(".") === -1) {
-        devicePlatformVersion = parseInt(
-            device.value['version'].replace(" ", "")
-        );
-      } else {
-        devicePlatformVersion = parseInt(
-            device.value['version'].substring(0, device.value['version'].indexOf("."))
-        );
+        router.replace('/Index');
+        return;
       }
       axios
-          .get("/controller/agents", {params: {id: device.value['agentId']}}).then((resp) => {
+          .get('/controller/agents', {params: {id: device.value['agentId']}}).then((resp) => {
         if (resp['code'] === 2000) {
-          agent.value = resp.data
+          agent.value = resp.data;
           openSocket(agent.value['host'], agent.value['port']
               , agent.value['secretKey'], device.value['udId']);
         }
-      })
+      });
     }
-  })
-}
+  });
+};
 
 onMounted(() => {
   if (store.state.project.id) {
-    project.value = store.state.project
+    project.value = store.state.project;
   }
-  getDeviceById(route.params.deviceId)
-  store.commit("autoChangeCollapse");
-})
+  getDeviceById(route.params.deviceId);
+  store.commit('autoChangeCollapse');
+});
 </script>
 
 <template>
@@ -1100,13 +1113,25 @@ onMounted(() => {
   >
   </el-page-header>
   <el-card shadow="never">
-    <el-row :gutter="20">
-      <el-col :span="6">
+    <el-row
+        :gutter="24"
+        @mouseup="lineMouseup"
+        @mouseleave="lineMouseleave"
+        @mousemove="lineMousemove"
+    >
+      <el-col
+          :span="tabPosition == 'left' ? 12 : 24"
+          :style="{
+            flexBasis: tabPosition == 'left' ? layoutSplitInfo.left + '%' : '',
+             maxWidth: 'none'
+          }"
+      >
         <el-card v-loading="loading"
                  element-loading-text="准备图像中..."
                  element-loading-background="rgba(255, 255, 255, 1)"
                  style="font-size: 14px"
-                 :body-style="{ padding: '10px', background: '#ccc', position: 'relative',minHeight: '340px' }">
+                 :body-style="{ padding: '10px', background: '#ccc', position: 'relative',minHeight: '340px' }"
+        >
           <template #header>
             <div style="position: relative; display: flex;align-items: center;">
               <el-icon :size="14" style="vertical-align: middle;">
@@ -1165,14 +1190,16 @@ onMounted(() => {
               </el-popover>
             </div>
           </template>
-          <div style="margin-right: 40px">
+          <div style="margin-right: 40px; text-align: center">
             <canvas
                 id="canvas"
                 @mouseup="mouseup"
                 @mousemove="mousemove"
                 @mousedown="mousedown"
                 @mouseleave="mouseleave"
-            ></canvas>
+                style="display: inline-block"
+                :style="canvasRectInfo"
+            />
             <el-button-group id="pressKey">
               <el-button
                   size="small"
@@ -1221,7 +1248,7 @@ onMounted(() => {
                 :enterable="false"
                 effect="dark"
                 content="投屏帧数"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
               <div>
@@ -1242,7 +1269,12 @@ onMounted(() => {
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
-                      <el-radio-group v-loading="loading" v-model="pic" size="mini" @change="changePic">
+                      <el-radio-group
+                          v-loading="loading"
+                          v-model="pic"
+                          size="mini"
+                          @change="changePic"
+                      >
                         <el-radio-button label="低"></el-radio-button>
                         <el-radio-button label="中"></el-radio-button>
                         <el-radio-button label="高"></el-radio-button>
@@ -1255,8 +1287,8 @@ onMounted(() => {
             <el-tooltip
                 :enterable="false"
                 effect="dark"
-                content="手动校准"
-                placement="right"
+                content="手动修复"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
               <div>
@@ -1279,38 +1311,38 @@ onMounted(() => {
                     <el-dropdown-menu class="divider" v-loading="loading"
                                       element-loading-background="rgba(255, 255, 255, 1)">
                       <el-button-group>
-                        <el-tooltip
-                            effect="dark"
-                            content="校准图像"
-                            placement="top"
-                        >
-                          <el-button
-                              size="small"
-                              type="info"
-                              circle
-                              @click="fixScreen(pic)"
-                          >
-                            <el-icon :size="14" style="vertical-align: middle;">
-                              <FullScreen/>
-                            </el-icon>
-                          </el-button>
-                        </el-tooltip>
-                        <el-tooltip
-                            effect="dark"
-                            content="校准坐标"
-                            placement="top"
-                        >
-                          <el-button
-                              size="small"
-                              type="info"
-                              circle
-                              @click="switchLocation"
-                          >
-                            <el-icon :size="14" style="vertical-align: middle;">
-                              <Aim/>
-                            </el-icon>
-                          </el-button>
-                        </el-tooltip>
+<!--                        <el-tooltip-->
+<!--                            effect="dark"-->
+<!--                            content="校准图像"-->
+<!--                            placement="top"-->
+<!--                        >-->
+<!--                          <el-button-->
+<!--                              size="small"-->
+<!--                              type="info"-->
+<!--                              circle-->
+<!--                              @click="fixScreen(pic)"-->
+<!--                          >-->
+<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+<!--                              <FullScreen/>-->
+<!--                            </el-icon>-->
+<!--                          </el-button>-->
+<!--                        </el-tooltip>-->
+<!--                        <el-tooltip-->
+<!--                            effect="dark"-->
+<!--                            content="校准坐标"-->
+<!--                            placement="top"-->
+<!--                        >-->
+<!--                          <el-button-->
+<!--                              size="small"-->
+<!--                              type="info"-->
+<!--                              circle-->
+<!--                              @click="switchLocation"-->
+<!--                          >-->
+<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+<!--                              <Aim/>-->
+<!--                            </el-icon>-->
+<!--                          </el-button>-->
+<!--                        </el-tooltip>-->
                         <el-tooltip
                             effect="dark"
                             content="修复黑屏"
@@ -1350,91 +1382,109 @@ onMounted(() => {
               </div>
             </el-tooltip>
             <el-tooltip
-                :enterable="false"
                 effect="dark"
-                content="设备转向"
-                placement="right"
-                :offset="15"
+                content="物理查找"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
-              <div>
-                <el-dropdown
-                    :hide-on-click="false"
-                    trigger="click"
-                    placement="right"
-                    style="margin-top: 4px"
+              <div style="margin-top: 4px">
+                <el-button
+                    size="small"
+                    type="info"
+                    circle
+                    @click="searchDevice"
                 >
-                  <el-button
-                      size="small"
-                      type="primary"
-                      circle
-                  >
-                    <el-icon :size="12" style="vertical-align: middle;">
-                      <Wallet/>
-                    </el-icon>
-                  </el-button>
-                  <template #dropdown>
-                    <el-dropdown-menu class="divider" v-loading="loading"
-                                      element-loading-background="rgba(255, 255, 255, 1)">
-                      <el-button-group>
-                        <el-tooltip
-                            effect="dark"
-                            content="左转90度"
-                            placement="top"
-                        >
-                          <el-button
-                              size="small"
-                              type="info"
-                              circle
-                              @click="screen(pic,'sub')"
-                          >
-                            <el-icon :size="14" style="vertical-align: middle;">
-                              <RefreshLeft/>
-                            </el-icon>
-                          </el-button>
-                        </el-tooltip>
-                        <el-tooltip
-                            effect="dark"
-                            content="取消自动旋转"
-                            placement="top"
-                        >
-                          <el-button
-                              size="small"
-                              type="info"
-                              circle
-                              @click="screen(pic,'abort')"
-                          >
-                            <el-icon :size="14" style="vertical-align: middle;">
-                              <Refresh/>
-                            </el-icon>
-                          </el-button>
-                        </el-tooltip>
-                        <el-tooltip
-                            effect="dark"
-                            content="右转90度"
-                            placement="top"
-                        >
-                          <el-button
-                              size="small"
-                              type="info"
-                              circle
-                              @click="screen(pic,'add')"
-                          >
-                            <el-icon :size="14" style="vertical-align: middle;">
-                              <RefreshRight/>
-                            </el-icon>
-                          </el-button>
-                        </el-tooltip>
-                      </el-button-group>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
+                  <el-icon :size="12" style="vertical-align: middle;">
+                    <Search/>
+                  </el-icon>
+                </el-button>
               </div>
             </el-tooltip>
+            <!--            <el-tooltip-->
+            <!--                :enterable="false"-->
+            <!--                effect="dark"-->
+            <!--                content="设备转向"-->
+            <!--                :placement="tabPosition == 'left' ? 'right' : 'left'"-->
+            <!--                :offset="15"-->
+            <!--            >-->
+            <!--              <div>-->
+            <!--                <el-dropdown-->
+            <!--                    :hide-on-click="false"-->
+            <!--                    trigger="click"-->
+            <!--                    placement="right"-->
+            <!--                    style="margin-top: 4px"-->
+            <!--                >-->
+            <!--                  <el-button-->
+            <!--                      size="small"-->
+            <!--                      type="primary"-->
+            <!--                      circle-->
+            <!--                  >-->
+            <!--                    <el-icon :size="12" style="vertical-align: middle;">-->
+            <!--                      <Wallet/>-->
+            <!--                    </el-icon>-->
+            <!--                  </el-button>-->
+            <!--                  <template #dropdown>-->
+            <!--                    <el-dropdown-menu class="divider" v-loading="loading"-->
+            <!--                                      element-loading-background="rgba(255, 255, 255, 1)">-->
+            <!--                      <el-button-group>-->
+            <!--                        <el-tooltip-->
+            <!--                            effect="dark"-->
+            <!--                            content="左转90度"-->
+            <!--                            placement="top"-->
+            <!--                        >-->
+            <!--                          <el-button-->
+            <!--                              size="small"-->
+            <!--                              type="info"-->
+            <!--                              circle-->
+            <!--                              @click="screen(pic,'sub')"-->
+            <!--                          >-->
+            <!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+            <!--                              <RefreshLeft/>-->
+            <!--                            </el-icon>-->
+            <!--                          </el-button>-->
+            <!--                        </el-tooltip>-->
+            <!--                        <el-tooltip-->
+            <!--                            effect="dark"-->
+            <!--                            content="取消自动旋转"-->
+            <!--                            placement="top"-->
+            <!--                        >-->
+            <!--                          <el-button-->
+            <!--                              size="small"-->
+            <!--                              type="info"-->
+            <!--                              circle-->
+            <!--                              @click="screen(pic,'abort')"-->
+            <!--                          >-->
+            <!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+            <!--                              <Refresh/>-->
+            <!--                            </el-icon>-->
+            <!--                          </el-button>-->
+            <!--                        </el-tooltip>-->
+            <!--                        <el-tooltip-->
+            <!--                            effect="dark"-->
+            <!--                            content="右转90度"-->
+            <!--                            placement="top"-->
+            <!--                        >-->
+            <!--                          <el-button-->
+            <!--                              size="small"-->
+            <!--                              type="info"-->
+            <!--                              circle-->
+            <!--                              @click="screen(pic,'add')"-->
+            <!--                          >-->
+            <!--                            <el-icon :size="14" style="vertical-align: middle;">-->
+            <!--                              <RefreshRight/>-->
+            <!--                            </el-icon>-->
+            <!--                          </el-button>-->
+            <!--                        </el-tooltip>-->
+            <!--                      </el-button-group>-->
+            <!--                    </el-dropdown-menu>-->
+            <!--                  </template>-->
+            <!--                </el-dropdown>-->
+            <!--              </div>-->
+            <!--            </el-tooltip>-->
             <el-tooltip
                 :enterable="false"
                 effect="dark"
                 content="亮度/音量"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
               <div>
@@ -1528,7 +1578,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="拨号"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1546,7 +1596,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="拍照"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1564,7 +1614,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="浏览器"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1582,7 +1632,7 @@ onMounted(() => {
             <el-tooltip
                 effect="dark"
                 content="锁定/解锁屏幕"
-                placement="right"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
@@ -1600,9 +1650,26 @@ onMounted(() => {
           </div>
         </el-card>
       </el-col>
-      <el-col :span="18">
-        <el-tabs @tab-click="switchTabs" stretch class="remote-tab" v-model="activeTab"
-                 tab-position="left">
+
+      <div
+          :class="{ line: tabPosition == 'left', lineVertical: tabPosition == 'top' }"
+          @mousedown="lineMousedown"
+      />
+
+      <el-col
+          :span="tabPosition == 'left' ? 12 : 24"
+          :style="{
+            flexBasis: tabPosition == 'left' ?  100 - Number(layoutSplitInfo.left) + '%' : '',
+             maxWidth: 'none'
+          }"
+      >
+        <el-tabs
+            @tab-click="switchTabs"
+            stretch
+            class="remote-tab"
+            v-model="activeTab"
+            :tab-position="tabPosition"
+        >
           <el-tab-pane label="远控面板" name="main">
             <el-row :gutter="20">
               <el-col :span="12">
@@ -1985,9 +2052,9 @@ onMounted(() => {
                         >
                           <template #default="{ node, data }">
                           <span style="font-size: 14px" v-if="data.detail['resource-id']">
-                            {{ node.label.substring(0, node.label.indexOf('>')) + " " }}
+                            {{ node.label.substring(0, node.label.indexOf('>')) + ' ' }}
                             <span style="color: #F55781">resource-id</span>={{
-                              "\"" + data.detail['resource-id'] + "\">"
+                              '"' + data.detail['resource-id'] + '">'
                             }}
                           </span>
                             <span style="font-size: 14px" v-else>{{ node.label }}</span>
@@ -2216,7 +2283,9 @@ onMounted(() => {
                   <template #header>
                     <div>
                       <div style="display: flex;align-items: center;">
-                        <img :src="getImg('chrome')" width="20"/> <strong style="margin-left: 10px">{{ web['package'] }}
+                        <img :src="getImg('chrome')" width="20"/> <strong style="margin-left: 10px">{{
+                          web['package']
+                        }}
                         ({{ web['version'] }})</strong>
                       </div>
                     </div>
@@ -2275,3 +2344,51 @@ onMounted(() => {
     </el-row>
   </el-card>
 </template>
+<style scoped lang="less">
+.line {
+  width: 2px;
+  height: inherit;
+  background: #ccc;
+  text-align: center;
+  border-radius: 1px;
+  margin-right: -2px;
+  position: relative;
+  z-index: 9;
+  cursor: e-resize;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 48%;
+    left: -14px;
+    display: block;
+    width: 30px;
+    height: 30px;
+    background: url("@/assets/img/drag.png") no-repeat center;
+    transform: rotate(90deg);
+    background-size: 100% 100%;
+  }
+}
+
+.lineVertical {
+  width: 100%;
+  height: 2px;
+  background: #ccc;
+  text-align: center;
+  position: relative;
+  cursor: n-resize;
+  margin: 1em calc(var(--el-card-padding) - 4px);
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 48%;
+    top: -14px;
+    display: block;
+    width: 30px;
+    height: 30px;
+    background: url("@/assets/img/drag.png") no-repeat center;
+    background-size: 100% 100%;
+  }
+}
+</style>
