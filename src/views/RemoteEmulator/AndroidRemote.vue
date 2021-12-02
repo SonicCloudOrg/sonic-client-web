@@ -76,7 +76,6 @@ let isLongPress = false;
 // let isRotated = 0; // 是否转向 // 0 90 180 270
 let mouseMoveTime = 0;
 const pic = ref('中');
-const fixScreenTor = ref(0);
 const elementLoading = ref(false);
 const isShowImg = ref(false);
 const isDriverFinish = ref(false);
@@ -914,58 +913,6 @@ const scan = (url) => {
       JSON.stringify({
         type: 'scan',
         url,
-      }),
-  );
-};
-const fixScreen = (type) => {
-  loading.value = true;
-  location.value = !location.value;
-  let pic;
-  switch (type) {
-    case '低':
-      pic = 'low';
-      break;
-    case '中':
-      pic = 'middle';
-      break;
-    case '高':
-      pic = 'high';
-      break;
-  }
-  if (fixScreenTor.value == 3) {
-    fixScreenTor.value = 0;
-  } else {
-    fixScreenTor.value++;
-  }
-  websocket.send(
-      JSON.stringify({
-        type: 'fixScreen',
-        s: fixScreenTor.value,
-        detail: pic,
-      }),
-  );
-};
-const screen = (type, p) => {
-  if (p !== 'abort') {
-    loading.value = true;
-  }
-  let pic;
-  switch (type) {
-    case '低':
-      pic = 'low';
-      break;
-    case '中':
-      pic = 'middle';
-      break;
-    case '高':
-      pic = 'high';
-      break;
-  }
-  websocket.send(
-      JSON.stringify({
-        type: 'screen',
-        s: p,
-        detail: pic,
       }),
   );
 };
