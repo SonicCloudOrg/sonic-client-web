@@ -52,7 +52,9 @@ const manufacturer = ref([
   "Yulong",
   "LGE",
   "Sony",
-  "GIONEE"
+  "GIONEE",
+  "Lenovo",
+  "HTC"
 ]);
 const statusList = ref([
   {
@@ -470,7 +472,7 @@ onMounted(() => {
                       :src="getImg(man)"
                   />
                   <img
-                      v-else-if="man === 'Xiaomi' ||man === 'APPLE'|| man==='LGE'"
+                      v-else-if="man === 'Xiaomi' ||man === 'APPLE'|| man==='LGE' || man==='HTC'"
                       style="width: 30px"
                       :src="getImg(man)"
                   />
@@ -609,7 +611,7 @@ onMounted(() => {
                           :src="getImg(device.manufacturer)"
                       />
                       <img
-                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'||device.manufacturer === 'LGE'"
+                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'||device.manufacturer === 'LGE'||device.manufacturer === 'HTC'"
                           style="width: 30px"
                           :src="getImg(device.manufacturer)"
                       />
