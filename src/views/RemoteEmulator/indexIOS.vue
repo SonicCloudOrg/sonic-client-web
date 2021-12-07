@@ -21,7 +21,7 @@ const layoutSplitInfo = ref(_layoutSplitInfo ?
     last_top: 316,
 });
 const swithLayout = () => {
-  console.log('swithLayout!!', tabPosition.value);
+  // console.log('swithLayout!!', tabPosition.value);
   if (tabPosition.value == 'left') {
     // 变竖屏
     tabPosition.value = 'top';
@@ -40,7 +40,7 @@ const swithLayout = () => {
   });
 }
 const lineMouseup = (event) => {
-  console.log('lineMouseup', event.clientX, event.clientY);
+  // console.log('lineMouseup', event.clientX, event.clientY);
   isPress = false;
   if (tabPosition.value == 'left') {
     layoutSplitInfo.value.last_left = layoutSplitInfo.value.left;
@@ -63,7 +63,7 @@ const lineMouseleave = (event) => {
   saveLastSplitObj();
 };
 const lineMousedown = (event) => {
-  console.log('lineMousedown', event.clientX, event.clientY);
+  // console.log('lineMousedown', event.clientX, event.clientY);
   event.preventDefault()
   event.stopPropagation()
   isPress = true;
@@ -107,7 +107,7 @@ const handleSplit = (variate) => {
     }
 
     layoutSplitInfo.value.left =  layoutSplitInfo.value.last_left + Number(percent);
-    console.log('variate', percent, layoutSplitInfo.value.left);
+    // console.log('variate', percent, layoutSplitInfo.value.left);
   }
   else if (tabPosition.value == 'top') {
     const rect = parentNode.getBoundingClientRect();
@@ -125,7 +125,7 @@ const handleSplit = (variate) => {
     layoutSplitInfo.value.top =  layoutSplitInfo.value.last_top + Number(percent);
     // 直接应用
     canvasRectInfo.value.height = layoutSplitInfo.value.top + 'px';
-    console.log('variate', percent, layoutSplitInfo.value.top);
+    // console.log('variate', percent, layoutSplitInfo.value.top);
   }
 }
 const saveLastSplitObj = () => {

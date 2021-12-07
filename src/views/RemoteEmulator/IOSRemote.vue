@@ -350,9 +350,7 @@ const getCurLocation = () => {
     );
     y = (directionStatus.value == 180) ? imgHeight - _y : _y;
   }
-  console.log('xy', {
-    x, y
-  });
+  // console.log('xy', { x, y });
   return ({
     x, y
   })

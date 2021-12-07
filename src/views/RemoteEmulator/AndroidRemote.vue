@@ -559,9 +559,7 @@ const getCurLocation = () => {
     );
     y = (directionStatus.value == 180) ? imgHeight - _y : _y;
   }
-  console.log('xy', {
-    x, y
-  });
+  // console.log('xy', { x, y });
   return ({
     x, y
   })
@@ -713,12 +711,14 @@ const touchstart = async (event) => {
   const debugPic = document.getElementById('debugPic');
   const rect = debugPic.getBoundingClientRect();
   const x = parseInt(
-      (event.clientX - rect.left * (debugPic.width / rect.width)) *
-      (imgWidth / rect.width),
+      (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth)
   );
+  // _x = parseInt(
+  //     (event.clientY - rect.top) *
+  //     (imgWidth / canvas.clientHeight),
+  // );
   const y = parseInt(
-      (event.clientY - rect.top * (debugPic.height / rect.height)) *
-      (imgHeight / rect.height),
+      (event.clientY - rect.top) * (imgHeight / debugPic.clientHeight),
   );
   await nextTick(() => {
     tree['value'].setCurrentKey(
@@ -1095,7 +1095,7 @@ onMounted(() => {
           :span="tabPosition == 'left' ? 12 : 24"
           :style="{
             flexBasis: tabPosition == 'left' ? layoutSplitInfo.left + '%' : '',
-             maxWidth: 'none'
+             maxWidth: tabPosition == 'left' ? layoutSplitInfo.left + '%' : ''
           }"
       >
         <el-card v-loading="loading"
@@ -1519,7 +1519,7 @@ onMounted(() => {
           :span="tabPosition == 'left' ? 12 : 24"
           :style="{
             flexBasis: tabPosition == 'left' ?  100 - Number(layoutSplitInfo.left) + '%' : '',
-             maxWidth: 'none'
+             maxWidth: tabPosition == 'left' ?  100 - Number(layoutSplitInfo.left) + '%' : ''
           }"
       >
         <el-tabs
@@ -1909,7 +1909,7 @@ onMounted(() => {
                         :style="
                       'width: 100%;background-image: url(' +
                       imgUrl +
-                      ');background-size:cover;'
+                      ');background-size: 100% 100%;'
                     "
                     >
                       <canvas id="debugPic" @mousedown="touchstart"></canvas>
@@ -2307,5 +2307,9 @@ onMounted(() => {
     background: url("@/assets/img/drag.png") no-repeat center;
     background-size: 100% 100%;
   }
+}
+#debugPic{
+  width: 100%;
+  height: auto;
 }
 </style>
