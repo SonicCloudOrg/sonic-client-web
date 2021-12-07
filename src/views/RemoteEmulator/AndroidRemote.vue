@@ -75,7 +75,7 @@ let time = 0;
 let isLongPress = false;
 // let isRotated = 0; // 是否转向 // 0 90 180 270
 let mouseMoveTime = 0;
-const pic = ref('中');
+const pic = ref('高');
 const elementLoading = ref(false);
 const isShowImg = ref(false);
 const isDriverFinish = ref(false);
@@ -114,6 +114,7 @@ const logcatScroll = ref(null);
 const cmdIsDone = ref(true);
 const uploadLoading = ref(false);
 const location = ref(false);
+const remoteAdbUrl = ref("");
 const logcatFilter = ref({
   level: 'E',
   filter: '',
@@ -413,6 +414,12 @@ const websocketOnmessage = (message) => {
     img.src = u;
   } else {
     switch (JSON.parse(message.data)['msg']) {
+      case 'adbkit': {
+        if (JSON.parse(message.data).isEnable) {
+          remoteAdbUrl.value = agent.value['host'] + ":" + JSON.parse(message.data).port
+        }
+        break;
+      }
       case 'rotation': {
         if (directionStatus.value !== -1) {
           loading.value = true;
@@ -1562,28 +1569,13 @@ onMounted(() => {
                   <template #header>
                     <strong>远程连接ADB</strong>
                   </template>
-                  <el-form size="small" :model="text">
-                    <el-form-item
-                    >
-                      <el-input
-                          clearable
-                          v-model="text.content"
-                          size="small"
-                          placeholder="请输入要发送的文本，支持简体中文"
-                      ></el-input>
-                    </el-form-item>
-                  </el-form>
-                  <div style="text-align: center;">
-                    <el-button
-                        size="mini"
-                        type="primary"
-                    >启用
-                    </el-button>
-                    <el-button
-                        size="mini"
-                        type="primary"
-                    >暂停
-                    </el-button>
+                  <div v-if="remoteAdbUrl.length>0">
+                    <el-card :body-style="{backgroundColor:'#000000'}">
+                      <strong style="color: #ffffff">adb connect {{ remoteAdbUrl }}</strong>
+                    </el-card>
+                  </div>
+                  <div v-else>
+                    Agent未开启该功能！
                   </div>
                 </el-card>
               </el-col>
