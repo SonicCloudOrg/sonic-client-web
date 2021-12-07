@@ -27,7 +27,7 @@ const layoutSplitInfo = ref(_layoutSplitInfo ?
       last_top: 316,
     });
 const swithLayout = () => {
-  console.log('swithLayout!!', tabPosition.value);
+  // console.log('swithLayout!!', tabPosition.value);
   if (tabPosition.value == 'left') {
     // 变竖屏
     tabPosition.value = 'top';
@@ -68,17 +68,17 @@ const lineMouseleave = (event) => {
   saveLastSplitObj();
 };
 const lineMousedown = (event) => {
-  console.log('lineMousedown', event.clientX, event.clientY);
-  event.preventDefault();
-  event.stopPropagation();
+  // console.log('lineMousedown', event.clientX, event.clientY);
+  // event.preventDefault();
+  // event.stopPropagation();
   isPress = true;
   startPosition.x = event.clientX;
   startPosition.y = event.clientY;
   parentNode = event.target.parentNode; // 记录分割线的父组件，防止移动的时候变化
 };
 const lineMousemove = (event) => {
-  event.preventDefault();
-  event.stopPropagation();
+  // event.preventDefault();
+  // event.stopPropagation();
   if (isPress) {
     // console.log('lineMousemove', event.clientX, event.clientY);
     if (mouseMoveTime < 2) {
@@ -111,7 +111,7 @@ const handleSplit = (variate) => {
     }
 
     layoutSplitInfo.value.left = layoutSplitInfo.value.last_left + Number(percent);
-    console.log('variate', percent, layoutSplitInfo.value.left);
+    // console.log('variate', percent, layoutSplitInfo.value.left);
   } else if (tabPosition.value == 'top') {
     const rect = parentNode.getBoundingClientRect();
     const percent = variate;
@@ -128,7 +128,7 @@ const handleSplit = (variate) => {
     layoutSplitInfo.value.top = layoutSplitInfo.value.last_top + Number(percent);
     // 直接应用
     canvasRectInfo.value.height = layoutSplitInfo.value.top + 'px';
-    console.log('variate', percent, layoutSplitInfo.value.top);
+    // console.log('variate', percent, layoutSplitInfo.value.top);
   }
 };
 const saveLastSplitObj = () => {
