@@ -1102,7 +1102,8 @@ onMounted(() => {
           :span="tabPosition == 'left' ? 12 : 24"
           :style="{
             flexBasis: tabPosition == 'left' ? layoutSplitInfo.left + '%' : '',
-             maxWidth: tabPosition == 'left' ? layoutSplitInfo.left + '%' : ''
+             maxWidth: tabPosition == 'left' ? layoutSplitInfo.left + '%' : '',
+             transition: !isSplitPressing ? 'flex-basis 0.3s,max-width 0.3s' : ''
           }"
       >
         <el-card v-loading="loading"

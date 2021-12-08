@@ -3,10 +3,13 @@ import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import AndroidRemote from './AndroidRemote.vue';
 import { ElMessage } from 'element-plus';
 
-let isPress = false;
+// let isPress = false;
 let mouseMoveTime = 0;
 let startPosition = { x: 0, y: 0 };
 let parentNode = null;
+
+const isPress = ref(false);
+
 const _layoutSplitInfo = window.localStorage.getItem('layoutSplitInfo');
 const _tabPosition = window.localStorage.getItem('tabPosition');
 
@@ -47,7 +50,7 @@ const swithLayout = () => {
 };
 const lineMouseup = (event) => {
   // console.log('lineMouseup', event.clientX, event.clientY);
-  isPress = false;
+  isPress.value = false;
   if (tabPosition.value == 'left') {
     layoutSplitInfo.value.last_left = layoutSplitInfo.value.left;
   } else if (tabPosition.value == 'top') {
@@ -56,30 +59,30 @@ const lineMouseup = (event) => {
   saveLastSplitObj();
 };
 const lineMouseleave = (event) => {
-  if (!isPress) {
+  if (!isPress.value) {
     return;
   }
   // console.log('lineMouseleave', event.clientX, event.clientY);
   // 由于左右滑动有可能误触发该事件，所以只处理上下滑动的情况
   if (tabPosition.value == 'top') {
-    isPress = false;
+    isPress.value = false;
     layoutSplitInfo.value.last_top = layoutSplitInfo.value.top;
   }
   saveLastSplitObj();
 };
 const lineMousedown = (event) => {
   // console.log('lineMousedown', event.clientX, event.clientY);
-  // event.preventDefault();
+  event.preventDefault();
   // event.stopPropagation();
-  isPress = true;
+  isPress.value = true;
   startPosition.x = event.clientX;
   startPosition.y = event.clientY;
   parentNode = event.target.parentNode; // 记录分割线的父组件，防止移动的时候变化
 };
 const lineMousemove = (event) => {
-  // event.preventDefault();
+  event.preventDefault();
   // event.stopPropagation();
-  if (isPress) {
+  if (isPress.value) {
     // console.log('lineMousemove', event.clientX, event.clientY);
     if (mouseMoveTime < 2) {
       mouseMoveTime++;
