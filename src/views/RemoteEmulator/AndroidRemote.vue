@@ -293,7 +293,7 @@ const setImgData = (data) => {
 const openSocket = (host, port, udId, key) => {
   if ('WebSocket' in window) {
     websocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/android/' + udId + '/' + key,
+        'ws://' + host + ':' + port + '/websockets/android/' + udId + '/' + key + '/' + localStorage.getItem('SonicToken'),
     );
     terminalWebsocket = new WebSocket(
         'ws://' + host + ':' + port + '/websockets/terminal/' + udId + '/' + key,
@@ -1570,9 +1570,9 @@ onMounted(() => {
                   <template #header>
                     <strong>远程连接ADB</strong>
                   </template>
-                  <div v-if="remoteAdbUrl.length>0">
-                    <el-card :body-style="{backgroundColor:'#000000'}">
-                      <strong style="color: #ffffff">adb connect {{ remoteAdbUrl }}</strong>
+                  <div v-if="remoteAdbUrl.length>0" style="margin-top: 8px;margin-bottom: 8px">
+                    <el-card :body-style="{backgroundColor:'#303133'}">
+                      <strong style="color: #F2F6FC">adb connect {{ remoteAdbUrl }}</strong>
                     </el-card>
                   </div>
                   <div v-else>
@@ -1595,7 +1595,7 @@ onMounted(() => {
                   </div>
                 </el-card>
               </el-col>
-              <el-col :span="12" style="margin-top: 20px">
+              <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
                     <strong>扫描二维码</strong>
@@ -1622,7 +1622,7 @@ onMounted(() => {
                   </div>
                 </el-card>
               </el-col>
-              <el-col :span="12" style="margin-top: 20px">
+              <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
                     <strong>安装APK</strong>
@@ -2301,7 +2301,8 @@ onMounted(() => {
     background-size: 100% 100%;
   }
 }
-#debugPic{
+
+#debugPic {
   width: 100%;
   height: auto;
 }
