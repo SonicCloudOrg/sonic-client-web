@@ -826,8 +826,9 @@ onMounted(() => {
           </template>
           <div style="margin-right: 40px; text-align: center">
             <img
+                v-if="isDriverFinish"
                 id="iosCap"
-                :src="'http://' + agent['host'] + ':'+  agent['port']+'/iosScreen?s_id='+sid"
+                :src="'http://' + agent['host'] + ':'+  sid"
                 width="100%"
                 draggable="false"
                 @mousedown="mousedown"
@@ -1172,76 +1173,7 @@ onMounted(() => {
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="Terminal" name="terminal" disabled>
-            <el-alert
-                title="注意事项"
-                type="warning"
-                description="该功能仍处于Beta测试中，暂时屏蔽reboot、rm、su等风险指令"
-                show-icon
-                :closable="false"
-                style="margin-bottom: 10px"
-            />
-            <el-tabs stretch type="border-card">
-              <el-tab-pane label="Shell">
-                <el-card
-                    style="border: 0px"
-                    :body-style="{color:'#FFFFFF',backgroundColor:'#303133',lineHeight:'1.5'}">
-                  <el-scrollbar noresize ref="terScroll" :style="'height:'+terminalHeight+'px;min-height:450px'">
-                    <div v-html="c" v-for="c in cmdOutPut" style="white-space: pre-wrap">
-                    </div>
-                  </el-scrollbar>
-                  <div style="display: flex;margin-top: 10px">
-                    <el-input @keyup.enter="sendCmd" size="mini" v-model="cmdInput" placeholder="输入指令后，点击Send或回车发送">
-                      <template #prepend>{{ cmdUser + ':/ $' }}</template>
-                    </el-input>
-                    <el-button size="mini" @click="sendCmd" :disabled="cmdInput.length===0||!cmdIsDone"
-                               style="margin-left: 5px" type="primary">Send
-                    </el-button>
-                    <el-button size="mini" @click="stopCmd" :disabled="cmdIsDone"
-                               style="margin-left: 5px" type="danger">Stop
-                    </el-button>
-                    <el-button size="mini" @click="clearCmd"
-                               style="margin-left: 5px" type="warning">Clear
-                    </el-button>
-                  </div>
-                </el-card>
-              </el-tab-pane>
-              <el-tab-pane label="Logcat">
-                <el-card
-                    style="border: 0px"
-                    :body-style="{color:'#FFFFFF',backgroundColor:'#303133',lineHeight:'1.5'}">
-                  <div style="display: flex;margin-bottom: 10px">
-                    <el-select size="mini" v-model="logcatFilter.level">
-                      <el-option label="VERBOSE" value="V"></el-option>
-                      <el-option label="DEBUG" value="D"></el-option>
-                      <el-option label="INFO" value="I"></el-option>
-                      <el-option label="WARN" value="W"></el-option>
-                      <el-option label="ERROR" value="E"></el-option>
-                      <el-option label="FATAL" value="F"></el-option>
-                      <el-option label="SILENT" value="S"></el-option>
-                    </el-select>
-                    <el-input style="margin-left: 5px" size="mini" v-model="logcatFilter.filter"
-                              placeholder="请输入输入过滤文本">
-                      <template #prepend>| grep</template>
-                    </el-input>
-                    <el-button size="mini" @click="sendLogcat"
-                               style="margin-left: 5px" type="primary">Search
-                    </el-button>
-                    <el-button size="mini" @click="stopLogcat"
-                               style="margin-left: 5px" type="danger">Stop
-                    </el-button>
-                    <el-button size="mini" @click="clearLogcat"
-                               style="margin-left: 5px" type="warning">Clear
-                    </el-button>
-                  </div>
-                  <el-scrollbar noresize ref="logcatScroll" :style="'height:'+terminalHeight+'px;min-height:450px'">
-                    <div v-html="l" v-for="l in logcatOutPut" style="white-space: pre-wrap">
-                    </div>
-                  </el-scrollbar>
-                </el-card>
-              </el-tab-pane>
-            </el-tabs>
-          </el-tab-pane>
+
           <el-tab-pane label="UI自动化" name="auto" disabled>
             <div v-if="testCase['id']">
               <el-collapse accordion style="margin-bottom: 20px">
@@ -1581,91 +1513,6 @@ onMounted(() => {
                 </template>
               </el-result>
             </el-card>
-          </el-tab-pane>
-          <el-tab-pane label="网页调试" name="webview" disabled>
-            <div v-if="isWebView">
-              <div v-if="webViewListDetail.length==0">
-                <el-result icon="info" title="提示" subTitle="暂无webView进程">
-                  <template #extra>
-                    <el-button
-                        type="primary"
-                        size="mini"
-                        :loading="webViewLoading"
-                        @click="getWebViewForward"
-                    >
-                      <el-icon :size="12" style="vertical-align: middle;">
-                        <Search/>
-                      </el-icon>
-                      获取webView进程
-                    </el-button
-                    >
-                  </template>
-                </el-result>
-              </div>
-              <div v-else>
-                <el-button @click="getWebViewForward" :loading="webViewLoading" type="primary" size="mini">
-                  重新获取webView进程
-                </el-button>
-                <el-card style="margin-top: 15px" v-for="web in webViewListDetail" class="device-card"
-                         :body-style="{ padding: '0px 10px 10px 10px' }">
-                  <template #header>
-                    <div>
-                      <div style="display: flex;align-items: center;">
-                        <img :src="getImg('chrome')" width="20"/> <strong style="margin-left: 10px">{{
-                          web['package']
-                        }}
-                        ({{ web['version'] }})</strong>
-                      </div>
-                    </div>
-                  </template>
-                  <el-card :body-style="{ padding: '15px' }" v-for="w in web.children"
-                           style="margin-top: 10px; word-wrap: break-word;overflow: hidden;">
-                    <div style="display: flex;align-items: center;justify-content: space-between">
-                      <div>
-                        <div style="display: flex;align-items: center;">
-                          <img :src="w.favicon" v-if="w.favicon" width="15" style="margin-right: 5px"/>
-                          <strong>{{ w.title.length > 0 ? w.title : '无标题' }}</strong>
-                        </div>
-                        <div style="color: #909399">{{
-                            w.url.length > 50 ? w.url.substring(0, 50) + '...' : w.url
-                          }}
-                        </div>
-                      </div>
-                      <el-button type="primary" size="mini"
-                                 @click="tabWebView(web.port,w.id,(w.title.length > 0 ? w.title : '无标题'))">马上调试
-                      </el-button>
-                    </div>
-                  </el-card>
-                </el-card>
-              </div>
-            </div>
-            <div v-else>
-              <div style="display: flex;align-items: center;">
-                <el-page-header icon="el-icon-arrow-left" @back="switchIsWebView">
-                  <template #title>
-                    <span style="color: #606266">返回</span>
-                  </template>
-                  <template #content>
-                    当前页面：<strong>{{ title }}</strong>
-                  </template>
-                </el-page-header>
-              </div>
-              <el-alert type="info" show-icon style="margin-top: 15px" close-text="Get!">
-                <template #title>
-                  <div style="display: flex;align-items: center;">
-                    <span>如果您的浏览器不兼容该功能，请您及时反馈到</span>
-                    <el-link style="font-size: 13px;margin-left: 5px" type="primary" target="_blank"
-                             href="https://github.com/ZhouYixun/sonic-agent/issues/47">
-                      这里
-                    </el-link>
-                  </div>
-                </template>
-              </el-alert>
-              <iframe v-if="!isWebView"
-                      :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
-                      :src="iframeUrl">
-              </iframe>
-            </div>
           </el-tab-pane>
         </el-tabs>
       </el-col>

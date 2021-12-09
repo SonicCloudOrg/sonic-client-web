@@ -35,6 +35,20 @@ const delResult = (id) => {
     }
   })
 }
+const forceStopSuite = (id) => {
+  axios.get("/controller/testSuites/forceStopSuite", {
+    params: {
+      resultId: id
+    }
+  }).then(resp => {
+    if (resp['code'] === 2000) {
+      ElMessage.success({
+        message: resp['message'],
+      });
+      getResultList();
+    }
+  })
+}
 onMounted(() => {
   getResultList()
 })
@@ -93,8 +107,28 @@ onMounted(() => {
         </div>
       </template>
     </el-table-column>
-    <el-table-column fixed="right" label="操作" width="120" align="center">
+    <el-table-column fixed="right" label="操作" width="220" align="center">
       <template #default="scope">
+        <el-popconfirm
+            style="margin-left: 10px"
+            confirmButtonText="确认"
+            cancelButtonText="取消"
+            @confirm="forceStopSuite(scope.row.id)"
+            icon="el-icon-warning"
+            iconColor="red"
+            title="确定中断本次测试吗？"
+        >
+          <template #reference>
+            <el-button
+                :disabled="scope.row.status !== 0"
+                type="warning"
+                size="mini"
+                icon="el-icon-video-pause"
+            >中断
+            </el-button
+            >
+          </template>
+        </el-popconfirm>
         <el-popconfirm
             style="margin-left: 10px"
             confirmButtonText="确认"

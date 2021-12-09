@@ -269,6 +269,11 @@ const getData = () => {
   })
 }
 onMounted(() => {
+  let chart = echarts.getInstanceByDom(document.getElementById('projectChart'));
+  if (chart == null) {
+    chart = echarts.init(document.getElementById('projectChart'));
+  }
+  chart.dispose();
   const end = moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
   const start = moment(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 7)).format("YYYY-MM-DD HH:mm:ss")
   times.value = [start, end];

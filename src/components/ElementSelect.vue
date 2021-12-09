@@ -15,6 +15,21 @@ const pageData = ref({
 });
 const pageSize = ref(10);
 const currentPage = ref(0)
+const findByName = (name) => {
+  props.step.elements[props.index] = null
+  axios.get("/controller/elements/list", {
+    params: {
+      name,
+      projectId: props.projectId,
+      type: props.type,
+      page: 1,
+      pageSize: pageSize.value,
+    }
+  }).then(resp => {
+    pageData.value = resp.data
+    currentPage.value = pageData.value['number'] + 1
+  })
+}
 const findByProjectIdAndEleType = (event, pageNum, pSize) => {
   if (event) {
     props.step.elements[props.index] = null
@@ -46,12 +61,17 @@ onMounted(() => {
       :prop="'elements['+index+']'"
   >
     <el-select
+        filterable
+        remote
+        :remote-method="findByName"
         value-key="id"
         v-model="step.elements[index]"
         :placeholder="place"
+        placeholder="请输入控件名称筛选"
         @visible-change="findByProjectIdAndEleType"
     >
       <el-option
+          v-if="pageData['content']!==null"
           v-for="item in pageData['content']"
           :key="item.id"
           :label="item['eleName']"
@@ -59,6 +79,7 @@ onMounted(() => {
       ></el-option>
       <div style="text-align: center;margin-top: 5px">
         <el-pagination small layout="prev, pager, next"
+                       hide-on-single-page
                        v-model:current-page="currentPage"
                        :total="pageData['totalElements']"
                        :page-size="pageSize"

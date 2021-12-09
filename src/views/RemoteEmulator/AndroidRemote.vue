@@ -1575,8 +1575,14 @@ onMounted(() => {
                       <strong style="color: #F2F6FC">adb connect {{ remoteAdbUrl }}</strong>
                     </el-card>
                   </div>
-                  <div v-else>
-                    Agent未开启该功能！
+                  <div v-else v-loading="remoteAdbUrl.length===0"
+                       element-loading-spinner="el-icon-lock"
+                       element-loading-background="rgba(255, 255, 255, 1)"
+                       element-loading-text="所在Agent未开启该功能！"
+                       style="margin-top: 8px;margin-bottom: 8px">
+                    <el-card>
+                      <strong>所在Agent未开启该功能！</strong>
+                    </el-card>
                   </div>
                 </el-card>
               </el-col>
