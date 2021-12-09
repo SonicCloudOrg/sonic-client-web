@@ -52,7 +52,9 @@ const manufacturer = ref([
   "Yulong",
   "LGE",
   "Sony",
-  "GIONEE"
+  "GIONEE",
+  "Lenovo",
+  "HTC"
 ]);
 const statusList = ref([
   {
@@ -295,9 +297,12 @@ const getAllAgents = () => {
     agentList.value = resp.data
   })
 }
-const savePwd = (device) => {
+const saveDetail = (device) => {
   axios
-      .put("/controller/devices/savePwd", {id: device.id, password: device.password}).then((resp) => {
+      .put("/controller/devices/saveDetail", {
+        id: device.id, password: device.password,
+        nickName: device.nickName
+      }).then((resp) => {
     if (resp['code'] === 2000) {
       ElMessage.success({
         message: resp['message'],
@@ -370,7 +375,18 @@ const updateImg = (id, imgUrl) => {
         }
       });
 }
+const getFilterOption = () => {
+  axios
+      .get("/controller/devices/getFilterOption")
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          cpus.value =resp['data'].cpu
+          sizes.value =resp['data'].size
+        }
+      });
+}
 onMounted(() => {
+  getFilterOption();
   findAll();
   getAllAgents();
 })
@@ -470,7 +486,7 @@ onMounted(() => {
                       :src="getImg(man)"
                   />
                   <img
-                      v-else-if="man === 'Xiaomi' ||man === 'APPLE'|| man==='LGE'"
+                      v-else-if="man === 'Xiaomi' ||man === 'APPLE'|| man==='LGE' || man==='HTC'"
                       style="width: 30px"
                       :src="getImg(man)"
                   />
@@ -562,11 +578,11 @@ onMounted(() => {
             >
               <template #header>
               <span v-if="device.model">{{
-                  device.model.length > 25
-                      ? device.model.substring(0, 17) + "..."
+                  (device['nickName'] && device['nickName'].length > 0)
+                      ? device['nickName']
                       : device.model
                 }}</span>
-                <RenderStatus :status="device.status"></RenderStatus>
+                <RenderStatus :status="device.status" :user="device.user"></RenderStatus>
               </template>
               <el-row>
                 <el-col :span="10">
@@ -597,6 +613,14 @@ onMounted(() => {
                       label-width="70px"
                       style="margin: 0 0 15px 10px"
                   >
+                    <el-form-item label="设备型号" v-if="device.model">
+                      <div>{{
+                          device.model.length > 25
+                              ? device.model.substring(0, 17) + "..."
+                              : device.model
+                        }}
+                      </div>
+                    </el-form-item>
                     <el-form-item label="设备名称">
                       <div>{{ device.name }}</div>
                     </el-form-item>
@@ -609,7 +633,7 @@ onMounted(() => {
                           :src="getImg(device.manufacturer)"
                       />
                       <img
-                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'||device.manufacturer === 'LGE'"
+                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'||device.manufacturer === 'LGE'||device.manufacturer === 'HTC'"
                           style="width: 30px"
                           :src="getImg(device.manufacturer)"
                       />
@@ -628,9 +652,6 @@ onMounted(() => {
                     </el-form-item>
                     <el-form-item label="系统版本">
                       <div>{{ device.version }}</div>
-                    </el-form-item>
-                    <el-form-item label="分辨率">
-                      <div>{{ device.size }}</div>
                     </el-form-item>
                     <el-form-item label="所在位置">
                       <div>{{ findAgentById(device.agentId) }}</div>
@@ -667,6 +688,26 @@ onMounted(() => {
                         >
                       </el-upload>
                     </el-form-item>
+                    <el-form-item label="设备备注">
+                      <el-input
+                          show-word-limit
+                          v-model="device['nickName']"
+                          type="text"
+                          size="mini"
+                          placeholder="输入设备备注信息"
+                          maxlength="30"
+                          style="position: absolute; top: 7px; bottom: 7px"
+                      >
+                        <template #append>
+                          <el-button
+                              size="mini"
+                              @click="saveDetail(device)"
+                          >保存
+                          </el-button
+                          >
+                        </template>
+                      </el-input>
+                    </el-form-item>
                     <el-form-item label="设备名称">
                       <span>{{ device.name }}</span>
                     </el-form-item>
@@ -695,7 +736,7 @@ onMounted(() => {
                         <template #append>
                           <el-button
                               size="mini"
-                              @click="savePwd(device)"
+                              @click="saveDetail(device)"
                           >保存
                           </el-button
                           >

@@ -30,6 +30,7 @@ const statusList = {
 const props = defineProps(
     {
       status: String,
+      user: String
     }
 );
 const selObj = statusList[props.status] || {type: 'danger', text: '加载中'}
@@ -37,6 +38,6 @@ const selObj = statusList[props.status] || {type: 'danger', text: '加载中'}
 
 <template>
   <el-tag :type="selObj.type" size="mini" style="float: right">
-    {{ selObj.text }}
+    {{ status === 'DEBUGGING' ? user + " " + selObj.text : selObj.text }}
   </el-tag>
 </template>

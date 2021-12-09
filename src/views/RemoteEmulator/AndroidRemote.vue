@@ -11,9 +11,8 @@ import StepLog from '@/components/StepLog.vue';
 import ElementUpdate from '@/components/ElementUpdate.vue';
 import defaultLogo from '@/assets/logo.png';
 import {
-  Aim,
+  Delete,
   Place,
-  FullScreen,
   Download,
   Search,
   SwitchButton,
@@ -52,6 +51,7 @@ const caseList = ref(null);
 const loading = ref(false);
 const device = ref({});
 const agent = ref({});
+const screenUrls = ref([])
 const uploadUrl = ref('');
 const text = ref({content: ''});
 let imgWidth = 0;
@@ -75,8 +75,7 @@ let time = 0;
 let isLongPress = false;
 // let isRotated = 0; // 是否转向 // 0 90 180 270
 let mouseMoveTime = 0;
-const pic = ref('中');
-const fixScreenTor = ref(0);
+const pic = ref('高');
 const elementLoading = ref(false);
 const isShowImg = ref(false);
 const isDriverFinish = ref(false);
@@ -115,6 +114,7 @@ const logcatScroll = ref(null);
 const cmdIsDone = ref(true);
 const uploadLoading = ref(false);
 const location = ref(false);
+const remoteAdbUrl = ref("");
 const logcatFilter = ref({
   level: 'E',
   filter: '',
@@ -231,8 +231,16 @@ const filterNode = (value, data) => {
   return (data.label.indexOf(value) !== -1) ||
       (data.detail['resource-id'] ? data.detail['resource-id'].indexOf(value) !== -1 : false);
 };
-const downloadImg = () => {
-  window.open(imgUrl.value, '_blank');
+const downloadImg = (url) => {
+  let time = new Date().getTime();
+  let link = document.createElement('a');
+  fetch(url).then(res => res.blob()).then(blob => {
+    link.href = URL.createObjectURL(blob);
+    link.download = time + ".jpg";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  })
 };
 const copy = (value) => {
   try {
@@ -246,17 +254,34 @@ const copy = (value) => {
     });
   }
 };
+const removeScreen = () => {
+  screenUrls.value = [];
+}
+const quickCap = () => {
+  if (oldBlob) {
+    const img = new Image();
+    const blob = new Blob([oldBlob], {type: 'image/jpeg'});
+    const URL = window.URL || window.webkitURL;
+    const u = URL.createObjectURL(blob);
+    screenUrls.value.push(u);
+    img.src = u;
+  } else {
+    ElMessage.error({
+      message: '快速截图失败！',
+    });
+  }
+}
 const setImgData = (data) => {
   const img = new Image();
-  if (data === undefined) {
+  if (data) {
+    imgUrl.value = data;
+    img.src = data;
+  } else {
     const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
     const u = URL.createObjectURL(blob);
     imgUrl.value = u;
     img.src = u;
-  } else {
-    imgUrl.value = data;
-    img.src = data;
   }
   const canvas = document.getElementById('debugPic');
   img.onload = function () {
@@ -268,7 +293,7 @@ const setImgData = (data) => {
 const openSocket = (host, port, udId, key) => {
   if ('WebSocket' in window) {
     websocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/android/' + udId + '/' + key,
+        'ws://' + host + ':' + port + '/websockets/android/' + udId + '/' + key + '/' + localStorage.getItem('SonicToken'),
     );
     terminalWebsocket = new WebSocket(
         'ws://' + host + ':' + port + '/websockets/terminal/' + udId + '/' + key,
@@ -389,6 +414,12 @@ const websocketOnmessage = (message) => {
     img.src = u;
   } else {
     switch (JSON.parse(message.data)['msg']) {
+      case 'adbkit': {
+        if (JSON.parse(message.data).isEnable) {
+          remoteAdbUrl.value = agent.value['host'] + ":" + JSON.parse(message.data).port
+        }
+        break;
+      }
       case 'rotation': {
         if (directionStatus.value !== -1) {
           loading.value = true;
@@ -535,9 +566,7 @@ const getCurLocation = () => {
     );
     y = (directionStatus.value == 180) ? imgHeight - _y : _y;
   }
-  console.log('xy', {
-    x, y
-  });
+  // console.log('xy', { x, y });
   return ({
     x, y
   })
@@ -689,12 +718,14 @@ const touchstart = async (event) => {
   const debugPic = document.getElementById('debugPic');
   const rect = debugPic.getBoundingClientRect();
   const x = parseInt(
-      (event.clientX - rect.left * (debugPic.width / rect.width)) *
-      (imgWidth / rect.width),
+      (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth)
   );
+  // _x = parseInt(
+  //     (event.clientY - rect.top) *
+  //     (imgWidth / canvas.clientHeight),
+  // );
   const y = parseInt(
-      (event.clientY - rect.top * (debugPic.height / rect.height)) *
-      (imgHeight / rect.height),
+      (event.clientY - rect.top) * (imgHeight / debugPic.clientHeight),
   );
   await nextTick(() => {
     tree['value'].setCurrentKey(
@@ -917,58 +948,6 @@ const scan = (url) => {
       }),
   );
 };
-const fixScreen = (type) => {
-  loading.value = true;
-  location.value = !location.value;
-  let pic;
-  switch (type) {
-    case '低':
-      pic = 'low';
-      break;
-    case '中':
-      pic = 'middle';
-      break;
-    case '高':
-      pic = 'high';
-      break;
-  }
-  if (fixScreenTor.value == 3) {
-    fixScreenTor.value = 0;
-  } else {
-    fixScreenTor.value++;
-  }
-  websocket.send(
-      JSON.stringify({
-        type: 'fixScreen',
-        s: fixScreenTor.value,
-        detail: pic,
-      }),
-  );
-};
-const screen = (type, p) => {
-  if (p !== 'abort') {
-    loading.value = true;
-  }
-  let pic;
-  switch (type) {
-    case '低':
-      pic = 'low';
-      break;
-    case '中':
-      pic = 'middle';
-      break;
-    case '高':
-      pic = 'high';
-      break;
-  }
-  websocket.send(
-      JSON.stringify({
-        type: 'screen',
-        s: p,
-        detail: pic,
-      }),
-  );
-};
 const sendText = (text) => {
   websocket.send(
       JSON.stringify({
@@ -1123,7 +1102,8 @@ onMounted(() => {
           :span="tabPosition == 'left' ? 12 : 24"
           :style="{
             flexBasis: tabPosition == 'left' ? layoutSplitInfo.left + '%' : '',
-             maxWidth: 'none'
+             maxWidth: tabPosition == 'left' ? layoutSplitInfo.left + '%' : '',
+             transition: !isSplitPressing ? 'flex-basis 0.3s,max-width 0.3s' : ''
           }"
       >
         <el-card v-loading="loading"
@@ -1311,38 +1291,6 @@ onMounted(() => {
                     <el-dropdown-menu class="divider" v-loading="loading"
                                       element-loading-background="rgba(255, 255, 255, 1)">
                       <el-button-group>
-<!--                        <el-tooltip-->
-<!--                            effect="dark"-->
-<!--                            content="校准图像"-->
-<!--                            placement="top"-->
-<!--                        >-->
-<!--                          <el-button-->
-<!--                              size="small"-->
-<!--                              type="info"-->
-<!--                              circle-->
-<!--                              @click="fixScreen(pic)"-->
-<!--                          >-->
-<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
-<!--                              <FullScreen/>-->
-<!--                            </el-icon>-->
-<!--                          </el-button>-->
-<!--                        </el-tooltip>-->
-<!--                        <el-tooltip-->
-<!--                            effect="dark"-->
-<!--                            content="校准坐标"-->
-<!--                            placement="top"-->
-<!--                        >-->
-<!--                          <el-button-->
-<!--                              size="small"-->
-<!--                              type="info"-->
-<!--                              circle-->
-<!--                              @click="switchLocation"-->
-<!--                          >-->
-<!--                            <el-icon :size="14" style="vertical-align: middle;">-->
-<!--                              <Aim/>-->
-<!--                            </el-icon>-->
-<!--                          </el-button>-->
-<!--                        </el-tooltip>-->
                         <el-tooltip
                             effect="dark"
                             content="修复黑屏"
@@ -1399,87 +1347,6 @@ onMounted(() => {
                 </el-button>
               </div>
             </el-tooltip>
-            <!--            <el-tooltip-->
-            <!--                :enterable="false"-->
-            <!--                effect="dark"-->
-            <!--                content="设备转向"-->
-            <!--                :placement="tabPosition == 'left' ? 'right' : 'left'"-->
-            <!--                :offset="15"-->
-            <!--            >-->
-            <!--              <div>-->
-            <!--                <el-dropdown-->
-            <!--                    :hide-on-click="false"-->
-            <!--                    trigger="click"-->
-            <!--                    placement="right"-->
-            <!--                    style="margin-top: 4px"-->
-            <!--                >-->
-            <!--                  <el-button-->
-            <!--                      size="small"-->
-            <!--                      type="primary"-->
-            <!--                      circle-->
-            <!--                  >-->
-            <!--                    <el-icon :size="12" style="vertical-align: middle;">-->
-            <!--                      <Wallet/>-->
-            <!--                    </el-icon>-->
-            <!--                  </el-button>-->
-            <!--                  <template #dropdown>-->
-            <!--                    <el-dropdown-menu class="divider" v-loading="loading"-->
-            <!--                                      element-loading-background="rgba(255, 255, 255, 1)">-->
-            <!--                      <el-button-group>-->
-            <!--                        <el-tooltip-->
-            <!--                            effect="dark"-->
-            <!--                            content="左转90度"-->
-            <!--                            placement="top"-->
-            <!--                        >-->
-            <!--                          <el-button-->
-            <!--                              size="small"-->
-            <!--                              type="info"-->
-            <!--                              circle-->
-            <!--                              @click="screen(pic,'sub')"-->
-            <!--                          >-->
-            <!--                            <el-icon :size="14" style="vertical-align: middle;">-->
-            <!--                              <RefreshLeft/>-->
-            <!--                            </el-icon>-->
-            <!--                          </el-button>-->
-            <!--                        </el-tooltip>-->
-            <!--                        <el-tooltip-->
-            <!--                            effect="dark"-->
-            <!--                            content="取消自动旋转"-->
-            <!--                            placement="top"-->
-            <!--                        >-->
-            <!--                          <el-button-->
-            <!--                              size="small"-->
-            <!--                              type="info"-->
-            <!--                              circle-->
-            <!--                              @click="screen(pic,'abort')"-->
-            <!--                          >-->
-            <!--                            <el-icon :size="14" style="vertical-align: middle;">-->
-            <!--                              <Refresh/>-->
-            <!--                            </el-icon>-->
-            <!--                          </el-button>-->
-            <!--                        </el-tooltip>-->
-            <!--                        <el-tooltip-->
-            <!--                            effect="dark"-->
-            <!--                            content="右转90度"-->
-            <!--                            placement="top"-->
-            <!--                        >-->
-            <!--                          <el-button-->
-            <!--                              size="small"-->
-            <!--                              type="info"-->
-            <!--                              circle-->
-            <!--                              @click="screen(pic,'add')"-->
-            <!--                          >-->
-            <!--                            <el-icon :size="14" style="vertical-align: middle;">-->
-            <!--                              <RefreshRight/>-->
-            <!--                            </el-icon>-->
-            <!--                          </el-button>-->
-            <!--                        </el-tooltip>-->
-            <!--                      </el-button-group>-->
-            <!--                    </el-dropdown-menu>-->
-            <!--                  </template>-->
-            <!--                </el-dropdown>-->
-            <!--              </div>-->
-            <!--            </el-tooltip>-->
             <el-tooltip
                 :enterable="false"
                 effect="dark"
@@ -1660,7 +1527,7 @@ onMounted(() => {
           :span="tabPosition == 'left' ? 12 : 24"
           :style="{
             flexBasis: tabPosition == 'left' ?  100 - Number(layoutSplitInfo.left) + '%' : '',
-             maxWidth: 'none'
+             maxWidth: tabPosition == 'left' ?  100 - Number(layoutSplitInfo.left) + '%' : ''
           }"
       >
         <el-tabs
@@ -1672,7 +1539,7 @@ onMounted(() => {
         >
           <el-tab-pane label="远控面板" name="main">
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="8">
                 <el-card>
                   <template #header>
                     <strong>输入文本</strong>
@@ -1698,22 +1565,43 @@ onMounted(() => {
                   </div>
                 </el-card>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="8">
+                <el-card>
+                  <template #header>
+                    <strong>远程连接ADB</strong>
+                  </template>
+                  <div v-if="remoteAdbUrl.length>0" style="margin-top: 8px;margin-bottom: 8px">
+                    <el-card :body-style="{backgroundColor:'#303133'}">
+                      <strong style="color: #F2F6FC">adb connect {{ remoteAdbUrl }}</strong>
+                    </el-card>
+                  </div>
+                  <div v-else v-loading="remoteAdbUrl.length===0"
+                       element-loading-spinner="el-icon-lock"
+                       element-loading-background="rgba(255, 255, 255, 1)"
+                       element-loading-text="所在Agent未开启该功能！"
+                       style="margin-top: 8px;margin-bottom: 8px">
+                    <el-card>
+                      <strong>所在Agent未开启该功能！</strong>
+                    </el-card>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="8">
                 <el-card>
                   <template #header>
                     <strong>录制屏幕（即将开放）</strong>
                   </template>
                   <div style="text-align: center">
-                    <el-button size="mini" type="success" disabled>开始录制</el-button>
-                    <el-button size="mini" type="info" disabled>暂停录制</el-button>
-                    <el-button size="mini" type="danger" disabled>结束录制</el-button>
+                    <el-button size="mini" type="success" disabled>开始</el-button>
+                    <el-button size="mini" type="info" disabled>暂停</el-button>
+                    <el-button size="mini" type="danger" disabled>结束</el-button>
                     <div style="margin-top: 20px">
-                      <el-button size="mini" type="primary" disabled>下载录像</el-button>
+                      <el-button size="mini" type="primary" disabled>生成并下载录像</el-button>
                     </div>
                   </div>
                 </el-card>
               </el-col>
-              <el-col :span="12" style="margin-top: 20px">
+              <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
                     <strong>扫描二维码</strong>
@@ -1740,7 +1628,7 @@ onMounted(() => {
                   </div>
                 </el-card>
               </el-col>
-              <el-col :span="12" style="margin-top: 20px">
+              <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
                     <strong>安装APK</strong>
@@ -1786,6 +1674,42 @@ onMounted(() => {
                     <el-tab-pane label="已有包安装（即将开放）" disabled>
                     </el-tab-pane>
                   </el-tabs>
+                </el-card>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+          <el-tab-pane label="快速截图" name="screenCap">
+            <el-button type="primary" size="small" @click="quickCap">
+              <el-icon :size="12" style="vertical-align: middle;">
+                <Camera/>
+              </el-icon>
+              截图
+            </el-button>
+            <el-button type="danger" size="small" @click="removeScreen">
+              <el-icon :size="12" style="vertical-align: middle;">
+                <Delete/>
+              </el-icon>
+              清空
+            </el-button>
+            <el-card style="height: 100%;margin-top: 10px" v-if="screenUrls.length===0">
+              <el-empty description="暂无截图"></el-empty>
+            </el-card>
+            <el-row :gutter="20" v-else>
+              <el-col :xs="8"
+                      :sm="8"
+                      :md="8"
+                      :lg="4"
+                      :xl="4" v-for="u in screenUrls" style="margin-top: 10px">
+                <el-card shadow="hover" :body-style="{padding:'10px'}">
+                  <el-image :src="u" :preview-src-list="screenUrls" hide-on-click-modal></el-image>
+                  <div style="text-align: center;margin-top: 5px">
+                    <el-button type="primary" plain size="mini" @click="downloadImg(u)">
+                      <el-icon :size="12" style="vertical-align: middle;">
+                        <Download/>
+                      </el-icon>
+                      保存图片
+                    </el-button>
+                  </div>
                 </el-card>
               </el-col>
             </el-row>
@@ -1984,18 +1908,10 @@ onMounted(() => {
                         :style="
                       'width: 100%;background-image: url(' +
                       imgUrl +
-                      ');background-size:cover;'
+                      ');background-size: 100% 100%;'
                     "
                     >
                       <canvas id="debugPic" @mousedown="touchstart"></canvas>
-                    </div>
-                    <div style="text-align: center;margin-top: 10px">
-                      <el-button type="primary" plain size="mini" @click="downloadImg">
-                        <el-icon :size="12" style="vertical-align: middle;">
-                          <Download/>
-                        </el-icon>
-                        保存图片
-                      </el-button>
                     </div>
                   </el-card>
                   <el-card
@@ -2390,5 +2306,10 @@ onMounted(() => {
     background: url("@/assets/img/drag.png") no-repeat center;
     background-size: 100% 100%;
   }
+}
+
+#debugPic {
+  width: 100%;
+  height: auto;
 }
 </style>

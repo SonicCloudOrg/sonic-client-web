@@ -287,19 +287,26 @@ body,
 
 .remote-tab {
     border: 1px solid #EBEEF5 !important;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.remote-tab .el-tabs__item{
+.remote-tab .el-tabs__item {
     border-bottom: 1px solid #EBEEF5 !important;
     padding: 0 15px;
+    color: #606266 !important;
 }
 
-.remote-tab .el-tabs__content{
+.remote-tab .el-tabs__item.is-active {
+    border-bottom: 1px solid #EBEEF5 !important;
+    padding: 0 15px;
+    color: #409EFF !important;
+}
+
+.remote-tab .el-tabs__content {
     padding: 15px;
     border-left: 1px solid #EBEEF5;
 }
 
-.remote-tab .el-tabs__header{
-    margin-right: 0px!important;
+.remote-tab .el-tabs__header {
+    margin-right: 0px !important;
 }
