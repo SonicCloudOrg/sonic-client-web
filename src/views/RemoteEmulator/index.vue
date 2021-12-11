@@ -14,13 +14,7 @@ const _layoutSplitInfo = window.localStorage.getItem('layoutSplitInfo');
 const _tabPosition = window.localStorage.getItem('tabPosition');
 
 const tabPosition = ref(_tabPosition || 'left'); // left,top
-const canvasRectInfo = ref(_tabPosition && _tabPosition == 'top' ?
-    {
-      width: 'auto',
-      height: JSON.parse(_layoutSplitInfo).top + 'px',
-    } : {
-      width: '100%', height: 'auto',
-    });
+const canvasRectInfo = ref({ width: '100%', height: 'auto' });
 // 分屏默认值
 const layoutSplitInfo = ref(_layoutSplitInfo ?
     JSON.parse(_layoutSplitInfo) : {

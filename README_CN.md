@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ZhouYixun/sonic-server/main/logo.png">
+  <img src="https://raw.githubusercontent.com/SonicCloudOrg/sonic-server/main/logo.png">
 </p>
 <p align="center">🎉Sonic云真机测试平台前端</p>
 <p align="center">
-  <a href="https://github.com/ZhouYixun/sonic-client-web/blob/main/README.md">  
+  <a href="https://github.com/SonicCloudOrg/sonic-client-web/blob/main/README.md">  
     English
   </a>
   <span>| 简体中文</span>
 </p>
 <p align="center">
   <a href="#">  
-    <img src="https://img.shields.io/badge/release-v1.1.0-orange">
+    <img src="https://img.shields.io/badge/release-v1.2.0-orange">
   </a>
   <a href="#">  
     <img src="https://img.shields.io/badge/vue-3.2.14-success">
@@ -21,18 +21,18 @@
 </p>
 <p align="center">
   <a href="#">  
-    <img src="https://img.shields.io/github/commit-activity/m/ZhouYixun/sonic-client-web">
+    <img src="https://img.shields.io/github/commit-activity/m/SonicCloudOrg/sonic-client-web">
   </a>
-  <a href="https://hub.docker.com/repository/docker/zhouyixun/sonic-client-web">  
-    <img src="https://img.shields.io/docker/pulls/zhouyixun/sonic-client-web">
+  <a href="https://hub.docker.com/repository/docker/sonicorg/sonic-client-web">  
+    <img src="https://img.shields.io/docker/pulls/sonicorg/sonic-client-web">
   </a>
-  <a href="https://github.com/ZhouYixun/sonic-server/blob/main/LICENSE">  
-    <img src="https://img.shields.io/github/license/ZhouYiXun/sonic-server?color=green&label=license&logo=license&logoColor=green">
+  <a href="https://github.com/SonicCloudOrg/sonic-server/blob/main/LICENSE">  
+    <img src="https://img.shields.io/github/license/SonicCloudOrg/sonic-server?color=green&label=license&logo=license&logoColor=green">
   </a>
 </p>
 
 ### 官方网站
-[Sonic Official Website](http://zhouyixun.gitee.io/sonic-official-website)
+[Sonic Official Website](http://sonic-cloud.gitee.io)
 ## 背景
 
 #### 什么是Sonic？
@@ -70,7 +70,7 @@ npm run build
 构建镜像
 
 ```
-docker build -t zhouyixun/sonic-client-web .
+docker build -t sonicorg/sonic-client-web .
 ```
 
 ## 部署模式
@@ -79,7 +79,7 @@ docker build -t zhouyixun/sonic-client-web .
 
 > 建议仅在测试的时候使用，镜像包含nginx服务器
 >
-> [Click Here!](https://hub.docker.com/repository/docker/zhouyixun/sonic-agent-linux)
+> [Click Here!](https://hub.docker.com/repository/docker/sonicorg/sonic-client-web)
 
 ### dist 模式
 

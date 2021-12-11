@@ -49,7 +49,6 @@ const router = useRouter();
 const iFrameHeight = ref(0);
 const terminalHeight = ref(0);
 const caseList = ref(null);
-const loading = ref(false);
 const device = ref({});
 const agent = ref({});
 const uploadUrl = ref('');
@@ -216,7 +215,7 @@ const setImgData = (data) => {
 const openSocket = (host, port, udId, key) => {
   if ('WebSocket' in window) {
     websocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/ios/' + udId + '/' + key,
+        'ws://' + host + ':' + port + '/websockets/ios/' + udId + '/' + key+ '/' + localStorage.getItem('SonicToken'),
     );
   } else {
     console.error('不支持WebSocket');
@@ -280,10 +279,6 @@ const websocketOnmessage = (message) => {
         sid.value = JSON.parse(message.data).port
         isDriverFinish.value = true;
       }
-      break;
-    }
-    case 'picFinish': {
-      loading.value = false;
       break;
     }
     case 'step': {
@@ -663,7 +658,6 @@ onBeforeUnmount(() => {
   close();
 });
 const getDeviceById = (id) => {
-  loading.value = true;
   axios
       .get('/controller/devices', {params: {id: id}}).then((resp) => {
     if (resp['code'] === 2000) {
@@ -760,7 +754,8 @@ onMounted(() => {
           :span="tabPosition == 'left' ? 12 : 24"
           :style="{
             flexBasis: tabPosition == 'left' ? layoutSplitInfo.left + '%' : '',
-             maxWidth: 'none'
+             maxWidth: tabPosition == 'left' ? layoutSplitInfo.left + '%' : '',
+             transition: !isSplitPressing ? 'flex-basis 0.3s,max-width 0.3s' : ''
           }"
       >
         <el-card v-loading="!isDriverFinish"
@@ -877,8 +872,7 @@ onMounted(() => {
                     </el-icon>
                   </el-button>
                   <template #dropdown>
-                    <el-dropdown-menu class="divider" v-loading="loading"
-                                      element-loading-background="rgba(255, 255, 255, 1)">
+                    <el-dropdown-menu class="divider">
                       <el-button-group>
                         <el-tooltip
                             effect="dark"
@@ -1045,7 +1039,7 @@ onMounted(() => {
           :span="tabPosition == 'left' ? 12 : 24"
           :style="{
             flexBasis: tabPosition == 'left' ?  100 - Number(layoutSplitInfo.left) + '%' : '',
-             maxWidth: 'none'
+             maxWidth: tabPosition == 'left' ?  100 - Number(layoutSplitInfo.left) + '%' : ''
           }"
       >
         <el-tabs
@@ -1297,7 +1291,7 @@ onMounted(() => {
                         :style="
                       'width: 100%;background-image: url(' +
                       imgUrl +
-                      ');background-size:cover;'
+                      ');background-size: 100% 100%;'
                     "
                     >
                       <canvas id="debugPicIOS" @mousedown="touchstart"></canvas>

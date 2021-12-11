@@ -24,7 +24,7 @@ const getImg = (name) => {
 const getPhoneImg = (name, url) => {
   let result;
   if (url === null || (url && url.length === 0)) {
-    result = "https://gitee.com/ZhouYixun/sonic-agent-images/raw/master/devices/" + name + ".jpg";
+    result = "https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/" + name + ".jpg";
   } else {
     result = url;
   }
@@ -195,7 +195,7 @@ onMounted(() => {
               <el-image
                   style="height: 100%;float: left"
                   fit="contain"
-                  src="https://gitee.com/ZhouYixun/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg"
+                  src="https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg"
               ></el-image>
             </template>
           </el-image>

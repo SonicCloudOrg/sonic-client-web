@@ -179,12 +179,12 @@ onMounted(() => {
               </template
               >
               <el-menu-item index="2-1"
-                            @click="goToUrl('http://zhouyixun.gitee.io/sonic-official-website/#/Home')"
+                            @click="goToUrl('http://sonic-cloud.gitee.io/#/Home')"
               >Sonic官方网站
               </el-menu-item
               >
               <el-menu-item index="2-2"
-                            @click="goToUrl('http://zhouyixun.gitee.io/sonic-official-website/#/Version')"
+                            @click="goToUrl('http://sonic-cloud.gitee.io/#/Version')"
               >版本更新记录
                 <el-badge
                     value="New"

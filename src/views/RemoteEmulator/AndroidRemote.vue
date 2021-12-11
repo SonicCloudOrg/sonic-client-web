@@ -2217,7 +2217,7 @@ onMounted(() => {
                   <div style="display: flex;align-items: center;">
                     <span>如果您的浏览器不兼容该功能，请您及时反馈到</span>
                     <el-link style="font-size: 13px;margin-left: 5px" type="primary" target="_blank"
-                             href="https://github.com/ZhouYixun/sonic-agent/issues/47">
+                             href="https://github.com/SonicCloudOrg/sonic-agent/issues/47">
                       这里
                     </el-link>
                   </div>
