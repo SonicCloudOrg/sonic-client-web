@@ -147,12 +147,12 @@ const saveEle = () => {
     }
   });
 };
-// const switchLocation = () => {
-//   location.value = !location.value;
-//   ElMessage.success({
-//     message: '校准完毕！',
-//   });
-// };
+const switchLocation = () => {
+  location.value = !location.value;
+  ElMessage.success({
+    message: '校准完毕！',
+  });
+};
 const selectCase = (val) => {
   ElMessage.success({
     message: '关联成功！',
@@ -227,11 +227,11 @@ const openSocket = (host, port, udId, key) => {
 };
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
-    // case 'size': {
-    //   imgWidth = JSON.parse(message.data).width;
-    //   imgHeight = JSON.parse(message.data).height;
-    //   break;
-    // }
+      // case 'size': {
+      //   imgWidth = JSON.parse(message.data).width;
+      //   imgHeight = JSON.parse(message.data).height;
+      //   break;
+      // }
       // case 'rotation': {
       //   directionStatus.value = JSON.parse(message.data.value); // TODO
       //   break;
@@ -853,6 +853,55 @@ onMounted(() => {
             </el-button-group>
           </div>
           <div style="position: absolute; right: 5px; top: 10px">
+            <el-tooltip
+                :enterable="false"
+                effect="dark"
+                content="手动修复"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
+            >
+              <div>
+                <el-dropdown
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
+                >
+                  <el-button
+                      size="small"
+                      type="info"
+                      circle
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <Place/>
+                    </el-icon>
+                  </el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu class="divider" v-loading="loading"
+                                      element-loading-background="rgba(255, 255, 255, 1)">
+                      <el-button-group>
+                        <el-tooltip
+                            effect="dark"
+                            content="校准坐标"
+                            placement="top"
+                        >
+                          <el-button
+                              size="small"
+                              type="info"
+                              circle
+                              @click="switchLocation"
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <Pointer/>
+                            </el-icon>
+                          </el-button>
+                        </el-tooltip>
+                      </el-button-group>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </div>
+            </el-tooltip>
             <el-tooltip
                 :enterable="false"
                 effect="dark"
@@ -1496,5 +1545,10 @@ onMounted(() => {
     background: url("@/assets/img/drag.png") no-repeat center;
     background-size: 100% 100%;
   }
+}
+
+#debugPicIOS {
+  width: 100%;
+  height: auto;
 }
 </style>
