@@ -227,12 +227,11 @@ const openSocket = (host, port, udId, key) => {
 };
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
-      // case 'size': {
-      //   imgWidth = JSON.parse(message.data).width;
-      //   imgHeight = JSON.parse(message.data).height;
-      //   loading.value = false;
-      //   break;
-      // }
+    // case 'size': {
+    //   imgWidth = JSON.parse(message.data).width;
+    //   imgHeight = JSON.parse(message.data).height;
+    //   break;
+    // }
       // case 'rotation': {
       //   directionStatus.value = JSON.parse(message.data.value); // TODO
       //   break;
@@ -276,6 +275,8 @@ const websocketOnmessage = (message) => {
         message: JSON.parse(message.data).detail,
       });
       if (JSON.parse(message.data).status === 'success') {
+        imgWidth = JSON.parse(message.data).width;
+        imgHeight = JSON.parse(message.data).height;
         sid.value = JSON.parse(message.data).port
         isDriverFinish.value = true;
       }
@@ -828,7 +829,6 @@ onMounted(() => {
           </template>
           <div style="margin-right: 40px; text-align: center">
             <img
-                v-if="isDriverFinish"
                 id="iosCap"
                 :src="'http://' + agent['host'] + ':'+  sid"
                 width="100%"
@@ -842,7 +842,7 @@ onMounted(() => {
             <el-button-group id="iOSpressKey">
               <el-button
                   size="small"
-                  style="width: 25%"
+                  style="width: 100%"
                   type="info"
                   @click="pressKey('home')"
               >
