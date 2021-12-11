@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ZhouYixun/sonic-server/main/logo.png">
+  <img src="https://raw.githubusercontent.com/SonicCloudOrg/sonic-server/main/logo.png">
 </p>
 <p align="center">🎉Front end of Sonic cloud real machine testing platform</p>
 <p align="center">
   <span>English |</span>
-  <a href="https://github.com/ZhouYixun/sonic-client-web/blob/main/README_CN.md">  
+  <a href="https://github.com/SonicCloudOrg/sonic-client-web/blob/main/README_CN.md">  
      简体中文
   </a>
 </p>
 <p align="center">
   <a href="#">  
-    <img src="https://img.shields.io/badge/release-v1.1.0-orange">
+    <img src="https://img.shields.io/badge/release-v1.2.0-orange">
   </a>
   <a href="#">  
     <img src="https://img.shields.io/badge/vue-3.2.14-success">
@@ -21,18 +21,18 @@
 </p>
 <p align="center">
   <a href="#">  
-    <img src="https://img.shields.io/github/commit-activity/m/ZhouYixun/sonic-client-web">
+    <img src="https://img.shields.io/github/commit-activity/m/SonicCloudOrg/sonic-client-web">
   </a>
-  <a href="https://hub.docker.com/repository/docker/zhouyixun/sonic-client-web">  
-    <img src="https://img.shields.io/docker/pulls/zhouyixun/sonic-client-web">
+  <a href="https://hub.docker.com/repository/docker/sonicorg/sonic-client-web">  
+    <img src="https://img.shields.io/docker/pulls/sonicorg/sonic-client-web">
   </a>
-  <a href="https://github.com/ZhouYixun/sonic-server/blob/main/LICENSE">  
-    <img src="https://img.shields.io/github/license/ZhouYiXun/sonic-server?color=green&label=license&logo=license&logoColor=green">
+  <a href="https://github.com/SonicCloudOrg/sonic-server/blob/main/LICENSE">  
+    <img src="https://img.shields.io/github/license/SonicCloudOrg/sonic-server?color=green&label=license&logo=license&logoColor=green">
   </a>
 </p>
 
 ### Official Website
-[Sonic Official Website](http://zhouyixun.gitee.io/sonic-official-website)
+[Sonic Official Website](http://sonic-cloud.gitee.io)
 ## Background
 
 #### What is sonic ?
@@ -70,7 +70,7 @@ npm run build
 Build image
 
 ```
-docker build -t zhouyixun/sonic-client-web .
+docker build -t sonicorg/sonic-client-web .
 ```
 
 ## Deployment mode
@@ -79,7 +79,7 @@ docker build -t zhouyixun/sonic-client-web .
 
 > I recommend that docker mode be used only for testing
 >
-> [Click Here!](https://hub.docker.com/repository/docker/zhouyixun/sonic-agent-linux)
+> [Click Here!](https://hub.docker.com/repository/docker/sonicorg/sonic-client-web)
 
 ### dist Mode
 

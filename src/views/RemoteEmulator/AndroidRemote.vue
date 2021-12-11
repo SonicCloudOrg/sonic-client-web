@@ -113,7 +113,6 @@ const terScroll = ref(null);
 const logcatScroll = ref(null);
 const cmdIsDone = ref(true);
 const uploadLoading = ref(false);
-const location = ref(false);
 const remoteAdbUrl = ref("");
 const logcatFilter = ref({
   level: 'E',
@@ -190,13 +189,10 @@ const saveEle = () => {
     }
   });
 };
-const switchLocation = () => {
-  location.value = !location.value;
-  ElMessage.success({
-    message: '校准完毕！',
-  });
-};
 const fixTouch = () => {
+  ElMessage.success({
+    message: '修复成功！',
+  });
   isFixTouch = !isFixTouch;
 };
 const switchIsWebView = () => {
@@ -589,25 +585,14 @@ const mouseup = (event) => {
     const rect = canvas.getBoundingClientRect();
     let x;
     let y;
-    if (location.value) {
-      x = parseInt(
-          (event.clientX - rect.left) *
-          (imgHeight / canvas.clientWidth),
-      );
-      y = parseInt(
-          (event.clientY - rect.top) *
-          (imgWidth / canvas.clientHeight),
-      );
-    } else {
-      x = parseInt(
-          (event.clientX - rect.left) *
-          (imgWidth / canvas.clientWidth),
-      );
-      y = parseInt(
-          (event.clientY - rect.top) *
-          (imgHeight / canvas.clientHeight),
-      );
-    }
+    x = parseInt(
+        (event.clientX - rect.left) *
+        (imgWidth / canvas.clientWidth),
+    );
+    y = parseInt(
+        (event.clientY - rect.top) *
+        (imgHeight / canvas.clientHeight),
+    );
     if (moveX === x && moveY === y) {
       if (!isLongPress) {
         websocket.send(
@@ -660,25 +645,14 @@ const mousedown = (event) => {
         }),
     );
   } else {
-    if (location.value) {
-      moveX = parseInt(
-          (event.clientX - rect.left) *
-          (imgHeight / canvas.clientWidth),
-      );
-      moveY = parseInt(
-          (event.clientY - rect.top) *
-          (imgWidth / canvas.clientHeight),
-      );
-    } else {
-      moveX = parseInt(
-          (event.clientX - rect.left) *
-          (imgWidth / canvas.clientWidth),
-      );
-      moveY = parseInt(
-          (event.clientY - rect.top) *
-          (imgHeight / canvas.clientHeight),
-      );
-    }
+    moveX = parseInt(
+        (event.clientX - rect.left) *
+        (imgWidth / canvas.clientWidth),
+    );
+    moveY = parseInt(
+        (event.clientY - rect.top) *
+        (imgHeight / canvas.clientHeight),
+    );
     clearInterval(loop);
     loop = setInterval(() => {
       time += 500;
@@ -2243,7 +2217,7 @@ onMounted(() => {
                   <div style="display: flex;align-items: center;">
                     <span>如果您的浏览器不兼容该功能，请您及时反馈到</span>
                     <el-link style="font-size: 13px;margin-left: 5px" type="primary" target="_blank"
-                             href="https://github.com/ZhouYixun/sonic-agent/issues/47">
+                             href="https://github.com/SonicCloudOrg/sonic-agent/issues/47">
                       这里
                     </el-link>
                   </div>
