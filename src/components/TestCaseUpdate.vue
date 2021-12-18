@@ -37,7 +37,7 @@ const getImg = (name) => {
   return result;
 }
 const platformList = [{name: "安卓", value: 1, img: "ANDROID"}
-  , {name: "iOS（即将开放）", value: 2, img: "IOS", disabled: true}]
+  , {name: "iOS", value: 2, img: "IOS"}]
 const emit = defineEmits(['flush']);
 const caseForm = ref(null);
 const summit = () => {
