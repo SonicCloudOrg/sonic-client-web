@@ -52,6 +52,8 @@ const manufacturer = ref([
   "Yulong",
   "LGE",
   "Sony",
+  "motorola",
+  "asus",
   "GIONEE",
   "Lenovo",
   "HTC"
@@ -380,8 +382,8 @@ const getFilterOption = () => {
       .get("/controller/devices/getFilterOption")
       .then((resp) => {
         if (resp['code'] === 2000) {
-          cpus.value =resp['data'].cpu
-          sizes.value =resp['data'].size
+          cpus.value = resp['data'].cpu
+          sizes.value = resp['data'].size
         }
       });
 }
@@ -480,7 +482,7 @@ onMounted(() => {
                 <el-checkbox v-for="man in manufacturer" :key="man" :label="man">
                   <img
                       v-if="
-                  man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'||man === 'GIONEE'
+                  man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'||man === 'GIONEE'|| man === 'motorola'
                 "
                       style="width: 80px"
                       :src="getImg(man)"
@@ -627,7 +629,7 @@ onMounted(() => {
                     <el-form-item label="制造商">
                       <img
                           v-if="
-                  device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'
+                  device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'|| device.manufacturer === 'motorola'
                 "
                           style="width: 80px"
                           :src="getImg(device.manufacturer)"
