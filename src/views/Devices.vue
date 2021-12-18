@@ -6,6 +6,7 @@ import axios from "../http/axios";
 import RenderStatus from "../components/RenderStatus.vue"
 import {ElMessage} from "element-plus";
 import useClipboard from "vue-clipboard3";
+import RenderDeviceName from "../components/RenderDeviceName.vue";
 
 const {toClipboard} = useClipboard();
 const img = import.meta.globEager("./../assets/img/*")
@@ -579,11 +580,7 @@ onMounted(() => {
                 class="device-card"
             >
               <template #header>
-              <span v-if="device.model">{{
-                  (device['nickName'] && device['nickName'].length > 0)
-                      ? device['nickName']
-                      : device.model
-                }}</span>
+              <RenderDeviceName :device="device"></RenderDeviceName>
                 <RenderStatus :status="device.status" :user="device.user"></RenderStatus>
               </template>
               <el-row>

@@ -41,6 +41,7 @@ import {
   View,
   InfoFilled,
 } from '@element-plus/icons';
+import RenderDeviceName from "../../components/RenderDeviceName.vue";
 
 const {toClipboard} = useClipboard();
 const route = useRoute();
@@ -769,9 +770,7 @@ onMounted(() => {
               <el-icon :size="14" style="vertical-align: middle;">
                 <Cellphone/>
               </el-icon>
-              <span style="color: #e6a23c; margin-left: 5px">{{
-                  device['model']
-                }}</span>
+              <RenderDeviceName style="color: #e6a23c; margin-left: 5px" :device="device"/>
               <el-popover placement="bottom-end" width="270" trigger="hover">
                 <el-form
                     label-position="left"
