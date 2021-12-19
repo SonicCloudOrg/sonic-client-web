@@ -942,6 +942,15 @@ onMounted(() => {
       </el-form-item>
     </div>
 
+    <div v-if="step.stepType === 'siriCommand'">
+      <el-form-item label="siri指令">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入siri指令，例：what day is it today?"
+        ></el-input>
+      </el-form-item>
+    </div>
+
     <div
         v-if="
           step.stepType === 'assertEquals' ||
