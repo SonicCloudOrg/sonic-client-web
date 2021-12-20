@@ -147,6 +147,11 @@ const saveEle = () => {
     }
   });
 };
+const switchTabs = (e) => {
+  // if (e.props.name === 'terminal') {
+  //   terminalHeight.value = document.getElementById('pressKey').offsetTop - 200;
+  // }
+};
 const switchLocation = () => {
   location.value = !location.value;
   ElMessage.success({
@@ -216,7 +221,7 @@ const setImgData = (data) => {
 const openSocket = (host, port, udId, key) => {
   if ('WebSocket' in window) {
     websocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/ios/' + udId + '/' + key+ '/' + localStorage.getItem('SonicToken'),
+        'ws://' + host + ':' + port + '/websockets/ios/' + udId + '/' + key + '/' + localStorage.getItem('SonicToken'),
     );
   } else {
     console.error('不支持WebSocket');
@@ -543,18 +548,17 @@ const clearLog = () => {
 const setStepLog = (data) => {
   stepLog.value.push(data);
 };
-// const runStep = () => {
-//   debugLoading.value = true;
-//   activeTab2.value = 'log';
-//   websocket.send(
-//       JSON.stringify({
-//         type: 'debug',
-//         detail: 'runStep',
-//         caseId: testCase.value['id'],
-//         pwd: device.value['password'],
-//       }),
-//   );
-// };
+const runStep = () => {
+  debugLoading.value = true;
+  activeTab2.value = 'log';
+  websocket.send(
+      JSON.stringify({
+        type: 'debug',
+        detail: 'runStep',
+        caseId: testCase.value['id'],
+      }),
+  );
+};
 const pressKey = (key) => {
   websocket.send(
       JSON.stringify({
@@ -575,7 +579,7 @@ const beforeAvatarUpload = (file) => {
   }
 };
 const beforeAvatarUpload2 = (file) => {
-  if (file.name.endsWith('.apk')) {
+  if (file.name.endsWith('.ipa')) {
     return true;
   } else {
     ElMessage.error({
@@ -626,19 +630,28 @@ const scan = (url) => {
       }),
   );
 };
-const install = (apk) => {
-  if (apk.length > 0) {
+const install = (ipa) => {
+  if (ipa.length > 0) {
     websocket.send(
         JSON.stringify({
           type: 'debug',
           detail: 'install',
-          apk,
+          ipa,
         }),
     );
     ElMessage.success({
       message: '开始安装！请稍后...',
     });
   }
+};
+const sendCommand = (text) => {
+  websocket.send(
+      JSON.stringify({
+        type: 'debug',
+        detail: 'siri',
+        command: text
+      }),
+  );
 };
 const getElement = () => {
   elementLoading.value = true;
@@ -1048,222 +1061,222 @@ onMounted(() => {
             v-model="activeTab"
             :tab-position="tabPosition"
         >
-          <!--          <el-tab-pane label="远控面板" name="main" disabled>-->
-          <!--            <el-row :gutter="20">-->
-          <!--              <el-col :span="12">-->
-          <!--                <el-card>-->
-          <!--                  <template #header>-->
-          <!--                    <strong>输入文本</strong>-->
-          <!--                  </template>-->
-          <!--                  <el-form size="small" :model="text">-->
-          <!--                    <el-form-item-->
-          <!--                    >-->
-          <!--                      <el-input-->
-          <!--                          clearable-->
-          <!--                          v-model="text.content"-->
-          <!--                          size="small"-->
-          <!--                          placeholder="请输入要发送的文本，支持简体中文"-->
-          <!--                      ></el-input>-->
-          <!--                    </el-form-item>-->
-          <!--                  </el-form>-->
-          <!--                  <div style="text-align: center;">-->
-          <!--                    <el-button-->
-          <!--                        size="mini"-->
-          <!--                        type="primary"-->
-          <!--                        @click="sendText(text.content)"-->
-          <!--                    >发送-->
-          <!--                    </el-button>-->
-          <!--                  </div>-->
-          <!--                </el-card>-->
-          <!--              </el-col>-->
-          <!--              <el-col :span="12">-->
-          <!--                <el-card>-->
-          <!--                  <template #header>-->
-          <!--                    <strong>录制屏幕（即将开放）</strong>-->
-          <!--                  </template>-->
-          <!--                  <div style="text-align: center">-->
-          <!--                    <el-button size="mini" type="success" disabled>开始录制</el-button>-->
-          <!--                    <el-button size="mini" type="info" disabled>暂停录制</el-button>-->
-          <!--                    <el-button size="mini" type="danger" disabled>结束录制</el-button>-->
-          <!--                    <div style="margin-top: 20px">-->
-          <!--                      <el-button size="mini" type="primary" disabled>下载录像</el-button>-->
-          <!--                    </div>-->
-          <!--                  </div>-->
-          <!--                </el-card>-->
-          <!--              </el-col>-->
-          <!--              <el-col :span="12" style="margin-top: 20px">-->
-          <!--                <el-card>-->
-          <!--                  <template #header>-->
-          <!--                    <strong>扫描二维码</strong>-->
-          <!--                  </template>-->
-          <!--                  <el-alert title="OPPO、vivo部分机型上传二维码后不出现在相册，需要重启后生效" type="info" show-icon :closable="false">-->
-          <!--                  </el-alert>-->
-          <!--                  <div style="text-align: center;margin-top: 20px">-->
-          <!--                    <el-upload-->
-          <!--                        drag-->
-          <!--                        action=""-->
-          <!--                        :with-credentials="true"-->
-          <!--                        :limit="1"-->
-          <!--                        :before-upload="beforeAvatarUpload"-->
-          <!--                        :on-exceed="limitOut"-->
-          <!--                        :http-request="uploadScan"-->
-          <!--                        list-type="picture"-->
-          <!--                    >-->
-          <!--                      <i class="el-icon-upload"></i>-->
-          <!--                      <div class="el-upload__text">将二维码图片拖到此处，或<em>点击上传</em></div>-->
-          <!--                      <template #tip>-->
-          <!--                        <div class="el-upload__tip">只能上传jpg/png文件</div>-->
-          <!--                      </template>-->
-          <!--                    </el-upload>-->
-          <!--                  </div>-->
-          <!--                </el-card>-->
-          <!--              </el-col>-->
-          <!--              <el-col :span="12" style="margin-top: 20px">-->
-          <!--                <el-card>-->
-          <!--                  <template #header>-->
-          <!--                    <strong>安装APK</strong>-->
-          <!--                  </template>-->
-          <!--                  <el-tabs type="border-card" v-loading="!isDriverFinish">-->
-          <!--                    <el-tab-pane label="上传安装">-->
-          <!--                      <div style="text-align: center">-->
-          <!--                        <el-upload-->
-          <!--                            v-loading="uploadLoading"-->
-          <!--                            drag-->
-          <!--                            action=""-->
-          <!--                            :with-credentials="true"-->
-          <!--                            :limit="1"-->
-          <!--                            :before-upload="beforeAvatarUpload2"-->
-          <!--                            :on-exceed="limitOut"-->
-          <!--                            :http-request="uploadPackage"-->
-          <!--                        >-->
-          <!--                          <i class="el-icon-upload"></i>-->
-          <!--                          <div class="el-upload__text">将APK文件拖到此处，或<em>点击上传</em></div>-->
-          <!--                          <template #tip>-->
-          <!--                            <div class="el-upload__tip">只能上传apk文件</div>-->
-          <!--                          </template>-->
-          <!--                        </el-upload>-->
-          <!--                      </div>-->
-          <!--                    </el-tab-pane>-->
-          <!--                    <el-tab-pane label="URL安装">-->
-          <!--                      <el-input-->
-          <!--                          clearable-->
-          <!--                          v-model="uploadUrl"-->
-          <!--                          size="small"-->
-          <!--                          placeholder="请输入apk下载链接或本地路径"-->
-          <!--                      ></el-input>-->
-          <!--                      <div style="text-align: center;margin-top: 20px">-->
-          <!--                        <el-button-->
-          <!--                            size="mini"-->
-          <!--                            type="primary"-->
-          <!--                            :disabled="uploadUrl.length===0"-->
-          <!--                            @click="install(uploadUrl)"-->
-          <!--                        >发送-->
-          <!--                        </el-button>-->
-          <!--                      </div>-->
-          <!--                    </el-tab-pane>-->
-          <!--                    <el-tab-pane label="已有包安装（即将开放）" disabled>-->
-          <!--                    </el-tab-pane>-->
-          <!--                  </el-tabs>-->
-          <!--                </el-card>-->
-          <!--              </el-col>-->
-          <!--            </el-row>-->
-          <!--          </el-tab-pane>-->
+          <el-tab-pane label="远控面板" name="main" disabled>
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-card>
+                  <template #header>
+                    <strong>发送Siri命令</strong>
+                  </template>
+                  <el-form size="small" :model="text">
+                    <el-form-item
+                    >
+                      <el-input
+                          clearable
+                          v-model="text.content"
+                          size="small"
+                          placeholder="请输入siri指令，例：what day is it today?"
+                      ></el-input>
+                    </el-form-item>
+                  </el-form>
+                  <div style="text-align: center;">
+                    <el-button
+                        size="mini"
+                        type="primary"
+                        @click="sendCommand(text.content)"
+                    >发送
+                    </el-button>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="12">
+                <el-card>
+                  <template #header>
+                    <strong>录制屏幕（即将开放）</strong>
+                  </template>
+                  <div style="text-align: center">
+                    <el-button size="mini" type="success" disabled>开始录制</el-button>
+                    <el-button size="mini" type="info" disabled>暂停录制</el-button>
+                    <el-button size="mini" type="danger" disabled>结束录制</el-button>
+                    <div style="margin-top: 20px">
+                      <el-button size="mini" type="primary" disabled>下载录像</el-button>
+                    </div>
+                  </div>
+                </el-card>
+              </el-col>
+              <!--                        <el-col :span="12" style="margin-top: 20px">-->
+              <!--                          <el-card>-->
+              <!--                            <template #header>-->
+              <!--                              <strong>扫描二维码</strong>-->
+              <!--                            </template>-->
+              <!--                            <el-alert title="OPPO、vivo部分机型上传二维码后不出现在相册，需要重启后生效" type="info" show-icon :closable="false">-->
+              <!--                            </el-alert>-->
+              <!--                            <div style="text-align: center;margin-top: 20px">-->
+              <!--                              <el-upload-->
+              <!--                                  drag-->
+              <!--                                  action=""-->
+              <!--                                  :with-credentials="true"-->
+              <!--                                  :limit="1"-->
+              <!--                                  :before-upload="beforeAvatarUpload"-->
+              <!--                                  :on-exceed="limitOut"-->
+              <!--                                  :http-request="uploadScan"-->
+              <!--                                  list-type="picture"-->
+              <!--                              >-->
+              <!--                                <i class="el-icon-upload"></i>-->
+              <!--                                <div class="el-upload__text">将二维码图片拖到此处，或<em>点击上传</em></div>-->
+              <!--                                <template #tip>-->
+              <!--                                  <div class="el-upload__tip">只能上传jpg/png文件</div>-->
+              <!--                                </template>-->
+              <!--                              </el-upload>-->
+              <!--                            </div>-->
+              <!--                          </el-card>-->
+              <!--                        </el-col>-->
+              <el-col :span="12" style="margin-top: 20px">
+                <el-card>
+                  <template #header>
+                    <strong>安装IPA</strong>
+                  </template>
+                  <el-tabs type="border-card" v-loading="!isDriverFinish">
+                    <el-tab-pane label="上传安装">
+                      <div style="text-align: center">
+                        <el-upload
+                            v-loading="uploadLoading"
+                            drag
+                            action=""
+                            :with-credentials="true"
+                            :limit="1"
+                            :before-upload="beforeAvatarUpload2"
+                            :on-exceed="limitOut"
+                            :http-request="uploadPackage"
+                        >
+                          <i class="el-icon-upload"></i>
+                          <div class="el-upload__text">将ipa文件拖到此处，或<em>点击上传</em></div>
+                          <template #tip>
+                            <div class="el-upload__tip">只能上传ipa文件</div>
+                          </template>
+                        </el-upload>
+                      </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="URL安装">
+                      <el-input
+                          clearable
+                          v-model="uploadUrl"
+                          size="small"
+                          placeholder="请输入ipa下载链接或本地路径"
+                      ></el-input>
+                      <div style="text-align: center;margin-top: 20px">
+                        <el-button
+                            size="mini"
+                            type="primary"
+                            :disabled="uploadUrl.length===0"
+                            @click="install(uploadUrl)"
+                        >发送
+                        </el-button>
+                      </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="已有包安装（即将开放）" disabled>
+                    </el-tab-pane>
+                  </el-tabs>
+                </el-card>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
 
-          <!--          <el-tab-pane label="UI自动化" name="auto" disabled>-->
-          <!--            <div v-if="testCase['id']">-->
-          <!--              <el-collapse accordion style="margin-bottom: 20px">-->
-          <!--                <el-collapse-item>-->
-          <!--                  <template #title>-->
-          <!--                    <div style="display: flex; align-items: center;width: 100%;justify-content: space-between;">-->
-          <!--                      <strong style="font-size: 15px;color: #909399;margin-left: 10px">用例详情</strong>-->
-          <!--                      <el-button style="margin-right: 10px" type="danger" size="mini" @click="removeCase">取消关联-->
-          <!--                      </el-button>-->
-          <!--                    </div>-->
-          <!--                  </template>-->
-          <!--                  <el-descriptions :column="2" size="medium" border>-->
-          <!--                    <el-descriptions-item width="100px" label="用例Id">{{ testCase['id'] }}</el-descriptions-item>-->
-          <!--                    <el-descriptions-item width="100px" label="用例名称">{{ testCase.name }}</el-descriptions-item>-->
-          <!--                    <el-descriptions-item label="所属项目">-->
-          <!--                      <div style=" display: flex;align-items: center;">-->
-          <!--                        <el-avatar-->
-          <!--                            style="margin-right: 10px"-->
-          <!--                            :size="27"-->
-          <!--                            :src="project['projectImg'].length>0?project['projectImg']:defaultLogo"-->
-          <!--                            shape="square"-->
-          <!--                        ></el-avatar-->
-          <!--                        >-->
-          <!--                        {{ project['projectName'] }}-->
-          <!--                      </div>-->
-          <!--                    </el-descriptions-item>-->
-          <!--                    <el-descriptions-item label="所属平台">-->
-          <!--                      <div style=" display: flex;align-items: center;">-->
-          <!--                        <el-avatar-->
-          <!--                            style="margin-right: 10px"-->
-          <!--                            :size="27"-->
-          <!--                            :src="getImg(testCase['platform']===1?'ANDROID':'IOS')"-->
-          <!--                            shape="square"-->
-          <!--                        ></el-avatar-->
-          <!--                        >-->
-          <!--                        {{ testCase['platform'] === 1 ? '安卓' : 'iOS' }}-->
-          <!--                      </div>-->
-          <!--                    </el-descriptions-item>-->
-          <!--                    <el-descriptions-item label="模块">{{ testCase['module'] }}</el-descriptions-item>-->
-          <!--                    <el-descriptions-item label="版本名称">{{ testCase['version'] }}</el-descriptions-item>-->
-          <!--                    <el-descriptions-item label="设计人">{{ testCase['designer'] }}</el-descriptions-item>-->
-          <!--                    <el-descriptions-item label="最后修改日期">{{ testCase['editTime'] }}</el-descriptions-item>-->
-          <!--                    <el-descriptions-item label="用例描述">{{ testCase['des'] }}</el-descriptions-item>-->
-          <!--                  </el-descriptions>-->
-          <!--                </el-collapse-item>-->
-          <!--              </el-collapse>-->
-          <!--              <el-tabs type="border-card" stretch v-model="activeTab2">-->
-          <!--                <el-tab-pane label="步骤列表" name="step">-->
-          <!--                  <step-list :is-show-run="true" :platform="1" :is-driver-finish="isDriverFinish"-->
-          <!--                             :case-id="testCase['id']"-->
-          <!--                             :project-id="project['id']"-->
-          <!--                             @runStep="runStep"/>-->
-          <!--                </el-tab-pane>-->
-          <!--                <el-tab-pane label="运行日志" name="log">-->
-          <!--                  <step-log :is-read-only="false" :debug-loading="debugLoading" :step-log="stepLog"-->
-          <!--                            @clearLog="clearLog"/>-->
-          <!--                </el-tab-pane>-->
-          <!--              </el-tabs>-->
-          <!--            </div>-->
-          <!--            <div v-else>-->
-          <!--              <span style="color: #909399;margin-right: 10px">关联项目</span>-->
-          <!--              <el-select size="mini" v-model="project" value-key="id" placeholder="请选择关联项目">-->
-          <!--                <el-option-->
-          <!--                    v-for="item in store.state.projectList"-->
-          <!--                    :key="item.id"-->
-          <!--                    :value="item"-->
-          <!--                    :label="item['projectName']"-->
-          <!--                >-->
-          <!--                  <div style=" display: flex;align-items: center;">-->
-          <!--                    <el-avatar-->
-          <!--                        style="margin-right: 10px"-->
-          <!--                        :size="32"-->
-          <!--                        :src="item['projectImg'].length>0?item['projectImg']:defaultLogo"-->
-          <!--                        shape="square"-->
-          <!--                    ></el-avatar-->
-          <!--                    >-->
-          <!--                    {{ item['projectName'] }}-->
-          <!--                  </div>-->
-          <!--                </el-option>-->
-          <!--              </el-select>-->
-          <!--              <el-button v-if="project!==null" size="mini" type="primary" round style="position: absolute;right: 20px"-->
-          <!--                         @click="caseList.open()">-->
-          <!--                新增用例-->
-          <!--              </el-button>-->
-          <!--              <test-case-list ref="caseList" v-if="project!==null"-->
-          <!--                              :project-id="project['id']"-->
-          <!--                              :platform="1"-->
-          <!--                              :is-read-only="true"-->
-          <!--                              @select-case="selectCase"></test-case-list>-->
-          <!--              <el-card style="height: 100%;margin-top:20px">-->
-          <!--                <el-result icon="info" title="提示" subTitle="该功能需要先从上方关联测试用例">-->
-          <!--                </el-result>-->
-          <!--              </el-card>-->
-          <!--            </div>-->
-          <!--          </el-tab-pane>-->
+          <el-tab-pane label="UI自动化" name="auto" disabled>
+            <div v-if="testCase['id']">
+              <el-collapse accordion style="margin-bottom: 20px">
+                <el-collapse-item>
+                  <template #title>
+                    <div style="display: flex; align-items: center;width: 100%;justify-content: space-between;">
+                      <strong style="font-size: 15px;color: #909399;margin-left: 10px">用例详情</strong>
+                      <el-button style="margin-right: 10px" type="danger" size="mini" @click="removeCase">取消关联
+                      </el-button>
+                    </div>
+                  </template>
+                  <el-descriptions :column="2" size="medium" border>
+                    <el-descriptions-item width="100px" label="用例Id">{{ testCase['id'] }}</el-descriptions-item>
+                    <el-descriptions-item width="100px" label="用例名称">{{ testCase.name }}</el-descriptions-item>
+                    <el-descriptions-item label="所属项目">
+                      <div style=" display: flex;align-items: center;">
+                        <el-avatar
+                            style="margin-right: 10px"
+                            :size="27"
+                            :src="project['projectImg'].length>0?project['projectImg']:defaultLogo"
+                            shape="square"
+                        ></el-avatar
+                        >
+                        {{ project['projectName'] }}
+                      </div>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="所属平台">
+                      <div style=" display: flex;align-items: center;">
+                        <el-avatar
+                            style="margin-right: 10px"
+                            :size="27"
+                            :src="getImg(testCase['platform']===1?'ANDROID':'IOS')"
+                            shape="square"
+                        ></el-avatar
+                        >
+                        {{ testCase['platform'] === 1 ? '安卓' : 'iOS' }}
+                      </div>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="模块">{{ testCase['module'] }}</el-descriptions-item>
+                    <el-descriptions-item label="版本名称">{{ testCase['version'] }}</el-descriptions-item>
+                    <el-descriptions-item label="设计人">{{ testCase['designer'] }}</el-descriptions-item>
+                    <el-descriptions-item label="最后修改日期">{{ testCase['editTime'] }}</el-descriptions-item>
+                    <el-descriptions-item label="用例描述">{{ testCase['des'] }}</el-descriptions-item>
+                  </el-descriptions>
+                </el-collapse-item>
+              </el-collapse>
+              <el-tabs type="border-card" stretch v-model="activeTab2">
+                <el-tab-pane label="步骤列表" name="step">
+                  <step-list :is-show-run="true" :platform="2" :is-driver-finish="isDriverFinish"
+                             :case-id="testCase['id']"
+                             :project-id="project['id']"
+                             @runStep="runStep"/>
+                </el-tab-pane>
+                <el-tab-pane label="运行日志" name="log">
+                  <step-log :is-read-only="false" :debug-loading="debugLoading" :step-log="stepLog"
+                            @clearLog="clearLog"/>
+                </el-tab-pane>
+              </el-tabs>
+            </div>
+            <div v-else>
+              <span style="color: #909399;margin-right: 10px">关联项目</span>
+              <el-select size="mini" v-model="project" value-key="id" placeholder="请选择关联项目">
+                <el-option
+                    v-for="item in store.state.projectList"
+                    :key="item.id"
+                    :value="item"
+                    :label="item['projectName']"
+                >
+                  <div style=" display: flex;align-items: center;">
+                    <el-avatar
+                        style="margin-right: 10px"
+                        :size="32"
+                        :src="item['projectImg'].length>0?item['projectImg']:defaultLogo"
+                        shape="square"
+                    ></el-avatar
+                    >
+                    {{ item['projectName'] }}
+                  </div>
+                </el-option>
+              </el-select>
+              <el-button v-if="project!==null" size="mini" type="primary" round style="position: absolute;right: 20px"
+                         @click="caseList.open()">
+                新增用例
+              </el-button>
+              <test-case-list ref="caseList" v-if="project!==null"
+                              :project-id="project['id']"
+                              :platform="2"
+                              :is-read-only="true"
+                              @select-case="selectCase"></test-case-list>
+              <el-card style="height: 100%;margin-top:20px">
+                <el-result icon="info" title="提示" subTitle="该功能需要先从上方关联测试用例">
+                </el-result>
+              </el-card>
+            </div>
+          </el-tab-pane>
           <el-tab-pane label="控件元素" name="ele">
             <div v-show="isShowImg">
               <div style="margin-bottom: 15px; display: flex;align-items: center;justify-content: space-between;">
