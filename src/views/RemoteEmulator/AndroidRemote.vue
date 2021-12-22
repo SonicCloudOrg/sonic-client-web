@@ -353,12 +353,12 @@ const terminalWebsocketOnmessage = (message) => {
     case 'logcatResp':
       logcatOutPut.value.push(
           JSON.parse(message.data)['detail']
-              .replaceAll(' I ', '<span style=\'color: #0d84ff\'> I </span>')
-              .replaceAll(' I ', '<span style=\'color: #0d84ff\'> I </span>')
-              .replaceAll(' D ', '<span style=\'color: #0d84ff\'> D </span>')
-              .replaceAll(' W ', '<span style=\'color: #E6A23C\'> W </span>')
-              .replaceAll(' E ', '<span style=\'color: #F56C6C\'> E </span>')
-              .replaceAll(' F ', '<span style=\'color: #F56C6C\'> F </span>'),
+              .replace(/ I /g, '<span style=\'color: #0d84ff\'> I </span>')
+              .replace(/ V /g, '<span style=\'color: #0d84ff\'> I </span>')
+              .replace(/ D /g, '<span style=\'color: #0d84ff\'> D </span>')
+              .replace(/ W /g, '<span style=\'color: #E6A23C\'> W </span>')
+              .replace(/ E /g, '<span style=\'color: #F56C6C\'> E </span>')
+              .replace(/ F /g, '<span style=\'color: #F56C6C\'> F </span>'),
       );
       nextTick(() => {
         logcatScroll['value'].wrap.scrollTop =

@@ -580,7 +580,7 @@ onMounted(() => {
                 class="device-card"
             >
               <template #header>
-              <RenderDeviceName :device="device"></RenderDeviceName>
+                <RenderDeviceName :device="device"></RenderDeviceName>
                 <RenderStatus :status="device.status" :user="device.user"></RenderStatus>
               </template>
               <el-row>
@@ -612,16 +612,9 @@ onMounted(() => {
                       label-width="70px"
                       style="margin: 0 0 15px 10px"
                   >
-                    <el-form-item label="设备型号" v-if="device.model">
-                      <div>{{
-                          device.model.length > 25
-                              ? device.model.substring(0, 17) + "..."
-                              : device.model
-                        }}
+                    <el-form-item label="设备型号">
+                      <div>{{device.model}}
                       </div>
-                    </el-form-item>
-                    <el-form-item label="设备名称">
-                      <div>{{ device.name }}</div>
                     </el-form-item>
                     <el-form-item label="制造商">
                       <img
@@ -651,6 +644,9 @@ onMounted(() => {
                     </el-form-item>
                     <el-form-item label="系统版本">
                       <div>{{ device.version }}</div>
+                    </el-form-item>
+                    <el-form-item label="电池温度">
+                      <div><img :src="img['./../assets/img/tem.png'].default" width="10"/>{{ device.temperature }}</div>
                     </el-form-item>
                     <el-form-item label="所在位置">
                       <div>{{ findAgentById(device.agentId) }}</div>
