@@ -613,7 +613,7 @@ onMounted(() => {
                       style="margin: 0 0 15px 10px"
                   >
                     <el-form-item label="设备型号">
-                      <div>{{device.model}}
+                      <div>{{ device.model }}
                       </div>
                     </el-form-item>
                     <el-form-item label="制造商">
@@ -646,7 +646,14 @@ onMounted(() => {
                       <div>{{ device.version }}</div>
                     </el-form-item>
                     <el-form-item label="电池温度">
-                      <div><img :src="img['./../assets/img/tem.png'].default" width="10"/>{{ device.temperature }}</div>
+                      <div :style="'position: relative; display: flex;align-items: center;color:'+(device['temperature']===0?'#606266':
+                      device['temperature']<300?'#67C23A':(device['temperature']<350?'#E6A23C':'#F56C6C'))">
+                        <img :src="img['./../assets/img/tem.svg'].default" width="20"/>{{
+                          (device['temperature'] === 0 ||
+                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))
+                              ? "未知" : (device['temperature'] / 10).toFixed(1) + " ℃"
+                        }}
+                      </div>
                     </el-form-item>
                     <el-form-item label="所在位置">
                       <div>{{ findAgentById(device.agentId) }}</div>
