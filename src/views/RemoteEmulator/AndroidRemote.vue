@@ -11,6 +11,9 @@ import StepLog from '@/components/StepLog.vue';
 import ElementUpdate from '@/components/ElementUpdate.vue';
 import defaultLogo from '@/assets/logo.png';
 import {
+  VideoPause,
+  Refresh,
+  Connection,
   Delete,
   Place,
   Download,
@@ -833,6 +836,22 @@ const pressKey = (keyNum) => {
       }),
   );
 };
+const batteryDisconnect = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'battery',
+        detail: 0,
+      }),
+  );
+};
+const batteryReset = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'battery',
+        detail: 1,
+      }),
+  );
+};
 const changePic = (type) => {
   loading.value = true;
   let pic;
@@ -1289,6 +1308,70 @@ onMounted(() => {
                           >
                             <el-icon :size="14" style="vertical-align: middle;">
                               <Pointer/>
+                            </el-icon>
+                          </el-button>
+                        </el-tooltip>
+                      </el-button-group>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </div>
+            </el-tooltip>
+            <el-tooltip
+                :enterable="false"
+                effect="dark"
+                content="电池模拟"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
+            >
+              <div>
+                <el-dropdown
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
+                >
+                  <el-button
+                      size="small"
+                      type="info"
+                      circle
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <Connection/>
+                    </el-icon>
+                  </el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu class="divider">
+                      <el-button-group>
+                        <el-tooltip
+                            effect="dark"
+                            content="模拟断电"
+                            placement="top"
+                        >
+                          <el-button
+                              size="small"
+                              type="info"
+                              circle
+                              @click="batteryDisconnect"
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <VideoPause/>
+                            </el-icon>
+                          </el-button>
+                        </el-tooltip>
+                        <el-tooltip
+                            effect="dark"
+                            content="重置"
+                            placement="top"
+                        >
+                          <el-button
+                              size="small"
+                              type="info"
+                              circle
+                              @click="batteryReset"
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <Refresh/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
