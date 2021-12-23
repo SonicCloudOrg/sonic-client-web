@@ -394,6 +394,7 @@ const terminalWebsocketOnmessage = (message) => {
 const websocketOnmessage = (message) => {
   if (typeof message.data === 'object') {
     oldBlob = message.data;
+    debugger
     const blob = new Blob([message.data], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
     const img = new Image();

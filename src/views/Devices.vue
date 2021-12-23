@@ -7,6 +7,7 @@ import RenderStatus from "../components/RenderStatus.vue"
 import {ElMessage} from "element-plus";
 import useClipboard from "vue-clipboard3";
 import RenderDeviceName from "../components/RenderDeviceName.vue";
+import ColorImg from '@/components/ColorImg.vue';
 
 const {toClipboard} = useClipboard();
 const img = import.meta.globEager("./../assets/img/*")
@@ -679,7 +680,14 @@ onUnmounted(() => {
                     <el-form-item label="电池温度">
                       <div :style="'position: relative; display: flex;align-items: center;color:'+(device['temperature']===0?'#606266':
                       device['temperature']<300?'#67C23A':(device['temperature']<350?'#E6A23C':'#F56C6C'))">
-                        <img :src="img['./../assets/img/tem.svg'].default" width="20"/>{{
+                        <ColorImg
+                            :src="img['./../assets/img/tem.png'].default"
+                            :width="20"
+                            :height="20"
+                            :color="(device['temperature']===0?'#606266':
+                      device['temperature']<300?'#67C23A':(device['temperature']<350?'#E6A23C':'#F56C6C'))"
+                        />
+                        {{
                           (device['temperature'] === 0 ||
                               (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))
                               ? "未知" : (device['temperature'] / 10).toFixed(1) + " ℃"
