@@ -14,6 +14,7 @@ const img = import.meta.globEager("./../assets/img/*")
 const router = useRouter();
 const timer = ref(null);
 const refreshTime = ref(0);
+const avgTem = ref(0);
 const checkAllAndroid = ref(false);
 const isAllAndroid = ref(false);
 const checkAlliOS = ref(false);
@@ -402,7 +403,9 @@ const findTemper = () => {
       .get("/controller/devices/findTemper")
       .then((resp) => {
         if (resp['code'] === 2000) {
-
+          if (resp['data'] !== null) {
+            avgTem.value = resp['data'];
+          }
         }
       }).catch(() => {
     clearInterval(timer.value);
@@ -592,6 +595,21 @@ onUnmounted(() => {
             </el-form-item>
           </el-form>
         </el-popover>
+
+        <strong v-if="avgTem!==0" style="float: right; display: flex;align-items: center;
+        font-size: 16px;color: #909399;">当前平均电池温度：
+          <div :style="'position: relative; display: flex;align-items: center;color:'
+        +(avgTem<300?'#67C23A':(avgTem<350?'#E6A23C':'#F56C6C'))">
+            <ColorImg
+                :src="img['./../assets/img/tem.png'].default"
+                :width="20"
+                :height="20"
+                :color="(avgTem<300?'#67C23A':(avgTem<350?'#E6A23C':'#F56C6C'))"
+            />
+            {{ (avgTem / 10).toFixed(1) + " ℃" }}
+          </div>
+        </strong>
+
         <div style="text-align: center;margin-top: 20px">
           <el-divider class="device-card-divider">设备列表</el-divider>
         </div>
@@ -678,9 +696,12 @@ onUnmounted(() => {
                       <div>{{ device.version }}</div>
                     </el-form-item>
                     <el-form-item label="电池温度">
-                      <div :style="'position: relative; display: flex;align-items: center;color:'+(device['temperature']===0?'#606266':
+                      <div :style="'position: relative; display: flex;align-items: center;color:'+((device['temperature'] === 0 ||
+                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))?'#606266':
                       device['temperature']<300?'#67C23A':(device['temperature']<350?'#E6A23C':'#F56C6C'))">
                         <ColorImg
+                            v-if="(device['temperature'] !== 0 &&
+                              (device.status === 'ONLINE' || device.status === 'DEBUGGING' || device.status === 'TESTING'))"
                             :src="img['./../assets/img/tem.png'].default"
                             :width="20"
                             :height="20"
