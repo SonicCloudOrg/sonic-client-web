@@ -69,6 +69,13 @@ const routes = [
                 meta: {title: "安卓测试用例"},
             },
             {
+                path: 'IOSTestCase',
+                name: 'IOSTestCase',
+                component: () =>
+                    import ("../views/IOSTestCase.vue"),
+                meta: {title: "iOS测试用例"},
+            },
+            {
                 path: 'StepListView/:caseId(\\d+)',
                 name: 'StepListView',
                 component: () =>

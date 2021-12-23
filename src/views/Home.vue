@@ -54,7 +54,7 @@ onMounted(() => {
             <el-menu-item :index="'/Home/' + route.params.projectId + '/AndroidTestCase'">
               <i class="el-icon-d-arrow-right"></i>安卓端测试用例
             </el-menu-item>
-            <el-menu-item :index="'/Home/' + route.params.projectId + '/IOSTestCase'" disabled>
+            <el-menu-item :index="'/Home/' + route.params.projectId + '/IOSTestCase'">
               <i class="el-icon-d-arrow-right"></i>iOS端测试用例
             </el-menu-item>
           </el-sub-menu>

@@ -32,7 +32,7 @@ const getPhoneImg = (name, url) => {
 }
 const suiteForm = ref(null)
 const platformList = [{name: "安卓", value: 1, img: "ANDROID"}
-  , {name: "iOS（即将开放）", value: 2, img: "IOS", disabled: true}]
+  , {name: "iOS", value: 2, img: "IOS"}]
 const testSuite = ref({
   id: null,
   name: "",

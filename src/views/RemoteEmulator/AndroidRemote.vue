@@ -11,6 +11,9 @@ import StepLog from '@/components/StepLog.vue';
 import ElementUpdate from '@/components/ElementUpdate.vue';
 import defaultLogo from '@/assets/logo.png';
 import {
+  VideoPause,
+  Refresh,
+  Connection,
   Delete,
   Place,
   Download,
@@ -29,10 +32,6 @@ import {
   CaretLeft,
   Operation,
   Cellphone,
-  Refresh,
-  RefreshRight,
-  RefreshLeft,
-  Wallet,
   Menu,
   CopyDocument,
   House,
@@ -40,6 +39,7 @@ import {
   View,
   InfoFilled,
 } from '@element-plus/icons';
+import RenderDeviceName from "../../components/RenderDeviceName.vue";
 
 const {toClipboard} = useClipboard();
 const route = useRoute();
@@ -356,12 +356,12 @@ const terminalWebsocketOnmessage = (message) => {
     case 'logcatResp':
       logcatOutPut.value.push(
           JSON.parse(message.data)['detail']
-              .replaceAll(' I ', '<span style=\'color: #0d84ff\'> I </span>')
-              .replaceAll(' I ', '<span style=\'color: #0d84ff\'> I </span>')
-              .replaceAll(' D ', '<span style=\'color: #0d84ff\'> D </span>')
-              .replaceAll(' W ', '<span style=\'color: #E6A23C\'> W </span>')
-              .replaceAll(' E ', '<span style=\'color: #F56C6C\'> E </span>')
-              .replaceAll(' F ', '<span style=\'color: #F56C6C\'> F </span>'),
+              .replace(/ I /g, '<span style=\'color: #0d84ff\'> I </span>')
+              .replace(/ V /g, '<span style=\'color: #0d84ff\'> I </span>')
+              .replace(/ D /g, '<span style=\'color: #0d84ff\'> D </span>')
+              .replace(/ W /g, '<span style=\'color: #E6A23C\'> W </span>')
+              .replace(/ E /g, '<span style=\'color: #F56C6C\'> E </span>')
+              .replace(/ F /g, '<span style=\'color: #F56C6C\'> F </span>'),
       );
       nextTick(() => {
         logcatScroll['value'].wrap.scrollTop =
@@ -836,6 +836,22 @@ const pressKey = (keyNum) => {
       }),
   );
 };
+const batteryDisconnect = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'battery',
+        detail: 0,
+      }),
+  );
+};
+const batteryReset = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'battery',
+        detail: 1,
+      }),
+  );
+};
 const changePic = (type) => {
   loading.value = true;
   let pic;
@@ -988,7 +1004,7 @@ const getDeviceById = (id) => {
         ElMessage.error({
           message: '该设备暂时不可使用！',
         });
-        router.replace('/Index');
+        router.replace('/Index/Devices');
         return;
       }
       axios
@@ -1091,9 +1107,7 @@ onMounted(() => {
               <el-icon :size="14" style="vertical-align: middle;">
                 <Cellphone/>
               </el-icon>
-              <span style="color: #e6a23c; margin-left: 5px">{{
-                  device['model']
-                }}</span>
+              <RenderDeviceName style="color: #e6a23c; margin-left: 5px" :device="device"/>
               <el-popover placement="bottom-end" width="270" trigger="hover">
                 <el-form
                     label-position="left"
@@ -1294,6 +1308,70 @@ onMounted(() => {
                           >
                             <el-icon :size="14" style="vertical-align: middle;">
                               <Pointer/>
+                            </el-icon>
+                          </el-button>
+                        </el-tooltip>
+                      </el-button-group>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </div>
+            </el-tooltip>
+            <el-tooltip
+                :enterable="false"
+                effect="dark"
+                content="电池模拟"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
+            >
+              <div>
+                <el-dropdown
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
+                >
+                  <el-button
+                      size="small"
+                      type="info"
+                      circle
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <Connection/>
+                    </el-icon>
+                  </el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu class="divider">
+                      <el-button-group>
+                        <el-tooltip
+                            effect="dark"
+                            content="模拟断电"
+                            placement="top"
+                        >
+                          <el-button
+                              size="small"
+                              type="info"
+                              circle
+                              @click="batteryDisconnect"
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <VideoPause/>
+                            </el-icon>
+                          </el-button>
+                        </el-tooltip>
+                        <el-tooltip
+                            effect="dark"
+                            content="重置"
+                            placement="top"
+                        >
+                          <el-button
+                              size="small"
+                              type="info"
+                              circle
+                              @click="batteryReset"
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <Refresh/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
@@ -1545,7 +1623,8 @@ onMounted(() => {
                     <strong>远程连接ADB</strong>
                   </template>
                   <div v-if="remoteAdbUrl.length>0" style="margin-top: 8px;margin-bottom: 8px">
-                    <el-card :body-style="{backgroundColor:'#303133'}">
+                    <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
+                             @click="copy('adb connect '+remoteAdbUrl)">
                       <strong style="color: #F2F6FC">adb connect {{ remoteAdbUrl }}</strong>
                     </el-card>
                   </div>

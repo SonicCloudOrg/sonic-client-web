@@ -1,15 +1,20 @@
 <script setup>
-import {ref, onMounted, watch} from "vue";
+import {ref, onMounted, watch, onUnmounted} from "vue";
 import {useRouter} from "vue-router";
 import Pageable from "../components/Pageable.vue";
 import axios from "../http/axios";
 import RenderStatus from "../components/RenderStatus.vue"
 import {ElMessage} from "element-plus";
 import useClipboard from "vue-clipboard3";
+import RenderDeviceName from "../components/RenderDeviceName.vue";
+import ColorImg from '@/components/ColorImg.vue';
 
 const {toClipboard} = useClipboard();
 const img = import.meta.globEager("./../assets/img/*")
 const router = useRouter();
+const timer = ref(null);
+const refreshTime = ref(0);
+const avgTem = ref(0);
 const checkAllAndroid = ref(false);
 const isAllAndroid = ref(false);
 const checkAlliOS = ref(false);
@@ -52,6 +57,8 @@ const manufacturer = ref([
   "Yulong",
   "LGE",
   "Sony",
+  "motorola",
+  "asus",
   "GIONEE",
   "Lenovo",
   "HTC"
@@ -279,7 +286,9 @@ const findAll = (pageNum, pSize) => {
         if (resp['code'] === 2000) {
           pageData.value = resp.data;
         }
-      });
+      }).catch(() => {
+    clearInterval(timer.value);
+  });
 };
 const findAgentById = (id) => {
   let result = '未知'
@@ -295,7 +304,9 @@ const getAllAgents = () => {
   axios
       .get("/controller/agents/list").then((resp) => {
     agentList.value = resp.data
-  })
+  }).catch(() => {
+    clearInterval(timer.value);
+  });
 }
 const saveDetail = (device) => {
   axios
@@ -380,15 +391,43 @@ const getFilterOption = () => {
       .get("/controller/devices/getFilterOption")
       .then((resp) => {
         if (resp['code'] === 2000) {
-          cpus.value =resp['data'].cpu
-          sizes.value =resp['data'].size
+          cpus.value = resp['data'].cpu
+          sizes.value = resp['data'].size
         }
-      });
+      }).catch(() => {
+    clearInterval(timer.value);
+  });
 }
-onMounted(() => {
+const findTemper = () => {
+  axios
+      .get("/controller/devices/findTemper")
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          if (resp['data'] !== null) {
+            avgTem.value = resp['data'];
+          }
+        }
+      }).catch(() => {
+    clearInterval(timer.value);
+  });
+}
+const refresh = () => {
+  refreshTime.value++;
   getFilterOption();
   findAll();
   getAllAgents();
+  findTemper();
+  if (refreshTime.value === 2) {
+    clearInterval(timer.value);
+    timer.value = setInterval(refresh, 10000);
+  }
+}
+onMounted(() => {
+  refresh();
+  timer.value = setInterval(refresh, 1500);
+})
+onUnmounted(() => {
+  clearInterval(timer.value);
 })
 </script>
 
@@ -397,11 +436,11 @@ onMounted(() => {
     <el-tab-pane label="设备中心">
       <el-card>
         <el-input
-            style="width: 300px"
+            style="width: 350px"
             v-model="name"
             type="text"
             size="small"
-            placeholder="输入要筛选的型号或设备序列号"
+            placeholder="输入要筛选的型号、设备名称或设备序列号"
             maxlength="20"
             show-word-limit
             clearable
@@ -480,7 +519,7 @@ onMounted(() => {
                 <el-checkbox v-for="man in manufacturer" :key="man" :label="man">
                   <img
                       v-if="
-                  man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'||man === 'GIONEE'
+                  man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'||man === 'GIONEE'|| man === 'motorola'
                 "
                       style="width: 80px"
                       :src="getImg(man)"
@@ -556,7 +595,21 @@ onMounted(() => {
             </el-form-item>
           </el-form>
         </el-popover>
-        <el-button size="mini" style="float: right" @click="findAll()">刷新</el-button>
+
+        <strong v-if="avgTem!==0" style="float: right; display: flex;align-items: center;
+        font-size: 16px;color: #909399;">当前平均电池温度：
+          <div :style="'position: relative; display: flex;align-items: center;color:'
+        +(avgTem<300?'#67C23A':(avgTem<350?'#E6A23C':'#F56C6C'))">
+            <ColorImg
+                :src="img['./../assets/img/tem.png'].default"
+                :width="20"
+                :height="20"
+                :color="(avgTem<300?'#67C23A':(avgTem<350?'#E6A23C':'#F56C6C'))"
+            />
+            {{ (avgTem / 10).toFixed(1) + " ℃" }}
+          </div>
+        </strong>
+
         <div style="text-align: center;margin-top: 20px">
           <el-divider class="device-card-divider">设备列表</el-divider>
         </div>
@@ -577,11 +630,7 @@ onMounted(() => {
                 class="device-card"
             >
               <template #header>
-              <span v-if="device.model">{{
-                  (device['nickName'] && device['nickName'].length > 0)
-                      ? device['nickName']
-                      : device.model
-                }}</span>
+                <RenderDeviceName :device="device"></RenderDeviceName>
                 <RenderStatus :status="device.status" :user="device.user"></RenderStatus>
               </template>
               <el-row>
@@ -613,21 +662,14 @@ onMounted(() => {
                       label-width="70px"
                       style="margin: 0 0 15px 10px"
                   >
-                    <el-form-item label="设备型号" v-if="device.model">
-                      <div>{{
-                          device.model.length > 25
-                              ? device.model.substring(0, 17) + "..."
-                              : device.model
-                        }}
+                    <el-form-item label="设备型号">
+                      <div>{{ device.model }}
                       </div>
-                    </el-form-item>
-                    <el-form-item label="设备名称">
-                      <div>{{ device.name }}</div>
                     </el-form-item>
                     <el-form-item label="制造商">
                       <img
                           v-if="
-                  device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'
+                  device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'|| device.manufacturer === 'motorola'
                 "
                           style="width: 80px"
                           :src="getImg(device.manufacturer)"
@@ -652,6 +694,26 @@ onMounted(() => {
                     </el-form-item>
                     <el-form-item label="系统版本">
                       <div>{{ device.version }}</div>
+                    </el-form-item>
+                    <el-form-item label="电池温度">
+                      <div :style="'position: relative; display: flex;align-items: center;color:'+((device['temperature'] === 0 ||
+                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))?'#606266':
+                      device['temperature']<300?'#67C23A':(device['temperature']<350?'#E6A23C':'#F56C6C'))">
+                        <ColorImg
+                            v-if="(device['temperature'] !== 0 &&
+                              (device.status === 'ONLINE' || device.status === 'DEBUGGING' || device.status === 'TESTING'))"
+                            :src="img['./../assets/img/tem.png'].default"
+                            :width="20"
+                            :height="20"
+                            :color="(device['temperature']===0?'#606266':
+                      device['temperature']<300?'#67C23A':(device['temperature']<350?'#E6A23C':'#F56C6C'))"
+                        />
+                        {{
+                          (device['temperature'] === 0 ||
+                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))
+                              ? "未知" : (device['temperature'] / 10).toFixed(1) + " ℃"
+                        }}
+                      </div>
                     </el-form-item>
                     <el-form-item label="所在位置">
                       <div>{{ findAgentById(device.agentId) }}</div>
