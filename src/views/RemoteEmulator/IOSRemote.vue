@@ -57,6 +57,7 @@ const text = ref({content: ''});
 const sid = ref(0);
 let imgWidth = 0;
 let imgHeight = 0;
+const loading = ref(false);
 // 旋转状态 // 0 90 180 270
 let directionStatus = {
   value: 0,
@@ -232,15 +233,6 @@ const openSocket = (host, port, udId, key) => {
 };
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
-      // case 'size': {
-      //   imgWidth = JSON.parse(message.data).width;
-      //   imgHeight = JSON.parse(message.data).height;
-      //   break;
-      // }
-      // case 'rotation': {
-      //   directionStatus.value = JSON.parse(message.data.value); // TODO
-      //   break;
-      // }
     case 'tree': {
       ElMessage.success({
         message: '获取控件元素成功！',
@@ -282,9 +274,13 @@ const websocketOnmessage = (message) => {
       if (JSON.parse(message.data).status === 'success') {
         imgWidth = JSON.parse(message.data).width;
         imgHeight = JSON.parse(message.data).height;
-        sid.value = JSON.parse(message.data).port
         isDriverFinish.value = true;
       }
+      break;
+    }
+    case 'picFinish': {
+      sid.value = JSON.parse(message.data).port
+      loading.value = false;
       break;
     }
     case 'step': {
@@ -672,6 +668,7 @@ onBeforeUnmount(() => {
   close();
 });
 const getDeviceById = (id) => {
+  loading.value = true;
   axios
       .get('/controller/devices', {params: {id: id}}).then((resp) => {
     if (resp['code'] === 2000) {
@@ -772,7 +769,7 @@ onMounted(() => {
              transition: !isSplitPressing ? 'flex-basis 0.3s,max-width 0.3s' : ''
           }"
       >
-        <el-card v-loading="!isDriverFinish"
+        <el-card v-loading="loading"
                  element-loading-text="准备图像中..."
                  element-loading-background="rgba(255, 255, 255, 1)"
                  style="font-size: 14px"
