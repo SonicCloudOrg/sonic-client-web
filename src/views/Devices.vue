@@ -1,5 +1,5 @@
 <script setup>
-import {ref, onMounted, watch} from "vue";
+import {ref, onMounted, watch, onUnmounted} from "vue";
 import {useRouter} from "vue-router";
 import Pageable from "../components/Pageable.vue";
 import axios from "../http/axios";
@@ -11,6 +11,8 @@ import RenderDeviceName from "../components/RenderDeviceName.vue";
 const {toClipboard} = useClipboard();
 const img = import.meta.globEager("./../assets/img/*")
 const router = useRouter();
+const timer = ref(null);
+const refreshTime = ref(0);
 const checkAllAndroid = ref(false);
 const isAllAndroid = ref(false);
 const checkAlliOS = ref(false);
@@ -282,7 +284,9 @@ const findAll = (pageNum, pSize) => {
         if (resp['code'] === 2000) {
           pageData.value = resp.data;
         }
-      });
+      }).catch(() => {
+    clearInterval(timer.value);
+  });
 };
 const findAgentById = (id) => {
   let result = '未知'
@@ -298,7 +302,9 @@ const getAllAgents = () => {
   axios
       .get("/controller/agents/list").then((resp) => {
     agentList.value = resp.data
-  })
+  }).catch(() => {
+    clearInterval(timer.value);
+  });
 }
 const saveDetail = (device) => {
   axios
@@ -386,12 +392,38 @@ const getFilterOption = () => {
           cpus.value = resp['data'].cpu
           sizes.value = resp['data'].size
         }
-      });
+      }).catch(() => {
+    clearInterval(timer.value);
+  });
 }
-onMounted(() => {
+const findTemper = () => {
+  axios
+      .get("/controller/devices/findTemper")
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+
+        }
+      }).catch(() => {
+    clearInterval(timer.value);
+  });
+}
+const refresh = () => {
+  refreshTime.value++;
   getFilterOption();
   findAll();
   getAllAgents();
+  findTemper();
+  if (refreshTime.value === 2) {
+    clearInterval(timer.value);
+    timer.value = setInterval(refresh, 10000);
+  }
+}
+onMounted(() => {
+  refresh();
+  timer.value = setInterval(refresh, 1500);
+})
+onUnmounted(() => {
+  clearInterval(timer.value);
 })
 </script>
 
@@ -400,7 +432,7 @@ onMounted(() => {
     <el-tab-pane label="设备中心">
       <el-card>
         <el-input
-            style="width: 300px"
+            style="width: 350px"
             v-model="name"
             type="text"
             size="small"
@@ -559,7 +591,6 @@ onMounted(() => {
             </el-form-item>
           </el-form>
         </el-popover>
-        <el-button size="mini" style="float: right" @click="findAll()">刷新</el-button>
         <div style="text-align: center;margin-top: 20px">
           <el-divider class="device-card-divider">设备列表</el-divider>
         </div>

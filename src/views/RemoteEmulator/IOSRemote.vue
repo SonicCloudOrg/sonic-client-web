@@ -677,7 +677,7 @@ const getDeviceById = (id) => {
         ElMessage.error({
           message: '该设备暂时不可使用！',
         });
-        router.replace('/Index');
+        router.replace('/Index/Devices');
         return;
       }
       axios

@@ -1004,7 +1004,7 @@ const getDeviceById = (id) => {
         ElMessage.error({
           message: '该设备暂时不可使用！',
         });
-        router.replace('/Index');
+        router.replace('/Index/Devices');
         return;
       }
       axios
@@ -1623,7 +1623,8 @@ onMounted(() => {
                     <strong>远程连接ADB</strong>
                   </template>
                   <div v-if="remoteAdbUrl.length>0" style="margin-top: 8px;margin-bottom: 8px">
-                    <el-card :body-style="{backgroundColor:'#303133'}">
+                    <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
+                             @click="copy('adb connect '+remoteAdbUrl)">
                       <strong style="color: #F2F6FC">adb connect {{ remoteAdbUrl }}</strong>
                     </el-card>
                   </div>
