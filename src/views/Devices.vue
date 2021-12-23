@@ -404,7 +404,7 @@ onMounted(() => {
             v-model="name"
             type="text"
             size="small"
-            placeholder="输入要筛选的型号或设备序列号"
+            placeholder="输入要筛选的型号、设备名称或设备序列号"
             maxlength="20"
             show-word-limit
             clearable

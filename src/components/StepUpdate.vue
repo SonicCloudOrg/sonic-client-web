@@ -674,6 +674,7 @@ onMounted(() => {
           }"
     >
       <el-cascader
+          filterable
           style="width: 100%"
           size="small"
           placeholder="请填写步骤类型"
