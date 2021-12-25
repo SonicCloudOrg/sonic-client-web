@@ -90,7 +90,7 @@ const currentId = ref([]);
 const filterText = ref('');
 const project = ref(null);
 const testCase = ref({});
-const activeTab = ref('ele');
+const activeTab = ref('main');
 const activeTab2 = ref('step');
 const stepLog = ref([]);
 const debugLoading = ref(false);
@@ -1058,7 +1058,7 @@ onMounted(() => {
             v-model="activeTab"
             :tab-position="tabPosition"
         >
-          <el-tab-pane label="远控面板" name="main" disabled>
+          <el-tab-pane label="远控面板" name="main">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-card>
@@ -1179,7 +1179,7 @@ onMounted(() => {
             </el-row>
           </el-tab-pane>
 
-          <el-tab-pane label="UI自动化" name="auto" disabled>
+          <el-tab-pane label="UI自动化" name="auto">
             <div v-if="testCase['id']">
               <el-collapse accordion style="margin-bottom: 20px">
                 <el-collapse-item>
