@@ -61,7 +61,9 @@ const manufacturer = ref([
   "asus",
   "GIONEE",
   "Lenovo",
-  "HTC"
+  "HTC",
+  "BBK",
+  "nubia"
 ]);
 const statusList = ref([
   {
