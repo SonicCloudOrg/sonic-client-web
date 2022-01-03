@@ -3,6 +3,7 @@ import {onMounted, ref} from "vue";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import {useRoute} from "vue-router";
+import RenderDeviceName from "./RenderDeviceName.vue";
 
 const route = useRoute()
 const props = defineProps({
@@ -43,12 +44,14 @@ const testSuite = ref({
   testCases: []
 })
 const deviceData = ref([])
+const deviceDataBack = ref([])
 const getDevice = (platform) => {
   axios
       .get("/controller/devices/listAll", {params: {platform}})
       .then((resp) => {
         if (resp['code'] === 2000) {
           deviceData.value = resp.data;
+          deviceDataBack.value = resp.data;
         }
       });
 }
@@ -90,6 +93,20 @@ const getSuiteInfo = (id) => {
       }
     }
   })
+}
+const filterDevice = (name) => {
+  if (name) {
+    deviceData.value = deviceDataBack.value.filter((item) => {
+      if ((item['model'] && item['model'].indexOf(name) !== -1)
+          || (item['nickName'] && item['nickName'].indexOf(name) !== -1)
+          || (item['chiName'] && item['chiName'].indexOf(name) !== -1)
+          || (item['udId'] && item['udId'].indexOf(name) !== -1)) {
+        return true
+      }
+    })
+  } else {
+    deviceData.value = deviceDataBack.value
+  }
 }
 onMounted(() => {
   if (props.suiteId !== 0) {
@@ -177,9 +194,10 @@ onMounted(() => {
       <el-select value-key="id"
                  clearable
                  filterable
+                 :filter-method="filterDevice"
                  style="width: 100%"
                  v-model="testSuite.devices"
-                 multiple placeholder="请选择测试设备">
+                 multiple placeholder="请选择测试设备，可输入型号、备注、中文名称、序列号筛选">
         <el-option
             v-for="item in deviceData"
             :key="item.id"
@@ -199,7 +217,7 @@ onMounted(() => {
               ></el-image>
             </template>
           </el-image>
-          <span style="float: left;margin-left: 10px">{{ item.model }}</span>
+          <span style="float: left;margin-left: 10px"><RenderDeviceName :device="item"/></span>
           <span style="
             margin-left: 15px;
           float: right;
@@ -218,7 +236,7 @@ onMounted(() => {
                  filterable
                  style="width: 100%"
                  v-model="testSuite.testCases"
-                 multiple placeholder="请选择测试用例">
+                 multiple placeholder="请选择测试用例，可输入用例名称筛选">
         <el-option
             v-for="item in testCaseData"
             :key="item.id"
