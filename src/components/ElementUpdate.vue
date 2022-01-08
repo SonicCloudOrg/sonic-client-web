@@ -99,19 +99,19 @@ onMounted(() => {
           v-model="element.eleType"
           placeholder="请选择定位类型"
       >
-        <el-option-group label="常用定位方式">
+        <el-option-group label="移动端常用定位方式">
           <el-option label="id（resource-id）" value="id"></el-option>
           <el-option value="xpath"></el-option>
-          <el-option value="name"></el-option>
-          <el-option value="cssSelector"></el-option>
+          <el-option label="nsPredicate（仅支持iOS10或以上）" value="nsPredicate"></el-option>
           <el-option value="accessibilityId"></el-option>
         </el-option-group>
         <el-option-group label="特殊定位方式">
           <el-option label="坐标" value="point"></el-option>
           <el-option label="图片" value="image"></el-option>
         </el-option-group>
-        <el-option-group label="普通定位方式">
-          <el-option value="nsPredicate"></el-option>
+        <el-option-group label="WebView常用定位方式">
+          <el-option value="name"></el-option>
+          <el-option value="cssSelector"></el-option>
           <el-option value="linkText"></el-option>
           <el-option value="className"></el-option>
           <el-option value="tagName"></el-option>

@@ -4,6 +4,7 @@ import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import {useRoute} from "vue-router";
 import RenderDeviceName from "./RenderDeviceName.vue";
+import RenderStatus from "./RenderStatus.vue";
 
 const route = useRoute()
 const props = defineProps({
@@ -190,14 +191,16 @@ onMounted(() => {
         <el-option :value="2" label="设备覆盖"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item prop="device" label="关联设备" v-if="testSuite.platform!==null">
-      <el-select value-key="id"
-                 clearable
-                 filterable
-                 :filter-method="filterDevice"
-                 style="width: 100%"
-                 v-model="testSuite.devices"
-                 multiple placeholder="请选择测试设备，可输入型号、备注、中文名称、序列号筛选">
+    <el-form-item prop="device" label="关联设备">
+      <el-select
+          :disabled="testSuite.platform===null"
+          value-key="id"
+          clearable
+          filterable
+          :filter-method="filterDevice"
+          style="width: 100%"
+          v-model="testSuite.devices"
+          multiple placeholder="请选择测试设备，可输入型号、备注、中文名称、序列号筛选">
         <el-option
             v-for="item in deviceData"
             :key="item.id"
@@ -218,25 +221,30 @@ onMounted(() => {
             </template>
           </el-image>
           <span style="float: left;margin-left: 10px"><RenderDeviceName :device="item"/></span>
+          <span style="display: flex;float: right;
+    align-items: center;">
           <span style="
             margin-left: 15px;
-          float: right;
           color: #909399;
           font-size: 13px;
            font-style: italic;
         "
           >{{ item['udId'] }}</span
           >
+            <RenderStatus style="margin-left: 15px;margin-right: -10px" :status="item['status']" :user="item['user']"/>
+            </span>
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item prop="testCases" label="关联用例" v-if="testSuite.platform!==null">
-      <el-select value-key="id"
-                 clearable
-                 filterable
-                 style="width: 100%"
-                 v-model="testSuite.testCases"
-                 multiple placeholder="请选择测试用例，可输入用例名称筛选">
+    <el-form-item prop="testCases" label="关联用例">
+      <el-select
+          :disabled="testSuite.platform===null"
+          value-key="id"
+          clearable
+          filterable
+          style="width: 100%"
+          v-model="testSuite.testCases"
+          multiple placeholder="请选择测试用例，可输入用例名称筛选">
         <el-option
             v-for="item in testCaseData"
             :key="item.id"
