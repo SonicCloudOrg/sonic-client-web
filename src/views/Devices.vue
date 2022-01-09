@@ -854,7 +854,7 @@ onUnmounted(() => {
             :total="pageData['totalElements']"
             :current-page="pageData['number']+1"
             :page-size="pageData['size']"
-            @change="findAll"
+            @change="handleFindAll"
         ></pageable>
       </el-card>
     </el-tab-pane>
