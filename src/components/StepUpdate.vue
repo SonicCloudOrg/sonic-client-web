@@ -86,10 +86,6 @@ const monkey = ref({
       name: "isOpenNetworkListener",
       value: true,
     },
-    {
-      name: "isOpenImageListener",
-      value: true,
-    },
   ],
 })
 const monkeyOptions = {
@@ -137,10 +133,6 @@ const monkeyOptions = {
     label: "网络状态监听器",
     des: "检测设备是否处于飞行模式和WIFI网络",
   },
-  isOpenImageListener: {
-    label: "图像静止监听器",
-    des: "检测当前图像是否长期处于静止",
-  },
 }
 const stepForm = ref(null)
 const changeType = (e) => {
@@ -153,8 +145,7 @@ const isShowInputNumber = (data) => {
   if (data === "isOpenH5Listener"
       || data === "isOpenPackageListener"
       || data === "isOpenActivityListener"
-      || data === "isOpenNetworkListener"
-      || data === "isOpenImageListener") {
+      || data === "isOpenNetworkListener") {
     return false;
   } else {
     return true;
@@ -417,7 +408,8 @@ const androidOptions = ref([
       },
       {
         value: "readText",
-        label: "图像文字识别",
+        label: "图像文字识别（暂时关闭）",
+        disabled: true
       },
     ],
   },
@@ -614,7 +606,8 @@ const iOSOptions = ref([
       },
       {
         value: "readText",
-        label: "图像文字识别",
+        label: "图像文字识别（暂时关闭）",
+        disabled: true
       },
     ],
   },

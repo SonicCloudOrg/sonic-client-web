@@ -9,14 +9,23 @@ import {ElMessage} from "element-plus";
 const route = useRoute()
 const dialogElement = ref(false)
 const elementId = ref(0)
+const deleteId = ref(0)
 const pageData = ref({});
 const pageSize = ref(15);
 const name = ref("")
 const types = ref([])
+const stepList = ref([])
+const checkDialog = ref(false)
 
 watch(dialogElement, (newValue, oldValue) => {
   if (!newValue) {
     elementId.value = 0
+  }
+})
+watch(checkDialog, (newValue, oldValue) => {
+  if (!newValue) {
+    deleteId.value = 0;
+    stepList.value = [];
   }
 })
 const editElement = async (id) => {
@@ -44,6 +53,23 @@ const getElementList = (pageNum, pSize) => {
   })
 }
 const deleteEle = (id) => {
+  axios.get("/controller/elements/deleteCheck", {
+    params: {
+      id
+    }
+  }).then(resp => {
+    if (resp['code'] === 2000) {
+      stepList.value = resp['data'];
+      if (stepList.value.length === 0) {
+        deleteReal(id);
+      } else {
+        deleteId.value = id;
+        checkDialog.value = true;
+      }
+    }
+  })
+}
+const deleteReal = (id) => {
   axios.delete("/controller/elements", {
     params: {
       id
@@ -53,6 +79,7 @@ const deleteEle = (id) => {
       ElMessage.success({
         message: resp['message'],
       });
+      checkDialog.value = false;
       getElementList();
     }
   })
@@ -69,6 +96,28 @@ onMounted(() => {
   <el-dialog v-model="dialogElement" title="控件元素信息" width="600px">
     <element-update v-if="dialogElement" :project-id="route.params.projectId"
                     :element-id="elementId" @flush="flush"/>
+  </el-dialog>
+  <el-dialog v-model="checkDialog" title="步骤信息" width="600px">
+    <el-alert title="警告！" type="warning" show-icon :closable="false" description="该控件已存在于以下步骤中，
+    删除该控件将连同以下步骤一并删除！请前往对应步骤修改控件或确认对应步骤已废弃！"/>
+    <el-table :data="stepList" border style="margin-top: 20px">
+      <el-table-column prop="id" width="90" label="步骤Id" align="center"></el-table-column>
+      <el-table-column label="所属用例Id" width="90" align="center">
+        <template #default="scope">
+          <el-tag size="mini" v-if="scope.row.caseId=== 0">无</el-tag>
+          <span v-else>{{ scope.row.caseId }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="所属用例名称" header-align="center">
+        <template #default="scope">
+          <span v-if="scope.row.caseId=== 0">无所属用例</span>
+          <span v-else>{{ scope.row.testCasesDTO.name }}</span>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div style="text-align: center;margin-top: 20px">
+      <el-button size="small" type="danger" @click="deleteReal(deleteId)">确认删除</el-button>
+    </div>
   </el-dialog>
   <el-button size="mini" round type="primary" @click="open">添加控件元素</el-button>
   <el-table

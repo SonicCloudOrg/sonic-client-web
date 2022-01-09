@@ -227,6 +227,26 @@ const filterNode = (value, data) => {
   return (data.label.indexOf(value) !== -1) ||
       (data.detail['resource-id'] ? data.detail['resource-id'].indexOf(value) !== -1 : false);
 };
+const findBestXpath = (elementDetail) => {
+  let result = []
+  if (elementDetail['resource-id']) {
+    result.push('//' + elementDetail['class']
+        + '[@resource-id=\'' + elementDetail['resource-id'] + '\']');
+  }
+  if (elementDetail['text']) {
+    result.push('//' + elementDetail['class']
+        + '[@text=\'' + elementDetail['text'] + '\']');
+    result.push('//' + elementDetail['class']
+        + '[contains(@text,\'' + elementDetail['text'] + '\')]');
+  }
+  if (elementDetail['content-desc']) {
+    result.push('//' + elementDetail['class']
+        + '[@content-desc=\'' + elementDetail['content-desc'] + '\']');
+    result.push('//' + elementDetail['class']
+        + '[contains(@content-desc,\'' + elementDetail['content-desc'] + '\')]');
+  }
+  return result;
+}
 const downloadImg = (url) => {
   let time = new Date().getTime();
   let link = document.createElement('a');
@@ -1686,7 +1706,7 @@ onMounted(() => {
                   <template #header>
                     <strong>安装APK</strong>
                   </template>
-                  <el-tabs type="border-card" v-loading="!isDriverFinish">
+                  <el-tabs type="border-card">
                     <el-tab-pane label="上传安装">
                       <div style="text-align: center">
                         <el-upload
@@ -2091,7 +2111,18 @@ onMounted(() => {
                           >
                             <span>{{ elementDetail['resource-id'] }}</span>
                           </el-form-item>
-                          <el-form-item label="xpath">
+                          <el-form-item label="xpath推荐">
+                            <el-table stripe empty-text="暂无xpath推荐语法" border :data="findBestXpath(elementDetail)"
+                                      :show-header="false">
+                              <el-table-column>
+                                <template #default="scope">
+                                  <div style="cursor: pointer" @click="copy(scope.row)">{{ scope.row }}</div>
+                                </template>
+                              </el-table-column>
+                            </el-table>
+                          </el-form-item>
+                          <el-form-item label="绝对路径" style="cursor: pointer"
+                                        @click="copy(elementDetail['xpath'])">
                             <span>{{ elementDetail['xpath'] }}</span>
                           </el-form-item>
                           <el-form-item

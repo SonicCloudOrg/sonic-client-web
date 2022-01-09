@@ -31,6 +31,7 @@ const checkAllStatus = ref(false);
 const isAllStatus = ref(false);
 const pageData = ref({});
 const pageSize = ref(12);
+const currDevicesPage = ref(1)
 const checkMan = ref([]);
 const name = ref("");
 const androidSystem = ref([]);
@@ -61,7 +62,10 @@ const manufacturer = ref([
   "asus",
   "GIONEE",
   "Lenovo",
-  "HTC"
+  "HTC",
+  "BBK",
+  "nubia",
+  "realme"
 ]);
 const statusList = ref([
   {
@@ -290,6 +294,13 @@ const findAll = (pageNum, pSize) => {
     clearInterval(timer.value);
   });
 };
+// 根据接口返回页数处理
+const handleFindAll = (pageNum, pageSize) => {
+  if (pageNum) {
+    currDevicesPage.value = pageNum
+  }
+  findAll(currDevicesPage.value, pageSize)
+}
 const findAgentById = (id) => {
   let result = '未知'
   for (let i in agentList.value) {
@@ -414,7 +425,7 @@ const findTemper = () => {
 const refresh = () => {
   refreshTime.value++;
   getFilterOption();
-  findAll();
+  handleFindAll();
   getAllAgents();
   findTemper();
   if (refreshTime.value === 2) {
@@ -843,7 +854,7 @@ onUnmounted(() => {
             :total="pageData['totalElements']"
             :current-page="pageData['number']+1"
             :page-size="pageData['size']"
-            @change="findAll"
+            @change="handleFindAll"
         ></pageable>
       </el-card>
     </el-tab-pane>

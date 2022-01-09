@@ -76,6 +76,7 @@ let loop = null;
 let time = 0;
 let isLongPress = false;
 let mouseMoveTime = 0;
+const remoteWDAPort = ref(0)
 const elementLoading = ref(false);
 const isShowImg = ref(false);
 const isDriverFinish = ref(false);
@@ -108,14 +109,10 @@ const element = ref({
   eleValue: '',
   projectId: 0,
 });
-const computedCenter = (b1, b2) => {
-  let x1 = b1.substring(0, b1.indexOf(','));
-  let y1 = b1.substring(b1.indexOf(',') + 1);
-  let x2 = b2.substring(0, b2.indexOf(','));
-  let y2 = b2.substring(b2.indexOf(',') + 1);
-  let x = parseInt((parseInt(x2) + parseInt(x1)) / 2);
-  let y = parseInt((parseInt(y1) + parseInt(y2)) / 2);
-  return x + ',' + y;
+const computedCenter = (x, y, width, height) => {
+  let reX = parseInt(parseInt(x) + (parseInt(width) / 2));
+  let reY = parseInt(parseInt(y) + (parseInt(height) / 2));
+  return reX + ',' + reY;
 };
 const img = import.meta.globEager('../../assets/img/*');
 let websocket = null;
@@ -186,8 +183,42 @@ watch(filterText, (newValue, oldValue) => {
 const filterNode = (value, data) => {
   if (!value) return true;
   return (data.label.indexOf(value) !== -1) ||
-      (data.detail['resource-id'] ? data.detail['resource-id'].indexOf(value) !== -1 : false);
+      (data.detail['name'] ? data.detail['name'].indexOf(value) !== -1 : false);
 };
+const findBestNS = (elementDetail) => {
+  let result = []
+  if (!elementDetail['name']) {
+    return result;
+  }
+  let r = "name CONTAINS \'" + elementDetail['name'] + "\'";
+  if (elementDetail['label']) {
+    r += (' AND label CONTAINS \'' + elementDetail['label'] + '\'');
+  }
+  if (elementDetail['enabled']) {
+    r += (' AND enabled == ' + elementDetail['enabled']);
+  }
+  if (elementDetail['visible']) {
+    r += (' AND visible == ' + elementDetail['visible']);
+  }
+  result.push(r)
+  return result;
+}
+const findBestXpath = (elementDetail) => {
+  let result = []
+  if (elementDetail['name']) {
+    result.push('//' + elementDetail['type']
+        + '[@name=\'' + elementDetail['name'] + '\']');
+    result.push('//' + elementDetail['type']
+        + '[contains(@name,\'' + elementDetail['name'] + '\')]');
+  }
+  if (elementDetail['label']) {
+    result.push('//' + elementDetail['type']
+        + '[@label=\'' + elementDetail['label'] + '\']');
+    result.push('//' + elementDetail['type']
+        + '[contains(@label,\'' + elementDetail['label'] + '\')]');
+  }
+  return result;
+}
 const downloadImg = () => {
   window.open(imgUrl.value, '_blank');
 };
@@ -280,6 +311,7 @@ const websocketOnmessage = (message) => {
     }
     case 'picFinish': {
       sid.value = JSON.parse(message.data).port
+      remoteWDAPort.value = JSON.parse(message.data).wda
       loading.value = false;
       break;
     }
@@ -832,16 +864,17 @@ onMounted(() => {
             </div>
           </template>
           <div style="margin-right: 40px; text-align: center">
-            <img
-                id="iosCap"
-                :src="'http://' + agent['host'] + ':'+  sid"
-                width="100%"
-                draggable="false"
-                @mousedown="mousedown"
-                @mouseleave="mouseleave"
-                @mouseup="mouseup"
-                style="display: inline-block"
-                :style="canvasRectInfo"
+            <img id="iosCap" v-if="sid===0"/>
+            <img v-else
+                 id="iosCap"
+                 :src="'http://' + agent['host'] + ':'+  sid"
+                 width="100%"
+                 draggable="false"
+                 @mousedown="mousedown"
+                 @mouseleave="mouseleave"
+                 @mouseup="mouseup"
+                 style="display: inline-block"
+                 :style="canvasRectInfo"
             />
             <el-button-group id="iOSpressKey">
               <el-button
@@ -1060,7 +1093,7 @@ onMounted(() => {
         >
           <el-tab-pane label="远控面板" name="main">
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="8">
                 <el-card>
                   <template #header>
                     <strong>发送Siri命令</strong>
@@ -1086,7 +1119,20 @@ onMounted(() => {
                   </div>
                 </el-card>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="8">
+                <el-card>
+                  <template #header>
+                    <strong>远程连接WDA</strong>
+                  </template>
+                  <div v-if="remoteWDAPort!==0" style="margin-top: 8px;margin-bottom: 8px">
+                    <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
+                             @click="copy('http://'+agent['host']+':'+remoteWDAPort)">
+                      <strong style="color: #F2F6FC">{{ 'http://' + agent['host'] + ':' + remoteWDAPort }}</strong>
+                    </el-card>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="8">
                 <el-card>
                   <template #header>
                     <strong>录制屏幕（即将开放）</strong>
@@ -1133,7 +1179,7 @@ onMounted(() => {
                   <template #header>
                     <strong>安装IPA</strong>
                   </template>
-                  <el-tabs type="border-card" v-loading="!isDriverFinish">
+                  <el-tabs type="border-card">
                     <el-tab-pane label="上传安装">
                       <div style="text-align: center">
                         <el-upload
@@ -1315,7 +1361,7 @@ onMounted(() => {
                     <el-input
                         style="margin-bottom: 10px"
                         size="mini"
-                        placeholder="输入class进行过滤"
+                        placeholder="输入class或name进行过滤"
                         v-model="filterText"
                     ></el-input>
                     <div style="height: 660px">
@@ -1336,10 +1382,10 @@ onMounted(() => {
                             @node-click="handleNodeClick"
                         >
                           <template #default="{ node, data }">
-                          <span style="font-size: 14px" v-if="data.detail['resource-id']">
+                          <span style="font-size: 14px" v-if="data.detail['name']">
                             {{ node.label.substring(0, node.label.indexOf('>')) + ' ' }}
-                            <span style="color: #F55781">resource-id</span>={{
-                              '"' + data.detail['resource-id'] + '">'
+                            <span style="color: #F55781">name</span>={{
+                              '"' + data.detail['name'] + '">'
                             }}
                           </span>
                             <span style="font-size: 14px" v-else>{{ node.label }}</span>
@@ -1407,7 +1453,28 @@ onMounted(() => {
                           >
                             <span>{{ elementDetail['name'] }}</span>
                           </el-form-item>
-                          <el-form-item label="xpath">
+                          <el-form-item label="Predicate推荐">
+                            <el-table stripe empty-text="暂无推荐语法" border :data="findBestNS(elementDetail)"
+                                      :show-header="false">
+                              <el-table-column>
+                                <template #default="scope">
+                                  <div style="cursor: pointer" @click="copy(scope.row)">{{ scope.row }}</div>
+                                </template>
+                              </el-table-column>
+                            </el-table>
+                          </el-form-item>
+                          <el-form-item label="xpath推荐">
+                            <el-table stripe empty-text="暂无xpath推荐语法" border :data="findBestXpath(elementDetail)"
+                                      :show-header="false">
+                              <el-table-column>
+                                <template #default="scope">
+                                  <div style="cursor: pointer" @click="copy(scope.row)">{{ scope.row }}</div>
+                                </template>
+                              </el-table-column>
+                            </el-table>
+                          </el-form-item>
+                          <el-form-item label="绝对路径" style="cursor: pointer"
+                                        @click="copy(elementDetail['xpath'])">
                             <span>{{ elementDetail['xpath'] }}</span>
                           </el-form-item>
                           <el-form-item
@@ -1425,13 +1492,15 @@ onMounted(() => {
                           >
                             <span>{{ elementDetail['label'] }}</span>
                           </el-form-item>
-                          <!--                          <el-form-item label="中心坐标" style="cursor: pointer"-->
-                          <!--                                        @click="copy(computedCenter(elementDetail['bStart'], elementDetail['bEnd']))">-->
-                          <!--                            <span>{{ computedCenter(elementDetail['bStart'], elementDetail['bEnd']) }}</span>-->
-                          <!--                          </el-form-item>-->
-                          <!--                          <el-form-item label="index">-->
-                          <!--                            <span>{{ elementDetail['index'] }}</span>-->
-                          <!--                          </el-form-item>-->
+                          <el-form-item label="中心坐标" style="cursor: pointer"
+                                        @click="copy(computedCenter(elementDetail['x'],elementDetail['y'],elementDetail['width'],elementDetail['height']))">
+                            <span>{{
+                                computedCenter(elementDetail['x'], elementDetail['y'], elementDetail['width'], elementDetail['height'])
+                              }}</span>
+                          </el-form-item>
+                          <el-form-item label="index">
+                            <span>{{ elementDetail['index'] }}</span>
+                          </el-form-item>
                           <el-form-item label="是否可用">
                             <el-switch
                                 :value="JSON.parse(elementDetail['enabled'])"

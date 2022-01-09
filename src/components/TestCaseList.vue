@@ -17,7 +17,9 @@ const pageSize = ref(15);
 const name = ref("")
 const caseId = ref(0)
 const dialogVisible = ref(false)
+const tableLoading = ref(false)
 const getTestCaseList = (pageNum, pSize) => {
+  tableLoading.value = true
   axios.get("/controller/testCases/list", {
     params: {
       projectId: props.projectId,
@@ -28,6 +30,7 @@ const getTestCaseList = (pageNum, pSize) => {
     }
   }).then(resp => {
     pageData.value = resp.data
+    tableLoading.value = false
   })
 }
 const deleteCase = (id) => {
@@ -58,6 +61,11 @@ watch(dialogVisible, (newValue, oldValue) => {
     caseId.value = 0
   }
 })
+watch(
+  () => props.projectId, 
+  () => {
+  getTestCaseList();
+})
 const editCase = async (id) => {
   caseId.value = id
   await open()
@@ -78,7 +86,7 @@ defineExpose({open})
                       :case-id="caseId"
                       :platform="platform" @flush="flush"/>
   </el-dialog>
-  <el-table :data="pageData['content']" border :row-style="isReadOnly?{cursor:'pointer'}:{}"
+  <el-table v-loading="tableLoading" :data="pageData['content']" border :row-style="isReadOnly?{cursor:'pointer'}:{}"
             @row-click="selectCase" style="margin-top: 15px">
     <el-table-column width="80" label="用例Id" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>
