@@ -109,14 +109,10 @@ const element = ref({
   eleValue: '',
   projectId: 0,
 });
-const computedCenter = (b1, b2) => {
-  let x1 = b1.substring(0, b1.indexOf(','));
-  let y1 = b1.substring(b1.indexOf(',') + 1);
-  let x2 = b2.substring(0, b2.indexOf(','));
-  let y2 = b2.substring(b2.indexOf(',') + 1);
-  let x = parseInt((parseInt(x2) + parseInt(x1)) / 2);
-  let y = parseInt((parseInt(y1) + parseInt(y2)) / 2);
-  return x + ',' + y;
+const computedCenter = (x, y, width, height) => {
+  let reX = parseInt(parseInt(x) + (parseInt(width) / 2));
+  let reY = parseInt(parseInt(y) + (parseInt(height) / 2));
+  return reX + ',' + reY;
 };
 const img = import.meta.globEager('../../assets/img/*');
 let websocket = null;
@@ -1496,13 +1492,15 @@ onMounted(() => {
                           >
                             <span>{{ elementDetail['label'] }}</span>
                           </el-form-item>
-                          <!--                          <el-form-item label="中心坐标" style="cursor: pointer"-->
-                          <!--                                        @click="copy(computedCenter(elementDetail['bStart'], elementDetail['bEnd']))">-->
-                          <!--                            <span>{{ computedCenter(elementDetail['bStart'], elementDetail['bEnd']) }}</span>-->
-                          <!--                          </el-form-item>-->
-                          <!--                          <el-form-item label="index">-->
-                          <!--                            <span>{{ elementDetail['index'] }}</span>-->
-                          <!--                          </el-form-item>-->
+                          <el-form-item label="中心坐标" style="cursor: pointer"
+                                        @click="copy(computedCenter(elementDetail['x'],elementDetail['y'],elementDetail['width'],elementDetail['height']))">
+                            <span>{{
+                                computedCenter(elementDetail['x'], elementDetail['y'], elementDetail['width'], elementDetail['height'])
+                              }}</span>
+                          </el-form-item>
+                          <el-form-item label="index">
+                            <span>{{ elementDetail['index'] }}</span>
+                          </el-form-item>
                           <el-form-item label="是否可用">
                             <el-switch
                                 :value="JSON.parse(elementDetail['enabled'])"
