@@ -49,6 +49,7 @@ const iFrameHeight = ref(0);
 const terminalHeight = ref(0);
 const caseList = ref(null);
 const loading = ref(false);
+const appList = ref([]);
 const device = ref({});
 const agent = ref({});
 const screenUrls = ref([])
@@ -451,6 +452,10 @@ const websocketOnmessage = (message) => {
           message: JSON.parse(message.data).text,
         });
         loading.value = false;
+        break;
+      }
+      case 'appListDetail':{
+        appList.value.push(JSON.parse(message.data).detail)
         break;
       }
       case 'size': {
@@ -1707,6 +1712,16 @@ onMounted(() => {
                     <strong>安装APK</strong>
                   </template>
                   <el-tabs type="border-card">
+                    <el-tab-pane label="应用列表">
+                      <el-table :data="appList">
+                        <el-table-column prop="appName"></el-table-column>
+                        <el-table-column>
+                          <template #default="scope">
+                            <el-avatar shape="square" :size="50" :src="scope.row.appIcon"></el-avatar>
+                        </template>
+                        </el-table-column>
+                      </el-table>
+                    </el-tab-pane>
                     <el-tab-pane label="上传安装">
                       <div style="text-align: center">
                         <el-upload
