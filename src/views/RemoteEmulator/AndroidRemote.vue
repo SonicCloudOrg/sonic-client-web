@@ -454,7 +454,7 @@ const websocketOnmessage = (message) => {
         loading.value = false;
         break;
       }
-      case 'appListDetail':{
+      case 'appListDetail': {
         appList.value.push(JSON.parse(message.data).detail)
         break;
       }
@@ -1717,8 +1717,9 @@ onMounted(() => {
                         <el-table-column prop="appName"></el-table-column>
                         <el-table-column>
                           <template #default="scope">
-                            <el-avatar shape="square" :size="50" :src="scope.row.appIcon"></el-avatar>
-                        </template>
+                            <el-avatar shape="square" :size="50"
+                                       :src="'data:image/png;base64,'+scope.row.appIcon"></el-avatar>
+                          </template>
                         </el-table-column>
                       </el-table>
                     </el-tab-pane>
