@@ -1709,63 +1709,125 @@ onMounted(() => {
               <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
-                    <strong>安装APK</strong>
+                    <strong>文件互传</strong>
                   </template>
-                  <el-tabs type="border-card">
-                    <el-tab-pane label="应用列表">
-                      <el-table :data="appList">
-                        <el-table-column prop="appName"></el-table-column>
-                        <el-table-column>
-                          <template #default="scope">
-                            <el-avatar shape="square" :size="50"
-                                       :src="'data:image/png;base64,'+scope.row.appIcon"></el-avatar>
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </el-tab-pane>
-                    <el-tab-pane label="上传安装">
-                      <div style="text-align: center">
-                        <el-upload
-                            v-loading="uploadLoading"
-                            drag
-                            action=""
-                            :with-credentials="true"
-                            :limit="1"
-                            :before-upload="beforeAvatarUpload2"
-                            :on-exceed="limitOut"
-                            :http-request="uploadPackage"
-                        >
-                          <i class="el-icon-upload"></i>
-                          <div class="el-upload__text">将APK文件拖到此处，或<em>点击上传</em></div>
-                          <template #tip>
-                            <div class="el-upload__tip">只能上传apk文件</div>
-                          </template>
-                        </el-upload>
-                      </div>
-                    </el-tab-pane>
-                    <el-tab-pane label="URL安装">
-                      <el-input
-                          clearable
-                          v-model="uploadUrl"
-                          size="small"
-                          placeholder="请输入apk下载链接或本地路径"
-                      ></el-input>
-                      <div style="text-align: center;margin-top: 20px">
-                        <el-button
-                            size="mini"
-                            type="primary"
-                            :disabled="uploadUrl.length===0"
-                            @click="install(uploadUrl)"
-                        >发送
-                        </el-button>
-                      </div>
-                    </el-tab-pane>
-                    <el-tab-pane label="已有包安装（即将开放）" disabled>
-                    </el-tab-pane>
-                  </el-tabs>
+<!--                  <el-tabs type="border-card">-->
+<!--                    <el-tab-pane label="应用列表">-->
+<!--                      <el-table :data="appList" border>-->
+<!--                        <el-table-column label="图标" width="100">-->
+<!--                          <template #default="scope">-->
+<!--                            <el-avatar shape="square" :size="30"-->
+<!--                                       :src="'data:image/png;base64,'+scope.row.appIcon"></el-avatar>-->
+<!--                          </template>-->
+<!--                        </el-table-column>-->
+<!--                        <el-table-column prop="appName" label="应用名"></el-table-column>-->
+<!--                        <el-table-column prop="packageName" label="包名"></el-table-column>-->
+<!--                        <el-table-column prop="versionName" label="版本号"></el-table-column>-->
+<!--                        <el-table-column prop="versionCode" label="子版本号"></el-table-column>-->
+<!--                      </el-table>-->
+<!--                    </el-tab-pane>-->
+<!--                    <el-tab-pane label="上传安装">-->
+<!--                      <div style="text-align: center">-->
+<!--                        <el-upload-->
+<!--                            v-loading="uploadLoading"-->
+<!--                            drag-->
+<!--                            action=""-->
+<!--                            :with-credentials="true"-->
+<!--                            :limit="1"-->
+<!--                            :before-upload="beforeAvatarUpload2"-->
+<!--                            :on-exceed="limitOut"-->
+<!--                            :http-request="uploadPackage"-->
+<!--                        >-->
+<!--                          <i class="el-icon-upload"></i>-->
+<!--                          <div class="el-upload__text">将APK文件拖到此处，或<em>点击上传</em></div>-->
+<!--                          <template #tip>-->
+<!--                            <div class="el-upload__tip">只能上传apk文件</div>-->
+<!--                          </template>-->
+<!--                        </el-upload>-->
+<!--                      </div>-->
+<!--                    </el-tab-pane>-->
+<!--                    <el-tab-pane label="URL安装">-->
+<!--                      <el-input-->
+<!--                          clearable-->
+<!--                          v-model="uploadUrl"-->
+<!--                          size="small"-->
+<!--                          placeholder="请输入apk下载链接或本地路径"-->
+<!--                      ></el-input>-->
+<!--                      <div style="text-align: center;margin-top: 20px">-->
+<!--                        <el-button-->
+<!--                            size="mini"-->
+<!--                            type="primary"-->
+<!--                            :disabled="uploadUrl.length===0"-->
+<!--                            @click="install(uploadUrl)"-->
+<!--                        >发送-->
+<!--                        </el-button>-->
+<!--                      </div>-->
+<!--                    </el-tab-pane>-->
+<!--                    <el-tab-pane label="已有包安装（即将开放）" disabled>-->
+<!--                    </el-tab-pane>-->
+<!--                  </el-tabs>-->
                 </el-card>
               </el-col>
             </el-row>
+          </el-tab-pane>
+          <el-tab-pane label="应用程序" name="apps">
+            <el-tabs type="border-card">
+              <el-tab-pane label="应用列表">
+                <el-table :data="appList" border>
+                  <el-table-column label="图标" width="90" header-align="center">
+                    <template #default="scope">
+                      <div style="display: flex;align-items: center;justify-content: center;">
+                        <el-avatar shape="square" :size="40"
+                                   :src="'data:image/png;base64,'+scope.row.appIcon"></el-avatar>
+                      </div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column width="130" header-align="center" prop="appName" label="应用名"></el-table-column>
+                  <el-table-column header-align="center" prop="packageName" label="包名"></el-table-column>
+                  <el-table-column header-align="center" prop="versionName" label="版本号"></el-table-column>
+                  <el-table-column header-align="center" prop="versionCode" label="子版本号"></el-table-column>
+                </el-table>
+              </el-tab-pane>
+              <el-tab-pane label="上传安装">
+                <div style="text-align: center">
+                  <el-upload
+                      v-loading="uploadLoading"
+                      drag
+                      action=""
+                      :with-credentials="true"
+                      :limit="1"
+                      :before-upload="beforeAvatarUpload2"
+                      :on-exceed="limitOut"
+                      :http-request="uploadPackage"
+                  >
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">将APK文件拖到此处，或<em>点击上传</em></div>
+                    <template #tip>
+                      <div class="el-upload__tip">只能上传apk文件</div>
+                    </template>
+                  </el-upload>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="URL安装">
+                <el-input
+                    clearable
+                    v-model="uploadUrl"
+                    size="small"
+                    placeholder="请输入apk下载链接或本地路径"
+                ></el-input>
+                <div style="text-align: center;margin-top: 20px">
+                  <el-button
+                      size="mini"
+                      type="primary"
+                      :disabled="uploadUrl.length===0"
+                      @click="install(uploadUrl)"
+                  >发送
+                  </el-button>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="已有包安装（即将开放）" disabled>
+              </el-tab-pane>
+            </el-tabs>
           </el-tab-pane>
           <el-tab-pane label="快速截图" name="screenCap">
             <el-button type="primary" size="small" @click="quickCap">
