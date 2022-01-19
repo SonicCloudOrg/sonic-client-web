@@ -1,9 +1,10 @@
 <script setup>
 import {useRoute, useRouter} from "vue-router";
-import {nextTick, onMounted, onUnmounted, ref} from "vue";
+import {nextTick, onMounted, onUnmounted, ref, reactive} from "vue";
 import axios from "../http/axios";
 import StepLog from '../components/StepLog.vue'
-import VuePlayerVideo from 'vue3-player-video'
+import "vue3-video-play/dist/style.css";
+import {videoPlay} from "vue3-video-play";
 import * as echarts from 'echarts/core';
 import {
   TitleComponent,
@@ -36,6 +37,16 @@ const done = ref(false)
 const stepLoading = ref(false)
 const type = ref("log")
 const recordUrl = ref("")
+const videoOptions = reactive({
+  width: "48%",
+  height: "auto",
+  controlBtns: [
+    "audioTrack",
+    "quality",
+    "volume",
+    "fullScreen",
+  ],
+});
 let page = 1;
 let resizeFun = undefined;
 let resizeChart = undefined;
@@ -565,7 +576,7 @@ onUnmounted(() => {
               </el-tab-pane>
               <el-tab-pane label="运行录像" name="record">
                 <div v-if="recordUrl.length>0" class="flex-center">
-                  <vue-player-video style="width: 50%" :src="recordUrl"/>
+                  <video-play v-bind="videoOptions" :src="recordUrl"/>
                 </div>
                 <el-empty v-else description="暂无录像"></el-empty>
               </el-tab-pane>
@@ -576,3 +587,10 @@ onUnmounted(() => {
     </el-collapse>
   </el-card>
 </template>
+
+<style scoped lang="less">
+// 勿删，用于video-play组件样式穿透
+.d-player-wrap {
+  border-radius: 1.5rem;
+}
+</style>
