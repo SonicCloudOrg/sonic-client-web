@@ -79,7 +79,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="公共参数信息" width="600px">
+  <el-dialog v-model="dialogVisible" title="全局参数信息" width="600px">
     <el-alert style="margin-bottom: 10px" title="特殊使用"
               description="如有多个参数值可以用 | 号隔开，分配设备时会随机分配，单次任务内参数值只会取同一个。【random】和【timestamp】参数已内置，可用作构造随机数据"
               type="info" show-icon close-text="Get!"/>
@@ -118,7 +118,7 @@ onMounted(() => {
       <el-button size="small" type="primary" @click="summit">确 定</el-button>
     </div>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">添加公共参数</el-button>
+  <el-button size="mini" round type="primary" @click="open">添加全局参数</el-button>
   <el-table
       :data="pageData"
       style="width: 100%; margin-top: 20px"
@@ -143,7 +143,7 @@ onMounted(() => {
             @confirm="deleteGlobal(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"
-            title="确定删除该公共参数吗？"
+            title="确定删除该全局参数吗？"
         >
           <template #reference>
             <el-button
