@@ -1803,7 +1803,7 @@ onMounted(() => {
                 </el-card>
               </el-col>
               <el-col :span="12">
-                <el-card shadow="hover">
+                <el-card shadow="hover" class="url-install-box" :body-style="{position: 'absolute',top: '50%', width: '100%',paddingTop: '56px',paddingBottom: '0',boxSizing: 'border-box',transform: 'translateY(-50%)'}">
                   <template #header>
                     <strong>URL安装</strong>
                   </template>
@@ -2506,5 +2506,10 @@ onMounted(() => {
 #debugPic {
   width: 100%;
   height: auto;
+}
+
+.url-install-box {
+  position: relative;
+  height: 100%;
 }
 </style>
