@@ -109,7 +109,9 @@ onMounted(() => {
                  @click="runStep">
         开始运行
       </el-button>
-      <el-button type="danger" size="mini" @click="stopStep" :disabled="!debugLoading">强制终止</el-button>
+      <el-button type="danger" size="mini" v-if="isShowRun" @click="stopStep" :disabled="!debugLoading">
+        强制终止
+      </el-button>
       <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
     </el-button-group>
   </div>
