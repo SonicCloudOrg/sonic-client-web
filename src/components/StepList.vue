@@ -15,7 +15,7 @@ const props = defineProps({
   isDriverFinish: Boolean,
   debugLoading: Boolean
 })
-const emit = defineEmits(['runStep', 'stopStep'])
+const emit = defineEmits(['runStep'])
 const dialogVisible = ref(false)
 const stepId = ref(0)
 watch(dialogVisible, (newValue, oldValue) => {
@@ -90,9 +90,6 @@ const getStepsList = () => {
 const runStep = () => {
   emit('runStep')
 }
-const stopStep = () => {
-  emit('stopStep')
-}
 onMounted(() => {
   getStepsList();
 })
@@ -108,9 +105,6 @@ onMounted(() => {
       <el-button type="success" size="mini" v-if="isShowRun" :disabled="(!isDriverFinish)&&steps.length>0"
                  @click="runStep">
         开始运行
-      </el-button>
-      <el-button type="danger" size="mini" v-if="isShowRun" @click="stopStep" :disabled="!debugLoading">
-        强制终止
       </el-button>
       <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
     </el-button-group>
