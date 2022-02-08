@@ -138,6 +138,11 @@ const computedCenter = (b1, b2) => {
   return x + ',' + y;
 };
 const switchTabs = (e) => {
+  if (e.props.name === 'apps') {
+    if (appList.value.length === 0) {
+      refreshAppList()
+    }
+  }
   if (e.props.name === 'terminal') {
     terminalHeight.value = document.getElementById('pressKey').offsetTop - 200;
   }
@@ -1815,7 +1820,8 @@ onMounted(() => {
                 </el-card>
               </el-col>
               <el-col :span="12">
-                <el-card shadow="hover" class="url-install-box" :body-style="{position: 'absolute',top: '50%', width: '100%',paddingTop: '56px',paddingBottom: '0',boxSizing: 'border-box',transform: 'translateY(-50%)'}">
+                <el-card shadow="hover" class="url-install-box"
+                         :body-style="{position: 'absolute',top: '50%', width: '100%',paddingTop: '56px',paddingBottom: '0',boxSizing: 'border-box',transform: 'translateY(-50%)'}">
                   <template #header>
                     <strong>URL安装</strong>
                   </template>
@@ -1867,7 +1873,9 @@ onMounted(() => {
                     <el-input v-model="filterAppText" size="mini" placeholder="输入应用名或包名搜索"/>
                   </template>
                   <template #default="scope">
-                    <el-button size="mini" @click="openApp(scope.row.packageName)" type="primary">打开</el-button>
+                    <el-button size="mini" @click="openApp(scope.row.packageName)" type="primary"
+                               :disabled="!isDriverFinish">打开
+                    </el-button>
                     <el-button size="mini" @click="uninstallApp(scope.row.packageName)" type="danger">卸载</el-button>
                   </template>
                 </el-table-column>
