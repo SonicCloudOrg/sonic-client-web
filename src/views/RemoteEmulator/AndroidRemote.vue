@@ -1873,8 +1873,7 @@ onMounted(() => {
                     <el-input v-model="filterAppText" size="mini" placeholder="输入应用名或包名搜索"/>
                   </template>
                   <template #default="scope">
-                    <el-button size="mini" @click="openApp(scope.row.packageName)" type="primary"
-                               :disabled="!isDriverFinish">打开
+                    <el-button size="mini" @click="openApp(scope.row.packageName)" type="primary">打开
                     </el-button>
                     <el-button size="mini" @click="uninstallApp(scope.row.packageName)" type="danger">卸载</el-button>
                   </template>
