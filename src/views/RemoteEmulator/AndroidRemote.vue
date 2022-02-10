@@ -512,6 +512,18 @@ const websocketOnmessage = (message) => {
         }
         break;
       }
+      case 'uninstallFinish': {
+        if (JSON.parse(message.data).detail === 'success') {
+          ElMessage.success({
+            message: '卸载成功！',
+          });
+        } else {
+          ElMessage.error({
+            message: '卸载失败！',
+          });
+        }
+        break;
+      }
       case 'openDriver': {
         ElMessage({
           type: JSON.parse(message.data).status,
