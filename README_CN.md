@@ -10,7 +10,7 @@
 </p>
 <p align="center">
   <a href="#">  
-    <img src="https://img.shields.io/badge/release-v1.2.0-orange">
+    <img src="https://img.shields.io/github/v/release/SonicCloudOrg/sonic-client-web?include_prereleases">
   </a>
   <a href="#">  
     <img src="https://img.shields.io/badge/vue-3.2.14-success">
