@@ -27,7 +27,7 @@ const dialogVisible = ref(false)
 const stepId = ref(0)
 const tabValue = ref("select")
 const platformList = [{name: "安卓", value: 1, img: "ANDROID"}
-  , {name: "iOS（即将开放）", value: 2, img: "IOS", disabled: true}]
+  , {name: "iOS", value: 2, img: "IOS"}]
 const getImg = (name) => {
   let result;
   if (name === 'meizu') {

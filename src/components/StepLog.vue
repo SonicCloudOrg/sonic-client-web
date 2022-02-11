@@ -8,7 +8,10 @@ const props = defineProps({
   isReadOnly: Boolean,
   isDone: Boolean
 })
-const emit = defineEmits(['clearLog', 'loadMore'])
+const emit = defineEmits(['clearLog', 'loadMore', 'stopStep'])
+const stopStep = () => {
+  emit('stopStep')
+}
 const clearLog = () => {
   emit('clearLog')
 }
@@ -35,6 +38,9 @@ const getTag = (status) => {
 </script>
 <template>
   <div v-if="!isReadOnly" style="text-align: center; margin-bottom: 10px">
+    <el-button type="danger" size="mini" style="margin-right: 10px" @click="stopStep" :disabled="!debugLoading">
+      强制终止
+    </el-button>
     <el-button
         icon="el-icon-delete"
         type="danger"
@@ -155,7 +161,7 @@ const getTag = (status) => {
               加载完毕
             </div>
             <div v-else style="color: #409eff;line-height: 50px;cursor: pointer"
-                 class="flex-center"  @click="loadMore">
+                 class="flex-center" @click="loadMore">
               <el-icon style="margin-right: 5px">
                 <CaretBottom/>
               </el-icon>

@@ -587,6 +587,18 @@ const runStep = () => {
       }),
   );
 };
+const stopStep = () => {
+  debugLoading.value = false;
+  websocket.send(
+      JSON.stringify({
+        type: 'debug',
+        detail: 'stopStep',
+        udId: device.value['udId'],
+        caseId: testCase.value['id'],
+        pf: device.value['platform'],
+      }),
+  );
+};
 const pressKey = (key) => {
   websocket.send(
       JSON.stringify({
@@ -1276,11 +1288,12 @@ onMounted(() => {
                   <step-list :is-show-run="true" :platform="2" :is-driver-finish="isDriverFinish"
                              :case-id="testCase['id']"
                              :project-id="project['id']"
+                             :debug-loading="debugLoading"
                              @runStep="runStep"/>
                 </el-tab-pane>
                 <el-tab-pane label="运行日志" name="log">
                   <step-log :is-read-only="false" :debug-loading="debugLoading" :step-log="stepLog"
-                            @clearLog="clearLog"/>
+                            @clearLog="clearLog" @stopStep="stopStep"/>
                 </el-tab-pane>
               </el-tabs>
             </div>

@@ -51,6 +51,7 @@ const manufacturer = ref([
   "OPPO",
   "vivo",
   "samsung",
+  "HONOR",
   "Meizu",
   "Google",
   "OnePlus",
@@ -531,7 +532,7 @@ onUnmounted(() => {
                 <el-checkbox v-for="man in manufacturer" :key="man" :label="man">
                   <img
                       v-if="
-                  man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'||man === 'GIONEE'|| man === 'motorola'
+                  man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'||man === 'GIONEE'|| man === 'motorola' || man==='HONOR'
                 "
                       style="width: 80px"
                       :src="getImg(man)"
@@ -685,7 +686,7 @@ onUnmounted(() => {
                     </el-form-item>
                     <el-form-item label="制造商">
                       <img
-                          v-if="device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'|| device.manufacturer === 'motorola'"
+                          v-if="device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'|| device.manufacturer === 'motorola'|| device.manufacturer === 'HONOR'"
                           style="width: 80px"
                           :src="getImg(device.manufacturer)"
                       />

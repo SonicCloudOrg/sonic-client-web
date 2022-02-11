@@ -1,6 +1,6 @@
 <script setup>
 import {useRoute, useRouter} from 'vue-router';
-import {nextTick, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {useStore} from 'vuex';
 import axios from '@/http/axios';
 import {ElMessage} from 'element-plus';
@@ -45,10 +45,12 @@ const {toClipboard} = useClipboard();
 const route = useRoute();
 const store = useStore();
 const router = useRouter();
+const filterAppText = ref("")
 const iFrameHeight = ref(0);
 const terminalHeight = ref(0);
 const caseList = ref(null);
 const loading = ref(false);
+const appList = ref([]);
 const device = ref({});
 const agent = ref({});
 const screenUrls = ref([])
@@ -136,6 +138,11 @@ const computedCenter = (b1, b2) => {
   return x + ',' + y;
 };
 const switchTabs = (e) => {
+  if (e.props.name === 'apps') {
+    if (appList.value.length === 0) {
+      refreshAppList()
+    }
+  }
   if (e.props.name === 'terminal') {
     terminalHeight.value = document.getElementById('pressKey').offsetTop - 200;
   }
@@ -189,6 +196,13 @@ const saveEle = () => {
     }
   });
 };
+const filterTableData = computed(() =>
+    appList.value.filter(
+        (data) =>
+            !filterAppText.value ||
+            data.appName.toLowerCase().includes(filterAppText.value.toLowerCase())
+    )
+)
 const fixTouch = () => {
   ElMessage.success({
     message: '修复成功！',
@@ -370,6 +384,10 @@ const stopCmd = () => {
 };
 const terminalWebsocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
+    case 'appListDetail': {
+      appList.value.push(JSON.parse(message.data).detail)
+      break;
+    }
     case 'logcat':
       logcatOutPut.value.push('连接成功！');
       break;
@@ -490,6 +508,18 @@ const websocketOnmessage = (message) => {
         } else {
           ElMessage.error({
             message: '安装失败！',
+          });
+        }
+        break;
+      }
+      case 'uninstallFinish': {
+        if (JSON.parse(message.data).detail === 'success') {
+          ElMessage.success({
+            message: '卸载成功！',
+          });
+        } else {
+          ElMessage.error({
+            message: '卸载失败！',
           });
         }
         break;
@@ -820,6 +850,37 @@ const searchDevice = () => {
       }),
   );
 };
+const openApp = (pkg) => {
+  websocket.send(
+      JSON.stringify({
+        type: 'debug',
+        detail: 'openApp',
+        pkg
+      }),
+  );
+};
+const refreshAppList = () => {
+  appList.value = [];
+  ElMessage.success({
+    message: '加载应用列表中，请稍后...',
+  });
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: 'appList'
+      }),
+  );
+};
+const uninstallApp = (pkg) => {
+  ElMessage.success({
+    message: '开始卸载！请稍后...',
+  });
+  websocket.send(
+      JSON.stringify({
+        type: 'uninstallApp',
+        detail: pkg
+      }),
+  );
+};
 const getEleScreen = (xpath) => {
   elementScreenLoading.value = true;
   websocket.send(
@@ -845,6 +906,18 @@ const runStep = () => {
         detail: 'runStep',
         caseId: testCase.value['id'],
         pwd: device.value['password'],
+      }),
+  );
+};
+const stopStep = () => {
+  debugLoading.value = false;
+  websocket.send(
+      JSON.stringify({
+        type: 'debug',
+        detail: 'stopStep',
+        udId: device.value['udId'],
+        caseId: testCase.value['id'],
+        pf: device.value['platform'],
       }),
   );
 };
@@ -1704,52 +1777,121 @@ onMounted(() => {
               <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
-                    <strong>安装APK</strong>
+                    <strong>文件互传（即将开放）</strong>
                   </template>
-                  <el-tabs type="border-card">
-                    <el-tab-pane label="上传安装">
-                      <div style="text-align: center">
-                        <el-upload
-                            v-loading="uploadLoading"
-                            drag
-                            action=""
-                            :with-credentials="true"
-                            :limit="1"
-                            :before-upload="beforeAvatarUpload2"
-                            :on-exceed="limitOut"
-                            :http-request="uploadPackage"
-                        >
-                          <i class="el-icon-upload"></i>
-                          <div class="el-upload__text">将APK文件拖到此处，或<em>点击上传</em></div>
-                          <template #tip>
-                            <div class="el-upload__tip">只能上传apk文件</div>
-                          </template>
-                        </el-upload>
-                      </div>
-                    </el-tab-pane>
-                    <el-tab-pane label="URL安装">
-                      <el-input
-                          clearable
-                          v-model="uploadUrl"
-                          size="small"
-                          placeholder="请输入apk下载链接或本地路径"
-                      ></el-input>
-                      <div style="text-align: center;margin-top: 20px">
-                        <el-button
-                            size="mini"
-                            type="primary"
-                            :disabled="uploadUrl.length===0"
-                            @click="install(uploadUrl)"
-                        >发送
-                        </el-button>
-                      </div>
-                    </el-tab-pane>
-                    <el-tab-pane label="已有包安装（即将开放）" disabled>
-                    </el-tab-pane>
-                  </el-tabs>
+                  <div style="text-align: center" v-loading="true"
+                       element-loading-spinner="el-icon-lock"
+                       element-loading-background="rgba(255, 255, 255, 1)"
+                       element-loading-text="该功能即将开放">
+                    <el-upload
+                        v-loading="uploadLoading"
+                        drag
+                        action=""
+                        :with-credentials="true"
+                        :limit="1"
+                        :before-upload="beforeAvatarUpload2"
+                        :on-exceed="limitOut"
+                        :http-request="uploadPackage"
+                    >
+                      <i class="el-icon-upload"></i>
+                      <div class="el-upload__text">将APK文件拖到此处，或<em>点击上传</em></div>
+                      <template #tip>
+                        <div class="el-upload__tip">只能上传apk文件</div>
+                      </template>
+                    </el-upload>
+                  </div>
                 </el-card>
               </el-col>
             </el-row>
+          </el-tab-pane>
+          <el-tab-pane label="应用程序" name="apps">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-card shadow="hover">
+                  <template #header>
+                    <strong>上传安装</strong>
+                  </template>
+                  <div style="text-align: center">
+                    <el-upload
+                        v-loading="uploadLoading"
+                        drag
+                        action=""
+                        :with-credentials="true"
+                        :limit="1"
+                        :before-upload="beforeAvatarUpload2"
+                        :on-exceed="limitOut"
+                        :http-request="uploadPackage"
+                    >
+                      <i class="el-icon-upload"></i>
+                      <div class="el-upload__text">将APK文件拖到此处，或<em>点击上传</em></div>
+                      <template #tip>
+                        <div class="el-upload__tip">只能上传apk文件</div>
+                      </template>
+                    </el-upload>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="12">
+                <el-card shadow="hover" class="url-install-box"
+                         :body-style="{position: 'absolute',top: '50%', width: '100%',paddingTop: '56px',paddingBottom: '0',boxSizing: 'border-box',transform: 'translateY(-50%)'}">
+                  <template #header>
+                    <strong>URL安装</strong>
+                  </template>
+                  <el-input
+                      clearable
+                      v-model="uploadUrl"
+                      size="small"
+                      placeholder="请输入apk下载链接或本地路径"
+                  ></el-input>
+                  <div style="text-align: center;margin-top: 20px">
+                    <el-button
+                        size="mini"
+                        type="primary"
+                        :disabled="uploadUrl.length===0"
+                        @click="install(uploadUrl)"
+                    >发送
+                    </el-button>
+                  </div>
+                </el-card>
+              </el-col>
+            </el-row>
+            <el-card shadow="hover" style="margin-top:15px">
+              <el-table :data="filterTableData" border max-height="400">
+                <el-table-column width="90" header-align="center">
+                  <template #header>
+                    <el-button size="mini" @click="refreshAppList">刷新</el-button>
+                  </template>
+                  <template #default="scope">
+                    <div style="display: flex;align-items: center;justify-content: center;">
+                      <el-avatar shape="square" :size="40"
+                                 :src="'data:image/png;base64,'+scope.row.appIcon"></el-avatar>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column width="150" show-overflow-tooltip header-align="center" prop="appName" label="应用名">
+                </el-table-column>
+                <el-table-column header-align="center" show-overflow-tooltip prop="packageName"
+                                 label="包名">
+                  <template #default="scope">
+                    <div style="cursor: pointer" @click="copy(scope.row.packageName)">{{ scope.row.packageName }}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column header-align="center" show-overflow-tooltip prop="versionName" label="版本号"
+                                 width="120"></el-table-column>
+                <el-table-column header-align="center" show-overflow-tooltip prop="versionCode" label="子版本号"
+                                 width="120"></el-table-column>
+                <el-table-column align="center" width="200">
+                  <template #header>
+                    <el-input v-model="filterAppText" size="mini" placeholder="输入应用名或包名搜索"/>
+                  </template>
+                  <template #default="scope">
+                    <el-button size="mini" @click="openApp(scope.row.packageName)" type="primary">打开
+                    </el-button>
+                    <el-button size="mini" @click="uninstallApp(scope.row.packageName)" type="danger">卸载</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-card>
           </el-tab-pane>
           <el-tab-pane label="快速截图" name="screenCap">
             <el-button type="primary" size="small" @click="quickCap">
@@ -1908,11 +2050,12 @@ onMounted(() => {
                   <step-list :is-show-run="true" :platform="1" :is-driver-finish="isDriverFinish"
                              :case-id="testCase['id']"
                              :project-id="project['id']"
+                             :debug-loading="debugLoading"
                              @runStep="runStep"/>
                 </el-tab-pane>
                 <el-tab-pane label="运行日志" name="log">
                   <step-log :is-read-only="false" :debug-loading="debugLoading" :step-log="stepLog"
-                            @clearLog="clearLog"/>
+                            @clearLog="clearLog" @stopStep="stopStep"/>
                 </el-tab-pane>
               </el-tabs>
             </div>
@@ -2395,5 +2538,10 @@ onMounted(() => {
 #debugPic {
   width: 100%;
   height: auto;
+}
+
+.url-install-box {
+  position: relative;
+  height: 100%;
 }
 </style>

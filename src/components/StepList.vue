@@ -12,7 +12,8 @@ const props = defineProps({
   projectId: Number,
   platform: Number,
   isShowRun: Boolean,
-  isDriverFinish: Boolean
+  isDriverFinish: Boolean,
+  debugLoading: Boolean
 })
 const emit = defineEmits(['runStep'])
 const dialogVisible = ref(false)
