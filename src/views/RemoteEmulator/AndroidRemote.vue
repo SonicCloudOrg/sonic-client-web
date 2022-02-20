@@ -9,6 +9,7 @@ import StepList from '@/components/StepList.vue';
 import TestCaseList from '@/components/TestCaseList.vue';
 import StepLog from '@/components/StepLog.vue';
 import ElementUpdate from '@/components/ElementUpdate.vue';
+import Pageable from '@/components/Pageable.vue'
 import defaultLogo from '@/assets/logo.png';
 import {
   VideoPause,
@@ -196,13 +197,44 @@ const saveEle = () => {
     }
   });
 };
-const filterTableData = computed(() =>
-    appList.value.filter(
+/**
+ * app列表处理
+ */
+const appListPageData = ref([]);
+const currAppListPageIndex = ref(0);
+const currAppListPageData = ref([]);
+// 转换分页数组
+const transformPageable = (data) => {
+  const pageSize = 10;
+  const len = data.length;
+  let start = 0;
+  let end = pageSize;
+  // 重置分页数组
+  appListPageData.value = [];
+  while (end <= len) {
+    appListPageData.value.push(data.slice(start, end));
+    start = end;
+    end += pageSize;
+  }
+  if (len % pageSize) {
+    appListPageData.value.push(data.slice(start, len));
+  }
+  currAppListPageData.value = appListPageData.value[currAppListPageIndex.value];
+}
+const changeAppListPage = (pageNum) => {
+  currAppListPageIndex.value = pageNum - 1;
+  currAppListPageData.value = appListPageData.value[currAppListPageIndex.value];
+}
+const filterTableData = computed(() => {
+    const list = appList.value.filter(
         (data) =>
             !filterAppText.value ||
-            data.appName.toLowerCase().includes(filterAppText.value.toLowerCase())
+            data.appName.toLowerCase().includes(filterAppText.value.toLowerCase()) ||
+            data.packageName.toLowerCase().includes(filterAppText.value.toLowerCase())
     )
-)
+    transformPageable(list);
+    return list;
+})
 const fixTouch = () => {
   ElMessage.success({
     message: '修复成功！',
@@ -1856,7 +1888,7 @@ onMounted(() => {
               </el-col>
             </el-row>
             <el-card shadow="hover" style="margin-top:15px">
-              <el-table :data="filterTableData" border max-height="400">
+              <el-table :data="currAppListPageData" border height="560">
                 <el-table-column width="90" header-align="center">
                   <template #header>
                     <el-button size="mini" @click="refreshAppList">刷新</el-button>
@@ -1891,6 +1923,13 @@ onMounted(() => {
                   </template>
                 </el-table-column>
               </el-table>
+              <Pageable
+                :isPageSet="false"
+                :total="filterTableData.length"
+                :current-page="currAppListPageIndex + 1"
+                :page-size="10"
+                @change="changeAppListPage"
+              ></Pageable>
             </el-card>
           </el-tab-pane>
           <el-tab-pane label="快速截图" name="screenCap">
