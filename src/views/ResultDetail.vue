@@ -45,6 +45,7 @@ const videoOptions = reactive({
     "quality",
     "volume",
     "fullScreen",
+    "speedRate"
   ],
 });
 let page = 1;
