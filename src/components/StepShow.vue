@@ -124,6 +124,13 @@ defineProps({
       >
       {{ step.content }}
     </span>
+  <span v-if="step.stepType === 'swipe2'">
+      <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
+      <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
+      >滑动拖拽到</el-tag
+      >
+      <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
+    </span>
   <span v-if="step.stepType === 'longPress'">
       <el-tag size="small">长按控件元素</el-tag>
       <el-tag

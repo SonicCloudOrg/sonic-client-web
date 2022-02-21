@@ -345,6 +345,10 @@ const androidOptions = ref([
         label: "输入文本",
       },
       {
+        value: "swipe2",
+        label: "拖拽控件元素",
+      },
+      {
         value: "longPress",
         label: "长按控件元素",
       },
@@ -541,6 +545,10 @@ const iOSOptions = ref([
       {
         value: "sendKeys",
         label: "输入文本",
+      },
+      {
+        value: "swipe2",
+        label: "拖拽控件元素",
       },
       {
         value: "longPress",
@@ -883,6 +891,13 @@ onMounted(() => {
             placeholder="请输入值"
         ></el-input>
       </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'swipe2'">
+      <element-select label="从控件" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <element-select label="拖拽到" place="请选择控件元素"
+                      :index="1" :project-id="projectId" type="normal" :step="step"/>
     </div>
 
     <div v-if="step.stepType === 'longPress'">
