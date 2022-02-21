@@ -310,3 +310,8 @@ body,
 .remote-tab .el-tabs__header {
     margin-right: 0px !important;
 }
+
+.el-drawer__body {
+    overflow: auto;
+    padding: 20px 0 0 20px!important;
+}
