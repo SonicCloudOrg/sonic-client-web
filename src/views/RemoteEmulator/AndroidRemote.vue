@@ -205,7 +205,7 @@ const currAppListPageIndex = ref(0);
 const currAppListPageData = ref([]);
 // 转换分页数组
 const transformPageable = (data) => {
-  const pageSize = 10;
+  const pageSize = 7;
   const len = data.length;
   let start = 0;
   let end = pageSize;
@@ -1888,7 +1888,7 @@ onMounted(() => {
               </el-col>
             </el-row>
             <el-card shadow="hover" style="margin-top:15px">
-              <el-table :data="currAppListPageData" border height="560">
+              <el-table :data="currAppListPageData" border>
                 <el-table-column width="90" header-align="center">
                   <template #header>
                     <el-button size="mini" @click="refreshAppList">刷新</el-button>
