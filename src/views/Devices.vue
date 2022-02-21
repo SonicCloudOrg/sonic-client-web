@@ -61,6 +61,7 @@ const manufacturer = ref([
   "BBK",
   "nubia",
   "realme",
+  "deltainno",
   "GIONEE",
   "HTC",
   "LGE",
@@ -538,7 +539,7 @@ onUnmounted(() => {
                       :src="getImg(man)"
                   />
                   <img
-                      v-else-if="man === 'Xiaomi' ||man === 'APPLE'|| man==='LGE' || man==='HTC'"
+                      v-else-if="man === 'Xiaomi' ||man === 'APPLE'|| man==='LGE' || man==='HTC'|| man==='deltainno'"
                       style="width: 30px"
                       :src="getImg(man)"
                   />
@@ -691,7 +692,7 @@ onUnmounted(() => {
                           :src="getImg(device.manufacturer)"
                       />
                       <img
-                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'||device.manufacturer === 'LGE'||device.manufacturer === 'HTC'"
+                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'||device.manufacturer === 'LGE'||device.manufacturer === 'HTC'||device.manufacturer === 'deltainno'"
                           style="width: 30px"
                           :src="getImg(device.manufacturer)"
                       />
