@@ -42,7 +42,7 @@ const size = ref([]);
 const agentIds = ref([]);
 const cpus = ref([]);
 const sizes = ref([]);
-const isFlush = ref(false)
+const isFlush = ref('0')
 const drawer = ref(false)
 const androidSystemVersion = ref([5, 6, 7, 8, 9, 10, 11, 12]);
 const iOSSystemVersion = ref([9, 10, 11, 12, 13, 14, 15]);
@@ -440,7 +440,7 @@ const refresh = () => {
 }
 const refreshNow = (t) => {
   localStorage.setItem('SonicIsRefresh', t);
-  if (t) {
+  if (t === '1') {
     refreshTime.value = 1
     refresh()
   } else {
@@ -448,11 +448,11 @@ const refreshNow = (t) => {
   }
 }
 onBeforeMount(() => {
-  isFlush.value = localStorage.getItem('SonicIsRefresh') ? localStorage.getItem('SonicIsRefresh') : false
+  isFlush.value = localStorage.getItem('SonicIsRefresh') ? localStorage.getItem('SonicIsRefresh') : '0'
 })
 onMounted(() => {
   refresh();
-  if (isFlush.value) {
+  if (isFlush.value === '1') {
     timer.value = setInterval(refresh, 1500);
   }
 })
@@ -636,7 +636,8 @@ onUnmounted(() => {
           </template>
         </el-input>
 
-        <el-switch @change="refreshNow" style="margin-left: 10px" active-text="自动刷新" active-color="#13ce66"
+        <el-switch class="refresh" active-value="1"
+                   inactive-value="0" @change="refreshNow" style="margin-left: 15px" active-text="自动刷新" active-color="#13ce66"
                    v-model="isFlush"/>
 
         <strong v-if="avgTem!==0" style="float: right; display: flex;align-items: center;
