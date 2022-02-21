@@ -430,6 +430,11 @@ const findCaseStatus = (id) => {
   })
 }
 onMounted(() => {
+  let chart = echarts.getInstanceByDom(document.getElementById('chart'));
+  if (chart == null) {
+    chart = echarts.init(document.getElementById('chart'));
+  }
+  chart.dispose()
   getResultInfo(route.params.resultId)
 })
 onUnmounted(() => {
