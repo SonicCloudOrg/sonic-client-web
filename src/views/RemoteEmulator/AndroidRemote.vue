@@ -39,8 +39,11 @@ import {
   Back,
   View,
   InfoFilled,
+  Bell,
+  Service
 } from '@element-plus/icons';
 import RenderDeviceName from "../../components/RenderDeviceName.vue";
+import AudioProcessor from '@/lib/audio-processor'
 
 const {toClipboard} = useClipboard();
 const route = useRoute();
@@ -1143,6 +1146,48 @@ const getDeviceById = (id) => {
     }
   });
 };
+/**
+ * 实时音频
+ */
+let audioPlayer = null;
+let isConnectAudio = ref(false);
+const initAudioPlayer = () => {
+  audioPlayer = new AudioProcessor({
+    node: 'audio-player',
+    wsUrl: 'ws://' + agent.value['host'] + ':' + agent.value['port'] + '/websockets/audio/' + agent.value['secretKey'] + '/' + device .value['udId'],
+    onReady() {
+      isConnectAudio.value = true;
+    }
+  });
+  audioPlayer.ws.onError(function() {
+    destroyAudio()
+  })
+};
+const playAudio = () => {
+  if (audioPlayer) {
+    ElMessage.warning({
+      message: '远程音频已开启，请勿重复操作！',
+    });
+    return;
+  }
+  initAudioPlayer();
+  audioPlayer.onPlay();
+};
+const destroyAudio = () => {
+  audioPlayer.onDestroy();
+  audioPlayer = null;
+  isConnectAudio.value = false;
+  ElMessage.info({
+    message: '远程音频传输已断开！',
+  });
+};
+const resetAudioPlayer = () => {
+  audioPlayer.jmuxer.reset();
+  audioPlayer.onPlay();
+  ElMessage.success({
+    message: '远程音频同步成功！',
+  });
+}
 
 onMounted(() => {
   if (store.state.project.id) {
@@ -1293,6 +1338,7 @@ onMounted(() => {
                 style="display: inline-block"
                 :style="canvasRectInfo"
             />
+            <audio id="audio-player" hidden></audio>
             <el-button-group id="pressKey">
               <el-button
                   size="small"
@@ -1613,6 +1659,44 @@ onMounted(() => {
                             <Minus/>
                           </el-icon>
                         </el-button>
+                      </el-button-group>
+                      <el-divider></el-divider>
+                      <el-icon :size="14" style="color: #909399;vertical-align: middle;">
+                        <Service/>
+                      </el-icon>
+                      <el-divider direction="vertical"></el-divider>
+                      <el-button-group>
+                        <el-button
+                            v-if="isConnectAudio"
+                            size="small"
+                            type="info"
+                            round
+                            @click="destroyAudio"
+                        >
+                          <el-icon :size="12" style="vertical-align: middle;">
+                            <MuteNotification/>
+                          </el-icon>
+                        </el-button>
+                        <el-button
+                            v-else
+                            size="small"
+                            type="info"
+                            round
+                            @click="playAudio"
+                        >
+                          <el-icon :size="12" style="vertical-align: middle;">
+                            <Bell/>
+                          </el-icon>
+                        </el-button>
+                        <!-- <el-button
+                            size="small"
+                            type="info"
+                            @click="resetAudioPlayer"
+                        >
+                          <el-icon :size="12" style="vertical-align: middle;">
+                            <Refresh/>
+                          </el-icon>
+                        </el-button> -->
                       </el-button-group>
                     </el-dropdown-menu>
                   </template>
