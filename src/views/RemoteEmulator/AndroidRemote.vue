@@ -229,14 +229,14 @@ const changeAppListPage = (pageNum) => {
   currAppListPageData.value = appListPageData.value[currAppListPageIndex.value];
 }
 const filterTableData = computed(() => {
-    const list = appList.value.filter(
-        (data) =>
-            !filterAppText.value ||
-            data.appName.toLowerCase().includes(filterAppText.value.toLowerCase()) ||
-            data.packageName.toLowerCase().includes(filterAppText.value.toLowerCase())
-    )
-    transformPageable(list);
-    return list;
+  const list = appList.value.filter(
+      (data) =>
+          !filterAppText.value ||
+          data.appName.toLowerCase().includes(filterAppText.value.toLowerCase()) ||
+          data.packageName.toLowerCase().includes(filterAppText.value.toLowerCase())
+  )
+  transformPageable(list);
+  return list;
 })
 const fixTouch = () => {
   ElMessage.success({
@@ -1118,6 +1118,9 @@ const close = () => {
     terminalWebsocket.close();
     terminalWebsocket = null;
   }
+  if (audioPlayer !== null) {
+    destroyAudio()
+  }
 };
 onBeforeUnmount(() => {
   close();
@@ -1154,12 +1157,12 @@ let isConnectAudio = ref(false);
 const initAudioPlayer = () => {
   audioPlayer = new AudioProcessor({
     node: 'audio-player',
-    wsUrl: 'ws://' + agent.value['host'] + ':' + agent.value['port'] + '/websockets/audio/' + agent.value['secretKey'] + '/' + device .value['udId'],
+    wsUrl: 'ws://' + agent.value['host'] + ':' + agent.value['port'] + '/websockets/audio/' + agent.value['secretKey'] + '/' + device.value['udId'],
     onReady() {
       isConnectAudio.value = true;
     }
   });
-  audioPlayer.ws.onError(function() {
+  audioPlayer.ws.onError(function () {
     destroyAudio()
   })
 };
@@ -1172,6 +1175,9 @@ const playAudio = () => {
   }
   initAudioPlayer();
   audioPlayer.onPlay();
+  ElMessage.success({
+    message: '远程音频传输已连接！',
+  });
 };
 const destroyAudio = () => {
   audioPlayer.onDestroy();
@@ -1491,6 +1497,69 @@ onMounted(() => {
             <el-tooltip
                 :enterable="false"
                 effect="dark"
+                content="远程音频传输"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
+            >
+              <div>
+                <el-dropdown
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
+                >
+                  <el-button
+                      size="small"
+                      type="info"
+                      circle
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <Service/>
+                    </el-icon>
+                  </el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu class="divider">
+                      <el-button-group>
+                        <el-button
+                            size="small"
+                            type="success"
+                            circle
+                            @click="playAudio"
+                            :disabled="isConnectAudio"
+                        >
+                          <el-icon :size="14" style="vertical-align: middle;">
+                            <Bell/>
+                          </el-icon>
+                        </el-button>
+                        <el-button
+                            size="small"
+                            type="danger"
+                            circle
+                            @click="destroyAudio"
+                            :disabled="!isConnectAudio"
+                        >
+                          <el-icon :size="14" style="vertical-align: middle;">
+                            <MuteNotification/>
+                          </el-icon>
+                        </el-button>
+                        <!-- <el-button
+                            size="small"
+                            type="info"
+                            @click="resetAudioPlayer"
+                        >
+                          <el-icon :size="12" style="vertical-align: middle;">
+                            <Refresh/>
+                          </el-icon>
+                        </el-button> -->
+                      </el-button-group>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </div>
+            </el-tooltip>
+            <el-tooltip
+                :enterable="false"
+                effect="dark"
                 content="电池模拟"
                 :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
@@ -1659,44 +1728,6 @@ onMounted(() => {
                             <Minus/>
                           </el-icon>
                         </el-button>
-                      </el-button-group>
-                      <el-divider></el-divider>
-                      <el-icon :size="14" style="color: #909399;vertical-align: middle;">
-                        <Service/>
-                      </el-icon>
-                      <el-divider direction="vertical"></el-divider>
-                      <el-button-group>
-                        <el-button
-                            v-if="isConnectAudio"
-                            size="small"
-                            type="info"
-                            round
-                            @click="destroyAudio"
-                        >
-                          <el-icon :size="12" style="vertical-align: middle;">
-                            <MuteNotification/>
-                          </el-icon>
-                        </el-button>
-                        <el-button
-                            v-else
-                            size="small"
-                            type="info"
-                            round
-                            @click="playAudio"
-                        >
-                          <el-icon :size="12" style="vertical-align: middle;">
-                            <Bell/>
-                          </el-icon>
-                        </el-button>
-                        <!-- <el-button
-                            size="small"
-                            type="info"
-                            @click="resetAudioPlayer"
-                        >
-                          <el-icon :size="12" style="vertical-align: middle;">
-                            <Refresh/>
-                          </el-icon>
-                        </el-button> -->
                       </el-button-group>
                     </el-dropdown-menu>
                   </template>
@@ -2008,11 +2039,11 @@ onMounted(() => {
                 </el-table-column>
               </el-table>
               <Pageable
-                :isPageSet="false"
-                :total="filterTableData.length"
-                :current-page="currAppListPageIndex + 1"
-                :page-size="10"
-                @change="changeAppListPage"
+                  :isPageSet="false"
+                  :total="filterTableData.length"
+                  :current-page="currAppListPageIndex + 1"
+                  :page-size="10"
+                  @change="changeAppListPage"
               ></Pageable>
             </el-card>
           </el-tab-pane>

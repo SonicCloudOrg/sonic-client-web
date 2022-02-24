@@ -465,7 +465,7 @@ onUnmounted(() => {
   <el-drawer
       v-model="drawer"
       :with-header="false"
-      size="50%"
+      size="45%"
       direction="ltr"
   >
     <el-scrollbar>
