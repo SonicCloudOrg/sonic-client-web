@@ -310,3 +310,18 @@ body,
 .remote-tab .el-tabs__header {
     margin-right: 0px !important;
 }
+
+.el-drawer__body {
+    overflow: auto;
+    padding: 20px 0 0 20px!important;
+}
+
+.refresh .el-switch__label{
+    color: #909399!important;
+    font-size:13px!important;
+}
+
+.refresh .el-switch__label.is-active{
+    color: #67C23A!important;
+    font-size:13px!important;
+}

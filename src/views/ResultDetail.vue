@@ -45,6 +45,7 @@ const videoOptions = reactive({
     "quality",
     "volume",
     "fullScreen",
+    "speedRate"
   ],
 });
 let page = 1;
@@ -429,6 +430,11 @@ const findCaseStatus = (id) => {
   })
 }
 onMounted(() => {
+  let chart = echarts.getInstanceByDom(document.getElementById('chart'));
+  if (chart == null) {
+    chart = echarts.init(document.getElementById('chart'));
+  }
+  chart.dispose()
   getResultInfo(route.params.resultId)
 })
 onUnmounted(() => {

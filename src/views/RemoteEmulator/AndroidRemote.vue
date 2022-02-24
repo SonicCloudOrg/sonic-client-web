@@ -9,6 +9,7 @@ import StepList from '@/components/StepList.vue';
 import TestCaseList from '@/components/TestCaseList.vue';
 import StepLog from '@/components/StepLog.vue';
 import ElementUpdate from '@/components/ElementUpdate.vue';
+import Pageable from '@/components/Pageable.vue'
 import defaultLogo from '@/assets/logo.png';
 import {
   VideoPause,
@@ -38,8 +39,11 @@ import {
   Back,
   View,
   InfoFilled,
+  Bell,
+  Service
 } from '@element-plus/icons';
 import RenderDeviceName from "../../components/RenderDeviceName.vue";
+import AudioProcessor from '@/lib/audio-processor'
 
 const {toClipboard} = useClipboard();
 const route = useRoute();
@@ -196,13 +200,44 @@ const saveEle = () => {
     }
   });
 };
-const filterTableData = computed(() =>
-    appList.value.filter(
-        (data) =>
-            !filterAppText.value ||
-            data.appName.toLowerCase().includes(filterAppText.value.toLowerCase())
-    )
-)
+/**
+ * app列表处理
+ */
+const appListPageData = ref([]);
+const currAppListPageIndex = ref(0);
+const currAppListPageData = ref([]);
+// 转换分页数组
+const transformPageable = (data) => {
+  const pageSize = 7;
+  const len = data.length;
+  let start = 0;
+  let end = pageSize;
+  // 重置分页数组
+  appListPageData.value = [];
+  while (end <= len) {
+    appListPageData.value.push(data.slice(start, end));
+    start = end;
+    end += pageSize;
+  }
+  if (len % pageSize) {
+    appListPageData.value.push(data.slice(start, len));
+  }
+  currAppListPageData.value = appListPageData.value[currAppListPageIndex.value];
+}
+const changeAppListPage = (pageNum) => {
+  currAppListPageIndex.value = pageNum - 1;
+  currAppListPageData.value = appListPageData.value[currAppListPageIndex.value];
+}
+const filterTableData = computed(() => {
+  const list = appList.value.filter(
+      (data) =>
+          !filterAppText.value ||
+          data.appName.toLowerCase().includes(filterAppText.value.toLowerCase()) ||
+          data.packageName.toLowerCase().includes(filterAppText.value.toLowerCase())
+  )
+  transformPageable(list);
+  return list;
+})
 const fixTouch = () => {
   ElMessage.success({
     message: '修复成功！',
@@ -1083,6 +1118,9 @@ const close = () => {
     terminalWebsocket.close();
     terminalWebsocket = null;
   }
+  if (audioPlayer !== null) {
+    destroyAudio()
+  }
 };
 onBeforeUnmount(() => {
   close();
@@ -1111,6 +1149,51 @@ const getDeviceById = (id) => {
     }
   });
 };
+/**
+ * 实时音频
+ */
+let audioPlayer = null;
+let isConnectAudio = ref(false);
+const initAudioPlayer = () => {
+  audioPlayer = new AudioProcessor({
+    node: 'audio-player',
+    wsUrl: 'ws://' + agent.value['host'] + ':' + agent.value['port'] + '/websockets/audio/' + agent.value['secretKey'] + '/' + device.value['udId'],
+    onReady() {
+      isConnectAudio.value = true;
+    }
+  });
+  audioPlayer.ws.onError(function () {
+    destroyAudio()
+  })
+};
+const playAudio = () => {
+  if (audioPlayer) {
+    ElMessage.warning({
+      message: '远程音频已开启，请勿重复操作！',
+    });
+    return;
+  }
+  initAudioPlayer();
+  audioPlayer.onPlay();
+  ElMessage.success({
+    message: '远程音频传输已连接！',
+  });
+};
+const destroyAudio = () => {
+  audioPlayer.onDestroy();
+  audioPlayer = null;
+  isConnectAudio.value = false;
+  ElMessage.info({
+    message: '远程音频传输已断开！',
+  });
+};
+const resetAudioPlayer = () => {
+  audioPlayer.jmuxer.reset();
+  audioPlayer.onPlay();
+  ElMessage.success({
+    message: '远程音频同步成功！',
+  });
+}
 
 onMounted(() => {
   if (store.state.project.id) {
@@ -1261,6 +1344,7 @@ onMounted(() => {
                 style="display: inline-block"
                 :style="canvasRectInfo"
             />
+            <audio id="audio-player" hidden></audio>
             <el-button-group id="pressKey">
               <el-button
                   size="small"
@@ -1404,6 +1488,69 @@ onMounted(() => {
                             </el-icon>
                           </el-button>
                         </el-tooltip>
+                      </el-button-group>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </div>
+            </el-tooltip>
+            <el-tooltip
+                :enterable="false"
+                effect="dark"
+                content="远程音频传输"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
+            >
+              <div>
+                <el-dropdown
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
+                >
+                  <el-button
+                      size="small"
+                      type="info"
+                      circle
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <Service/>
+                    </el-icon>
+                  </el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu class="divider">
+                      <el-button-group>
+                        <el-button
+                            size="small"
+                            type="success"
+                            circle
+                            @click="playAudio"
+                            :disabled="isConnectAudio"
+                        >
+                          <el-icon :size="14" style="vertical-align: middle;">
+                            <Bell/>
+                          </el-icon>
+                        </el-button>
+                        <el-button
+                            size="small"
+                            type="danger"
+                            circle
+                            @click="destroyAudio"
+                            :disabled="!isConnectAudio"
+                        >
+                          <el-icon :size="14" style="vertical-align: middle;">
+                            <MuteNotification/>
+                          </el-icon>
+                        </el-button>
+                        <!-- <el-button
+                            size="small"
+                            type="info"
+                            @click="resetAudioPlayer"
+                        >
+                          <el-icon :size="12" style="vertical-align: middle;">
+                            <Refresh/>
+                          </el-icon>
+                        </el-button> -->
                       </el-button-group>
                     </el-dropdown-menu>
                   </template>
@@ -1856,7 +2003,7 @@ onMounted(() => {
               </el-col>
             </el-row>
             <el-card shadow="hover" style="margin-top:15px">
-              <el-table :data="filterTableData" border max-height="400">
+              <el-table :data="currAppListPageData" border>
                 <el-table-column width="90" header-align="center">
                   <template #header>
                     <el-button size="mini" @click="refreshAppList">刷新</el-button>
@@ -1891,6 +2038,13 @@ onMounted(() => {
                   </template>
                 </el-table-column>
               </el-table>
+              <Pageable
+                  :isPageSet="false"
+                  :total="filterTableData.length"
+                  :current-page="currAppListPageIndex + 1"
+                  :page-size="10"
+                  @change="changeAppListPage"
+              ></Pageable>
             </el-card>
           </el-tab-pane>
           <el-tab-pane label="快速截图" name="screenCap">
