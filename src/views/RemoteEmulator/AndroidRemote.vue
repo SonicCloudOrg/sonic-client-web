@@ -483,6 +483,11 @@ const websocketOnmessage = (message) => {
     img.src = u;
   } else {
     switch (JSON.parse(message.data)['msg']) {
+      case 'proxyResult': {
+        console.log(JSON.parse(message.data).webPort)
+        console.log(JSON.parse(message.data).port)
+        break;
+      }
       case 'adbkit': {
         if (JSON.parse(message.data).isEnable) {
           remoteAdbUrl.value = agent.value['host'] + ":" + JSON.parse(message.data).port
@@ -882,6 +887,13 @@ const searchDevice = () => {
   websocket.send(
       JSON.stringify({
         type: 'find',
+      }),
+  );
+};
+const startProxy = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'proxy',
       }),
   );
 };
@@ -2046,6 +2058,9 @@ onMounted(() => {
                   @change="changeAppListPage"
               ></Pageable>
             </el-card>
+          </el-tab-pane>
+          <el-tab-pane label="网络抓包" name="proxy">
+            <el-button @click="startProxy">test</el-button>
           </el-tab-pane>
           <el-tab-pane label="快速截图" name="screenCap">
             <el-button type="primary" size="small" @click="quickCap">
