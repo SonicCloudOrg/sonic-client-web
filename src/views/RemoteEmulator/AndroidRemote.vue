@@ -49,6 +49,8 @@ const {toClipboard} = useClipboard();
 const route = useRoute();
 const store = useStore();
 const router = useRouter();
+const proxyWebPort = ref(0)
+const proxyConnPort = ref(0)
 const filterAppText = ref("")
 const iFrameHeight = ref(0);
 const terminalHeight = ref(0);
@@ -484,8 +486,9 @@ const websocketOnmessage = (message) => {
   } else {
     switch (JSON.parse(message.data)['msg']) {
       case 'proxyResult': {
-        console.log(JSON.parse(message.data).webPort)
-        console.log(JSON.parse(message.data).port)
+        proxyWebPort.value = JSON.parse(message.data).webPort
+        proxyConnPort.value = JSON.parse(message.data).port
+        console.log(proxyConnPort.value)
         break;
       }
       case 'adbkit': {
@@ -2061,6 +2064,9 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane label="网络抓包" name="proxy">
             <el-button @click="startProxy">test</el-button>
+            <iframe v-if="proxyWebPort!==0"
+                    style="width: 100%;height:500px"
+                    :src="'http://'+agent['host']+':'+proxyWebPort"></iframe>
           </el-tab-pane>
           <el-tab-pane label="快速截图" name="screenCap">
             <el-button type="primary" size="small" @click="quickCap">
