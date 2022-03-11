@@ -488,6 +488,9 @@ const websocketOnmessage = (message) => {
       case 'proxyResult': {
         proxyWebPort.value = JSON.parse(message.data).webPort
         proxyConnPort.value = JSON.parse(message.data).port
+        nextTick(() => {
+          iFrameHeight.value = document.getElementById('pressKey').offsetTop - 50;
+        });
         console.log(proxyConnPort.value)
         break;
       }
@@ -897,6 +900,13 @@ const startProxy = () => {
   websocket.send(
       JSON.stringify({
         type: 'proxy',
+      }),
+  );
+};
+const installCert = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'installCert',
       }),
   );
 };
@@ -2064,8 +2074,9 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane label="网络抓包" name="proxy">
             <el-button @click="startProxy">test</el-button>
+            <el-button @click="installCert">testCert</el-button>
             <iframe v-if="proxyWebPort!==0"
-                    style="width: 100%;height:500px"
+                    :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                     :src="'http://'+agent['host']+':'+proxyWebPort"></iframe>
           </el-tab-pane>
           <el-tab-pane label="快速截图" name="screenCap">
