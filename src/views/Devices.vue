@@ -402,6 +402,18 @@ const updateImg = (id, imgUrl) => {
         }
       });
 }
+const deleteDevice = (id) => {
+  axios
+      .delete("/controller/devices", {params: {id}})
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+          findAll();
+        }
+      });
+}
 const getFilterOption = () => {
   axios
       .get("/controller/devices/getFilterOption")
@@ -637,7 +649,8 @@ onUnmounted(() => {
         </el-input>
 
         <el-switch class="refresh" active-value="1"
-                   inactive-value="0" @change="refreshNow" style="margin-left: 15px" active-text="自动刷新" active-color="#13ce66"
+                   inactive-value="0" @change="refreshNow" style="margin-left: 15px" active-text="自动刷新"
+                   active-color="#13ce66"
                    v-model="isFlush"/>
 
         <strong v-if="avgTem!==0" style="float: right; display: flex;align-items: center;
@@ -871,6 +884,27 @@ onUnmounted(() => {
                           &&device.status !== 'TESTING'
                            &&device.status !== 'ERROR'"
                           >重启
+                          </el-button
+                          >
+                        </template>
+                      </el-popconfirm>
+                      <el-popconfirm
+                          placement="top"
+                          confirmButtonText="确认"
+                          cancelButtonText="取消"
+                          @confirm="deleteDevice(device.id)"
+                          icon="el-icon-warning"
+                          iconColor="red"
+                          title="确定删除该设备吗？"
+                      >
+                        <template #reference>
+                          <el-button
+                              type="danger"
+                              size="mini"
+                              :disabled="device.status === 'ONLINE'
+                          &&device.status === 'DEBUGGING'
+                          &&device.status === 'TESTING'"
+                          >删除
                           </el-button
                           >
                         </template>
