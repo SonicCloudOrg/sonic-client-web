@@ -49,6 +49,7 @@ const {toClipboard} = useClipboard();
 const route = useRoute();
 const store = useStore();
 const router = useRouter();
+const remoteAppiumPort = ref(0)
 const proxyWebPort = ref(0)
 const proxyConnPort = ref(0)
 const filterAppText = ref("")
@@ -492,6 +493,10 @@ const websocketOnmessage = (message) => {
           iFrameHeight.value = document.getElementById('pressKey').offsetTop - 50;
         });
         console.log(proxyConnPort.value)
+        break;
+      }
+      case 'appiumPort': {
+        remoteAppiumPort.value = JSON.parse(message.data).port
         break;
       }
       case 'adbkit': {
@@ -1883,26 +1888,42 @@ onMounted(() => {
                 </el-card>
               </el-col>
               <el-col :span="8">
-                <el-card>
-                  <template #header>
-                    <strong>远程连接ADB</strong>
-                  </template>
-                  <div v-if="remoteAdbUrl.length>0" style="margin-top: 8px;margin-bottom: 8px">
-                    <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
-                             @click="copy('adb connect '+remoteAdbUrl)">
-                      <strong style="color: #F2F6FC">adb connect {{ remoteAdbUrl }}</strong>
-                    </el-card>
-                  </div>
-                  <div v-else v-loading="remoteAdbUrl.length===0"
-                       element-loading-spinner="el-icon-lock"
-                       element-loading-background="rgba(255, 255, 255, 1)"
-                       element-loading-text="所在Agent未开启该功能！"
-                       style="margin-top: 8px;margin-bottom: 8px">
-                    <el-card>
-                      <strong>所在Agent未开启该功能！</strong>
-                    </el-card>
-                  </div>
-                </el-card>
+                <el-tabs type="border-card" stretch>
+                  <el-tab-pane label="远程ADB">
+                    <div v-if="remoteAdbUrl.length>0" style="margin-top: 20px;margin-bottom: 20px">
+                      <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
+                               @click="copy('adb connect '+remoteAdbUrl)">
+                        <strong style="color: #F2F6FC">adb connect {{ remoteAdbUrl }}</strong>
+                      </el-card>
+                    </div>
+                    <div v-else v-loading="remoteAdbUrl.length===0"
+                         element-loading-spinner="el-icon-lock"
+                         element-loading-background="rgba(255, 255, 255, 1)"
+                         element-loading-text="所在Agent未开启该功能！"
+                         style="margin-top: 18px;margin-bottom: 18px">
+                      <el-card>
+                        <strong>所在Agent未开启该功能！</strong>
+                      </el-card>
+                    </div>
+                  </el-tab-pane>
+                  <el-tab-pane label="远程Appium">
+                    <div v-if="remoteAppiumPort!==0" style="margin-top: 20px;margin-bottom: 20px">
+                      <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
+                               @click="copy('http://'+agent['host']+':'+remoteAppiumPort+'/wd/hub')">
+                        <strong style="color: #F2F6FC">http://{{ agent['host'] }}:{{ remoteAppiumPort }}/wd/hub</strong>
+                      </el-card>
+                    </div>
+                    <div v-else v-loading="remoteAppiumPort===0"
+                         element-loading-spinner="el-icon-lock"
+                         element-loading-background="rgba(255, 255, 255, 1)"
+                         element-loading-text="Appium启动失败！"
+                         style="margin-top: 18px;margin-bottom: 18px">
+                      <el-card>
+                        <strong>Appium启动失败！</strong>
+                      </el-card>
+                    </div>
+                  </el-tab-pane>
+                </el-tabs>
               </el-col>
               <el-col :span="8">
                 <el-card>
