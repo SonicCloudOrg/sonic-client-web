@@ -183,7 +183,7 @@ const tabWebView = (port, id, transTitle) => {
       + ':' + agent.value['port'] + '/websockets/webView/'
       + agent.value['secretKey'] + '/' + port + '/' + id;
   nextTick(() => {
-    iFrameHeight.value = document.getElementById('pressKey').offsetTop - 50;
+    iFrameHeight.value = document.body.clientHeight - 280;
   });
 };
 const saveEle = () => {
@@ -490,9 +490,8 @@ const websocketOnmessage = (message) => {
         proxyWebPort.value = JSON.parse(message.data).webPort
         proxyConnPort.value = JSON.parse(message.data).port
         nextTick(() => {
-          iFrameHeight.value = document.getElementById('pressKey').offsetTop - 50;
+          iFrameHeight.value = document.body.clientHeight - 280;
         });
-        console.log(proxyConnPort.value)
         break;
       }
       case 'appiumPort': {
@@ -2094,8 +2093,8 @@ onMounted(() => {
             </el-card>
           </el-tab-pane>
           <el-tab-pane label="网络抓包" name="proxy">
-            <el-button @click="startProxy">test</el-button>
-            <el-button @click="installCert">testCert</el-button>
+            <el-button size="mini" type="primary" @click="startProxy">开始抓包</el-button>
+            <el-button size="mini" type="primary" @click="installCert">安装证书</el-button>
             <iframe v-if="proxyWebPort!==0"
                     :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                     :src="'http://'+agent['host']+':'+proxyWebPort"></iframe>
