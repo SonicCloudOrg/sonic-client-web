@@ -2093,8 +2093,8 @@ onMounted(() => {
             </el-card>
           </el-tab-pane>
           <el-tab-pane label="网络抓包" name="proxy">
-            <el-button size="mini" type="primary" @click="startProxy">开始抓包</el-button>
-            <el-button size="mini" type="primary" @click="installCert">安装证书</el-button>
+            <el-button size="small" type="success" @click="startProxy">开始抓包</el-button>
+            <el-button size="small" @click="installCert">安装证书</el-button>
             <iframe v-if="proxyWebPort!==0"
                     :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                     :src="'http://'+agent['host']+':'+proxyWebPort"></iframe>
