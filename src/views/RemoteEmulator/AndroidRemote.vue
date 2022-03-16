@@ -2087,7 +2087,7 @@ onMounted(() => {
                   :isPageSet="false"
                   :total="filterTableData.length"
                   :current-page="currAppListPageIndex + 1"
-                  :page-size="10"
+                  :page-size="7"
                   @change="changeAppListPage"
               ></Pageable>
             </el-card>

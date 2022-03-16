@@ -25,8 +25,8 @@ const getImg = (name) => {
 }
 const getPhoneImg = (name, url) => {
   let result;
-  if (url === null || (url && url.length === 0)) {
-    result = "https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/" + name + ".jpg";
+  if (url === null || url.length === 0) {
+    result = img['./../assets/img/default.png'].default
   } else {
     result = url;
   }
@@ -211,15 +211,7 @@ onMounted(() => {
               style="height: 80%;float: left"
               fit="contain"
               :src="getPhoneImg(item.model,item['imgUrl'])"
-          >
-            <template #error>
-              <el-image
-                  style="height: 100%;float: left"
-                  fit="contain"
-                  src="https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg"
-              ></el-image>
-            </template>
-          </el-image>
+          />
           <span style="float: left;margin-left: 10px"><RenderDeviceName :device="item"/></span>
           <span style="display: flex;float: right;
     align-items: center;">

@@ -20,7 +20,7 @@ const step = ref({
   elements: [],
   text: "",
   content: "",
-  error: 1
+  error: 3
 })
 const activityList = ref([{name: ""}])
 const add = () => {
@@ -337,6 +337,10 @@ const androidOptions = ref([
     value: "element",
     children: [
       {
+        value: "isExistEle",
+        label: "判断控件元素是否存在",
+      },
+      {
         value: "click",
         label: "点击控件元素",
       },
@@ -433,6 +437,10 @@ const androidOptions = ref([
         value: "traverse",
         label: "遍历页面(暂未开放)",
         disabled: true
+      },
+      {
+        value: "stepHold",
+        label: "步骤间隔设置",
       },
       {
         value: "pause",
@@ -539,6 +547,10 @@ const iOSOptions = ref([
     value: "element",
     children: [
       {
+        value: "isExistEle",
+        label: "判断控件元素是否存在",
+      },
+      {
         value: "click",
         label: "点击控件元素",
       },
@@ -638,6 +650,10 @@ const iOSOptions = ref([
         disabled: true
       },
       {
+        value: "stepHold",
+        label: "步骤间隔设置",
+      },
+      {
         value: "pause",
         label: "强制等待",
       },
@@ -715,6 +731,8 @@ onMounted(() => {
             <el-option value="APP_SWITCH"></el-option>
           </el-option-group>
           <el-option-group label="其他">
+            <el-option value="ENTER"></el-option>
+            <el-option value="DEL"></el-option>
             <el-option value="BRIGHTNESS_DOWN"></el-option>
             <el-option value="BRIGHTNESS_UP"></el-option>
             <el-option value="VOLUME_UP"></el-option>
@@ -872,6 +890,21 @@ onMounted(() => {
             v-model="step.content"
             placeholder="请输入Handle页面标题的名称"
         ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'isExistEle'">
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <el-form-item label="存在与否" prop="content" :rules="{
+            required: true,
+            message: '断言不能为空',
+            trigger: 'change',
+          }">
+        <el-select v-model="step.content">
+          <el-option label="存在" value="true"></el-option>
+          <el-option label="不存在" value="false"></el-option>
+        </el-select>
       </el-form-item>
     </div>
 
@@ -1059,6 +1092,19 @@ onMounted(() => {
               :value="item.id + ''"
           ></el-option>
         </el-select>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'stepHold'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 设置后从该步骤开始，后面的每个步骤都会按照设置值来间隔。"/>
+      <el-form-item label="步骤间隔">
+        <el-input-number
+            v-model="step.content"
+            :min="0"
+            :step="1000"
+        ></el-input-number>
+        ms
       </el-form-item>
     </div>
 

@@ -361,8 +361,8 @@ const getImg = (name) => {
 }
 const getPhoneImg = (name, url) => {
   let result;
-  if (url === null || (url && url.length === 0)) {
-    result = "https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/" + name + ".jpg";
+  if (url === null || url.length === 0) {
+    result = img['./../assets/img/default.png'].default
   } else {
     result = url;
   }
@@ -699,17 +699,7 @@ onUnmounted(() => {
                         :src="getPhoneImg(device.model,device['imgUrl'])"
                         :preview-src-list="[getPhoneImg(device.model,device['imgUrl'])]"
                         hide-on-click-modal
-                    >
-                      <template #error>
-                        <el-image
-                            style="height: 160px"
-                            fit="contain"
-                            src="https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg"
-                            :preview-src-list="['https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg']"
-                            hide-on-click-modal
-                        ></el-image>
-                      </template>
-                    </el-image>
+                    />
                   </div>
                 </el-col>
                 <el-col :span="14">
