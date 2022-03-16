@@ -11,14 +11,26 @@ const props = defineProps({
   platform: Number,
   stepId: Number
 })
+const selectCondition = (e) => {
+  step.value.stepType = "";
+  step.value.text = "";
+  step.value.elements = [];
+  step.value.content = "";
+  step.value.error = 1;
+  if (e === 3) {
+    step.value.stepType = "else";
+  }
+}
 const step = ref({
   id: null,
   caseId: props.caseId,
+  parentId: 0,
   projectId: props.projectId,
   platform: props.platform,
   stepType: "",
   elements: [],
   text: "",
+  conditionType: 0,
   content: "",
   error: 3
 })
@@ -197,6 +209,7 @@ const getStepInfo = (id) => {
   }).then(resp => {
     step.value = resp.data
     if (step.value.stepType === 'pause'
+        || step.value.stepType === 'stepHold'
         || step.value.stepType === 'longPressPoint'
         || step.value.stepType === 'runBack'
         || step.value.stepType === 'longPress'
@@ -681,31 +694,33 @@ onMounted(() => {
       :model="step"
       size="small"
   >
-    <el-form-item
-        prop="stepType"
-        label="步骤类型"
-        :rules="{
+    <div v-if="step.conditionType !==3">
+      <el-form-item
+          prop="stepType"
+          label="步骤类型"
+          :rules="{
             required: true,
             message: '请填写步骤类型',
             trigger: 'change',
           }"
-    >
-      <el-cascader
-          filterable
-          style="width: 100%"
-          size="small"
-          placeholder="请填写步骤类型"
-          v-model="step.stepType"
-          :options="options"
-          :props="{ emitPath: false,expandTrigger: 'hover' }"
-          @change="changeType"
       >
-        <template #default="{ node, data }">
-          <span>{{ data.label }}</span>
-          <span v-if="!node.isLeaf">&nbsp;({{ data.children.length }})</span>
-        </template>
-      </el-cascader>
-    </el-form-item>
+        <el-cascader
+            filterable
+            style="width: 100%"
+            size="small"
+            placeholder="请填写步骤类型"
+            v-model="step.stepType"
+            :options="options"
+            :props="{ emitPath: false,expandTrigger: 'hover' }"
+            @change="changeType"
+        >
+          <template #default="{ node, data }">
+            <span>{{ data.label }}</span>
+            <span v-if="!node.isLeaf">&nbsp;({{ data.children.length }})</span>
+          </template>
+        </el-cascader>
+      </el-form-item>
+    </div>
 
     <el-divider>
       <el-icon :size="15">
@@ -1185,29 +1200,6 @@ onMounted(() => {
                     </el-switch>
                   </template>
                 </el-table-column>
-                <!--            <el-table-column width="80" align="center">-->
-                <!--              <template slot-scope="scope">-->
-                <!--                <el-button-->
-                <!--                    type="danger"-->
-                <!--                    size="mini"-->
-                <!--                    @click="delObj(monkey.orders, scope.row)"-->
-                <!--                >删除</el-button-->
-                <!--                >-->
-                <!--              </template>-->
-                <!--            </el-table-column>-->
-                <!--            <div-->
-                <!--                slot="append"-->
-                <!--                style="text-align: center; line-height: 50px"-->
-                <!--            >-->
-                <!--              <el-button-->
-                <!--                  size="mini"-->
-                <!--                  @click="addParent(monkey.orders)"-->
-                <!--              >新增参数</el-button-->
-                <!--              >-->
-                <!--              <el-button size="mini" @click="useStar()"-->
-                <!--              >推荐模版</el-button-->
-                <!--              >-->
-                <!--            </div>-->
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="Activity黑名单">
@@ -1248,28 +1240,32 @@ onMounted(() => {
     </div>
 
     <el-form-item
-        label="异常处理"
+        label="逻辑处理"
     >
       <el-select
-          v-model="step.error"
-          placeholder="请选择异常处理方案"
+          v-model="step.conditionType"
+          placeholder="请选择逻辑条件"
+          @change="selectCondition"
       >
-        <el-option label="忽略" :value="1"></el-option>
-        <el-option label="告警" :value="2"></el-option>
-        <el-option label="中断" :value="3"></el-option>
+        <el-option label="无" :value="0"></el-option>
+        <el-option label="if" :value="1"></el-option>
+        <el-option label="else if" :value="2"></el-option>
+        <el-option label="else" :value="3"></el-option>
+        <el-option label="while" :value="4"></el-option>
       </el-select>
       <el-popover
           placement="right-start"
-          title="异常处理"
+          title="逻辑处理"
           :width="300"
           trigger="hover"
       >
         <p>
-          意为该测试步骤出现异常时的处理方案
+          意为该测试步骤关联的逻辑处理
         </p>
-        <div><strong style="color: #409EFF">忽略：</strong>忽略异常并继续执行</div>
-        <div><strong style="color: #E6A23C">告警：</strong>标记警告并获取异常截图和异常堆栈，然后继续执行</div>
-        <div><strong style="color: #F56C6C">中断：</strong>标记失败并获取异常截图、异常堆栈和测试录像，然后中断执行</div>
+        <div><strong style="color: #409EFF">if：</strong>该步骤无异常时，会执行子步骤</div>
+        <div><strong style="color: #E6A23C">eles if：</strong>如果上一个if条件步骤有异常，则进入该逻辑判断，无异常时会执行子步骤</div>
+        <div><strong style="color: #F56C6C">else：</strong>如果以上条件全失败，则执行子步骤</div>
+        <div><strong style="color: #67C23A">while：</strong>如果条件无异常，则重复执行子步骤</div>
         <template #reference>
           <el-icon :size="18" style="vertical-align: middle;margin-left: 10px;">
             <QuestionFilled/>
@@ -1277,6 +1273,39 @@ onMounted(() => {
         </template>
       </el-popover>
     </el-form-item>
+
+    <div v-if="step.conditionType===0">
+      <el-form-item
+          label="异常处理"
+      >
+        <el-select
+            v-model="step.error"
+            placeholder="请选择异常处理方案"
+        >
+          <el-option label="忽略" :value="1"></el-option>
+          <el-option label="告警" :value="2"></el-option>
+          <el-option label="中断" :value="3"></el-option>
+        </el-select>
+        <el-popover
+            placement="right-start"
+            title="异常处理"
+            :width="300"
+            trigger="hover"
+        >
+          <p>
+            意为该测试步骤出现异常时的处理方案
+          </p>
+          <div><strong style="color: #409EFF">忽略：</strong>忽略异常并继续执行（逻辑处理时不抛出异常）</div>
+          <div><strong style="color: #E6A23C">告警：</strong>标记警告并获取异常截图和异常堆栈，然后继续执行（逻辑处理时不抛出异常）</div>
+          <div><strong style="color: #F56C6C">中断：</strong>标记失败并获取异常截图、异常堆栈和测试录像，然后中断执行（逻辑处理时抛出异常）</div>
+          <template #reference>
+            <el-icon :size="18" style="vertical-align: middle;margin-left: 10px;">
+              <QuestionFilled/>
+            </el-icon>
+          </template>
+        </el-popover>
+      </el-form-item>
+    </div>
   </el-form>
 
   <div style="text-align: center;margin-top: 20px">
