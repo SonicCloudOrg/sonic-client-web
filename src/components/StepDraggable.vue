@@ -38,6 +38,7 @@ const resetCaseId = id => {
         :hollow="true"
     >
       <el-card v-if="s.conditionType !== 0">
+        <template #header>
           <span v-if="s.conditionType === 1">
       <el-tag size="small" type="warning" style="margin-right: 10px">if</el-tag>
     </span>
@@ -98,6 +99,8 @@ const resetCaseId = id => {
             </template>
           </el-popconfirm>
         </div>
+        </template>
+        <StepDraggable :steps="s.childSteps"/>
       </el-card>
       <div v-else>
         <step-show :step="s"></step-show>
