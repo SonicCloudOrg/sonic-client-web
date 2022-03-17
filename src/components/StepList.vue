@@ -37,8 +37,8 @@ const flush = () => {
   dialogVisible.value = false
   getStepsList();
 }
-const resetCaseId = (id) => {
-  axios.get("/controller/steps/resetCaseId", {
+const deleteStep = (id) => {
+  axios.delete("/controller/steps", {
     params: {
       id
     }
@@ -102,7 +102,7 @@ onMounted(() => {
     </el-button-group>
   </div>
   <el-timeline v-if="steps.length>0">
-    <StepDraggable :steps="steps" @setParent="setParent" @addStep="addStep" @sortStep="sortStep" @editStep="editStep" @resetCaseId="resetCaseId"/>
+    <StepDraggable :steps="steps" @setParent="setParent" @addStep="addStep" @sortStep="sortStep" @editStep="editStep" @deleteStep="deleteStep"/>
   </el-timeline>
   <el-empty description="暂无步骤" v-else></el-empty>
 </template>

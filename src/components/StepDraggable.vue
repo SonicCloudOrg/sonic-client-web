@@ -6,7 +6,7 @@ import {Delete, Rank, Edit, DocumentAdd} from "@element-plus/icons";
 const props = defineProps({
   steps: Object,
 })
-const emit = defineEmits(['sortStep', 'editStep', 'resetCaseId', 'setParent', 'addStep'])
+const emit = defineEmits(['sortStep', 'editStep', 'deleteStep', 'setParent', 'addStep'])
 const sortStep = (e,d,s) => {
   if(d&&s){
     emit('sortStep', e, d, s)
@@ -37,8 +37,8 @@ const addStep = (pId) => {
   setParent(pId)
   emit('addStep')
 }
-const resetCaseId = id => {
-  emit('resetCaseId', id)
+const deleteStep = id => {
+  emit('deleteStep', id)
 }
 </script>
 
@@ -114,10 +114,10 @@ const resetCaseId = id => {
                 style="margin-left: 10px"
                 confirmButtonText="确认"
                 cancelButtonText="取消"
-                @confirm="resetCaseId(s.id)"
+                @confirm="deleteStep(s.id)"
                 icon="el-icon-warning"
                 iconColor="red"
-                title="确定从用例中移除该步骤吗？"
+                title="确定移除该步骤吗？"
             >
               <template #reference>
                 <el-button
@@ -134,7 +134,7 @@ const resetCaseId = id => {
           </div>
         </template>
         <StepDraggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @sortStep="sortStep"
-                       @editStep="editStep" @resetCaseId="resetCaseId"/>
+                       @editStep="editStep" @deleteStep="deleteStep"/>
       </el-card>
       <div v-else>
         <step-show :step="s"></step-show>
@@ -162,10 +162,10 @@ const resetCaseId = id => {
               style="margin-left: 10px"
               confirmButtonText="确认"
               cancelButtonText="取消"
-              @confirm="resetCaseId(s.id)"
+              @confirm="deleteStep(s.id)"
               icon="el-icon-warning"
               iconColor="red"
-              title="确定从用例中移除该步骤吗？"
+              title="确定移除该步骤吗？"
           >
             <template #reference>
               <el-button
