@@ -28,7 +28,6 @@ const editStep = async (id) => {
   await addStep()
 }
 const setParent = (id)=>{
-  console.log(1)
   parentId.value = id
 }
 const addStep = () => {

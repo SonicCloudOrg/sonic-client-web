@@ -7,20 +7,24 @@ const props = defineProps({
   steps: Object,
 })
 const emit = defineEmits(['sortStep', 'editStep', 'resetCaseId', 'setParent', 'addStep'])
-const sortStep = (e) => {
-  let startId = null;
-  let endId = null;
-  let direction = "";
-  if (e.moved.newIndex > e.moved.oldIndex) {
-    direction = "down";
-    endId = props.steps[e.moved.newIndex].sort;
-    startId = props.steps[e.moved.newIndex - 1].sort;
-  } else {
-    direction = "up";
-    startId = props.steps[e.moved.newIndex].sort;
-    endId = props.steps[e.moved.newIndex + 1].sort;
+const sortStep = (e,d,s) => {
+  if(d&&s){
+    emit('sortStep', e, d, s)
+  }else {
+    let startId = null;
+    let endId = null;
+    let direction = "";
+    if (e.moved.newIndex > e.moved.oldIndex) {
+      direction = "down";
+      endId = props.steps[e.moved.newIndex].sort;
+      startId = props.steps[e.moved.newIndex - 1].sort;
+    } else {
+      direction = "up";
+      startId = props.steps[e.moved.newIndex].sort;
+      endId = props.steps[e.moved.newIndex + 1].sort;
+    }
+    emit('sortStep', direction, endId, startId)
   }
-  emit('sortStep', direction, endId, startId)
 }
 const setParent = (id) => {
   emit('setParent', id)
