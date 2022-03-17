@@ -1,17 +1,37 @@
 <script setup>
 import {VueDraggableNext} from 'vue-draggable-next';
 import StepShow from './StepShow.vue'
-import {Delete, Rank, Edit} from "@element-plus/icons";
+import {Delete, Rank, Edit, DocumentAdd} from "@element-plus/icons";
 
-defineProps({
+const props = defineProps({
   steps: Object,
 })
-const emit = defineEmits(['sortStep', 'editStep', 'resetCaseId'])
+const emit = defineEmits(['sortStep', 'editStep', 'resetCaseId', 'setParent', 'addStep'])
 const sortStep = (e) => {
-  emit('sortStep', e)
+  let startId = null;
+  let endId = null;
+  let direction = "";
+  if (e.moved.newIndex > e.moved.oldIndex) {
+    direction = "down";
+    endId = props.steps[e.moved.newIndex].sort;
+    startId = props.steps[e.moved.newIndex - 1].sort;
+  } else {
+    direction = "up";
+    startId = props.steps[e.moved.newIndex].sort;
+    endId = props.steps[e.moved.newIndex + 1].sort;
+  }
+  emit('sortStep', direction, endId, startId)
 }
-const editStep = id => {
+const setParent = (id) => {
+  emit('setParent', id)
+}
+const editStep = (id, pId) => {
+  setParent(pId)
   emit('editStep', id)
+}
+const addStep = (pId) => {
+  setParent(pId)
+  emit('addStep')
 }
 const resetCaseId = id => {
   emit('resetCaseId', id)
@@ -42,65 +62,75 @@ const resetCaseId = id => {
           <span v-if="s.conditionType === 1">
       <el-tag size="small" type="warning" style="margin-right: 10px">if</el-tag>
     </span>
-        <span v-if="s.conditionType === 2">
+          <span v-if="s.conditionType === 2">
       <el-tag size="small" type="warning" style="margin-right: 10px">else if</el-tag>
     </span>
-        <span v-if="s.conditionType === 3">
+          <span v-if="s.conditionType === 3">
       <el-tag size="small" type="warning" style="margin-right: 10px">else</el-tag>
     </span>
-        <span v-if="s.conditionType === 4">
+          <span v-if="s.conditionType === 4">
       <el-tag size="small" type="warning" style="margin-right: 10px">while</el-tag>
     </span>
-        (
-        <step-show :step="s"></step-show>
-        )
-        <span>
-      <el-tag size="small" type="warning" style="margin-left: 10px">无异常</el-tag>
+          <step-show :step="s"></step-show>
+          <span>
+      <el-tag v-if="s.conditionType!==3&&s.conditionType!==0" size="small" type="warning"
+              style="margin-left: 10px">无异常</el-tag>
     </span>
-        <div style="float: right">
-          <el-button
-              circle
-              type="primary"
-              size="mini"
-              @click="editStep(s.id)"
-          >
-            <el-icon :size="13" style="vertical-align: middle;">
-              <Edit/>
-            </el-icon>
-          </el-button>
-          <el-button
-              class="handle"
-              circle
-              size="mini"
-          >
-            <el-icon :size="13" style="vertical-align: middle;">
-              <Rank/>
-            </el-icon>
-          </el-button>
-          <el-popconfirm
-              style="margin-left: 10px"
-              confirmButtonText="确认"
-              cancelButtonText="取消"
-              @confirm="resetCaseId(s.id)"
-              icon="el-icon-warning"
-              iconColor="red"
-              title="确定从用例中移除该步骤吗？"
-          >
-            <template #reference>
-              <el-button
-                  circle
-                  type="danger"
-                  size="mini"
-              >
-                <el-icon :size="13" style="vertical-align: middle;">
-                  <Delete/>
-                </el-icon>
-              </el-button>
-            </template>
-          </el-popconfirm>
-        </div>
+          <div style="float: right">
+            <el-button
+                circle
+                type="primary"
+                size="mini"
+                @click="addStep(s.id)"
+            >
+              <el-icon :size="13" style="vertical-align: middle;">
+                <DocumentAdd/>
+              </el-icon>
+            </el-button>
+            <el-button
+                circle
+                type="primary"
+                size="mini"
+                @click="editStep(s.id,s.parentId)"
+            >
+              <el-icon :size="13" style="vertical-align: middle;">
+                <Edit/>
+              </el-icon>
+            </el-button>
+            <el-button
+                class="handle"
+                circle
+                size="mini"
+            >
+              <el-icon :size="13" style="vertical-align: middle;">
+                <Rank/>
+              </el-icon>
+            </el-button>
+            <el-popconfirm
+                style="margin-left: 10px"
+                confirmButtonText="确认"
+                cancelButtonText="取消"
+                @confirm="resetCaseId(s.id)"
+                icon="el-icon-warning"
+                iconColor="red"
+                title="确定从用例中移除该步骤吗？"
+            >
+              <template #reference>
+                <el-button
+                    circle
+                    type="danger"
+                    size="mini"
+                >
+                  <el-icon :size="13" style="vertical-align: middle;">
+                    <Delete/>
+                  </el-icon>
+                </el-button>
+              </template>
+            </el-popconfirm>
+          </div>
         </template>
-        <StepDraggable :steps="s.childSteps"/>
+        <StepDraggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @sortStep="sortStep"
+                       @editStep="editStep" @resetCaseId="resetCaseId"/>
       </el-card>
       <div v-else>
         <step-show :step="s"></step-show>
@@ -109,7 +139,7 @@ const resetCaseId = id => {
               circle
               type="primary"
               size="mini"
-              @click="editStep(s.id)"
+              @click="editStep(s.id,0)"
           >
             <el-icon :size="13" style="vertical-align: middle;">
               <Edit/>

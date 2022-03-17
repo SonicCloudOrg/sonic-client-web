@@ -16,14 +16,20 @@ const props = defineProps({
 const emit = defineEmits(['runStep'])
 const dialogVisible = ref(false)
 const stepId = ref(0)
+const parentId = ref(0)
 watch(dialogVisible, (newValue, oldValue) => {
   if (!newValue) {
     stepId.value = 0
+    parentId.value = 0
   }
 })
 const editStep = async (id) => {
   stepId.value = id
   await addStep()
+}
+const setParent = (id)=>{
+  console.log(1)
+  parentId.value = id
 }
 const addStep = () => {
   dialogVisible.value = true
@@ -46,19 +52,7 @@ const resetCaseId = (id) => {
     }
   })
 }
-const sortStep = (e) => {
-  let startId = null;
-  let endId = null;
-  let direction = "";
-  if (e.moved.newIndex > e.moved.oldIndex) {
-    direction = "down";
-    endId = steps.value[e.moved.newIndex].sort;
-    startId = steps.value[e.moved.newIndex - 1].sort;
-  } else {
-    direction = "up";
-    startId = steps.value[e.moved.newIndex].sort;
-    endId = steps.value[e.moved.newIndex + 1].sort;
-  }
+const sortStep = (direction,endId,startId) => {
   axios
       .put("/controller/steps/stepSort", {
         caseId: props.caseId,
@@ -96,6 +90,7 @@ onMounted(() => {
   <el-dialog v-model="dialogVisible" title="步骤信息" width="600px">
     <step-update v-if="dialogVisible" :step-id="stepId" :case-id="caseId"
                  :project-id="projectId"
+                 :parent-id="parentId"
                  :platform="platform" @flush="flush"></step-update>
   </el-dialog>
   <div style="margin-bottom: 10px;text-align: center">
@@ -108,7 +103,7 @@ onMounted(() => {
     </el-button-group>
   </div>
   <el-timeline v-if="steps.length>0">
-    <StepDraggable :steps="steps" @sortStep="sortStep" @editStep="editStep" @resetCaseId="resetCaseId"/>
+    <StepDraggable :steps="steps" @setParent="setParent" @addStep="addStep" @sortStep="sortStep" @editStep="editStep" @resetCaseId="resetCaseId"/>
   </el-timeline>
   <el-empty description="暂无步骤" v-else></el-empty>
 </template>

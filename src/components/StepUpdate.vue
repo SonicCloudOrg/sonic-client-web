@@ -9,7 +9,8 @@ const props = defineProps({
   projectId: Number,
   caseId: Number,
   platform: Number,
-  stepId: Number
+  stepId: Number,
+  parentId: Number,
 })
 const selectCondition = (e) => {
   step.value.stepType = "";
@@ -682,6 +683,9 @@ onMounted(() => {
   }
   if (props.stepId !== 0) {
     getStepInfo(props.stepId)
+  }
+  if (props.parentId !== 0) {
+    step.value.parentId = props.parentId;
   }
 })
 </script>
