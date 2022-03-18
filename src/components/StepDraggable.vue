@@ -63,23 +63,7 @@ const deleteStep = id => {
     >
       <el-card v-if="s.conditionType !== 0">
         <template #header>
-          <span v-if="s.conditionType === 1">
-      <el-tag size="small" type="warning" style="margin-right: 10px">if</el-tag>
-    </span>
-          <span v-if="s.conditionType === 2">
-      <el-tag size="small" type="warning" style="margin-right: 10px">else if</el-tag>
-    </span>
-          <span v-if="s.conditionType === 3">
-      <el-tag size="small" type="warning" style="margin-right: 10px">else</el-tag>
-    </span>
-          <span v-if="s.conditionType === 4">
-      <el-tag size="small" type="warning" style="margin-right: 10px">while</el-tag>
-    </span>
           <step-show :step="s"></step-show>
-          <span>
-      <el-tag v-if="s.conditionType!==3&&s.conditionType!==0" size="small" type="warning"
-              style="margin-left: 10px">无异常</el-tag>
-    </span>
           <div style="float: right">
             <el-button
                 circle

@@ -4,7 +4,19 @@ defineProps({
 })
 </script>
 <template>
-   <span v-if="step.stepType === 'lock'">
+     <span v-if="step.conditionType === 1">
+      <el-tag size="small" type="warning" style="margin-right: 10px">if</el-tag>
+    </span>
+  <span v-if="step.conditionType === 2">
+      <el-tag size="small" type="warning" style="margin-right: 10px">else if</el-tag>
+    </span>
+  <span v-if="step.conditionType === 3">
+      <el-tag size="small" type="warning" style="margin-right: 10px">else</el-tag>
+    </span>
+  <span v-if="step.conditionType === 4">
+      <el-tag size="small" type="warning" style="margin-right: 10px">while</el-tag>
+    </span>
+  <span v-if="step.stepType === 'lock'">
       <el-tag size="small">锁定设备</el-tag>
     </span>
   <span v-if="step.stepType === 'unLock'">
@@ -239,5 +251,9 @@ defineProps({
   <span v-if="step.stepType === 'pause'">
       <el-tag size="small" style="margin-right: 5px">强制等待</el-tag>
       等待 {{ step.content }} ms
+    </span>
+  <span>
+      <el-tag v-if="step.conditionType!==3&&step.conditionType!==0" size="small" type="warning"
+              style="margin-left: 10px">无异常</el-tag>
     </span>
 </template>

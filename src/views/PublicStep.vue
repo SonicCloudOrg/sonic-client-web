@@ -58,7 +58,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="公共步骤信息" width="700px">
+  <el-dialog v-model="dialogVisible" title="公共步骤信息" width="750px">
     <public-step-update v-if="dialogVisible" @flush="flush" :public-step-id="publicStepId"
                         :project-id="route.params.projectId"/>
   </el-dialog>
