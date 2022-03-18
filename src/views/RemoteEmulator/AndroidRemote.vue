@@ -5,6 +5,7 @@ import {useStore} from 'vuex';
 import axios from '@/http/axios';
 import {ElMessage} from 'element-plus';
 import useClipboard from 'vue-clipboard3';
+import ColorImg from '@/components/ColorImg.vue';
 import StepList from '@/components/StepList.vue';
 import TestCaseList from '@/components/TestCaseList.vue';
 import StepLog from '@/components/StepLog.vue';
@@ -44,11 +45,15 @@ import {
 } from '@element-plus/icons';
 import RenderDeviceName from "../../components/RenderDeviceName.vue";
 import AudioProcessor from '@/lib/audio-processor'
+import wifiLogo from "@/assets/img/wifi.png";
 
 const {toClipboard} = useClipboard();
 const route = useRoute();
 const store = useStore();
 const router = useRouter();
+const wifiList = ref([])
+const currentWifi = ref("")
+const isConnectWifi = ref(false)
 const remoteAppiumPort = ref(0)
 const proxyWebPort = ref(0)
 const proxyConnPort = ref(0)
@@ -145,6 +150,9 @@ const computedCenter = (b1, b2) => {
   return x + ',' + y;
 };
 const switchTabs = (e) => {
+  if (e.props.name === 'proxy') {
+    getWifiList()
+  }
   if (e.props.name === 'apps') {
     if (appList.value.length === 0) {
       refreshAppList()
@@ -385,6 +393,13 @@ const sendLogcat = () => {
       }),
   );
 };
+const getWifiList = () => {
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: 'wifiList',
+      }),
+  );
+}
 const clearLogcat = () => {
   logcatOutPut.value = [];
 };
@@ -422,6 +437,11 @@ const stopCmd = () => {
 };
 const terminalWebsocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
+    case 'wifiList': {
+      isConnectWifi.value = JSON.parse(message.data).detail.connectWifi;
+      currentWifi.value = JSON.parse(message.data).detail.connectedWifi.sSID
+      break
+    }
     case 'appListDetail': {
       appList.value.push(JSON.parse(message.data).detail)
       break;
@@ -2093,11 +2113,36 @@ onMounted(() => {
             </el-card>
           </el-tab-pane>
           <el-tab-pane label="网络抓包" name="proxy">
-            <el-button size="small" type="success" @click="startProxy">开始抓包</el-button>
+            <el-button size="small" type="success" @click="startProxy" :disabled="!isConnectWifi">开始抓包</el-button>
             <el-button size="small" @click="installCert">安装证书</el-button>
+            <span style="float: right;display: flex;
+			   align-items: center;">
+              <el-button size="mini" @click="getWifiList" style="margin-right: 6px">刷新</el-button>
+              <ColorImg
+                  :src="wifiLogo"
+                  :width="18"
+                  :height="18"
+                  :color="isConnectWifi?'#67C23A':'#F56C6C'"
+              />
+              <span style="margin-left:6px;color: #67C23A;font-size: 16px">{{
+                  (currentWifi.length > 0 && isConnectWifi) ? currentWifi.replaceAll("\"", "") : ' '
+                }}</span>
+            </span>
             <iframe v-if="proxyWebPort!==0"
                     :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                     :src="'http://'+agent['host']+':'+proxyWebPort"></iframe>
+            <el-card v-else style="margin-top:20px">
+              <template #header><strong>使用教学</strong></template>
+              <div style="height: 300px">
+                <el-steps direction="vertical" :active="3">
+                  <el-step title="连接Wifi" status="process"
+                           description="未连接Wifi的话，需前往Wifi列表连接你的Wifi。Wifi需要与Agent的网络互通，连接后点击刷新重新获取Wifi状态"/>
+                  <el-step title="安装证书" status="process"
+                           description="首次抓包需要安装证书，点击安装按钮后下载证书并安装。如浏览器无法访问，请确认Agent已关闭防火墙。"/>
+                  <el-step title="开始抓包" status="process" description="点击开始抓包后，就可以开始体验啦！"/>
+                </el-steps>
+              </div>
+            </el-card>
           </el-tab-pane>
           <el-tab-pane label="快速截图" name="screenCap">
             <el-button type="primary" size="small" @click="quickCap">
