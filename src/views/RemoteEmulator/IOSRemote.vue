@@ -90,6 +90,8 @@ const elementData = ref([]);
 const elementDetail = ref(null);
 const elementScreenLoading = ref(false);
 const tree = ref(null);
+const proxyWebPort = ref(0)
+const proxyConnPort = ref(0)
 const currentId = ref([]);
 const filterText = ref('');
 const project = ref(null);
@@ -199,7 +201,20 @@ const uninstallApp = (pkg) => {
       }),
   );
 };
-
+const startProxy = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'proxy',
+      }),
+  );
+};
+const installCert = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'installCert',
+      }),
+  );
+};
 const saveEle = () => {
   updateImgEle['value'].validate((valid) => {
     if (valid) {
@@ -338,10 +353,18 @@ const openSocket = (host, port, udId, key) => {
 };
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
-    case 'appListDetail':{
+    case 'proxyResult': {
+      proxyWebPort.value = JSON.parse(message.data).webPort
+      proxyConnPort.value = JSON.parse(message.data).port
+      nextTick(() => {
+        iFrameHeight.value = document.body.clientHeight - 280;
+      });
+      break;
+    }
+    case 'appListDetail': {
       let list = JSON.parse(message.data).appList;
-      for(let i in list){
-        if(list[i].name!==""&&list[i].bundleId!==""&&list[i].version!==""){
+      for (let i in list) {
+        if (list[i].name !== "" && list[i].bundleId !== "" && list[i].version !== "") {
           appList.value.push(list[i])
         }
       }
@@ -1298,54 +1321,54 @@ onMounted(() => {
               <!--                            </div>-->
               <!--                          </el-card>-->
               <!--                        </el-col>-->
-<!--              <el-col :span="12" style="margin-top: 20px">-->
-<!--                <el-card>-->
-<!--                  <template #header>-->
-<!--                    <strong>安装IPA</strong>-->
-<!--                  </template>-->
-<!--                  <el-tabs type="border-card">-->
-<!--                    <el-tab-pane label="上传安装">-->
-<!--                      <div style="text-align: center">-->
-<!--                        <el-upload-->
-<!--                            v-loading="uploadLoading"-->
-<!--                            drag-->
-<!--                            action=""-->
-<!--                            :with-credentials="true"-->
-<!--                            :limit="1"-->
-<!--                            :before-upload="beforeAvatarUpload2"-->
-<!--                            :on-exceed="limitOut"-->
-<!--                            :http-request="uploadPackage"-->
-<!--                        >-->
-<!--                          <i class="el-icon-upload"></i>-->
-<!--                          <div class="el-upload__text">将ipa文件拖到此处，或<em>点击上传</em></div>-->
-<!--                          <template #tip>-->
-<!--                            <div class="el-upload__tip">只能上传ipa文件</div>-->
-<!--                          </template>-->
-<!--                        </el-upload>-->
-<!--                      </div>-->
-<!--                    </el-tab-pane>-->
-<!--                    <el-tab-pane label="URL安装">-->
-<!--                      <el-input-->
-<!--                          clearable-->
-<!--                          v-model="uploadUrl"-->
-<!--                          size="small"-->
-<!--                          placeholder="请输入ipa下载链接或本地路径"-->
-<!--                      ></el-input>-->
-<!--                      <div style="text-align: center;margin-top: 20px">-->
-<!--                        <el-button-->
-<!--                            size="mini"-->
-<!--                            type="primary"-->
-<!--                            :disabled="uploadUrl.length===0"-->
-<!--                            @click="install(uploadUrl)"-->
-<!--                        >发送-->
-<!--                        </el-button>-->
-<!--                      </div>-->
-<!--                    </el-tab-pane>-->
-<!--                    <el-tab-pane label="已有包安装（即将开放）" disabled>-->
-<!--                    </el-tab-pane>-->
-<!--                  </el-tabs>-->
-<!--                </el-card>-->
-<!--              </el-col>-->
+              <!--              <el-col :span="12" style="margin-top: 20px">-->
+              <!--                <el-card>-->
+              <!--                  <template #header>-->
+              <!--                    <strong>安装IPA</strong>-->
+              <!--                  </template>-->
+              <!--                  <el-tabs type="border-card">-->
+              <!--                    <el-tab-pane label="上传安装">-->
+              <!--                      <div style="text-align: center">-->
+              <!--                        <el-upload-->
+              <!--                            v-loading="uploadLoading"-->
+              <!--                            drag-->
+              <!--                            action=""-->
+              <!--                            :with-credentials="true"-->
+              <!--                            :limit="1"-->
+              <!--                            :before-upload="beforeAvatarUpload2"-->
+              <!--                            :on-exceed="limitOut"-->
+              <!--                            :http-request="uploadPackage"-->
+              <!--                        >-->
+              <!--                          <i class="el-icon-upload"></i>-->
+              <!--                          <div class="el-upload__text">将ipa文件拖到此处，或<em>点击上传</em></div>-->
+              <!--                          <template #tip>-->
+              <!--                            <div class="el-upload__tip">只能上传ipa文件</div>-->
+              <!--                          </template>-->
+              <!--                        </el-upload>-->
+              <!--                      </div>-->
+              <!--                    </el-tab-pane>-->
+              <!--                    <el-tab-pane label="URL安装">-->
+              <!--                      <el-input-->
+              <!--                          clearable-->
+              <!--                          v-model="uploadUrl"-->
+              <!--                          size="small"-->
+              <!--                          placeholder="请输入ipa下载链接或本地路径"-->
+              <!--                      ></el-input>-->
+              <!--                      <div style="text-align: center;margin-top: 20px">-->
+              <!--                        <el-button-->
+              <!--                            size="mini"-->
+              <!--                            type="primary"-->
+              <!--                            :disabled="uploadUrl.length===0"-->
+              <!--                            @click="install(uploadUrl)"-->
+              <!--                        >发送-->
+              <!--                        </el-button>-->
+              <!--                      </div>-->
+              <!--                    </el-tab-pane>-->
+              <!--                    <el-tab-pane label="已有包安装（即将开放）" disabled>-->
+              <!--                    </el-tab-pane>-->
+              <!--                  </el-tabs>-->
+              <!--                </el-card>-->
+              <!--              </el-col>-->
               <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
@@ -1434,7 +1457,7 @@ onMounted(() => {
                     <el-button size="mini" @click="refreshAppList">刷新</el-button>
                   </template>
                   <template #default="scope">
-                   {{scope.row.name}}
+                    {{ scope.row.name }}
                   </template>
                 </el-table-column>
                 <el-table-column header-align="center" show-overflow-tooltip prop="bundleId"
@@ -1463,6 +1486,37 @@ onMounted(() => {
                   :page-size="7"
                   @change="changeAppListPage"
               ></Pageable>
+            </el-card>
+          </el-tab-pane>
+          <el-tab-pane label="网络抓包" name="proxy">
+            <el-button size="small" type="success" @click="startProxy">开始抓包</el-button>
+            <el-button size="small" @click="installCert">打开浏览器</el-button>
+            <strong style="color: #545c64;font-size: 14px;margin-left: 6px">
+              打开浏览器后输入网址 <span
+                style="color: #409EFF">{{ 'http://' + agent['host'] + ':' + agent['port'] + '/assets/download' }}</span>
+              下载证书</strong>
+            <strong v-if="proxyConnPort!==0"
+                    style="color: #67c23a;float: right;margin-top: 5px">代理连接：{{
+                agent['host'] + ':' + proxyConnPort
+              }}</strong>
+            <iframe v-if="proxyWebPort!==0"
+                    :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
+                    :src="'http://'+agent['host']+':'+proxyWebPort"></iframe>
+            <el-card v-else style="margin-top:20px">
+              <template #header><strong>使用教学</strong></template>
+              <div style="height: 300px">
+                <el-steps direction="vertical" :active="3">
+                  <el-step title="连接Wifi" status="process"
+                           description="未连接Wifi的话，需前往Wifi列表连接你的Wifi。Wifi需要与Agent的网络互通，连接后点击刷新重新获取Wifi状态"/>
+                  <el-step title="下载证书" status="process"
+                           description="首次抓包需要安装证书，点击打开浏览器按钮后访问链接下载证书并安装。如浏览器无法访问，请确认Agent已关闭防火墙。"/>
+                  <el-step title="安装证书" status="process"
+                           description="进入手机【设置】->【通用】->【VPN与设备管理 / 描述文件与设备管理 / 设备管理 / 描述文件】->找到mitmproxy证书安装"/>
+                  <el-step title="信任证书" status="process"
+                           description="进入手机【设置】->【通用】->【关于本机】最下方->【证书信任设置】信任对应证书"/>
+                  <el-step title="开始抓包" status="process" description="点击开始抓包后，Wifi设置手动代理，连接右上角对应的ip与端口，即可开启抓包"/>
+                </el-steps>
+              </div>
             </el-card>
           </el-tab-pane>
           <el-tab-pane label="UI自动化" name="auto">

@@ -2114,7 +2114,7 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane label="网络抓包" name="proxy">
             <el-button size="small" type="success" @click="startProxy" :disabled="!isConnectWifi">开始抓包</el-button>
-            <el-button size="small" @click="installCert">安装证书</el-button>
+            <el-button size="small" @click="installCert">下载证书</el-button>
             <span style="float: right;display: flex;
 			   align-items: center;">
               <el-button size="mini" @click="getWifiList" style="margin-right: 6px">刷新</el-button>
