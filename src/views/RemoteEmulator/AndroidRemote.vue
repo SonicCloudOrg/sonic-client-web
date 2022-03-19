@@ -169,6 +169,7 @@ const switchTabs = (e) => {
 };
 const img = import.meta.globEager('../../assets/img/*');
 let websocket = null;
+let screenWebsocket = null;
 let terminalWebsocket = null;
 
 defineProps({
@@ -371,6 +372,9 @@ const openSocket = (host, port, udId, key) => {
     websocket = new WebSocket(
         'ws://' + host + ':' + port + '/websockets/android/' + udId + '/' + key + '/' + localStorage.getItem('SonicToken'),
     );
+    screenWebsocket = new WebSocket(
+        'ws://' + host + ':' + port + '/websockets/android/screen/' + udId + '/' + key + '/' + localStorage.getItem('SonicToken'),
+    );
     terminalWebsocket = new WebSocket(
         'ws://' + host + ':' + port + '/websockets/terminal/' + udId + '/' + key,
     );
@@ -379,6 +383,9 @@ const openSocket = (host, port, udId, key) => {
   }
   websocket.onmessage = websocketOnmessage;
   websocket.onclose = (e) => {
+  };
+  screenWebsocket.onmessage = screenWebsocketOnmessage;
+  screenWebsocket.onclose = (e) => {
   };
   terminalWebsocket.onmessage = terminalWebsocketOnmessage;
   terminalWebsocket.onclose = (e) => {
@@ -487,7 +494,7 @@ const terminalWebsocketOnmessage = (message) => {
       break;
   }
 };
-const websocketOnmessage = (message) => {
+const screenWebsocketOnmessage = (message) => {
   if (typeof message.data === 'object') {
     oldBlob = message.data;
     const blob = new Blob([message.data], {type: 'image/jpeg'});
@@ -506,24 +513,6 @@ const websocketOnmessage = (message) => {
     img.src = u;
   } else {
     switch (JSON.parse(message.data)['msg']) {
-      case 'proxyResult': {
-        proxyWebPort.value = JSON.parse(message.data).webPort
-        proxyConnPort.value = JSON.parse(message.data).port
-        nextTick(() => {
-          iFrameHeight.value = document.body.clientHeight - 280;
-        });
-        break;
-      }
-      case 'appiumPort': {
-        remoteAppiumPort.value = JSON.parse(message.data).port
-        break;
-      }
-      case 'adbkit': {
-        if (JSON.parse(message.data).isEnable) {
-          remoteAdbUrl.value = agent.value['host'] + ":" + JSON.parse(message.data).port
-        }
-        break;
-      }
       case 'rotation': {
         if (directionStatus.value !== -1) {
           loading.value = true;
@@ -547,108 +536,137 @@ const websocketOnmessage = (message) => {
         loading.value = false;
         break;
       }
-      case 'tree': {
-        ElMessage.success({
-          message: '获取控件元素成功！',
-        });
-        let result = JSON.parse(message.data);
-        currentId.value = [1];
-        elementData.value = result.detail;
-        isShowTree.value = true;
-        elementLoading.value = false;
-        if (result.img) {
-          setImgData(result.img);
-        }
-        webViewData.value = result['webView'];
-        activity.value = result['activity'];
-        break;
-      }
-      case 'treeFail': {
-        ElMessage.error({
-          message: '获取控件元素失败！请重新获取',
-        });
-        elementLoading.value = false;
-        break;
-      }
-      case 'installFinish': {
-        if (JSON.parse(message.data).status === 'success') {
-          ElMessage.success({
-            message: '安装成功！',
-          });
-        } else {
-          ElMessage.error({
-            message: '安装失败！',
-          });
-        }
-        break;
-      }
-      case 'uninstallFinish': {
-        if (JSON.parse(message.data).detail === 'success') {
-          ElMessage.success({
-            message: '卸载成功！',
-          });
-        } else {
-          ElMessage.error({
-            message: '卸载失败！',
-          });
-        }
-        break;
-      }
-      case 'openDriver': {
-        ElMessage({
-          type: JSON.parse(message.data).status,
-          message: JSON.parse(message.data).detail,
-        });
-        if (JSON.parse(message.data).status === 'success') {
-          isDriverFinish.value = true;
-        }
-        break;
-      }
       case 'picFinish': {
         loading.value = false;
         break;
       }
-      case 'step': {
-        setStepLog(JSON.parse(message.data));
-        break;
-      }
-      case 'status': {
-        debugLoading.value = false;
-        ElMessage.info({
-          message: '运行完毕！',
-        });
-        break;
-      }
-      case 'forwardView': {
-        webViewLoading.value = false;
-        ElMessage.success({
-          message: '获取成功！',
-        });
-        webViewListDetail.value = JSON.parse(message.data)['detail'];
-        chromePort.value = JSON.parse(message.data)['chromePort'];
-        break;
-      }
-      case 'eleScreen': {
-        if (JSON.parse(message.data).img) {
-          ElMessage.success({
-            message: '获取快照成功！',
-          });
-          imgElementUrl.value = JSON.parse(message.data)['img'];
-          dialogImgElement.value = true;
-        } else {
-          ElMessage.error(JSON.parse(message.data)['errMsg']);
-        }
-        elementScreenLoading.value = false;
-        break;
-      }
-      case 'error': {
+      case 'error':
         ElMessage.error({
           message: '系统出现异常！已断开远程控制！',
         });
         close();
         router.go(-1);
         break;
+    }
+  }
+}
+const websocketOnmessage = (message) => {
+  switch (JSON.parse(message.data)['msg']) {
+    case 'proxyResult': {
+      proxyWebPort.value = JSON.parse(message.data).webPort
+      proxyConnPort.value = JSON.parse(message.data).port
+      nextTick(() => {
+        iFrameHeight.value = document.body.clientHeight - 280;
+      });
+      break;
+    }
+    case 'appiumPort': {
+      remoteAppiumPort.value = JSON.parse(message.data).port
+      break;
+    }
+    case 'adbkit': {
+      if (JSON.parse(message.data).isEnable) {
+        remoteAdbUrl.value = agent.value['host'] + ":" + JSON.parse(message.data).port
       }
+      break;
+    }
+    case 'tree': {
+      ElMessage.success({
+        message: '获取控件元素成功！',
+      });
+      let result = JSON.parse(message.data);
+      currentId.value = [1];
+      elementData.value = result.detail;
+      isShowTree.value = true;
+      elementLoading.value = false;
+      if (result.img) {
+        setImgData(result.img);
+      }
+      webViewData.value = result['webView'];
+      activity.value = result['activity'];
+      break;
+    }
+    case 'treeFail': {
+      ElMessage.error({
+        message: '获取控件元素失败！请重新获取',
+      });
+      elementLoading.value = false;
+      break;
+    }
+    case 'installFinish': {
+      if (JSON.parse(message.data).status === 'success') {
+        ElMessage.success({
+          message: '安装成功！',
+        });
+      } else {
+        ElMessage.error({
+          message: '安装失败！',
+        });
+      }
+      break;
+    }
+    case 'uninstallFinish': {
+      if (JSON.parse(message.data).detail === 'success') {
+        ElMessage.success({
+          message: '卸载成功！',
+        });
+      } else {
+        ElMessage.error({
+          message: '卸载失败！',
+        });
+      }
+      break;
+    }
+    case 'openDriver': {
+      ElMessage({
+        type: JSON.parse(message.data).status,
+        message: JSON.parse(message.data).detail,
+      });
+      if (JSON.parse(message.data).status === 'success') {
+        isDriverFinish.value = true;
+      }
+      break;
+    }
+    case 'step': {
+      setStepLog(JSON.parse(message.data));
+      break;
+    }
+    case 'status': {
+      debugLoading.value = false;
+      ElMessage.info({
+        message: '运行完毕！',
+      });
+      break;
+    }
+    case 'forwardView': {
+      webViewLoading.value = false;
+      ElMessage.success({
+        message: '获取成功！',
+      });
+      webViewListDetail.value = JSON.parse(message.data)['detail'];
+      chromePort.value = JSON.parse(message.data)['chromePort'];
+      break;
+    }
+    case 'eleScreen': {
+      if (JSON.parse(message.data).img) {
+        ElMessage.success({
+          message: '获取快照成功！',
+        });
+        imgElementUrl.value = JSON.parse(message.data)['img'];
+        dialogImgElement.value = true;
+      } else {
+        ElMessage.error(JSON.parse(message.data)['errMsg']);
+      }
+      elementScreenLoading.value = false;
+      break;
+    }
+    case 'error': {
+      ElMessage.error({
+        message: '系统出现异常！已断开远程控制！',
+      });
+      close();
+      router.go(-1);
+      break;
     }
   }
 };
@@ -1046,7 +1064,7 @@ const changePic = (type) => {
       pic = 'fixed';
       break;
   }
-  websocket.send(
+  screenWebsocket.send(
       JSON.stringify({
         type: 'pic',
         detail: pic,
@@ -1162,6 +1180,10 @@ const close = () => {
   if (websocket !== null) {
     websocket.close();
     websocket = null;
+  }
+  if (screenWebsocket !== null) {
+    screenWebsocket.close();
+    screenWebsocket = null;
   }
   if (terminalWebsocket !== null) {
     terminalWebsocket.close();
@@ -2138,7 +2160,7 @@ onMounted(() => {
                   <el-step title="连接Wifi" status="process"
                            description="未连接Wifi的话，需前往Wifi列表连接你的Wifi。Wifi需要与Agent的网络互通，连接后点击刷新重新获取Wifi状态"/>
                   <el-step title="安装证书" status="process"
-                           description="首次抓包需要安装证书，点击安装按钮后下载证书并安装。如浏览器无法访问，请确认Agent已关闭防火墙。"/>
+                           description="首次抓包需要安装证书，点击下载按钮后下载证书并安装。如浏览器无法访问，请确认Agent已关闭防火墙。"/>
                   <el-step title="开始抓包" status="process" description="点击开始抓包后，就可以开始体验啦！"/>
                 </el-steps>
               </div>
