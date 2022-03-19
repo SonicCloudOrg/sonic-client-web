@@ -124,6 +124,16 @@ const editAgent = async (id, name) => {
 const openAgent = () => {
   dialogAgent.value = true
 }
+const shutdownAgent = (id) => {
+  axios
+      .get("/transport/exchange/stop", {params: {id: id}}).then((resp) => {
+    if (resp['code'] === 2000) {
+      ElMessage.success({
+        message: resp['message'],
+      });
+    }
+  })
+}
 const copy = (value) => {
   try {
     toClipboard(value);
@@ -1003,6 +1013,8 @@ onUnmounted(() => {
               </el-form-item>
               <el-form-item label="Agent操作">
                 <el-button size="mini" type="primary" @click="editAgent(agent.id,agent.name)">编辑</el-button>
+                <el-button size="mini" type="danger" @click="shutdownAgent(agent.id)" :disabled="agent.status===2">终止运行
+                </el-button>
               </el-form-item>
             </el-form>
           </el-card>
