@@ -5,6 +5,8 @@ import {ElMessage} from "element-plus";
 import {useRoute} from "vue-router";
 import RenderDeviceName from "./RenderDeviceName.vue";
 import RenderStatus from "./RenderStatus.vue";
+import {VueDraggableNext} from 'vue-draggable-next';
+import {Delete, Rank, Plus} from "@element-plus/icons";
 
 const route = useRoute()
 const props = defineProps({
@@ -25,8 +27,8 @@ const getImg = (name) => {
 }
 const getPhoneImg = (name, url) => {
   let result;
-  if (url === null || (url && url.length === 0)) {
-    result = "https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/" + name + ".jpg";
+  if (url === null || url.length === 0) {
+    result = img['./../assets/img/default.png'].default
   } else {
     result = url;
   }
@@ -46,9 +48,9 @@ const testSuite = ref({
 })
 const deviceData = ref([])
 const deviceDataBack = ref([])
-const getDevice = (platform) => {
+const getDevice = () => {
   axios
-      .get("/controller/devices/listAll", {params: {platform}})
+      .get("/controller/devices/listAll", {params: {platform: testSuite.value.platform}})
       .then((resp) => {
         if (resp['code'] === 2000) {
           deviceData.value = resp.data;
@@ -56,19 +58,38 @@ const getDevice = (platform) => {
         }
       });
 }
-const testCaseData = ref([])
-const getTestCaseList = (platform) => {
-  axios
-      .get("/controller/testCases/listAll", {params: {platform, projectId: route.params.projectId}})
-      .then((resp) => {
-        if (resp['code'] === 2000) {
-          testCaseData.value = resp.data;
-        }
-      });
+const tabValue = ref("select")
+const pageData = ref([])
+const name = ref("")
+const pageSize = ref(10);
+const getTestCaseList = (pageNum, pSize) => {
+  axios.get("/controller/testCases/list", {
+    params: {
+      platform: testSuite.value.platform,
+      projectId: route.params.projectId,
+      name: name.value,
+      page: pageNum || 1,
+      pageSize: pSize || pageSize.value,
+    }
+  }).then(resp => {
+    pageData.value = resp.data
+  })
 }
-const getSource = (platform) => {
-  getDevice(platform);
-  getTestCaseList(platform)
+const addToPublic = (e) => {
+  testSuite.value.testCases.push(e)
+  ElMessage.success({
+    message: "选择成功！已加入到已选用例",
+  });
+}
+const removeFromPublic = (e) => {
+  testSuite.value.testCases.splice(e, 1);
+  ElMessage.success({
+    message: "移出成功！",
+  });
+}
+const getSource = () => {
+  getDevice();
+  getTestCaseList()
 }
 const emit = defineEmits(['flush'])
 const summit = () => {
@@ -211,15 +232,7 @@ onMounted(() => {
               style="height: 80%;float: left"
               fit="contain"
               :src="getPhoneImg(item.model,item['imgUrl'])"
-          >
-            <template #error>
-              <el-image
-                  style="height: 100%;float: left"
-                  fit="contain"
-                  src="https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg"
-              ></el-image>
-            </template>
-          </el-image>
+          />
           <span style="float: left;margin-left: 10px"><RenderDeviceName :device="item"/></span>
           <span style="display: flex;float: right;
     align-items: center;">
@@ -237,32 +250,85 @@ onMounted(() => {
       </el-select>
     </el-form-item>
     <el-form-item prop="testCases" label="关联用例">
-      <el-select
-          :disabled="testSuite.platform===null"
-          value-key="id"
-          clearable
-          filterable
-          style="width: 100%"
-          v-model="testSuite.testCases"
-          multiple placeholder="请选择测试用例，可输入用例名称筛选">
-        <el-option
-            v-for="item in testCaseData"
-            :key="item.id"
-            :label="item.name"
-            :value="item"
-        >
-          <span style="float: left;">{{ item.name }}</span>
-          <span style="
-            margin-left: 15px;
-          float: right;
-          color: #909399;
-          font-size: 13px;
-           font-style: italic;
-        "
-          >{{ item['editTime'] }}</span
-          >
-        </el-option>
-      </el-select>
+      <el-tabs type="border-card" stretch v-model="tabValue">
+        <el-tab-pane label="已选用例" name="select">
+          <el-timeline v-if="testSuite.testCases.length>0">
+            <VueDraggableNext tag="div"
+                              v-model="testSuite.testCases"
+                              handle=".handle"
+                              animation="200"
+                              forceFallback="true"
+                              fallbackClass="shake"
+                              ghostClass="g-host"
+                              chosenClass="move">
+              <el-timeline-item
+                  v-for="(s, index) in testSuite.testCases"
+                  :key="index"
+                  :timestamp="'测试用例' + (index + 1)"
+                  placement="top"
+                  type="primary"
+                  style="padding-bottom: 0px!important;"
+                  :hollow="true"
+              >
+                {{ s.name }}
+                <div style="float: right">
+                  <el-button
+                      class="handle"
+                      circle
+                      size="mini"
+                  >
+                    <el-icon :size="13" style="vertical-align: middle;">
+                      <Rank/>
+                    </el-icon>
+                  </el-button>
+                  <el-button
+                      circle
+                      type="danger"
+                      size="mini"
+                      @click="removeFromPublic(index)"
+                  >
+                    <el-icon :size="13" style="vertical-align: middle;">
+                      <Delete/>
+                    </el-icon>
+                  </el-button>
+                </div>
+              </el-timeline-item>
+            </VueDraggableNext>
+          </el-timeline>
+          <el-empty description="暂无用例" v-else>
+            <el-button size="mini" @click="tabValue = 'list'">马上添加</el-button>
+          </el-empty>
+        </el-tab-pane>
+        <el-tab-pane label="用例列表" name="list">
+          <el-table :data="pageData['content']" border style="margin-top: 10px">
+            <el-table-column width="80" label="用例Id" prop="id" align="center" show-overflow-tooltip/>
+            <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>
+              <template #header>
+                <el-input v-model="name" size="mini" @input="getTestCaseList()" placeholder="输入用例名称搜索"/>
+              </template>
+            </el-table-column>
+            <el-table-column min-width="80" label="设计人" prop="designer" align="center" show-overflow-tooltip/>
+            <el-table-column min-width="180" label="最后修改日期" prop="editTime" align="center"/>
+            <el-table-column label="操作" width="80" align="center">
+              <template #default="scope">
+                <el-button
+                    circle
+                    size="mini"
+                    @click="addToPublic(scope.row)"
+                >
+                  <el-icon :size="13" style="vertical-align: middle;">
+                    <Plus/>
+                  </el-icon>
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <pageable :is-page-set="false" :total="pageData['totalElements']"
+                    :current-page="pageData['number']+1"
+                    :page-size="pageData['size']"
+                    @change="getTestCaseList"></pageable>
+        </el-tab-pane>
+      </el-tabs>
     </el-form-item>
   </el-form>
 

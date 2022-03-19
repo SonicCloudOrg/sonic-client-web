@@ -124,6 +124,16 @@ const editAgent = async (id, name) => {
 const openAgent = () => {
   dialogAgent.value = true
 }
+const shutdownAgent = (id) => {
+  axios
+      .get("/transport/exchange/stop", {params: {id: id}}).then((resp) => {
+    if (resp['code'] === 2000) {
+      ElMessage.success({
+        message: resp['message'],
+      });
+    }
+  })
+}
 const copy = (value) => {
   try {
     toClipboard(value);
@@ -361,8 +371,8 @@ const getImg = (name) => {
 }
 const getPhoneImg = (name, url) => {
   let result;
-  if (url === null || (url && url.length === 0)) {
-    result = "https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/" + name + ".jpg";
+  if (url === null || url.length === 0) {
+    result = img['./../assets/img/default.png'].default
   } else {
     result = url;
   }
@@ -393,6 +403,18 @@ const upload = (content) => {
 const updateImg = (id, imgUrl) => {
   axios
       .put("/controller/devices/updateImg", {id, imgUrl})
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+          findAll();
+        }
+      });
+}
+const deleteDevice = (id) => {
+  axios
+      .delete("/controller/devices", {params: {id}})
       .then((resp) => {
         if (resp['code'] === 2000) {
           ElMessage.success({
@@ -637,7 +659,8 @@ onUnmounted(() => {
         </el-input>
 
         <el-switch class="refresh" active-value="1"
-                   inactive-value="0" @change="refreshNow" style="margin-left: 15px" active-text="自动刷新" active-color="#13ce66"
+                   inactive-value="0" @change="refreshNow" style="margin-left: 15px" active-text="自动刷新"
+                   active-color="#13ce66"
                    v-model="isFlush"/>
 
         <strong v-if="avgTem!==0" style="float: right; display: flex;align-items: center;
@@ -686,17 +709,7 @@ onUnmounted(() => {
                         :src="getPhoneImg(device.model,device['imgUrl'])"
                         :preview-src-list="[getPhoneImg(device.model,device['imgUrl'])]"
                         hide-on-click-modal
-                    >
-                      <template #error>
-                        <el-image
-                            style="height: 160px"
-                            fit="contain"
-                            src="https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg"
-                            :preview-src-list="['https://gitee.com/sonic-cloud/sonic-agent-images/raw/master/devices/sdk_gphone_x86_arm.jpg']"
-                            hide-on-click-modal
-                        ></el-image>
-                      </template>
-                    </el-image>
+                    />
                   </div>
                 </el-col>
                 <el-col :span="14">
@@ -875,6 +888,27 @@ onUnmounted(() => {
                           >
                         </template>
                       </el-popconfirm>
+                      <el-popconfirm
+                          placement="top"
+                          confirmButtonText="确认"
+                          cancelButtonText="取消"
+                          @confirm="deleteDevice(device.id)"
+                          icon="el-icon-warning"
+                          iconColor="red"
+                          title="确定删除该设备吗？"
+                      >
+                        <template #reference>
+                          <el-button
+                              type="danger"
+                              size="mini"
+                              :disabled="device.status === 'ONLINE'
+                          &&device.status === 'DEBUGGING'
+                          &&device.status === 'TESTING'"
+                          >删除
+                          </el-button
+                          >
+                        </template>
+                      </el-popconfirm>
                     </el-form-item>
                   </el-form>
                   <template #reference>
@@ -979,6 +1013,8 @@ onUnmounted(() => {
               </el-form-item>
               <el-form-item label="Agent操作">
                 <el-button size="mini" type="primary" @click="editAgent(agent.id,agent.name)">编辑</el-button>
+                <el-button size="mini" type="danger" @click="shutdownAgent(agent.id)" :disabled="agent.status===2">终止运行
+                </el-button>
               </el-form-item>
             </el-form>
           </el-card>

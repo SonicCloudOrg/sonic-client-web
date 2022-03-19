@@ -204,27 +204,64 @@ onMounted(() => {
               style="padding-bottom: 0px!important;"
               :hollow="true"
           >
-            <step-show :step="s"></step-show>
-            <div style="float: right">
-              <el-button
-                  class="handle"
-                  circle
-                  size="mini"
-              >
-                <el-icon :size="13" style="vertical-align: middle;">
-                  <Rank/>
-                </el-icon>
-              </el-button>
-              <el-button
-                  circle
-                  type="danger"
-                  size="mini"
-                  @click="removeFromPublic(index)"
-              >
-                <el-icon :size="13" style="vertical-align: middle;">
-                  <Delete/>
-                </el-icon>
-              </el-button>
+            <el-card v-if="s.conditionType !== 0">
+              <template #header>
+                <step-show :step="s"></step-show>
+                <div style="float: right">
+                  <el-button
+                      class="handle"
+                      circle
+                      size="mini"
+                  >
+                    <el-icon :size="13" style="vertical-align: middle;">
+                      <Rank/>
+                    </el-icon>
+                  </el-button>
+                  <el-button
+                      circle
+                      type="danger"
+                      size="mini"
+                      @click="removeFromPublic(index)"
+                  >
+                    <el-icon :size="13" style="vertical-align: middle;">
+                      <Delete/>
+                    </el-icon>
+                  </el-button>
+                </div>
+              </template>
+              <el-timeline v-if="s['childSteps'].length>0">
+                <el-timeline-item v-for="(sc,index) in s['childSteps']" :timestamp="'步骤' + (index + 1)"
+                                  placement="top"
+                                  :type="sc['error']===1?'primary':(sc['error']===2?'warning':'danger')"
+                                  style="padding-bottom: 0px!important;"
+                                  :hollow="true">
+                  <step-show :step="sc"></step-show>
+                </el-timeline-item>
+              </el-timeline>
+            </el-card>
+            <div v-else>
+              <step-show :step="s"></step-show>
+              <div style="float: right">
+                <el-button
+                    class="handle"
+                    circle
+                    size="mini"
+                >
+                  <el-icon :size="13" style="vertical-align: middle;">
+                    <Rank/>
+                  </el-icon>
+                </el-button>
+                <el-button
+                    circle
+                    type="danger"
+                    size="mini"
+                    @click="removeFromPublic(index)"
+                >
+                  <el-icon :size="13" style="vertical-align: middle;">
+                    <Delete/>
+                  </el-icon>
+                </el-button>
+              </div>
             </div>
           </el-timeline-item>
         </VueDraggableNext>

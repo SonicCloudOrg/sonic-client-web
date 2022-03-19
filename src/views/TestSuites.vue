@@ -75,7 +75,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="测试套件信息" width="550px">
+  <el-dialog v-model="dialogVisible" title="测试套件信息" width="950px">
     <test-suite-update v-if="dialogVisible" :suite-id="suiteId" @flush="flush"/>
   </el-dialog>
   <el-button size="mini" round type="primary" @click="open">添加测试套件</el-button>

@@ -9,18 +9,31 @@ const props = defineProps({
   projectId: Number,
   caseId: Number,
   platform: Number,
-  stepId: Number
+  stepId: Number,
+  parentId: Number,
 })
+const selectCondition = (e) => {
+  step.value.stepType = "";
+  step.value.text = "";
+  step.value.elements = [];
+  step.value.content = "";
+  step.value.error = 1;
+  if (e === 3) {
+    step.value.stepType = "else";
+  }
+}
 const step = ref({
   id: null,
   caseId: props.caseId,
+  parentId: 0,
   projectId: props.projectId,
   platform: props.platform,
   stepType: "",
   elements: [],
   text: "",
+  conditionType: 0,
   content: "",
-  error: 1
+  error: 3
 })
 const activityList = ref([{name: ""}])
 const add = () => {
@@ -197,6 +210,7 @@ const getStepInfo = (id) => {
   }).then(resp => {
     step.value = resp.data
     if (step.value.stepType === 'pause'
+        || step.value.stepType === 'stepHold'
         || step.value.stepType === 'longPressPoint'
         || step.value.stepType === 'runBack'
         || step.value.stepType === 'longPress'
@@ -337,6 +351,10 @@ const androidOptions = ref([
     value: "element",
     children: [
       {
+        value: "isExistEle",
+        label: "判断控件元素是否存在",
+      },
+      {
         value: "click",
         label: "点击控件元素",
       },
@@ -433,6 +451,10 @@ const androidOptions = ref([
         value: "traverse",
         label: "遍历页面(暂未开放)",
         disabled: true
+      },
+      {
+        value: "stepHold",
+        label: "步骤间隔设置",
       },
       {
         value: "pause",
@@ -539,6 +561,10 @@ const iOSOptions = ref([
     value: "element",
     children: [
       {
+        value: "isExistEle",
+        label: "判断控件元素是否存在",
+      },
+      {
         value: "click",
         label: "点击控件元素",
       },
@@ -638,6 +664,10 @@ const iOSOptions = ref([
         disabled: true
       },
       {
+        value: "stepHold",
+        label: "步骤间隔设置",
+      },
+      {
         value: "pause",
         label: "强制等待",
       },
@@ -654,6 +684,9 @@ onMounted(() => {
   if (props.stepId !== 0) {
     getStepInfo(props.stepId)
   }
+  if (props.parentId !== 0) {
+    step.value.parentId = props.parentId;
+  }
 })
 </script>
 <template>
@@ -665,31 +698,33 @@ onMounted(() => {
       :model="step"
       size="small"
   >
-    <el-form-item
-        prop="stepType"
-        label="步骤类型"
-        :rules="{
+    <div v-if="step.conditionType !==3">
+      <el-form-item
+          prop="stepType"
+          label="步骤类型"
+          :rules="{
             required: true,
             message: '请填写步骤类型',
             trigger: 'change',
           }"
-    >
-      <el-cascader
-          filterable
-          style="width: 100%"
-          size="small"
-          placeholder="请填写步骤类型"
-          v-model="step.stepType"
-          :options="options"
-          :props="{ emitPath: false,expandTrigger: 'hover' }"
-          @change="changeType"
       >
-        <template #default="{ node, data }">
-          <span>{{ data.label }}</span>
-          <span v-if="!node.isLeaf">&nbsp;({{ data.children.length }})</span>
-        </template>
-      </el-cascader>
-    </el-form-item>
+        <el-cascader
+            filterable
+            style="width: 100%"
+            size="small"
+            placeholder="请填写步骤类型"
+            v-model="step.stepType"
+            :options="options"
+            :props="{ emitPath: false,expandTrigger: 'hover' }"
+            @change="changeType"
+        >
+          <template #default="{ node, data }">
+            <span>{{ data.label }}</span>
+            <span v-if="!node.isLeaf">&nbsp;({{ data.children.length }})</span>
+          </template>
+        </el-cascader>
+      </el-form-item>
+    </div>
 
     <el-divider>
       <el-icon :size="15">
@@ -715,6 +750,8 @@ onMounted(() => {
             <el-option value="APP_SWITCH"></el-option>
           </el-option-group>
           <el-option-group label="其他">
+            <el-option value="ENTER"></el-option>
+            <el-option value="DEL"></el-option>
             <el-option value="BRIGHTNESS_DOWN"></el-option>
             <el-option value="BRIGHTNESS_UP"></el-option>
             <el-option value="VOLUME_UP"></el-option>
@@ -872,6 +909,21 @@ onMounted(() => {
             v-model="step.content"
             placeholder="请输入Handle页面标题的名称"
         ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'isExistEle'">
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <el-form-item label="存在与否" prop="content" :rules="{
+            required: true,
+            message: '断言不能为空',
+            trigger: 'change',
+          }">
+        <el-select v-model="step.content">
+          <el-option label="存在" value="true"></el-option>
+          <el-option label="不存在" value="false"></el-option>
+        </el-select>
       </el-form-item>
     </div>
 
@@ -1062,6 +1114,19 @@ onMounted(() => {
       </el-form-item>
     </div>
 
+    <div v-if="step.stepType === 'stepHold'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 设置后从该步骤开始，后面的每个步骤都会按照设置值来间隔。"/>
+      <el-form-item label="步骤间隔">
+        <el-input-number
+            v-model="step.content"
+            :min="0"
+            :step="1000"
+        ></el-input-number>
+        ms
+      </el-form-item>
+    </div>
+
     <div v-if="step.stepType === 'pause'">
       <el-form-item label="等待时间">
         <el-input-number
@@ -1139,29 +1204,6 @@ onMounted(() => {
                     </el-switch>
                   </template>
                 </el-table-column>
-                <!--            <el-table-column width="80" align="center">-->
-                <!--              <template slot-scope="scope">-->
-                <!--                <el-button-->
-                <!--                    type="danger"-->
-                <!--                    size="mini"-->
-                <!--                    @click="delObj(monkey.orders, scope.row)"-->
-                <!--                >删除</el-button-->
-                <!--                >-->
-                <!--              </template>-->
-                <!--            </el-table-column>-->
-                <!--            <div-->
-                <!--                slot="append"-->
-                <!--                style="text-align: center; line-height: 50px"-->
-                <!--            >-->
-                <!--              <el-button-->
-                <!--                  size="mini"-->
-                <!--                  @click="addParent(monkey.orders)"-->
-                <!--              >新增参数</el-button-->
-                <!--              >-->
-                <!--              <el-button size="mini" @click="useStar()"-->
-                <!--              >推荐模版</el-button-->
-                <!--              >-->
-                <!--            </div>-->
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="Activity黑名单">
@@ -1202,28 +1244,32 @@ onMounted(() => {
     </div>
 
     <el-form-item
-        label="异常处理"
+        label="逻辑处理"
     >
       <el-select
-          v-model="step.error"
-          placeholder="请选择异常处理方案"
+          v-model="step.conditionType"
+          placeholder="请选择逻辑条件"
+          @change="selectCondition"
       >
-        <el-option label="忽略" :value="1"></el-option>
-        <el-option label="告警" :value="2"></el-option>
-        <el-option label="中断" :value="3"></el-option>
+        <el-option label="无" :value="0"></el-option>
+        <el-option label="if" :value="1"></el-option>
+        <el-option label="else if" :value="2"></el-option>
+        <el-option label="else" :value="3"></el-option>
+        <el-option label="while" :value="4"></el-option>
       </el-select>
       <el-popover
           placement="right-start"
-          title="异常处理"
+          title="逻辑处理"
           :width="300"
           trigger="hover"
       >
         <p>
-          意为该测试步骤出现异常时的处理方案
+          意为该测试步骤关联的逻辑处理
         </p>
-        <div><strong style="color: #409EFF">忽略：</strong>忽略异常并继续执行</div>
-        <div><strong style="color: #E6A23C">告警：</strong>标记警告并获取异常截图和异常堆栈，然后继续执行</div>
-        <div><strong style="color: #F56C6C">中断：</strong>标记失败并获取异常截图、异常堆栈和测试录像，然后中断执行</div>
+        <div><strong style="color: #409EFF">if：</strong>该步骤无异常时，会执行子步骤</div>
+        <div><strong style="color: #E6A23C">eles if：</strong>如果上一个if条件步骤有异常，则进入该逻辑判断，无异常时会执行子步骤</div>
+        <div><strong style="color: #F56C6C">else：</strong>如果以上条件全失败，则执行子步骤</div>
+        <div><strong style="color: #67C23A">while：</strong>如果条件无异常，则重复执行子步骤</div>
         <template #reference>
           <el-icon :size="18" style="vertical-align: middle;margin-left: 10px;">
             <QuestionFilled/>
@@ -1231,6 +1277,39 @@ onMounted(() => {
         </template>
       </el-popover>
     </el-form-item>
+
+    <div v-if="step.conditionType===0">
+      <el-form-item
+          label="异常处理"
+      >
+        <el-select
+            v-model="step.error"
+            placeholder="请选择异常处理方案"
+        >
+          <el-option label="忽略" :value="1"></el-option>
+          <el-option label="告警" :value="2"></el-option>
+          <el-option label="中断" :value="3"></el-option>
+        </el-select>
+        <el-popover
+            placement="right-start"
+            title="异常处理"
+            :width="300"
+            trigger="hover"
+        >
+          <p>
+            意为该测试步骤出现异常时的处理方案
+          </p>
+          <div><strong style="color: #409EFF">忽略：</strong>忽略异常并继续执行（逻辑处理时不抛出异常）</div>
+          <div><strong style="color: #E6A23C">告警：</strong>标记警告并获取异常截图和异常堆栈，然后继续执行（逻辑处理时不抛出异常）</div>
+          <div><strong style="color: #F56C6C">中断：</strong>标记失败并获取异常截图、异常堆栈和测试录像，然后中断执行（逻辑处理时抛出异常）</div>
+          <template #reference>
+            <el-icon :size="18" style="vertical-align: middle;margin-left: 10px;">
+              <QuestionFilled/>
+            </el-icon>
+          </template>
+        </el-popover>
+      </el-form-item>
+    </div>
   </el-form>
 
   <div style="text-align: center;margin-top: 20px">

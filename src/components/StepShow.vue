@@ -4,7 +4,19 @@ defineProps({
 })
 </script>
 <template>
-   <span v-if="step.stepType === 'lock'">
+     <span v-if="step.conditionType === 1">
+      <el-tag size="small" type="warning" style="margin-right: 10px">if</el-tag>
+    </span>
+  <span v-if="step.conditionType === 2">
+      <el-tag size="small" type="warning" style="margin-right: 10px">else if</el-tag>
+    </span>
+  <span v-if="step.conditionType === 3">
+      <el-tag size="small" type="warning" style="margin-right: 10px">else</el-tag>
+    </span>
+  <span v-if="step.conditionType === 4">
+      <el-tag size="small" type="warning" style="margin-right: 10px">while</el-tag>
+    </span>
+  <span v-if="step.stepType === 'lock'">
       <el-tag size="small">锁定设备</el-tag>
     </span>
   <span v-if="step.stepType === 'unLock'">
@@ -110,6 +122,12 @@ defineProps({
   <span v-if="step.stepType === 'toHandle'">
       <el-tag size="small" style="margin-right: 10px">切换Handle</el-tag>
       Handle页面标题：{{ step.content }}
+    </span>
+  <span v-if="step.stepType === 'isExistEle'">
+      <el-tag size="small" style="margin-right: 10px">判断控件元素是否存在</el-tag>断言：
+      <el-tag type="info" size="small" style="margin-right: 10px">{{
+          step.elements[0]['eleName']
+        }}</el-tag> {{ step.content === 'true' ? '存在' : '不存在' }}
     </span>
   <span v-if="step.stepType === 'click'">
       <el-tag size="small">点击控件元素</el-tag>
@@ -226,8 +244,16 @@ defineProps({
       <el-tag style="margin-right: 10px" type="warning" size="small">随机事件测试</el-tag>
      应用包名：{{ JSON.parse(step.content).packageName }}&nbsp;&nbsp;事件数：{{ JSON.parse(step.content).pctNum }}
     </span>
+  <span v-if="step.stepType === 'stepHold'">
+      <el-tag size="small" style="margin-right: 5px">步骤间隔设置</el-tag>
+      每个步骤间隔 {{ step.content }} ms
+    </span>
   <span v-if="step.stepType === 'pause'">
       <el-tag size="small" style="margin-right: 5px">强制等待</el-tag>
       等待 {{ step.content }} ms
+    </span>
+  <span>
+      <el-tag v-if="step.conditionType!==3&&step.conditionType!==0" size="small" type="warning"
+              style="margin-left: 10px">无异常</el-tag>
     </span>
 </template>
