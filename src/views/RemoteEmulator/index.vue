@@ -1,18 +1,15 @@
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import AndroidRemote from './AndroidRemote.vue';
 import { ElMessage } from 'element-plus';
 
-// let isPress = false;
 let mouseMoveTime = 0;
 let startPosition = { x: 0, y: 0 };
 let parentNode = null;
 
 const isPress = ref(false);
-
 const _layoutSplitInfo = window.localStorage.getItem('layoutSplitInfo');
 const _tabPosition = window.localStorage.getItem('tabPosition');
-
 const tabPosition = ref(_tabPosition || 'left'); // left,top
 const canvasRectInfo = ref({ width: '100%', height: 'auto' });
 // 分屏默认值
