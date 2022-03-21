@@ -526,6 +526,11 @@ const screenWebsocketOnmessage = (message) => {
           });
         }
         directionStatus.value = JSON.parse(message.data).value; // TODO
+        // 旋转需要重置一下jmuxer
+        if (screenMode.value == 'Scrcpy') {
+          // 重置播放器
+          __Scrcpy.jmuxer && __Scrcpy.jmuxer.reset()
+        }
         break;
       }
       case 'support': {
