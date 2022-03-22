@@ -2,32 +2,13 @@
 import {VueDraggableNext} from 'vue-draggable-next';
 import StepShow from './StepShow.vue'
 import {Delete, Rank, Edit, DocumentAdd} from "@element-plus/icons";
-import {nextTick} from "vue";
 
 const props = defineProps({
   steps: Object,
 })
 const emit = defineEmits(['sortStep', 'editStep', 'deleteStep', 'setParent', 'addStep'])
-const sortStep = async (e, d, s) => {
-  if (d && s) {
-    emit('sortStep', e, d, s)
-  } else {
-    let startId = null;
-    let endId = null;
-    let direction = "";
-    await nextTick(() => {
-      if (e.moved.newIndex > e.moved.oldIndex) {
-        direction = "down";
-        endId = props.steps[e.moved.newIndex].sort;
-        startId = props.steps[e.moved.newIndex - 1].sort;
-      } else {
-        direction = "up";
-        startId = props.steps[e.moved.newIndex].sort;
-        endId = props.steps[e.moved.newIndex + 1].sort;
-      }
-    })
-    await emit('sortStep', direction, endId, startId)
-  }
+const sortStep = e => {
+  emit('sortStep', e)
 }
 const setParent = (id) => {
   emit('setParent', id)

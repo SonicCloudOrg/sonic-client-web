@@ -51,7 +51,19 @@ const deleteStep = (id) => {
     }
   })
 }
-const sortStep = (direction, endId, startId) => {
+const sortStep = (e) => {
+  let startId = null;
+  let endId = null;
+  let direction = "";
+  if (e.moved.newIndex > e.moved.oldIndex) {
+    direction = "down";
+    endId = steps.value[e.moved.newIndex].sort;
+    startId = steps.value[e.moved.newIndex - 1].sort;
+  } else {
+    direction = "up";
+    startId = steps.value[e.moved.newIndex].sort;
+    endId = steps.value[e.moved.newIndex + 1].sort;
+  }
   axios
       .put("/controller/steps/stepSort", {
         caseId: props.caseId,
