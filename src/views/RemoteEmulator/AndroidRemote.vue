@@ -1619,6 +1619,7 @@ onMounted(() => {
                               size="small"
                               type="info"
                               circle
+                              :disabled="screenMode !== 'Minicap'"
                               @click="changePic('fixed')"
                           >
                             <el-icon :size="14" style="vertical-align: middle;">
