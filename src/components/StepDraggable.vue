@@ -117,8 +117,10 @@ const deleteStep = id => {
             </el-popconfirm>
           </div>
         </template>
-        <StepDraggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @sortStep="sortStep"
-                       @editStep="editStep" @deleteStep="deleteStep"/>
+        <el-timeline v-if="s['childSteps'].length>0">
+          <StepDraggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @sortStep="sortStep"
+                         @editStep="editStep" @deleteStep="deleteStep"/>
+        </el-timeline>
       </el-card>
       <div v-else>
         <step-show :step="s"></step-show>
