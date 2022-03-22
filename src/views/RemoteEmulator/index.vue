@@ -1,20 +1,16 @@
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import AndroidRemote from './AndroidRemote.vue';
 import { ElMessage } from 'element-plus';
 
-// let isPress = false;
 let mouseMoveTime = 0;
 let startPosition = { x: 0, y: 0 };
 let parentNode = null;
 
 const isPress = ref(false);
-
 const _layoutSplitInfo = window.localStorage.getItem('layoutSplitInfo');
 const _tabPosition = window.localStorage.getItem('tabPosition');
-
 const tabPosition = ref(_tabPosition || 'left'); // left,top
-const canvasRectInfo = ref({ width: '100%', height: 'auto' });
 // 分屏默认值
 const layoutSplitInfo = ref(_layoutSplitInfo ?
     JSON.parse(_layoutSplitInfo) : {
@@ -23,6 +19,14 @@ const layoutSplitInfo = ref(_layoutSplitInfo ?
       top: 316,
       last_top: 316,
     });
+// 画布默认值
+const canvasRectInfo = ref(tabPosition.value == 'left' ?
+    { width: '100%', height: 'auto' } :
+    {
+      width: 'auto',
+      height: layoutSplitInfo.value.top + 'px',
+    },
+);
 const swithLayout = () => {
   // console.log('swithLayout!!', tabPosition.value);
   if (tabPosition.value == 'left') {

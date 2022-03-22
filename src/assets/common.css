@@ -193,7 +193,7 @@ body,
     margin-left: 2px;
 }
 
-#canvas {
+#canvas, #scrcpy-video {
     border: 3px solid #303133;
     background-color: #303133;
     border-radius: 20px;
