@@ -27,7 +27,7 @@ const editStep = async (id) => {
   stepId.value = id
   await addStep()
 }
-const setParent = (id)=>{
+const setParent = (id) => {
   parentId.value = id
 }
 const addStep = () => {
@@ -51,7 +51,7 @@ const deleteStep = (id) => {
     }
   })
 }
-const sortStep = (direction,endId,startId) => {
+const sortStep = (direction, endId, startId) => {
   axios
       .put("/controller/steps/stepSort", {
         caseId: props.caseId,
@@ -102,7 +102,8 @@ onMounted(() => {
     </el-button-group>
   </div>
   <el-timeline v-if="steps.length>0">
-    <StepDraggable :steps="steps" @setParent="setParent" @addStep="addStep" @sortStep="sortStep" @editStep="editStep" @deleteStep="deleteStep"/>
+    <StepDraggable :steps="steps" @setParent="setParent" @addStep="addStep" @sortStep="sortStep" @editStep="editStep"
+                   @deleteStep="deleteStep"/>
   </el-timeline>
   <el-empty description="暂无步骤" v-else></el-empty>
 </template>

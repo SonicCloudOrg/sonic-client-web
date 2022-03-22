@@ -2,28 +2,31 @@
 import {VueDraggableNext} from 'vue-draggable-next';
 import StepShow from './StepShow.vue'
 import {Delete, Rank, Edit, DocumentAdd} from "@element-plus/icons";
+import {nextTick} from "vue";
 
 const props = defineProps({
   steps: Object,
 })
 const emit = defineEmits(['sortStep', 'editStep', 'deleteStep', 'setParent', 'addStep'])
-const sortStep = (e,d,s) => {
-  if(d&&s){
+const sortStep = async (e, d, s) => {
+  if (d && s) {
     emit('sortStep', e, d, s)
-  }else {
+  } else {
     let startId = null;
     let endId = null;
     let direction = "";
-    if (e.moved.newIndex > e.moved.oldIndex) {
-      direction = "down";
-      endId = props.steps[e.moved.newIndex].sort;
-      startId = props.steps[e.moved.newIndex - 1].sort;
-    } else {
-      direction = "up";
-      startId = props.steps[e.moved.newIndex].sort;
-      endId = props.steps[e.moved.newIndex + 1].sort;
-    }
-    emit('sortStep', direction, endId, startId)
+    await nextTick(() => {
+      if (e.moved.newIndex > e.moved.oldIndex) {
+        direction = "down";
+        endId = props.steps[e.moved.newIndex].sort;
+        startId = props.steps[e.moved.newIndex - 1].sort;
+      } else {
+        direction = "up";
+        startId = props.steps[e.moved.newIndex].sort;
+        endId = props.steps[e.moved.newIndex + 1].sort;
+      }
+    })
+    await emit('sortStep', direction, endId, startId)
   }
 }
 const setParent = (id) => {
@@ -31,11 +34,11 @@ const setParent = (id) => {
 }
 const editStep = (id, pId) => {
   setParent(pId)
-  emit('editStep', id)
+  emit('editStep', id, pId)
 }
 const addStep = (pId) => {
   setParent(pId)
-  emit('addStep')
+  emit('addStep', pId)
 }
 const deleteStep = id => {
   emit('deleteStep', id)
@@ -117,8 +120,10 @@ const deleteStep = id => {
             </el-popconfirm>
           </div>
         </template>
-        <StepDraggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @sortStep="sortStep"
-                       @editStep="editStep" @deleteStep="deleteStep"/>
+        <el-timeline v-if="s['childSteps'].length>0">
+          <StepDraggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @sortStep="sortStep"
+                         @editStep="editStep" @deleteStep="deleteStep"/>
+        </el-timeline>
       </el-card>
       <div v-else>
         <step-show :step="s"></step-show>
