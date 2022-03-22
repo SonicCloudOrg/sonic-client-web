@@ -7,10 +7,10 @@ const props = defineProps({
   steps: Object,
 })
 const emit = defineEmits(['sortStep', 'editStep', 'deleteStep', 'setParent', 'addStep'])
-const sortStep = (e,d,s) => {
-  if(d&&s){
+const sortStep = (e, d, s) => {
+  if (d && s) {
     emit('sortStep', e, d, s)
-  }else {
+  } else {
     let startId = null;
     let endId = null;
     let direction = "";
@@ -31,11 +31,11 @@ const setParent = (id) => {
 }
 const editStep = (id, pId) => {
   setParent(pId)
-  emit('editStep', id)
+  emit('editStep', id, pId)
 }
 const addStep = (pId) => {
   setParent(pId)
-  emit('addStep')
+  emit('addStep', pId)
 }
 const deleteStep = id => {
   emit('deleteStep', id)
