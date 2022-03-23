@@ -4,7 +4,7 @@ import axios from "../http/axios";
 import StepDraggable from './StepDraggable.vue'
 import StepUpdate from './StepUpdate.vue'
 import {ElMessage} from "element-plus";
-
+const steps = ref([]);
 const props = defineProps({
   caseId: Number,
   projectId: Number,
@@ -51,7 +51,6 @@ const deleteStep = (id) => {
     }
   })
 }
-const steps = ref([]);
 const getStepsList = () => {
   axios.get("/controller/steps/listAll", {
     params: {
@@ -84,9 +83,6 @@ onMounted(() => {
       <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
     </el-button-group>
   </div>
-  <el-timeline v-if="steps.length>0">
-    <StepDraggable :steps="steps" @setParent="setParent" @addStep="addStep" @flush="flush" @editStep="editStep"
-                   @deleteStep="deleteStep"/>
-  </el-timeline>
-  <el-empty description="暂无步骤" v-else></el-empty>
+  <step-draggable :steps="steps" @setParent="setParent" @addStep="addStep" @flush="flush" @editStep="editStep"
+                 @deleteStep="deleteStep"/>
 </template>
