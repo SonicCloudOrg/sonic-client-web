@@ -2,13 +2,41 @@
 import {VueDraggableNext} from 'vue-draggable-next';
 import StepShow from './StepShow.vue'
 import {Delete, Rank, Edit, DocumentAdd} from "@element-plus/icons";
+import axios from "../http/axios";
+import {ElMessage} from "element-plus";
 
 const props = defineProps({
   steps: Object,
 })
-const emit = defineEmits(['sortStep', 'editStep', 'deleteStep', 'setParent', 'addStep'])
+const emit = defineEmits(['flush', 'editStep', 'deleteStep', 'setParent', 'addStep'])
 const sortStep = e => {
-  emit('sortStep', e)
+  let startId = null;
+  let endId = null;
+  let direction = "";
+  if (e.moved.newIndex > e.moved.oldIndex) {
+    direction = "down";
+    endId = props.steps[e.moved.newIndex].sort;
+    startId = props.steps[e.moved.newIndex - 1].sort;
+  } else {
+    direction = "up";
+    startId = props.steps[e.moved.newIndex].sort;
+    endId = props.steps[e.moved.newIndex + 1].sort;
+  }
+  axios
+      .put("/controller/steps/stepSort", {
+        caseId: props.steps[e.moved.newIndex].caseId,
+        direction,
+        startId,
+        endId,
+      })
+      .then((resp) => {
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+          emit('flush')
+        }
+      });
 }
 const setParent = (id) => {
   emit('setParent', id)
@@ -102,7 +130,7 @@ const deleteStep = id => {
           </div>
         </template>
         <el-timeline v-if="s['childSteps'].length>0">
-          <StepDraggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @sortStep="sortStep"
+          <StepDraggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @flush="emit('flush')"
                          @editStep="editStep" @deleteStep="deleteStep"/>
         </el-timeline>
       </el-card>

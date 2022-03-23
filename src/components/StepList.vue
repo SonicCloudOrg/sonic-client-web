@@ -51,35 +51,6 @@ const deleteStep = (id) => {
     }
   })
 }
-const sortStep = (e) => {
-  let startId = null;
-  let endId = null;
-  let direction = "";
-  if (e.moved.newIndex > e.moved.oldIndex) {
-    direction = "down";
-    endId = steps.value[e.moved.newIndex].sort;
-    startId = steps.value[e.moved.newIndex - 1].sort;
-  } else {
-    direction = "up";
-    startId = steps.value[e.moved.newIndex].sort;
-    endId = steps.value[e.moved.newIndex + 1].sort;
-  }
-  axios
-      .put("/controller/steps/stepSort", {
-        caseId: props.caseId,
-        direction,
-        startId,
-        endId,
-      })
-      .then((resp) => {
-        if (resp['code'] === 2000) {
-          ElMessage.success({
-            message: resp['message'],
-          });
-          getStepsList();
-        }
-      });
-}
 const steps = ref([]);
 const getStepsList = () => {
   axios.get("/controller/steps/listAll", {
@@ -114,7 +85,7 @@ onMounted(() => {
     </el-button-group>
   </div>
   <el-timeline v-if="steps.length>0">
-    <StepDraggable :steps="steps" @setParent="setParent" @addStep="addStep" @sortStep="sortStep" @editStep="editStep"
+    <StepDraggable :steps="steps" @setParent="setParent" @addStep="addStep" @flush="flush" @editStep="editStep"
                    @deleteStep="deleteStep"/>
   </el-timeline>
   <el-empty description="暂无步骤" v-else></el-empty>
