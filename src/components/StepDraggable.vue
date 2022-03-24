@@ -57,7 +57,7 @@ const deleteStep = id => {
 <template>
   <el-timeline v-if="steps.length>0">
     <VueDraggableNext tag="div"
-                      v-model="steps"
+                      :list="steps"
                       handle=".handle"
                       animation="200"
                       forceFallback="true"
