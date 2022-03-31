@@ -7,36 +7,39 @@ import {ElMessage} from "element-plus";
 
 const props = defineProps({
   steps: Array,
+  isEdit: Boolean
 })
 const emit = defineEmits(['flush', 'editStep', 'deleteStep', 'setParent', 'addStep'])
 const sortStep = e => {
-  let startId = null;
-  let endId = null;
-  let direction = "";
-  if (e.moved.newIndex > e.moved.oldIndex) {
-    direction = "down";
-    endId = props.steps[e.moved.newIndex].sort;
-    startId = props.steps[e.moved.newIndex - 1].sort;
-  } else {
-    direction = "up";
-    startId = props.steps[e.moved.newIndex].sort;
-    endId = props.steps[e.moved.newIndex + 1].sort;
+  if(!props.isEdit) {
+    let startId = null;
+    let endId = null;
+    let direction = "";
+    if (e.moved.newIndex > e.moved.oldIndex) {
+      direction = "down";
+      endId = props.steps[e.moved.newIndex].sort;
+      startId = props.steps[e.moved.newIndex - 1].sort;
+    } else {
+      direction = "up";
+      startId = props.steps[e.moved.newIndex].sort;
+      endId = props.steps[e.moved.newIndex + 1].sort;
+    }
+    axios
+        .put("/controller/steps/stepSort", {
+          caseId: props.steps[e.moved.newIndex].caseId,
+          direction,
+          startId,
+          endId,
+        })
+        .then((resp) => {
+          if (resp['code'] === 2000) {
+            ElMessage.success({
+              message: resp['message'],
+            });
+            emit('flush')
+          }
+        });
   }
-  axios
-      .put("/controller/steps/stepSort", {
-        caseId: props.steps[e.moved.newIndex].caseId,
-        direction,
-        startId,
-        endId,
-      })
-      .then((resp) => {
-        if (resp['code'] === 2000) {
-          ElMessage.success({
-            message: resp['message'],
-          });
-          emit('flush')
-        }
-      });
 }
 const setParent = (id) => {
   emit('setParent', id)
@@ -130,7 +133,7 @@ const deleteStep = id => {
               </el-popconfirm>
             </div>
           </template>
-          <step-draggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @flush="emit('flush')"
+          <step-draggable :is-edit="isEdit" :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @flush="emit('flush')"
                           @editStep="editStep" @deleteStep="deleteStep"/>
         </el-card>
         <div v-else>
