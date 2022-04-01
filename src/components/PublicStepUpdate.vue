@@ -321,7 +321,7 @@ onMounted(() => {
       <!--        <el-button size="mini" @click="tabValue = 'list'">马上添加</el-button>-->
       <!--      </el-empty>-->
 
-      <step-draggable :is-edit="true" :steps="publicStep.steps" @setParent="setParent" @addStep="addStep" @flush="flush"
+      <step-draggable :is-edit="false" :steps="publicStep.steps" @setParent="setParent" @addStep="addStep" @flush="flush"
                       @editStep="editStep"
                       @deleteStep="deleteStep"/>
 
