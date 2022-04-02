@@ -87,9 +87,8 @@ const flush = () => {
   dialogVisible.value = false
   if (props.publicStepId !== 0) {
     getPublicStepInfo(props.publicStepId)
-  } else {
-    getStepList();
   }
+  getStepList();
 }
 const addToPublic = (e) => {
   publicStep.value.steps.push(e)
@@ -122,16 +121,14 @@ const getPublicStepInfo = (id) => {
   axios.get("/controller/publicSteps", {params: {id}}).then(resp => {
     if (resp['code'] === 2000) {
       publicStep.value = resp.data
-      getStepList()
     }
   })
 }
 onMounted(() => {
   if (props.publicStepId !== 0) {
     getPublicStepInfo(props.publicStepId)
-  } else {
-    getStepList()
   }
+  getStepList()
 })
 </script>
 <template>
@@ -193,8 +190,10 @@ onMounted(() => {
       </el-select>
     </el-form-item>
   </el-form>
-  <el-card v-if="publicStep.id===0 || publicStep.id===null"><el-result icon="info" title="保存后即可编辑已选步骤">
-  </el-result></el-card>
+  <el-card v-if="publicStep.id===0 || publicStep.id===null">
+    <el-result icon="info" title="保存后即可编辑已选步骤">
+    </el-result>
+  </el-card>
   <el-tabs v-else type="border-card" stretch v-model="tabValue">
     <el-tab-pane label="已选步骤" name="select">
       <step-draggable :is-edit="true" :steps="publicStep.steps" @setParent="setParent" @addStep="addStep"
