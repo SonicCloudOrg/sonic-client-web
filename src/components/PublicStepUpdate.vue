@@ -87,7 +87,7 @@ const flush = () => {
   dialogVisible.value = false
   if (props.publicStepId !== 0) {
     getPublicStepInfo(props.publicStepId)
-  }else{
+  } else {
     getStepList();
   }
 }
@@ -193,10 +193,14 @@ onMounted(() => {
       </el-select>
     </el-form-item>
   </el-form>
-  <el-tabs type="border-card" stretch v-model="tabValue">
+  <el-card v-if="publicStep.id===0 || publicStep.id===null"><el-result icon="info" title="保存后即可编辑已选步骤">
+  </el-result></el-card>
+  <el-tabs v-else type="border-card" stretch v-model="tabValue">
     <el-tab-pane label="已选步骤" name="select">
-      <step-draggable :steps="publicStep.steps" @setParent="setParent" @addStep="addStep" @flush="flush"
+      <step-draggable :is-edit="true" :steps="publicStep.steps" @setParent="setParent" @addStep="addStep"
+                      @flush="flush"
                       @editStep="editStep"
+                      @remove="removeFromPublic"
                       @deleteStep="deleteStep"/>
 
     </el-tab-pane>
@@ -268,6 +272,6 @@ onMounted(() => {
     </el-tab-pane>
   </el-tabs>
   <div style="text-align: center;margin-top: 20px">
-    <el-button @click="summit" size="small" type="primary">提交</el-button>
+    <el-button @click="summit" size="small" type="primary">保存</el-button>
   </div>
 </template>
