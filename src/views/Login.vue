@@ -24,6 +24,20 @@ const register = ref({
   role: 2
 })
 const loginForm = ref(null)
+const configLoading = ref(true)
+const config = ref({
+  registerEnable: false,
+  normalEnable: false,
+  ldapEnable: false
+})
+const getLoginConfig = () => {
+  axios.get("/controller/users/loginConfig").then(resp => {
+    if (resp['code'] === 2000) {
+      configLoading.value = false
+      config.value = resp.data
+    }
+  })
+}
 const loginPost = (u) => {
   loading.value = true
   axios.post("/controller/users/login", u).then(resp => {
@@ -67,9 +81,7 @@ const registerIn = () => {
 }
 const loading = ref(false)
 onMounted(() => {
-  ElMessage.error({
-    message: '请先登录！',
-  });
+  getLoginConfig()
 })
 </script>
 <template>
@@ -94,8 +106,9 @@ onMounted(() => {
     >
       <img :src="logo" width="270"/>
       <el-divider class="device-card-divider">一站式云真机测试平台</el-divider>
-      <el-tabs type="border-card" stretch style="margin-top: 30px">
-        <el-tab-pane label="注册账号/域账号登录">
+      <el-tabs type="border-card" stretch style="margin-top: 30px" v-loading="configLoading">
+        <el-tab-pane :label="(config.normalEnable&&config.ldapEnable)?'注册账号/LDAP域账号登录':
+(config.normalEnable?'注册账号登录':(config.ldapEnable?'LDAP域账号登录':''))">
           <el-form
               style="margin-top: 10px"
               ref="loginForm"
@@ -130,7 +143,7 @@ onMounted(() => {
             >
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="注 册">
+        <el-tab-pane label="注 册" v-if="config.registerEnable">
           <el-form
               style="margin-top: 10px"
               ref="registerForm"
