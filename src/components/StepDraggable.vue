@@ -7,11 +7,10 @@ import {ElMessage} from "element-plus";
 
 const props = defineProps({
   steps: Array,
-  isEdit: Boolean
 })
 const emit = defineEmits(['flush', 'editStep', 'deleteStep', 'setParent', 'addStep'])
 const sortStep = e => {
-  if(!props.isEdit) {
+  if(props.steps[e.moved.newIndex].parentId!==0) {
     let startId = null;
     let endId = null;
     let direction = "";
@@ -133,7 +132,7 @@ const deleteStep = id => {
               </el-popconfirm>
             </div>
           </template>
-          <step-draggable :is-edit="isEdit" :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @flush="emit('flush')"
+          <step-draggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @flush="emit('flush')"
                           @editStep="editStep" @deleteStep="deleteStep"/>
         </el-card>
         <div v-else>

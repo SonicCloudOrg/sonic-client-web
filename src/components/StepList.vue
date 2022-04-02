@@ -83,6 +83,6 @@ onMounted(() => {
       <el-button type="primary" size="mini" @click="addStep">新增步骤</el-button>
     </el-button-group>
   </div>
-  <step-draggable :is-edit="false" :steps="steps" @setParent="setParent" @addStep="addStep" @flush="flush" @editStep="editStep"
+  <step-draggable :steps="steps" @setParent="setParent" @addStep="addStep" @flush="flush" @editStep="editStep"
                  @deleteStep="deleteStep"/>
 </template>
