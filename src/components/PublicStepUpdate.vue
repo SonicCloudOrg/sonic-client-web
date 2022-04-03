@@ -83,21 +83,34 @@ const editStep = async (id) => {
 const addStep = () => {
   dialogVisible.value = true
 }
-const flush = () => {
+let isAddOrRemoved = false;
+const flush = async () => {
+  if (isAddOrRemoved) {
+    await axios.put("/controller/publicSteps", publicStep.value).then(resp => {
+      if (resp['code'] === 2000) {
+        ElMessage.success({
+          message: '自动保存中...',
+        });
+      }
+    })
+    isAddOrRemoved = false;
+  }
   dialogVisible.value = false
-  if (props.publicStepId !== 0) {
-    getPublicStepInfo(props.publicStepId)
+  if (publicStep.value.id !== 0 && publicStep.value.id !== null) {
+    await getPublicStepInfo(publicStep.value.id)
   }
   getStepList();
 }
 const addToPublic = (e) => {
   publicStep.value.steps.push(e)
+  isAddOrRemoved = true
   ElMessage.success({
     message: "选择成功！已加入到已选步骤",
   });
 }
 const removeFromPublic = (e) => {
   publicStep.value.steps.splice(e, 1);
+  isAddOrRemoved = true
   ElMessage.success({
     message: "移出成功！",
   });
@@ -111,7 +124,12 @@ const summit = () => {
           ElMessage.success({
             message: resp['message'],
           });
-          emit('flush');
+          if (publicStep.value.id === null || publicStep.value.id === 0) {
+            getPublicStepInfo(resp.data.id)
+            emit('flush', false);
+          } else {
+            emit('flush', true);
+          }
         }
       })
     }

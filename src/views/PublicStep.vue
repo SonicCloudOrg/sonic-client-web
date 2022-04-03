@@ -24,8 +24,10 @@ const editPublicStep = async (id) => {
 const open = () => {
   dialogVisible.value = true
 }
-const flush = () => {
-  dialogVisible.value = false
+const flush = (e) => {
+  if (e) {
+    dialogVisible.value = false
+  }
   getPublicStepList();
 }
 const getPublicStepList = (pageNum, pSize) => {
