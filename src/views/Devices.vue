@@ -750,16 +750,38 @@ onUnmounted(() => {
                       <img
                           style="width: 30px"
                           :src="getImg(device.platform===1?'ANDROID':'IOS')"
-                      />
+                      /><span style="margin-left: 6px">{{ device.version }}</span>
                     </el-form-item>
-                    <el-form-item label="系统版本">
-                      <div>{{ device.version }}</div>
+                    <el-form-item label="电池电量">
+                      <div :style="'position: relative; display: flex;align-items: center;color:'+((device['level'] === 0 ||
+                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))?'#606266':
+                      device['level']<=30?'#F56C6C':(device['level']<=70?'#E6A23C':'#67C23A'))">
+                        <ColorImg
+                            style="margin-right:5px;"
+                            v-if="(device['level'] !== 0 &&
+                              (device.status === 'ONLINE' || device.status === 'DEBUGGING' || device.status === 'TESTING'))"
+                            :src="device['level'] <=25?img['./../assets/img/powerLow.png'].default
+                            :(device['level'] <=50?img['./../assets/img/powerMid.png'].default
+                            :(device['level'] <=75?img['./../assets/img/powerHigh.png'].default
+                            :img['./../assets/img/powerFull.png'].default))"
+                            :width="20"
+                            :height="20"
+                            :color="(device['level']===0?'#606266':
+                      device['level']<=30?'#F56C6C':(device['level']<=70?'#E6A23C':'#67C23A'))"
+                        />
+                        {{
+                          (device['level'] === 0 ||
+                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))
+                              ? "未知" : device['level']
+                        }}
+                      </div>
                     </el-form-item>
                     <el-form-item label="电池温度">
                       <div :style="'position: relative; display: flex;align-items: center;color:'+((device['temperature'] === 0 ||
                               (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))?'#606266':
                       device['temperature']<300?'#67C23A':(device['temperature']<350?'#E6A23C':'#F56C6C'))">
                         <ColorImg
+                            style="margin-left:-4px;margin-right:3px"
                             v-if="(device['temperature'] !== 0 &&
                               (device.status === 'ONLINE' || device.status === 'DEBUGGING' || device.status === 'TESTING'))"
                             :src="img['./../assets/img/tem.png'].default"
