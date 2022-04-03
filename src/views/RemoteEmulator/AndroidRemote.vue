@@ -2097,10 +2097,7 @@ onMounted(() => {
                   <template #header>
                     <strong>文件互传（即将开放）</strong>
                   </template>
-                  <div style="text-align: center" v-loading="true"
-                       element-loading-spinner="el-icon-lock"
-                       element-loading-background="rgba(255, 255, 255, 1)"
-                       element-loading-text="该功能即将开放">
+                  <div style="text-align: center">
                     <el-upload
                         v-loading="uploadLoading"
                         drag
