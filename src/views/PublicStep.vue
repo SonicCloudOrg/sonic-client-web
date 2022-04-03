@@ -24,8 +24,10 @@ const editPublicStep = async (id) => {
 const open = () => {
   dialogVisible.value = true
 }
-const flush = () => {
-  dialogVisible.value = false
+const flush = (e) => {
+  if (e) {
+    dialogVisible.value = false
+  }
   getPublicStepList();
 }
 const getPublicStepList = (pageNum, pSize) => {
@@ -58,7 +60,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="公共步骤信息" width="750px">
+  <el-dialog v-model="dialogVisible" title="公共步骤信息" width="80%">
     <public-step-update v-if="dialogVisible" @flush="flush" :public-step-id="publicStepId"
                         :project-id="route.params.projectId"/>
   </el-dialog>

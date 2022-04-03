@@ -1,15 +1,22 @@
 <script setup>
 import {VueDraggableNext} from 'vue-draggable-next';
 import StepShow from './StepShow.vue'
-import {Delete, Rank, Edit, DocumentAdd} from "@element-plus/icons";
+import {Delete, Rank, Edit, DocumentAdd, Minus} from "@element-plus/icons";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 
 const props = defineProps({
   steps: Array,
+  isEdit: {
+    type: Boolean,
+    default: false
+  }
 })
-const emit = defineEmits(['flush', 'editStep', 'deleteStep', 'setParent', 'addStep'])
+const emit = defineEmits(['flush', 'editStep', 'deleteStep', 'setParent', 'addStep', 'remove'])
 const sortStep = e => {
+  if (props.isEdit && props.steps[e.moved.newIndex].parentId === 0) {
+    return
+  }
   let startId = null;
   let endId = null;
   let direction = "";
@@ -51,6 +58,9 @@ const addStep = (pId) => {
 }
 const deleteStep = id => {
   emit('deleteStep', id)
+}
+const remove = e => {
+  emit('remove', e)
 }
 </script>
 
@@ -107,7 +117,18 @@ const deleteStep = id => {
                   <Rank/>
                 </el-icon>
               </el-button>
+              <el-button
+                  v-if="isEdit"
+                  circle
+                  size="mini"
+                  @click="remove(index)"
+              >
+                <el-icon :size="13" style="vertical-align: middle;">
+                  <Minus/>
+                </el-icon>
+              </el-button>
               <el-popconfirm
+                  v-else
                   style="margin-left: 10px"
                   confirmButtonText="确认"
                   cancelButtonText="取消"
@@ -155,7 +176,18 @@ const deleteStep = id => {
                 <Rank/>
               </el-icon>
             </el-button>
+            <el-button
+                v-if="isEdit"
+                circle
+                size="mini"
+                @click="remove(index)"
+            >
+              <el-icon :size="13" style="vertical-align: middle;">
+                <Minus/>
+              </el-icon>
+            </el-button>
             <el-popconfirm
+                v-else
                 style="margin-left: 10px"
                 confirmButtonText="确认"
                 cancelButtonText="取消"
