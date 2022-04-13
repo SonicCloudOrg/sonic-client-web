@@ -2774,7 +2774,8 @@ onMounted(() => {
             </el-card>
           </el-tab-pane>
           <el-tab-pane label="POCO辅助" name="poco">
-            <el-button @click="getPoco('unity')">test</el-button>
+            <el-button @click="getPoco('cocos2dx')">cocos2dx</el-button>
+            <el-button @click="getPoco('unity3d')">unity3d</el-button>
 <!--            <el-scrollbar-->
 <!--                class="element-tree-scrollbar"-->
 <!--                style="height: 100%"-->
