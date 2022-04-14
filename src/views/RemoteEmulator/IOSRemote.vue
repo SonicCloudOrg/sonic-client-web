@@ -376,7 +376,7 @@ const websocketOnmessage = (message) => {
     }
     case 'tree': {
       ElMessage.success({
-        message: '获取控件元素成功！',
+        message: '获取原生控件元素成功！',
       });
       let result = JSON.parse(message.data);
       currentId.value = [1];
@@ -1270,10 +1270,10 @@ onMounted(() => {
                     <div v-else v-loading="remoteAppiumPort===0"
                          element-loading-spinner="el-icon-lock"
                          element-loading-background="rgba(255, 255, 255, 1)"
-                         element-loading-text="Appium启动失败！"
+                         element-loading-text="AppiumDriver未初始化！"
                          style="margin-top: 18px;margin-bottom: 18px">
                       <el-card>
-                        <strong>Appium启动失败！</strong>
+                        <strong>AppiumDriver未初始化！</strong>
                       </el-card>
                     </div>
                   </el-tab-pane>
