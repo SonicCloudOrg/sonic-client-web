@@ -566,7 +566,7 @@ const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
     case 'poco': {
       let result = JSON.parse(message.data).result
-      if (result !== null) {
+      if (result) {
         ElMessage.success({
           message: '获取Poco控件成功！',
         });
