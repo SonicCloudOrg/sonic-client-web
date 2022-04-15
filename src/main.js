@@ -6,8 +6,28 @@ import store from './store/index.js'
 import 'element-plus/dist/index.css'
 import axios from "./http/axios";
 import {ElMessage} from 'element-plus'
+import {setupI18n} from './locales/setupI18n'
 
-createApp(App).use(ElementPlus).use(router).use(store).mount('#app')
+async function initApp() {
+  const app = createApp(App)
+
+  // 初始化组件库
+  app.use(ElementPlus)
+
+  // 初始化路由
+  app.use(router)
+
+  // 初始化vuex
+  app.use(store)
+
+  // 国际化
+  await setupI18n(app)
+
+  app.mount('#app')
+}
+
+// 创建应用
+initApp()
 
 router.beforeEach((to, from, next) => {
     document.title = "Sonic云真机测试平台 -"

@@ -9,6 +9,8 @@ import ProjectUpdate from '../components/ProjectUpdate.vue'
 import defaultLogo from '../assets/logo.png'
 import {Cellphone, HomeFilled} from "@element-plus/icons";
 import {ElMessage} from "element-plus";
+import {localeList} from '@/config/locale'
+import useLocale from '@/locales/useLocale'
 
 const changePwdForm = ref(null)
 const changePwd = ref({
@@ -101,6 +103,13 @@ onMounted(() => {
   toggleClass(theme.value);
   getProjectList();
 })
+
+// 国际化设置
+const changeLocaleHandler = function(val){
+  const { changeLocale } = useLocale(store)
+  changeLocale(val.index)
+}
+
 </script>
 <template>
   <el-container direction="vertical">
@@ -139,30 +148,27 @@ onMounted(() => {
             </el-icon>
             设备中心
           </el-menu-item>
-          <el-menu-item index="/Index" @click="pushIndex('/Index')"
-                        v-if="route.params.projectId|| route.fullPath==='/Index/Devices'"
-          >
+          <el-menu-item index="/Index" @click="pushIndex('/Index')" v-if="route.params.projectId|| route.fullPath==='/Index/Devices'">
             <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
               <HomeFilled/>
             </el-icon>
             回到首页
           </el-menu-item>
+          <el-sub-menu index="Language">
+            <template #title>{{$t('languages')}}</template>
+            <el-menu-item v-for="item in localeList" :key="item.event" :index="item.event" @click="changeLocaleHandler">{{item.text}}</el-menu-item>
+          </el-sub-menu>
           <el-sub-menu index="1">
-            <template #title
-            >
-              <el-avatar size="medium"
-                         style="background: #409eff!important; margin-right: 5px"
-              >
+            <template #title>
+              <el-avatar size="medium" style="background: #409eff!important; margin-right: 5px">
                 {{
                   (store.state.userInfo.userName && store.state.userInfo.userName.length > 1) ? store.state.userInfo.userName.substring(store.state.userInfo.userName.length - 2) : store.state.userInfo.userName
                 }}
-              </el-avatar
-              >
+              </el-avatar>
               {{
                 store.state.userInfo.userName
               }}
-            </template
-            >
+            </template>
             <el-menu-item index="1-1" @click="dialogUserInfo = true">我的信息</el-menu-item>
             <el-menu-item index="1-2" @click="dialogChangePwd = true">修改密码</el-menu-item>
             <el-menu-item index="1-3" @click="logout"> 注销</el-menu-item>

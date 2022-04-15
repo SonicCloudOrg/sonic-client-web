@@ -1,6 +1,12 @@
 import {createStore} from 'vuex'
+import {localeSetting} from '@/config/locale'
+import {LOCALE_KEY} from '@/config/cache'
+import {setLocal, getLocal} from '@/utils/cache/localStorage'
+
+const debug = process.env.NODE_ENV !== 'production';
 
 export default createStore({
+    strict: debug,
     state() {
         return {
             userInfo: {},
@@ -10,7 +16,8 @@ export default createStore({
             projectList: [],
             menuBack: "",
             menuText: "",
-            menuActiveText: ""
+            menuActiveText: "",
+            localInfo: getLocal(LOCALE_KEY) || localeSetting
         }
     },
     mutations: {
@@ -50,6 +57,22 @@ export default createStore({
             state.token = '';
             state.userInfo = {};
             localStorage.removeItem('SonicToken');
+        },
+        setLocaleInfo(state, info) {
+          state.localInfo = info
         }
     },
+    getters: {
+      getLocale(state) {
+        return state.localInfo?.locale ?? 'zh_CN';
+      }
+    },
+    actions: {
+      // 设置国际化相关信息
+      changeLocaleInfo({ commit, state }, info) {
+        const localInfo = { ...state.localInfo, ...info };
+        commit('setLocaleInfo', localInfo);
+        setLocal(LOCALE_KEY, localInfo);
+      }
+    }
 });
