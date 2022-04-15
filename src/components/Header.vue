@@ -146,7 +146,7 @@ const changeLocaleHandler = function(val){
             <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
               <Cellphone/>
             </el-icon>
-            设备中心
+            {{$t('layout.deviceCenter')}}
           </el-menu-item>
           <el-menu-item index="/Index" @click="pushIndex('/Index')" v-if="route.params.projectId|| route.fullPath==='/Index/Devices'">
             <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
@@ -155,7 +155,7 @@ const changeLocaleHandler = function(val){
             回到首页
           </el-menu-item>
           <el-sub-menu index="Language">
-            <template #title>{{$t('languages')}}</template>
+            <template #title>{{$t('layout.languages')}}</template>
             <el-menu-item v-for="item in localeList" :key="item.event" :index="item.event" @click="changeLocaleHandler">{{item.text}}</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="1">
@@ -169,9 +169,9 @@ const changeLocaleHandler = function(val){
                 store.state.userInfo.userName
               }}
             </template>
-            <el-menu-item index="1-1" @click="dialogUserInfo = true">我的信息</el-menu-item>
-            <el-menu-item index="1-2" @click="dialogChangePwd = true">修改密码</el-menu-item>
-            <el-menu-item index="1-3" @click="logout"> 注销</el-menu-item>
+            <el-menu-item index="1-1" @click="dialogUserInfo = true">{{$t('layout.myInfo')}}</el-menu-item>
+            <el-menu-item index="1-2" @click="dialogChangePwd = true">{{$t('layout.changePassword')}}</el-menu-item>
+            <el-menu-item index="1-3" @click="logout">{{$t('layout.signOut')}}</el-menu-item>
             <el-sub-menu index="2">
               <template #title
               ><span
@@ -180,7 +180,7 @@ const changeLocaleHandler = function(val){
                   style="margin-right: 5px"
                   width="20"
                   :src="logo"
-              />关于Sonic</span
+              />{{$t('layout.aboutSonic')}}</span
               >
               </template
               >
