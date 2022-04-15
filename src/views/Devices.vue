@@ -1007,7 +1007,7 @@ onUnmounted(() => {
                   <img
                       style="margin-left: 10px"
                       v-if="
-                     agent['systemType']!=='未知' &&
+                     agent['systemType']!=='unknown' &&
                       (agent['systemType'].indexOf('Mac') !== -1 ||
                         agent['systemType'].indexOf('Windows') !== -1 ||
                         agent['systemType'].indexOf('Linux') !== -1)

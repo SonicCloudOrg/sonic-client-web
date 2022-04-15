@@ -57,6 +57,7 @@ const wifiList = ref([]);
 const currentWifi = ref('');
 const isConnectWifi = ref(false);
 const remoteAppiumPort = ref(0);
+const pocoData = ref({})
 const proxyWebPort = ref(0);
 const proxyConnPort = ref(0);
 const filterAppText = ref('');
@@ -562,6 +563,10 @@ const screenWebsocketOnmessage = (message) => {
 };
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
+    case 'poco': {
+      pocoData.value = JSON.parse(message.data).result
+      break
+    }
     case 'proxyResult': {
       proxyWebPort.value = JSON.parse(message.data).webPort;
       proxyConnPort.value = JSON.parse(message.data).port;
@@ -1198,6 +1203,14 @@ const getElement = () => {
       }),
   );
 };
+const getPoco = (type) => {
+  websocket.send(
+      JSON.stringify({
+        type: 'poco',
+        detail: type,
+      }),
+  );
+}
 const getWebViewForward = () => {
   webViewLoading.value = true;
   websocket.send(
@@ -2759,6 +2772,33 @@ onMounted(() => {
                 </template>
               </el-result>
             </el-card>
+          </el-tab-pane>
+          <el-tab-pane label="POCO辅助" name="poco">
+            <el-button @click="getPoco('unity')">test</el-button>
+<!--            <el-scrollbar-->
+<!--                class="element-tree-scrollbar"-->
+<!--                style="height: 100%"-->
+<!--            >-->
+<!--              <el-tree-->
+<!--                  :indent="13"-->
+<!--                  :filter-node-method="filterNode"-->
+<!--                  style="margin-top: 10px; margin-bottom: 20px"-->
+<!--                  :highlight-current="true"-->
+<!--                  :accordion="true"-->
+<!--                  :data="pocoData"-->
+<!--              >-->
+<!--                <template #default="{ node, data }">-->
+<!--                          <span style="font-size: 14px" v-if="data.detail['resource-id']">-->
+<!--                            {{ node.label.substring(0, node.label.indexOf('>')) + ' ' }}-->
+<!--                            <span style="color: #F55781">resource-id</span>={{-->
+<!--                              '"' + data.detail['resource-id'] + '">'-->
+<!--                            }}-->
+<!--                          </span>-->
+<!--                  <span style="font-size: 14px" v-else>{{ node.label }}</span>-->
+<!--                </template>-->
+<!--              </el-tree>-->
+<!--            </el-scrollbar>-->
+            {{pocoData}}
           </el-tab-pane>
           <el-tab-pane label="网页调试" name="webview">
             <div v-if="isWebView">
