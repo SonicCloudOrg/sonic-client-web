@@ -869,10 +869,6 @@ const touchstart = async (event) => {
   const x = parseInt(
       (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth),
   );
-  // _x = parseInt(
-  //     (event.clientY - rect.top) *
-  //     (imgWidth / canvas.clientHeight),
-  // );
   const y = parseInt(
       (event.clientY - rect.top) * (imgHeight / debugPic.clientHeight),
   );
