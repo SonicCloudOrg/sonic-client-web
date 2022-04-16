@@ -375,9 +375,12 @@ const setImgData = (data) => {
     img.src = u;
   }
   const canvas = document.getElementById('debugPic');
+  const canvasPoco = document.getElementById('debugPocoPic');
   img.onload = function () {
     canvas.width = img.width;
     canvas.height = img.height;
+    canvasPoco.width = img.width;
+    canvasPoco.height = img.height;
   };
   isShowImg.value = true;
 };
@@ -584,6 +587,9 @@ const websocketOnmessage = (message) => {
         ElMessage.success({
           message: '获取Poco控件成功！',
         });
+        if (JSON.parse(message.data).img) {
+          setImgData(JSON.parse(message.data).img);
+        }
         pocoData.value = []
         pocoData.value.push(result)
       } else {
@@ -952,9 +958,26 @@ const handleNodeClick = (data) => {
 const handlePocoClick = (data) => {
   if (data !== null) {
     pocoDetail.value = data.payload;
-    console.log(pocoDetail.value)
-    // print(data);
+    printPoco(data.payload);
   }
+};
+const printPoco = (data) => {
+  const canvas = document.getElementById('debugPocoPic'),
+      g = canvas.getContext('2d');
+  g.clearRect(0, 0, canvas.width, canvas.height);
+  console.log(data)
+  const eleStartX = data.pos[0] * imgWidth - (data.size[0] * imgWidth) / 2;
+  const eleStartY = data.pos[1] * imgHeight - (data.size[1] * imgWidth) / 2;
+  let a = Math.round(Math.random() * 255);
+  let b = Math.round(Math.random() * 255);
+  let c = Math.round(Math.random() * 255);
+  g.fillStyle = 'rgba(' + a + ', ' + b + ', ' + c + ', 0.6)';
+  g.fillRect(
+      eleStartX * (canvas.width / imgWidth),
+      eleStartY * (canvas.height / imgHeight),
+      data.size[0] * imgWidth * (canvas.width / imgWidth),
+      data.size[1] * imgWidth * (canvas.height / imgHeight),
+  );
 };
 const print = (data) => {
   const canvas = document.getElementById('debugPic'),
@@ -1243,7 +1266,10 @@ const getElement = () => {
   );
 };
 const getPoco = (type) => {
-  pocoLoading.value = true
+  pocoLoading.value = true;
+  if (oldBlob !== undefined) {
+    setImgData(undefined);
+  }
   websocket.send(
       JSON.stringify({
         type: 'poco',
@@ -2618,34 +2644,34 @@ onMounted(() => {
                           shadow="hover"
                           v-if="isShowTree"
                       >
-                        <div style="text-align: center; margin-bottom: 10px" v-if="project && project['id']">
-                          <el-button
-                              :disabled="elementDetail === null"
-                              plain
-                              size="small"
-                              type="primary"
-                              round
-                              @click="dialogElement = true"
-                          >添加控件
-                          </el-button
-                          >
-                          <el-button
-                              v-if="
+                        <div style="height: 695px">
+                          <div style="text-align: center; margin-bottom: 10px" v-if="project && project['id']">
+                            <el-button
+                                :disabled="elementDetail === null"
+                                plain
+                                size="small"
+                                type="primary"
+                                round
+                                @click="dialogElement = true"
+                            >添加控件
+                            </el-button
+                            >
+                            <el-button
+                                v-if="
                         elementDetail && elementDetail['xpath'] && isDriverFinish
                       "
-                              :loading="elementScreenLoading"
-                              style="margin-left: 5px"
-                              plain
-                              size="small"
-                              round
-                              @click="getEleScreen(elementDetail['xpath'])"
-                          >控件快照
-                          </el-button
-                          >
-                        </div>
-                        <el-alert style="margin-bottom: 10px" v-else title="关联项目后即可保存控件" type="info" show-icon
-                                  close-text="Get!"/>
-                        <div style="height: 655px">
+                                :loading="elementScreenLoading"
+                                style="margin-left: 5px"
+                                plain
+                                size="small"
+                                round
+                                @click="getEleScreen(elementDetail['xpath'])"
+                            >控件快照
+                            </el-button
+                            >
+                          </div>
+                          <el-alert style="margin-bottom: 10px" v-else title="关联项目后即可保存控件" type="info" show-icon
+                                    close-text="Get!"/>
                           <el-scrollbar
                               style="height: 100%"
                               class="element-tree-scrollbar"
@@ -2818,118 +2844,127 @@ onMounted(() => {
                 </el-card>
               </el-tab-pane>
               <el-tab-pane label="Poco控件">
-                <el-select v-model="selectPocoType" size="mini">
-                  <el-option value="Unity3d"></el-option>
-                  <el-option value="Egret"></el-option>
-                  <el-option value="UE4"></el-option>
-                  <el-option value="Cocos2dx-js"></el-option>
-                  <el-option value="Cocos2dx-lua"></el-option>
-                  <el-option value="cocos-creator"></el-option>
-                  <el-option value="Cocos2dx-c++"></el-option>
-                </el-select>
-                <el-button style="margin-left: 10px" type="primary" :loading="pocoLoading" size="mini" :disabled="selectPocoType.length===0"
-                           @click="getPoco(selectPocoType)">获取Poco控件
-                </el-button>
+                <div style="margin-bottom: 10px">
+                  <el-select v-model="selectPocoType" size="mini">
+                    <el-option value="Unity3d"></el-option>
+                    <el-option value="Egret"></el-option>
+                    <el-option value="UE4"></el-option>
+                    <el-option value="Cocos2dx-js"></el-option>
+                    <el-option value="Cocos2dx-lua"></el-option>
+                    <el-option value="cocos-creator"></el-option>
+                    <el-option value="Cocos2dx-c++"></el-option>
+                  </el-select>
+                  <el-button style="margin-left: 10px" type="primary" :loading="pocoLoading" size="mini"
+                             :disabled="selectPocoType.length===0"
+                             @click="getPoco(selectPocoType)">获取Poco控件
+                  </el-button>
+                  <el-link style="position: absolute;right:20px;" type="primary" href="https://poco.readthedocs.io/en/latest/source/doc/integration.html" target="_blank">Poco-SDK 接入指南</el-link>
+                </div>
                 <el-row
                     :gutter="10"
+                    v-show="isShowImg"
                 >
                   <el-col :span="8">
-                    <!--                    <el-card shadow="hover">-->
-                    <!--                      <div-->
-                    <!--                          :style="-->
-                    <!--                      'width: 100%;background-image: url(' +-->
-                    <!--                      imgUrl +-->
-                    <!--                      ');background-size: 100% 100%;'-->
-                    <!--                    "-->
-                    <!--                      >-->
-                    <!--                        <canvas id="debugPocoPic" @mousedown="touchstart"></canvas>-->
-                    <!--                      </div>-->
-                    <!--                    </el-card>-->
-                  </el-col>
-                  <el-col :span="8">
-                    <div style="height: 660px">
-                      <el-scrollbar
-                          class="element-tree-scrollbar"
-                          style="height: 100%"
+                    <el-card shadow="hover">
+                      <div
+                          :style="
+                             'width: 100%;background-image: url(' +
+                          imgUrl +
+                        ');background-size: 100% 100%;'
+                                        "
                       >
-                        <el-tree
-                            :indent="13"
-                            :filter-node-method="filterNode"
-                            style="margin-top: 10px; margin-bottom: 20px"
-                            :highlight-current="true"
-                            :accordion="true"
-                            :data="pocoData"
-                            @node-click="handlePocoClick"
-                        >
-                          <template #default="{ node, data }">
-                            <div style="margin-right: 5px" v-if="data.payload">
-                              <el-icon v-if="data.payload.type==='Root'||data.payload.type==='Scene'" :size="15"
-                                       style="margin-top: 3px;color:#67C23A">
-                                <Operation/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='Node'" :size="15"
-                                       style="margin-top: 3px;color:#67C23A">
-                                <Share/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='Button'" :size="15"
-                                       style="margin-top: 3px;color:#409EFF">
-                                <HelpFilled/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='Layer'" :size="15"
-                                       style="margin-top: 3px;color:#409EFF">
-                                <Coin/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='Image'||data.payload.type==='Sprite'" :size="15"
-                                       style="margin-top: 3px;color:#67C23A">
-                                <Picture/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='Camera'" :size="15"
-                                       style="margin-top: 3px;color:#409EFF">
-                                <VideoCamera/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='Canvas'" :size="15"
-                                       style="margin-top: 3px;color:#409EFF">
-                                <FullScreen/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='Widget'" :size="15"
-                                       style="margin-top: 3px;color:#409EFF">
-                                <Menu/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='Text'||data.payload.type.indexOf('Label')!==-1"
-                                       :size="15"
-                                       style="margin-top: 3px;color:#E6A23C">
-                                <List/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='ProgressBar'" :size="15"
-                                       style="margin-top: 3px;color:#E6A23C">
-                                <MoreFilled/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='GameObject'" :size="15"
-                                       style="margin-top: 3px;color:#F56C6C">
-                                <HomeFilled/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='Game'" :size="15"
-                                       style="margin-top: 3px;color:#F56C6C">
-                                <Headset/>
-                              </el-icon>
-                              <el-icon v-if="data.payload.type==='TextField'" :size="15"
-                                       style="margin-top: 3px;color:#F56C6C">
-                                <Edit/>
-                              </el-icon>
-                            </div>
-                            <span style="font-size: 14px">{{ data.name }}</span>
-                          </template>
-                        </el-tree>
-                      </el-scrollbar>
-                    </div>
+                        <canvas id="debugPocoPic" @mousedown="touchstart"></canvas>
+                      </div>
+                    </el-card>
                   </el-col>
                   <el-col :span="8">
                     <el-card
                         shadow="hover"
                     >
-                      <el-alert style="margin-bottom: 10px" title="更多功能正在加入..." type="info" show-icon
-                                close-text="Get!"/>
-                      <div style="height: 655px">
+                      <div style="height: 660px">
+                        <el-scrollbar
+                            class="element-tree-scrollbar"
+                            style="height: 100%"
+                        >
+                          <el-tree
+                              :indent="13"
+                              :filter-node-method="filterNode"
+                              style="margin-top: 10px; margin-bottom: 20px"
+                              :highlight-current="true"
+                              :accordion="true"
+                              :data="pocoData"
+                              @node-click="handlePocoClick"
+                          >
+                            <template #default="{ node, data }">
+                              <div style="margin-right: 5px" v-if="data.payload">
+                                <el-icon v-if="data.payload.type==='Root'||data.payload.type==='Scene'" :size="15"
+                                         style="margin-top: 3px;color:#67C23A">
+                                  <Operation/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='Node'" :size="15"
+                                         style="margin-top: 3px;color:#67C23A">
+                                  <Share/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='Button'" :size="15"
+                                         style="margin-top: 3px;color:#409EFF">
+                                  <HelpFilled/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='Layer'" :size="15"
+                                         style="margin-top: 3px;color:#409EFF">
+                                  <Coin/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='Image'||data.payload.type==='Sprite'" :size="15"
+                                         style="margin-top: 3px;color:#67C23A">
+                                  <Picture/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='Camera'" :size="15"
+                                         style="margin-top: 3px;color:#409EFF">
+                                  <VideoCamera/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='Canvas'" :size="15"
+                                         style="margin-top: 3px;color:#409EFF">
+                                  <FullScreen/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='Widget'" :size="15"
+                                         style="margin-top: 3px;color:#409EFF">
+                                  <Menu/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='Text'||data.payload.type.indexOf('Label')!==-1"
+                                         :size="15"
+                                         style="margin-top: 3px;color:#E6A23C">
+                                  <List/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='ProgressBar'" :size="15"
+                                         style="margin-top: 3px;color:#E6A23C">
+                                  <MoreFilled/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='GameObject'" :size="15"
+                                         style="margin-top: 3px;color:#F56C6C">
+                                  <HomeFilled/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='Game'" :size="15"
+                                         style="margin-top: 3px;color:#F56C6C">
+                                  <Headset/>
+                                </el-icon>
+                                <el-icon v-if="data.payload.type==='TextField'" :size="15"
+                                         style="margin-top: 3px;color:#F56C6C">
+                                  <Edit/>
+                                </el-icon>
+                              </div>
+                              <span style="font-size: 14px">{{ data.name }}</span>
+                            </template>
+                          </el-tree>
+                        </el-scrollbar>
+                      </div>
+                    </el-card>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-card
+                        shadow="hover"
+                    >
+                      <div style="height: 660px">
+                        <el-alert style="margin-bottom: 10px" title="更多功能正在加入..." type="info" show-icon
+                                  close-text="Get!"/>
                         <el-scrollbar
                             style="height: 100%"
                             class="element-tree-scrollbar"
@@ -2954,6 +2989,10 @@ onMounted(() => {
                     </el-card>
                   </el-col>
                 </el-row>
+                <el-card style="height: 100%" v-show="!isShowImg">
+                  <el-result icon="info" title="提示" subTitle="请先获取Poco控件元素，该功能需要引擎已接入Poco-SDK">
+                  </el-result>
+                </el-card>
               </el-tab-pane>
             </el-tabs>
           </el-tab-pane>
@@ -3096,6 +3135,11 @@ onMounted(() => {
 }
 
 #debugPic {
+  width: 100%;
+  height: auto;
+}
+
+#debugPocoPic {
   width: 100%;
   height: auto;
 }

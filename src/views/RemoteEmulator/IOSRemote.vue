@@ -1695,34 +1695,34 @@ onMounted(() => {
                       shadow="hover"
                       v-if="isShowTree"
                   >
-                    <div style="text-align: center; margin-bottom: 10px" v-if="project && project['id']">
-                      <el-button
-                          :disabled="elementDetail === null"
-                          plain
-                          size="small"
-                          type="primary"
-                          round
-                          @click="dialogElement = true"
-                      >添加控件
-                      </el-button
-                      >
-                      <el-button
-                          v-if="
+                    <div style="height: 695px">
+                      <div style="text-align: center; margin-bottom: 10px" v-if="project && project['id']">
+                        <el-button
+                            :disabled="elementDetail === null"
+                            plain
+                            size="small"
+                            type="primary"
+                            round
+                            @click="dialogElement = true"
+                        >添加控件
+                        </el-button
+                        >
+                        <el-button
+                            v-if="
                         elementDetail && elementDetail['xpath'] && isDriverFinish
                       "
-                          :loading="elementScreenLoading"
-                          style="margin-left: 5px"
-                          plain
-                          size="small"
-                          round
-                          @click="getEleScreen(elementDetail['xpath'])"
-                      >控件快照
-                      </el-button
-                      >
-                    </div>
-                    <el-alert style="margin-bottom: 10px" v-else title="关联项目后即可保存控件" type="info" show-icon
-                              close-text="Get!"/>
-                    <div style="height: 655px">
+                            :loading="elementScreenLoading"
+                            style="margin-left: 5px"
+                            plain
+                            size="small"
+                            round
+                            @click="getEleScreen(elementDetail['xpath'])"
+                        >控件快照
+                        </el-button
+                        >
+                      </div>
+                      <el-alert style="margin-bottom: 10px" v-else title="关联项目后即可保存控件" type="info" show-icon
+                                close-text="Get!"/>
                       <el-scrollbar
                           style="height: 100%"
                           class="element-tree-scrollbar"
