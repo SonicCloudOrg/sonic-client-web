@@ -4,6 +4,7 @@
 export const LOCALE = {
   ZH_CN: 'zh_CN',
   EN_US: 'en',
+  // ...更多语言
 };
 
 export const localeList = [
@@ -15,6 +16,7 @@ export const localeList = [
     text: 'English',
     event: LOCALE.EN_US,
   },
+  // ...更多语言
 ];
 
 export const localeSetting = {
@@ -22,5 +24,5 @@ export const localeSetting = {
   // Locale
   locale: LOCALE.ZH_CN,
   // available Locales
-  availableLocales: [LOCALE.ZH_CN, LOCALE.EN_US],
+  availableLocales: [LOCALE.ZH_CN, LOCALE.EN_US], // ...更多语言
 };
