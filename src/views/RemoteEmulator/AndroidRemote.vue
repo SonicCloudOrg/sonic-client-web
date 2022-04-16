@@ -67,6 +67,8 @@ const wifiList = ref([]);
 const currentWifi = ref('');
 const isConnectWifi = ref(false);
 const remoteAppiumPort = ref(0);
+const selectPocoType = ref("");
+const pocoLoading = ref(false)
 const pocoData = ref([])
 const proxyWebPort = ref(0);
 const proxyConnPort = ref(0);
@@ -576,6 +578,7 @@ const screenWebsocketOnmessage = (message) => {
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
     case 'poco': {
+      pocoLoading.value = false;
       let result = JSON.parse(message.data).result
       if (result) {
         ElMessage.success({
@@ -1240,6 +1243,7 @@ const getElement = () => {
   );
 };
 const getPoco = (type) => {
+  pocoLoading.value = true
   websocket.send(
       JSON.stringify({
         type: 'poco',
@@ -2814,89 +2818,110 @@ onMounted(() => {
                 </el-card>
               </el-tab-pane>
               <el-tab-pane label="Poco控件">
-                <el-button @click="getPoco('Egret')">Egret</el-button>
-                <el-button @click="getPoco('Unity3d')">Unity3d</el-button>
-                <el-button @click="getPoco('UE4')">UE4</el-button>
-                <el-button @click="getPoco('Cocos2dx-js')">Cocos2dx-js</el-button>
-                <el-button @click="getPoco('cocos-creator')">cocos-creator</el-button>
-                <el-button @click="getPoco('Cocos2dx-lua')">Cocos2dx-lua</el-button>
-                <el-button @click="getPoco('Cocos2dx-c++')">Cocos2dx-c++</el-button>
+                <el-select v-model="selectPocoType" size="mini">
+                  <el-option value="Unity3d"></el-option>
+                  <el-option value="Egret"></el-option>
+                  <el-option value="UE4"></el-option>
+                  <el-option value="Cocos2dx-js"></el-option>
+                  <el-option value="Cocos2dx-lua"></el-option>
+                  <el-option value="cocos-creator"></el-option>
+                  <el-option value="Cocos2dx-c++"></el-option>
+                </el-select>
+                <el-button style="margin-left: 10px" type="primary" :loading="pocoLoading" size="mini" :disabled="selectPocoType.length===0"
+                           @click="getPoco(selectPocoType)">获取Poco控件
+                </el-button>
                 <el-row
                     :gutter="10"
                 >
-                  <el-col :span="9">
-                    <el-scrollbar
-                        class="element-tree-scrollbar"
-                        style="height: 100%"
-                    >
-                      <el-tree
-                          :indent="13"
-                          :filter-node-method="filterNode"
-                          style="margin-top: 10px; margin-bottom: 20px"
-                          :highlight-current="true"
-                          :accordion="true"
-                          :data="pocoData"
-                          @node-click="handlePocoClick"
+                  <el-col :span="8">
+                    <!--                    <el-card shadow="hover">-->
+                    <!--                      <div-->
+                    <!--                          :style="-->
+                    <!--                      'width: 100%;background-image: url(' +-->
+                    <!--                      imgUrl +-->
+                    <!--                      ');background-size: 100% 100%;'-->
+                    <!--                    "-->
+                    <!--                      >-->
+                    <!--                        <canvas id="debugPocoPic" @mousedown="touchstart"></canvas>-->
+                    <!--                      </div>-->
+                    <!--                    </el-card>-->
+                  </el-col>
+                  <el-col :span="8">
+                    <div style="height: 660px">
+                      <el-scrollbar
+                          class="element-tree-scrollbar"
+                          style="height: 100%"
                       >
-                        <template #default="{ node, data }">
-                          <div style="margin-right: 5px" v-if="data.payload">
-                            <el-icon v-if="data.payload.type==='Root'||data.payload.type==='Scene'" :size="15"
-                                     style="margin-top: 3px;color:#67C23A">
-                              <Operation/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='Node'" :size="15" style="margin-top: 3px;color:#67C23A">
-                              <Share/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='Button'" :size="15"
-                                     style="margin-top: 3px;color:#409EFF">
-                              <HelpFilled/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='Layer'" :size="15"
-                                     style="margin-top: 3px;color:#409EFF">
-                              <Coin/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='Image'||data.payload.type==='Sprite'" :size="15"
-                                     style="margin-top: 3px;color:#67C23A">
-                              <Picture/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='Camera'" :size="15"
-                                     style="margin-top: 3px;color:#409EFF">
-                              <VideoCamera/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='Canvas'" :size="15"
-                                     style="margin-top: 3px;color:#409EFF">
-                              <FullScreen/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='Widget'" :size="15"
-                                     style="margin-top: 3px;color:#409EFF">
-                              <Menu/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='Text'||data.payload.type.indexOf('Label')!==-1"
-                                     :size="15"
-                                     style="margin-top: 3px;color:#E6A23C">
-                              <List/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='ProgressBar'" :size="15"
-                                     style="margin-top: 3px;color:#E6A23C">
-                              <MoreFilled/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='GameObject'" :size="15"
-                                     style="margin-top: 3px;color:#F56C6C">
-                              <HomeFilled/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='Game'" :size="15"
-                                     style="margin-top: 3px;color:#F56C6C">
-                              <Headset/>
-                            </el-icon>
-                            <el-icon v-if="data.payload.type==='TextField'" :size="15"
-                                     style="margin-top: 3px;color:#F56C6C">
-                              <Edit/>
-                            </el-icon>
-                          </div>
-                          <span style="font-size: 14px">{{ data.name }}</span>
-                        </template>
-                      </el-tree>
-                    </el-scrollbar>
+                        <el-tree
+                            :indent="13"
+                            :filter-node-method="filterNode"
+                            style="margin-top: 10px; margin-bottom: 20px"
+                            :highlight-current="true"
+                            :accordion="true"
+                            :data="pocoData"
+                            @node-click="handlePocoClick"
+                        >
+                          <template #default="{ node, data }">
+                            <div style="margin-right: 5px" v-if="data.payload">
+                              <el-icon v-if="data.payload.type==='Root'||data.payload.type==='Scene'" :size="15"
+                                       style="margin-top: 3px;color:#67C23A">
+                                <Operation/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='Node'" :size="15"
+                                       style="margin-top: 3px;color:#67C23A">
+                                <Share/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='Button'" :size="15"
+                                       style="margin-top: 3px;color:#409EFF">
+                                <HelpFilled/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='Layer'" :size="15"
+                                       style="margin-top: 3px;color:#409EFF">
+                                <Coin/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='Image'||data.payload.type==='Sprite'" :size="15"
+                                       style="margin-top: 3px;color:#67C23A">
+                                <Picture/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='Camera'" :size="15"
+                                       style="margin-top: 3px;color:#409EFF">
+                                <VideoCamera/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='Canvas'" :size="15"
+                                       style="margin-top: 3px;color:#409EFF">
+                                <FullScreen/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='Widget'" :size="15"
+                                       style="margin-top: 3px;color:#409EFF">
+                                <Menu/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='Text'||data.payload.type.indexOf('Label')!==-1"
+                                       :size="15"
+                                       style="margin-top: 3px;color:#E6A23C">
+                                <List/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='ProgressBar'" :size="15"
+                                       style="margin-top: 3px;color:#E6A23C">
+                                <MoreFilled/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='GameObject'" :size="15"
+                                       style="margin-top: 3px;color:#F56C6C">
+                                <HomeFilled/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='Game'" :size="15"
+                                       style="margin-top: 3px;color:#F56C6C">
+                                <Headset/>
+                              </el-icon>
+                              <el-icon v-if="data.payload.type==='TextField'" :size="15"
+                                       style="margin-top: 3px;color:#F56C6C">
+                                <Edit/>
+                              </el-icon>
+                            </div>
+                            <span style="font-size: 14px">{{ data.name }}</span>
+                          </template>
+                        </el-tree>
+                      </el-scrollbar>
+                    </div>
                   </el-col>
                   <el-col :span="8">
                     <el-card
@@ -2919,7 +2944,7 @@ onMounted(() => {
                                 v-for="key in Object.keys(pocoDetail)"
                                 :label="key"
                                 style="cursor: pointer"
-                                @click="copy(String(pocoDetail[key]))"
+                                @click="copy(JSON.stringify(pocoDetail[key]))"
                             >
                               <span>{{ pocoDetail[key] }}</span>
                             </el-form-item>
