@@ -63,6 +63,7 @@ const {toClipboard} = useClipboard();
 const route = useRoute();
 const store = useStore();
 const router = useRouter();
+const isShowPocoImg = ref(false);
 const wifiList = ref([]);
 const currentWifi = ref('');
 const isConnectWifi = ref(false);
@@ -114,6 +115,7 @@ const elementDetail = ref(null);
 const elementScreenLoading = ref(false);
 const pocoDetail = ref(null);
 const tree = ref(null);
+const pocoTree = ref(null)
 const currentId = ref([]);
 const filterText = ref('');
 const project = ref(null);
@@ -121,6 +123,7 @@ const testCase = ref({});
 const activeTab = ref('main');
 const activeTab2 = ref('step');
 const stepLog = ref([]);
+const currentPocoId = ref([])
 const debugLoading = ref(false);
 const dialogElement = ref(false);
 const dialogImgElement = ref(false);
@@ -362,6 +365,25 @@ const quickCap = () => {
     });
   }
 };
+const setPocoImgData = (data) => {
+  const img = new Image();
+  if (data) {
+    imgUrl.value = data;
+    img.src = data;
+  } else {
+    const blob = new Blob([oldBlob], {type: 'image/jpeg'});
+    const URL = window.URL || window.webkitURL;
+    const u = URL.createObjectURL(blob);
+    imgUrl.value = u;
+    img.src = u;
+  }
+  const canvasPoco = document.getElementById('debugPocoPic');
+  img.onload = function () {
+    canvasPoco.width = img.width;
+    canvasPoco.height = img.height;
+  };
+  isShowPocoImg.value = true;
+};
 const setImgData = (data) => {
   const img = new Image();
   if (data) {
@@ -375,12 +397,9 @@ const setImgData = (data) => {
     img.src = u;
   }
   const canvas = document.getElementById('debugPic');
-  const canvasPoco = document.getElementById('debugPocoPic');
   img.onload = function () {
     canvas.width = img.width;
     canvas.height = img.height;
-    canvasPoco.width = img.width;
-    canvasPoco.height = img.height;
   };
   isShowImg.value = true;
 };
@@ -587,11 +606,10 @@ const websocketOnmessage = (message) => {
         ElMessage.success({
           message: '获取Poco控件成功！',
         });
-        if (JSON.parse(message.data).img) {
-          setImgData(JSON.parse(message.data).img);
-        }
         pocoData.value = []
         pocoData.value.push(result)
+        setPocoTreeId(pocoData.value, 1)
+        currentPocoId.value = [1];
       } else {
         ElMessage.error({
           message: '获取POCO控件失败！请确保已经打开对应游戏引擎并接入Poco-SDK',
@@ -899,6 +917,49 @@ const touchstart = async (event) => {
   });
   await handleNodeClick(tree['value'].getCurrentNode());
 };
+const touchstartpoco = async (event) => {
+  const debugPic = document.getElementById('debugPocoPic');
+  const rect = debugPic.getBoundingClientRect();
+  let x;
+  let y;
+  if (directionStatus.value % 90 === 1 || directionStatus.value % 90 === 3) {
+    x = parseInt(
+        (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth),
+    );
+    y = parseInt(
+        (event.clientY - rect.top) * (imgHeight / debugPic.clientHeight),
+    );
+  } else {
+    x = parseInt(
+        (event.clientX - rect.left) * (imgHeight / debugPic.clientWidth),
+    );
+    y = parseInt(
+        (event.clientY - rect.top) * (imgWidth / debugPic.clientHeight),
+    );
+  }
+  await nextTick(() => {
+    pocoTree['value'].setCurrentKey(
+        findPocoMinSize(findPocoByPoint(pocoData.value, x, y)),
+    );
+  });
+  await handlePocoClick(pocoTree['value'].getCurrentNode());
+};
+const findPocoMinSize = (data) => {
+  if (data.length === 0) {
+    return null;
+  }
+  let result = data[0];
+  for (let i in data) {
+    if (data[i].size === result.size) {
+      result = data[i];
+    }
+    if (data[i].size < result.size) {
+      result = data[i];
+    }
+  }
+  currentPocoId.value = [result.ele.id];
+  return result.ele.id;
+};
 const findMinSize = (data) => {
   if (data.length === 0) {
     return null;
@@ -916,6 +977,44 @@ const findMinSize = (data) => {
   }
   currentId.value = [result.ele.id];
   return result.ele.id;
+};
+const findPocoByPoint = (ele, x, y) => {
+  let result = [];
+  console.log(x, y)
+  for (let i in ele) {
+    let eleStartX;
+    let eleStartY;
+    let eleEndX;
+    let eleEndY;
+    if (directionStatus.value % 90 === 1 || directionStatus.value % 90 === 3) {
+      eleStartX = ele[i].payload.pos[0] * imgWidth - (ele[i].payload.size[0] * imgWidth / 2)
+      eleStartY = ele[i].payload.pos[1] * imgHeight - (ele[i].payload.size[1] * imgHeight / 2)
+      eleEndX = ele[i].payload.pos[0] * imgWidth + (ele[i].payload.size[0] * imgWidth / 2)
+      eleEndY = ele[i].payload.pos[1] * imgHeight + (ele[i].payload.size[1] * imgHeight / 2)
+    } else {
+      eleStartX = ele[i].payload.pos[0] * imgHeight - (ele[i].payload.size[0] * imgHeight / 2)
+      eleStartY = ele[i].payload.pos[1] * imgWidth - (ele[i].payload.size[1] * imgWidth / 2)
+      eleEndX = ele[i].payload.pos[0] * imgHeight + (ele[i].payload.size[0] * imgHeight / 2)
+      eleEndY = ele[i].payload.pos[1] * imgWidth + (ele[i].payload.size[1] * imgWidth / 2)
+      console.log("====")
+      console.log(ele[i].payload._instanceId)
+      console.log("x:" + x + " sx:" + eleStartX + " ex:" + eleEndX)
+      console.log("y:" + y + " sy:" + eleStartY + " ey:" + eleEndY)
+    }
+    if (x >= eleStartX && x <= eleEndX && y >= eleStartY && y <= eleEndY) {
+      result.push({
+        ele: ele[i],
+        size: ele[i].payload.size[0] * ele[i].payload.size[1]
+      });
+    }
+    if (ele[i].children) {
+      let childrenResult = findPocoByPoint(ele[i].children, x, y);
+      if (childrenResult.length > 0) {
+        result.push.apply(result, childrenResult);
+      }
+    }
+  }
+  return result;
 };
 const findElementByPoint = (ele, x, y) => {
   let result = [];
@@ -965,9 +1064,8 @@ const printPoco = (data) => {
   const canvas = document.getElementById('debugPocoPic'),
       g = canvas.getContext('2d');
   g.clearRect(0, 0, canvas.width, canvas.height);
-  console.log(data)
   const eleStartX = data.pos[0] * imgWidth - (data.size[0] * imgWidth) / 2;
-  const eleStartY = data.pos[1] * imgHeight - (data.size[1] * imgWidth) / 2;
+  const eleStartY = data.pos[1] * imgHeight - (data.size[1] * imgHeight) / 2;
   let a = Math.round(Math.random() * 255);
   let b = Math.round(Math.random() * 255);
   let c = Math.round(Math.random() * 255);
@@ -976,7 +1074,7 @@ const printPoco = (data) => {
       eleStartX * (canvas.width / imgWidth),
       eleStartY * (canvas.height / imgHeight),
       data.size[0] * imgWidth * (canvas.width / imgWidth),
-      data.size[1] * imgWidth * (canvas.height / imgHeight),
+      data.size[1] * imgHeight * (canvas.height / imgHeight),
   );
 };
 const print = (data) => {
@@ -1163,6 +1261,7 @@ const changeScreenMode = (type, isInit) => {
     loading.value = true;
     __Scrcpy.switchMode(type);
     screenMode.value = type;
+    oldBlob = undefined;
   }
   touchWrapper = type == 'Minicap' ? document.getElementById('canvas') : document.getElementById('scrcpy-video');
   // 储存最后模式
@@ -1178,6 +1277,15 @@ const beforeAvatarUpload = (file) => {
     return false;
   }
 };
+const setPocoTreeId = (data, id) => {
+  for (let i in data) {
+    data[i].id = id;
+    id++;
+    if (data[i].children) {
+      setPocoTreeId(data[i].children, id)
+    }
+  }
+}
 const beforeAvatarUpload2 = (file) => {
   if (file.name.endsWith('.apk')) {
     return true;
@@ -1268,7 +1376,7 @@ const getElement = () => {
 const getPoco = (type) => {
   pocoLoading.value = true;
   if (oldBlob !== undefined) {
-    setImgData(undefined);
+    setPocoImgData(undefined);
   }
   websocket.send(
       JSON.stringify({
@@ -2858,11 +2966,14 @@ onMounted(() => {
                              :disabled="selectPocoType.length===0"
                              @click="getPoco(selectPocoType)">获取Poco控件
                   </el-button>
-                  <el-link style="position: absolute;right:20px;" type="primary" href="https://poco.readthedocs.io/en/latest/source/doc/integration.html" target="_blank">Poco-SDK 接入指南</el-link>
+                  <el-link style="position: absolute;right:20px;" type="primary"
+                           href="https://poco.readthedocs.io/en/latest/source/doc/integration.html" target="_blank">
+                    Poco-SDK 接入指南
+                  </el-link>
                 </div>
                 <el-row
                     :gutter="10"
-                    v-show="isShowImg"
+                    v-show="isShowPocoImg"
                 >
                   <el-col :span="8">
                     <el-card shadow="hover">
@@ -2873,7 +2984,7 @@ onMounted(() => {
                         ');background-size: 100% 100%;'
                                         "
                       >
-                        <canvas id="debugPocoPic" @mousedown="touchstart"></canvas>
+                        <canvas id="debugPocoPic" @mousedown="touchstartpoco"></canvas>
                       </div>
                     </el-card>
                   </el-col>
@@ -2888,9 +2999,11 @@ onMounted(() => {
                         >
                           <el-tree
                               :indent="13"
-                              :filter-node-method="filterNode"
+                              :default-expanded-keys="currentPocoId"
+                              node-key="id"
                               style="margin-top: 10px; margin-bottom: 20px"
                               :highlight-current="true"
+                              ref="pocoTree"
                               :accordion="true"
                               :data="pocoData"
                               @node-click="handlePocoClick"
@@ -2989,7 +3102,7 @@ onMounted(() => {
                     </el-card>
                   </el-col>
                 </el-row>
-                <el-card style="height: 100%" v-show="!isShowImg">
+                <el-card style="height: 100%" v-show="!isShowPocoImg">
                   <el-result icon="info" title="提示" subTitle="请先获取Poco控件元素，该功能需要引擎已接入Poco-SDK">
                   </el-result>
                 </el-card>
