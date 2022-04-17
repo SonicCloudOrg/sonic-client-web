@@ -85,6 +85,43 @@ const agent = ref({});
 const screenUrls = ref([]);
 const uploadUrl = ref('');
 const text = ref({content: ''});
+const pocoTypeList =  ref([
+  {
+    name:'Unity3d',
+    value:'Unity3d',
+    img:'Unity'
+  },
+  {
+    name:'Egret',
+    value:'Egret',
+    img:'Egret'
+  },
+  {
+    name:'UE4',
+    value:'UE4',
+    img:'UE4'
+  },
+  {
+    name:'Cocos2dx-js',
+    value:'Cocos2dx-js',
+    img:'Cocos2dx'
+  },
+  {
+    name:'Cocos2dx-lua',
+    value:'Cocos2dx-lua',
+    img:'Cocos2dx'
+  },
+  {
+    name:'cocos-creator',
+    value:'cocos-creator',
+    img:'Cocos2dx'
+  },
+  {
+    name:'Cocos2dx-c++',
+    value:'Cocos2dx-c++',
+    img:'Cocos2dx'
+  },
+])
 let imgWidth = 0;
 let imgHeight = 0;
 // 旋转状态 // 0 90 180 270
@@ -608,7 +645,7 @@ const websocketOnmessage = (message) => {
         });
         pocoData.value = []
         pocoData.value.push(result)
-        setPocoTreeId(pocoData.value, 1)
+        setPocoTreeId(pocoData.value, treeId)
         currentPocoId.value = [1];
       } else {
         ElMessage.error({
@@ -904,12 +941,23 @@ const mousemove = (event) => {
 const touchstart = async (event) => {
   const debugPic = document.getElementById('debugPic');
   const rect = debugPic.getBoundingClientRect();
-  const x = parseInt(
-      (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth),
-  );
-  const y = parseInt(
-      (event.clientY - rect.top) * (imgHeight / debugPic.clientHeight),
-  );
+  let x;
+  let y;
+  if (directionStatus.value === 0 || directionStatus.value === 180) {
+    x = parseInt(
+        (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth),
+    );
+    y = parseInt(
+        (event.clientY - rect.top) * (imgHeight / debugPic.clientHeight),
+    );
+  } else {
+    x = parseInt(
+        (event.clientX - rect.left) * (imgHeight / debugPic.clientWidth),
+    );
+    y = parseInt(
+        (event.clientY - rect.top) * (imgWidth / debugPic.clientHeight),
+    );
+  }
   await nextTick(() => {
     tree['value'].setCurrentKey(
         findMinSize(findElementByPoint(elementData.value, x, y)),
@@ -922,7 +970,7 @@ const touchstartpoco = async (event) => {
   const rect = debugPic.getBoundingClientRect();
   let x;
   let y;
-  if (directionStatus.value % 90 === 1 || directionStatus.value % 90 === 3) {
+  if (directionStatus.value === 0 || directionStatus.value === 180) {
     x = parseInt(
         (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth),
     );
@@ -980,13 +1028,12 @@ const findMinSize = (data) => {
 };
 const findPocoByPoint = (ele, x, y) => {
   let result = [];
-  console.log(x, y)
   for (let i in ele) {
     let eleStartX;
     let eleStartY;
     let eleEndX;
     let eleEndY;
-    if (directionStatus.value % 90 === 1 || directionStatus.value % 90 === 3) {
+    if (directionStatus.value === 0 || directionStatus.value === 180) {
       eleStartX = ele[i].payload.pos[0] * imgWidth - (ele[i].payload.size[0] * imgWidth / 2)
       eleStartY = ele[i].payload.pos[1] * imgHeight - (ele[i].payload.size[1] * imgHeight / 2)
       eleEndX = ele[i].payload.pos[0] * imgWidth + (ele[i].payload.size[0] * imgWidth / 2)
@@ -996,15 +1043,11 @@ const findPocoByPoint = (ele, x, y) => {
       eleStartY = ele[i].payload.pos[1] * imgWidth - (ele[i].payload.size[1] * imgWidth / 2)
       eleEndX = ele[i].payload.pos[0] * imgHeight + (ele[i].payload.size[0] * imgHeight / 2)
       eleEndY = ele[i].payload.pos[1] * imgWidth + (ele[i].payload.size[1] * imgWidth / 2)
-      console.log("====")
-      console.log(ele[i].payload._instanceId)
-      console.log("x:" + x + " sx:" + eleStartX + " ex:" + eleEndX)
-      console.log("y:" + y + " sy:" + eleStartY + " ey:" + eleEndY)
     }
     if (x >= eleStartX && x <= eleEndX && y >= eleStartY && y <= eleEndY) {
       result.push({
         ele: ele[i],
-        size: ele[i].payload.size[0] * ele[i].payload.size[1]
+        size: (eleEndX - eleStartX) * (eleEndY - eleStartY)
       });
     }
     if (ele[i].children) {
@@ -1099,12 +1142,21 @@ const print = (data) => {
   let b = Math.round(Math.random() * 255);
   let c = Math.round(Math.random() * 255);
   g.fillStyle = 'rgba(' + a + ', ' + b + ', ' + c + ', 0.6)';
-  g.fillRect(
-      eleStartX * (canvas.width / imgWidth),
-      eleStartY * (canvas.height / imgHeight),
-      (eleEndX - eleStartX) * (canvas.width / imgWidth),
-      (eleEndY - eleStartY) * (canvas.height / imgHeight),
-  );
+  if (directionStatus.value === 0 || directionStatus.value === 180) {
+    g.fillRect(
+        eleStartX * (canvas.width / imgWidth),
+        eleStartY * (canvas.height / imgHeight),
+        (eleEndX - eleStartX) * (canvas.width / imgWidth),
+        (eleEndY - eleStartY) * (canvas.height / imgHeight),
+    );
+  } else {
+    g.fillRect(
+        eleStartX * (canvas.width / imgHeight),
+        eleStartY * (canvas.height / imgWidth),
+        (eleEndX - eleStartX) * (canvas.width / imgHeight),
+        (eleEndY - eleStartY) * (canvas.height / imgWidth),
+    );
+  }
 };
 const searchDevice = () => {
   websocket.send(
@@ -1277,12 +1329,13 @@ const beforeAvatarUpload = (file) => {
     return false;
   }
 };
-const setPocoTreeId = (data, id) => {
+let treeId = 1;
+const setPocoTreeId = (data) => {
   for (let i in data) {
-    data[i].id = id;
-    id++;
+    data[i].id = treeId;
+    treeId++;
     if (data[i].children) {
-      setPocoTreeId(data[i].children, id)
+      setPocoTreeId(data[i].children, treeId)
     }
   }
 }
@@ -2954,13 +3007,23 @@ onMounted(() => {
               <el-tab-pane label="Poco控件">
                 <div style="margin-bottom: 10px">
                   <el-select v-model="selectPocoType" size="mini">
-                    <el-option value="Unity3d"></el-option>
-                    <el-option value="Egret"></el-option>
-                    <el-option value="UE4"></el-option>
-                    <el-option value="Cocos2dx-js"></el-option>
-                    <el-option value="Cocos2dx-lua"></el-option>
-                    <el-option value="cocos-creator"></el-option>
-                    <el-option value="Cocos2dx-c++"></el-option>
+                    <el-option
+                        v-for="item in pocoTypeList"
+                        :key="item.name"
+                        :value="item.value"
+                        :label="item.name"
+                    >
+                      <div style="display: flex;align-items: center">
+                        <el-avatar
+                            style="margin-right: 10px"
+                            :size="28"
+                            :src="getImg(item.img)"
+                            shape="square"
+                        ></el-avatar
+                        >
+                        {{ item.name }}
+                      </div>
+                    </el-option>
                   </el-select>
                   <el-button style="margin-left: 10px" type="primary" :loading="pocoLoading" size="mini"
                              :disabled="selectPocoType.length===0"
