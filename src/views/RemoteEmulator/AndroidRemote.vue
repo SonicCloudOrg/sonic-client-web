@@ -938,7 +938,7 @@ const mousedown = (event) => {
 const mousemove = (event) => {
   if (!isFixTouch) {
     if (isPress) {
-      if (mouseMoveTime < 2) {
+      if (mouseMoveTime < 1) {
         mouseMoveTime++;
         return;
       } else {
