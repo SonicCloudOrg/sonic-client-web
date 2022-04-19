@@ -570,6 +570,31 @@ const websocketOnmessage = (message) => {
       });
       break;
     }
+    case 'pullResult': {
+      if(JSON.parse(message.data).status==='success') {
+        ElMessage.success({
+          message: '拉取文件成功！',
+        });
+        console.log(JSON.parse(message.data).url)
+      }else{
+        ElMessage.error({
+          message: '拉取文件失败！',
+        });
+      }
+      break;
+    }
+    case 'pushResult': {
+      if(JSON.parse(message.data).status==='success') {
+        ElMessage.success({
+          message: '上传文件成功！',
+        });
+      }else{
+        ElMessage.error({
+          message: '上传文件失败！上传目录需要补齐文件名',
+        });
+      }
+      break;
+    }
     case 'appiumPort': {
       remoteAppiumPort.value = JSON.parse(message.data).port;
       break;
@@ -1100,6 +1125,41 @@ const changeScreenMode = (type, isInit) => {
   touchWrapper = type == 'Minicap' ? document.getElementById('canvas') : document.getElementById('scrcpy-video');
   // 储存最后模式
   window.localStorage.setItem('screenMode', type);
+};
+const pullPath = ref("")
+const pullFile = ()=>{
+  websocket.send(
+      JSON.stringify({
+        type: 'pullFile',
+        path: pullPath.value
+      }),
+  );
+}
+const fileLoading = ref(false);
+const upLoadFilePath = ref("");
+const pushPath = ref("")
+const pushFile = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'pushFile',
+        file: upLoadFilePath.value,
+        path: pushPath.value
+      }),
+  );
+}
+const uploadFile = (content) => {
+  fileLoading.value = true;
+  let formData = new FormData();
+  formData.append('file', content.file);
+  formData.append('type', 'packageFiles');
+  axios
+      .post('/folder/upload', formData, {headers: {'Content-type': 'multipart/form-data'}})
+      .then((resp) => {
+        fileLoading.value = false;
+        if (resp['code'] === 2000) {
+          upLoadFilePath.value = resp['data'];
+        }
+      });
 };
 const beforeAvatarUpload = (file) => {
   if (file.name.endsWith('.jpg') || file.name.endsWith('.png')) {
@@ -2095,25 +2155,27 @@ onMounted(() => {
               <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
-                    <strong>文件互传（即将开放）</strong>
+                    <strong>文件互传</strong>
                   </template>
                   <div style="text-align: center">
                     <el-upload
-                        v-loading="uploadLoading"
+                        v-loading="fileLoading"
                         drag
                         action=""
                         :with-credentials="true"
                         :limit="1"
-                        :before-upload="beforeAvatarUpload2"
                         :on-exceed="limitOut"
-                        :http-request="uploadPackage"
+                        :http-request="uploadFile"
                     >
                       <i class="el-icon-upload"></i>
                       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                      <template #tip>
-                        <div class="el-upload__tip">只能上传apk文件</div>
-                      </template>
                     </el-upload>
+                    <el-input v-model="pushPath"></el-input>
+                    <el-button :disabled="pushPath.length===0||upLoadFilePath.length===0" @click="pushFile">Push
+                    </el-button>
+                    <el-input v-model="pullPath"></el-input>
+                    <el-button :disabled="pullPath.length===0" @click="pullFile">Pull
+                    </el-button>
                   </div>
                 </el-card>
               </el-col>
