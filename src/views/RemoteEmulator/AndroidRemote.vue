@@ -684,7 +684,7 @@ const websocketOnmessage = (message) => {
         ElMessage.success({
           message: '拉取文件成功！',
         });
-        console.log(JSON.parse(message.data).url)
+        pullResult.value = JSON.parse(message.data).url
       } else {
         ElMessage.error({
           message: '拉取文件失败！',
@@ -1364,7 +1364,9 @@ const changeScreenMode = (type, isInit) => {
 };
 const pullPath = ref("")
 const pullLoading = ref(false)
+const pullResult = ref("")
 const pullFile = () => {
+  pullResult.value = "";
   pullLoading.value = true
   websocket.send(
       JSON.stringify({
@@ -2447,6 +2449,10 @@ onMounted(() => {
                                    :disabled="pullPath.length===0"
                                    @click="pullFile">Pull
                         </el-button>
+                        <a :href="pullResult" download target="_blank" v-if="pullResult.length!==0">
+                          <el-button style="margin-top: 5px;margin-left:10px" size="mini" type="success">下载文件
+                          </el-button>
+                        </a>
                       </el-tab-pane>
                     </el-tabs>
                   </div>
