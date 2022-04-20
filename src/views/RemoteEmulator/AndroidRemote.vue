@@ -679,12 +679,13 @@ const websocketOnmessage = (message) => {
       break;
     }
     case 'pullResult': {
-      if(JSON.parse(message.data).status==='success') {
+      pullLoading.value = false
+      if (JSON.parse(message.data).status === 'success') {
         ElMessage.success({
           message: '拉取文件成功！',
         });
         console.log(JSON.parse(message.data).url)
-      }else{
+      } else {
         ElMessage.error({
           message: '拉取文件失败！',
         });
@@ -692,11 +693,12 @@ const websocketOnmessage = (message) => {
       break;
     }
     case 'pushResult': {
-      if(JSON.parse(message.data).status==='success') {
+      pushLoading.value = false
+      if (JSON.parse(message.data).status === 'success') {
         ElMessage.success({
           message: '上传文件成功！',
         });
-      }else{
+      } else {
         ElMessage.error({
           message: '上传文件失败！上传目录需要补齐文件名',
         });
@@ -1361,7 +1363,9 @@ const changeScreenMode = (type, isInit) => {
   window.localStorage.setItem('screenMode', type);
 };
 const pullPath = ref("")
-const pullFile = ()=>{
+const pullLoading = ref(false)
+const pullFile = () => {
+  pullLoading.value = true
   websocket.send(
       JSON.stringify({
         type: 'pullFile',
@@ -1372,7 +1376,9 @@ const pullFile = ()=>{
 const fileLoading = ref(false);
 const upLoadFilePath = ref("");
 const pushPath = ref("")
+const pushLoading = ref(false)
 const pushFile = () => {
+  pushLoading.value = true
   websocket.send(
       JSON.stringify({
         type: 'pushFile',
@@ -2413,24 +2419,36 @@ onMounted(() => {
                     <strong>文件互传</strong>
                   </template>
                   <div style="text-align: center">
-                    <el-upload
-                        v-loading="fileLoading"
-                        drag
-                        action=""
-                        :with-credentials="true"
-                        :limit="1"
-                        :on-exceed="limitOut"
-                        :http-request="uploadFile"
-                    >
-                      <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                    </el-upload>
-                    <el-input v-model="pushPath"></el-input>
-                    <el-button :disabled="pushPath.length===0||upLoadFilePath.length===0" @click="pushFile">Push
-                    </el-button>
-                    <el-input v-model="pullPath"></el-input>
-                    <el-button :disabled="pullPath.length===0" @click="pullFile">Pull
-                    </el-button>
+                    <el-tabs type="border-card" stretch>
+                      <el-tab-pane label="上传文件">
+                        <el-upload
+                            v-loading="fileLoading"
+                            drag
+                            action=""
+                            :with-credentials="true"
+                            :limit="1"
+                            :on-exceed="limitOut"
+                            :http-request="uploadFile"
+                        >
+                          <i class="el-icon-upload"></i>
+                          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                        </el-upload>
+                        <div style="display: flex;margin-top: 5px">
+                          <el-input size="mini" v-model="pushPath" placeholder="请输入上传目标路径（加上文件名）"></el-input>
+                          <el-button style="margin-left: 5px" size="mini" type="primary" :loading="pushLoading"
+                                     :disabled="pushPath.length===0||upLoadFilePath.length===0"
+                                     @click="pushFile">Push
+                          </el-button>
+                        </div>
+                      </el-tab-pane>
+                      <el-tab-pane label="拉取文件">
+                        <el-input size="mini" placeholder="请输入拉取目标路径" v-model="pullPath"></el-input>
+                        <el-button style="margin-top: 5px" size="mini" type="primary" :loading="pullLoading"
+                                   :disabled="pullPath.length===0"
+                                   @click="pullFile">Pull
+                        </el-button>
+                      </el-tab-pane>
+                    </el-tabs>
                   </div>
                 </el-card>
               </el-col>
