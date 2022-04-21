@@ -45,7 +45,7 @@ class Scrcpy {
       this.jmuxer = new JMuxer({
         node: node || 'player',
         mode: 'video',
-        flushingTime: 16.6,
+        flushingTime: 0,
         fps: 60,
         // readFpsFromTrack: true,
         debug: false,
