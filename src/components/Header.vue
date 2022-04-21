@@ -106,9 +106,9 @@ onMounted(() => {
 })
 
 // 国际化设置
-const { t: $t } = useI18n()
-const changeLocaleHandler = function(val){
-  const { changeLocale } = useLocale(store)
+const {t: $t} = useI18n()
+const changeLocaleHandler = function (val) {
+  const {changeLocale} = useLocale(store)
   changeLocale(val.index)
 }
 
@@ -126,7 +126,6 @@ const changeLocaleHandler = function(val){
             <Expand/>
           </el-icon>
         </div>
-
         <el-tooltip :content="'当前主题: '+theme.toUpperCase()" placement="bottom">
           <el-switch v-model="theme" @change="toggleClass"
                      style="margin-left: 15px;"
@@ -136,6 +135,15 @@ const changeLocaleHandler = function(val){
                      active-color="#C0C4CC" inactive-color="#ffffff"
                      active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>
         </el-tooltip>
+        <el-menu :ellipsis="false" :background-color="store.state.menuBack" :text-color="store.state.menuText"
+                 :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font">
+          <el-sub-menu index="Language">
+            <template #title>{{ $t('layout.languages') }}</template>
+            <el-menu-item v-for="item in localeList" :key="item.event" :index="item.event"
+                          @click="changeLocaleHandler">{{ item.text }}
+            </el-menu-item>
+          </el-sub-menu>
+        </el-menu>
       </div>
       <div class="flex-center">
 
@@ -148,18 +156,15 @@ const changeLocaleHandler = function(val){
             <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
               <Cellphone/>
             </el-icon>
-            {{$t('layout.deviceCenter')}}
+            {{ $t('layout.deviceCenter') }}
           </el-menu-item>
-          <el-menu-item index="/Index" @click="pushIndex('/Index')" v-if="route.params.projectId|| route.fullPath==='/Index/Devices'">
+          <el-menu-item index="/Index" @click="pushIndex('/Index')"
+                        v-if="route.params.projectId|| route.fullPath==='/Index/Devices'">
             <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
               <HomeFilled/>
             </el-icon>
-            {{$t('layout.backHome')}}
+            {{ $t('layout.backHome') }}
           </el-menu-item>
-          <el-sub-menu index="Language">
-            <template #title>{{$t('layout.languages')}}</template>
-            <el-menu-item v-for="item in localeList" :key="item.event" :index="item.event" @click="changeLocaleHandler">{{item.text}}</el-menu-item>
-          </el-sub-menu>
           <el-sub-menu index="1">
             <template #title>
               <el-avatar size="medium" style="background: #409eff!important; margin-right: 5px">
@@ -171,9 +176,9 @@ const changeLocaleHandler = function(val){
                 store.state.userInfo.userName
               }}
             </template>
-            <el-menu-item index="1-1" @click="dialogUserInfo = true">{{$t('layout.myInfo')}}</el-menu-item>
-            <el-menu-item index="1-2" @click="dialogChangePwd = true">{{$t('layout.changePassword')}}</el-menu-item>
-            <el-menu-item index="1-3" @click="logout">{{$t('layout.signOut')}}</el-menu-item>
+            <el-menu-item index="1-1" @click="dialogUserInfo = true">{{ $t('layout.myInfo') }}</el-menu-item>
+            <el-menu-item index="1-2" @click="dialogChangePwd = true">{{ $t('layout.changePassword') }}</el-menu-item>
+            <el-menu-item index="1-3" @click="logout">{{ $t('layout.signOut') }}</el-menu-item>
             <el-sub-menu index="2">
               <template #title
               ><span
@@ -182,18 +187,18 @@ const changeLocaleHandler = function(val){
                   style="margin-right: 5px"
                   width="20"
                   :src="logo"
-              />{{$t('layout.aboutSonic')}}</span
+              />{{ $t('layout.aboutSonic') }}</span
               >
               </template
               >
               <el-menu-item index="2-1"
                             @click="goToUrl('http://sonic-cloud.gitee.io/#/Home')"
-              >{{$t('layout.officialWebSite')}}
+              >{{ $t('layout.officialWebSite') }}
               </el-menu-item
               >
               <el-menu-item index="2-2"
                             @click="goToUrl('http://sonic-cloud.gitee.io/#/Version')"
-              >{{$t('layout.versionUpdateRecord')}}
+              >{{ $t('layout.versionUpdateRecord') }}
                 <el-badge
                     value="New"
                     style="margin: 0 0 5px 5px"
@@ -229,7 +234,9 @@ const changeLocaleHandler = function(val){
           <span>{{ store.state.userInfo.userName }}</span>
         </el-form-item>
         <el-form-item :label="$t('form.role')">
-          <el-tag size="small">{{ store.state.userInfo.role === 2 ? $t('form.testEngineer') : $t('form.developmentEngineer') }}</el-tag>
+          <el-tag size="small">
+            {{ store.state.userInfo.role === 2 ? $t('form.testEngineer') : $t('form.developmentEngineer') }}
+          </el-tag>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -287,7 +294,7 @@ const changeLocaleHandler = function(val){
         </el-form-item>
       </el-form>
       <div style="text-align: center">
-        <el-button size="small" type="primary" @click="changePwdSummit">{{$t('form.confirm')}}</el-button>
+        <el-button size="small" type="primary" @click="changePwdSummit">{{ $t('form.confirm') }}</el-button>
       </div>
     </el-dialog>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
@@ -303,7 +310,9 @@ const changeLocaleHandler = function(val){
         >
         </el-alert>
         <div style="text-align: center">
-          <el-button type="primary" size="small" style="margin-top: 15px" @click="dialogVisible = true">{{$t('layout.addProject')}}</el-button>
+          <el-button type="primary" size="small" style="margin-top: 15px" @click="dialogVisible = true">
+            {{ $t('layout.addProject') }}
+          </el-button>
         </div>
         <el-row style="margin-top: 10px" justify="center" type="flex" v-if="projectData&&projectData.length>0">
           <el-col
