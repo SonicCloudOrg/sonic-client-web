@@ -126,7 +126,7 @@ const changeLocaleHandler = function (val) {
             <Expand/>
           </el-icon>
         </div>
-        <el-tooltip :content="'当前主题: '+theme.toUpperCase()" placement="bottom">
+        <el-tooltip :content="$t('layout.theme')+theme.toUpperCase()" placement="bottom">
           <el-switch v-model="theme" @change="toggleClass"
                      style="margin-left: 15px;"
                      :width="33"

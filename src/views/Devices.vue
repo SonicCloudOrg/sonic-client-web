@@ -17,6 +17,9 @@
  */
 import {ref, onMounted, watch, onUnmounted, onBeforeMount} from "vue";
 import {useRouter} from "vue-router";
+import {useI18n} from 'vue-i18n'
+
+const {t: $t} = useI18n()
 import Pageable from "../components/Pageable.vue";
 import axios from "../http/axios";
 import RenderStatus from "../components/RenderStatus.vue"
@@ -90,31 +93,24 @@ const manufacturer = ref([
 ]);
 const statusList = ref([
   {
-    name: "空闲中",
     value: "ONLINE",
   },
   {
-    name: "占用中",
     value: "DEBUGGING",
   },
   {
-    name: "测试中",
     value: "TESTING",
   },
   {
-    name: "已断开",
     value: "DISCONNECTED",
   },
   {
-    name: "已离线",
     value: "OFFLINE",
   },
   {
-    name: "未授权",
     value: "UNAUTHORIZED",
   },
   {
-    name: "异常中",
     value: "ERROR",
   },
 ]);
@@ -154,11 +150,11 @@ const copy = (value) => {
   try {
     toClipboard(value);
     ElMessage.success({
-      message: "复制成功！",
+      message: $t('dialog.copy.success'),
     });
   } catch (e) {
     ElMessage.error({
-      message: "复制失败！",
+      message: $t('dialog.copy.fail'),
     });
   }
 }
@@ -333,7 +329,7 @@ const handleFindAll = (pageNum, pageSize) => {
   findAll(currDevicesPage.value, pageSize)
 }
 const findAgentById = (id) => {
-  let result = '未知'
+  let result = $t('form.unknown')
   for (let i in agentList.value) {
     if (agentList.value[i].id === id) {
       result = agentList.value[i].name
@@ -399,7 +395,7 @@ const beforeAvatarUpload = (file) => {
     return true;
   } else {
     ElMessage.error({
-      message: "文件格式有误！",
+      message: $t('dialog.suffixError'),
     });
     return false;
   }
@@ -512,9 +508,9 @@ onUnmounted(() => {
           class="demo-table-expand"
           label-width="90px"
       >
-        <el-form-item label="安卓系统">
+        <el-form-item :label="$t('devices.filter.platform.ANDROID')">
           <el-checkbox
-              label="全选"
+              :label="$t('devices.filter.all')"
               :indeterminate="isAllAndroid"
               v-model="checkAllAndroid"
               @change="handleAndroid"
@@ -538,9 +534,9 @@ onUnmounted(() => {
             >
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="iOS系统">
+        <el-form-item :label="$t('devices.filter.platform.IOS')">
           <el-checkbox
-              label="全选"
+              :label="$t('devices.filter.all')"
               :indeterminate="isAlliOS"
               v-model="checkAlliOS"
               @change="handleIOS"
@@ -559,9 +555,9 @@ onUnmounted(() => {
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="设备制造商">
+        <el-form-item :label="$t('devices.filter.manufacturer')">
           <el-checkbox
-              label="全选"
+              :label="$t('devices.filter.all')"
               :indeterminate="isAllMan"
               v-model="checkAllMan"
               @change="handleMan"
@@ -597,9 +593,9 @@ onUnmounted(() => {
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="CPU处理器">
+        <el-form-item :label="$t('devices.filter.cpu')">
           <el-checkbox
-              label="全选"
+              :label="$t('devices.filter.all')"
               :indeterminate="isAllCpu"
               v-model="checkAllCpu"
               @change="handleCpu"
@@ -608,9 +604,9 @@ onUnmounted(() => {
             <el-checkbox v-for="c in cpus" :key="c" :label="c"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="屏幕分辨率">
+        <el-form-item :label="$t('devices.filter.size')">
           <el-checkbox
-              label="全选"
+              :label="$t('devices.filter.all')"
               :indeterminate="isAllSize"
               v-model="checkAllSize"
               @change="handleSize"
@@ -619,9 +615,9 @@ onUnmounted(() => {
             <el-checkbox v-for="s in sizes" :key="s" :label="s"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="所在位置">
+        <el-form-item :label="$t('devices.filter.agent')">
           <el-checkbox
-              label="全选"
+              :label="$t('devices.filter.all')"
               :indeterminate="isAllAgent"
               v-model="checkAllAgent"
               @change="handleAgent"
@@ -636,9 +632,9 @@ onUnmounted(() => {
             >
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="设备状态">
+        <el-form-item :label="$t('devices.filter.status')">
           <el-checkbox
-              label="全选"
+              :label="$t('devices.filter.all')"
               :indeterminate="isAllStatus"
               v-model="checkAllStatus"
               @change="handleStatus"
@@ -648,7 +644,7 @@ onUnmounted(() => {
                 v-for="statusDevice in statusList"
                 :key="statusDevice"
                 :label="statusDevice.value"
-            >{{ statusDevice.name }}
+            >{{ $t('devices.status.' + statusDevice.value) }}
             </el-checkbox
             >
           </el-checkbox-group>
@@ -657,30 +653,31 @@ onUnmounted(() => {
     </el-scrollbar>
   </el-drawer>
   <el-tabs type="border-card" stretch>
-    <el-tab-pane label="设备中心">
+    <el-tab-pane :label="$t('devices.deviceCenter')">
       <el-card>
         <el-input
-            style="width: 400px"
+            style="width: 440px"
             v-model="name"
             type="text"
             size="small"
-            placeholder="输入要筛选的型号、设备名称或设备序列号"
+            :placeholder="$t('devices.filter.placeholder')"
             maxlength="40"
             clearable
             @input="handleInput"
         >
           <template #append>
-            <el-button @click="drawer = true">高级筛选</el-button>
+            <el-button @click="drawer = true">{{ $t('devices.filter.button') }}</el-button>
           </template>
         </el-input>
 
         <el-switch class="refresh" active-value="1"
-                   inactive-value="0" @change="refreshNow" style="margin-left: 15px" active-text="自动刷新"
+                   inactive-value="0" @change="refreshNow" style="margin-left: 15px"
+                   :active-text=" $t('devices.refresh') "
                    active-color="#13ce66"
                    v-model="isFlush"/>
 
         <strong v-if="avgTem!==0" style="float: right; display: flex;align-items: center;
-        font-size: 16px;color: #909399;">当前平均电池温度：
+        font-size: 16px;color: #909399;">{{$t('devices.avgTem')}}
           <div :style="'position: relative; display: flex;align-items: center;color:'
         +(avgTem<300?'#67C23A':(avgTem<350?'#E6A23C':'#F56C6C'))">
             <ColorImg
@@ -966,7 +963,7 @@ onUnmounted(() => {
         ></pageable>
       </el-card>
     </el-tab-pane>
-    <el-tab-pane label="Agent中心">
+    <el-tab-pane :label="$t('devices.agentCenter')">
       <el-button type="primary" size="mini" @click="openAgent">新增Agent</el-button>
       <div style="text-align: center;margin-top: 20px">
         <el-divider class="device-card-divider">Agent列表</el-divider>
