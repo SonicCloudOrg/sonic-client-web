@@ -77,6 +77,7 @@ class Scrcpy {
   }
   switchMode = (mode) => {
     this.excuteMode = mode;
+    this.destroy();
     this.initial(this.props);
     this.websocket.send(
       JSON.stringify({
@@ -91,6 +92,7 @@ class Scrcpy {
   }
   destroy(){
     this.jmuxer && this.jmuxer.destroy();
+    this.jmuxer = null
   }
   onPageFocus() {
     window.onfocus = function() {
