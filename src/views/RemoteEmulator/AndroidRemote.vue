@@ -1771,6 +1771,7 @@ onMounted(() => {
                 style="display: inline-block; min-height: 100%"
                 :style="canvasRectInfo"
                 autoplay
+                muted
                 v-show="screenMode == 'Scrcpy'"
             />
             <canvas

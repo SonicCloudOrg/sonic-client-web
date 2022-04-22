@@ -24,10 +24,12 @@ class Scrcpy {
     } = props;
     this.props = props;
     this.excuteMode = excuteMode;
-    //
+    // JMuxer初始化
     this.initial(props)
-    //
+    // websocket初始化
     this.websocketInit(props);
+    // 监听页面激活状态
+    this.onPageFocus()
   }
 
   cmdFN(cmd) {
@@ -91,6 +93,7 @@ class Scrcpy {
   }
   switchMode = (mode) => {
     this.excuteMode = mode;
+    this.destroy();
     this.initial(this.props);
     this.websocket.send(
       JSON.stringify({
@@ -105,6 +108,12 @@ class Scrcpy {
   }
   destroy(){
     this.jmuxer && this.jmuxer.destroy();
+    this.jmuxer = null
+  }
+  onPageFocus() {
+    window.onfocus = function() {
+      this.jmuxer && this.jmuxer.reset();
+    }
   }
 }
 
