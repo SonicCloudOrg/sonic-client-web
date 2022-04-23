@@ -412,7 +412,7 @@ const getVideoScreenshot = () => {
   const imgWidth = canvas.width = 369;
   const imgHeight = canvas.height = 800;
   canvasCtx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, imgWidth, imgHeight);
-  return canvas.toDataURL('image/png',1);
+  return canvas.toDataURL('image/png', 1);
 }
 const quickCap = () => {
   let imageUrl;
@@ -427,18 +427,18 @@ const quickCap = () => {
   screenUrls.value.push(imageUrl);
   img.src = imageUrl;
 };
-const setPocoImgData = (data) => {
-  const img = new Image();
-  if (data) {
-    imgUrl.value = data;
-    img.src = data;
-  } else {
+const setPocoImgData = () => {
+  let imageUrl;
+  if (oldBlob) {
     const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
-    const u = URL.createObjectURL(blob);
-    imgUrl.value = u;
-    img.src = u;
+    imageUrl = URL.createObjectURL(blob);
+  } else {
+    imageUrl = getVideoScreenshot()
   }
+  const img = new Image();
+  img.src = imageUrl;
+  imgUrl.value = imageUrl;
   const canvasPoco = document.getElementById('debugPocoPic');
   img.onload = function () {
     canvasPoco.width = img.width;
@@ -446,18 +446,18 @@ const setPocoImgData = (data) => {
   };
   isShowPocoImg.value = true;
 };
-const setImgData = (data) => {
-  const img = new Image();
-  if (data) {
-    imgUrl.value = data;
-    img.src = data;
-  } else {
+const setImgData = () => {
+  let imageUrl;
+  if (oldBlob) {
     const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
-    const u = URL.createObjectURL(blob);
-    imgUrl.value = u;
-    img.src = u;
+    imageUrl = URL.createObjectURL(blob);
+  } else {
+    imageUrl = getVideoScreenshot()
   }
+  const img = new Image();
+  img.src = imageUrl;
+  imgUrl.value = imageUrl;
   const canvas = document.getElementById('debugPic');
   img.onload = function () {
     canvas.width = img.width;
@@ -733,9 +733,6 @@ const websocketOnmessage = (message) => {
       elementData.value = result.detail;
       isShowTree.value = true;
       elementLoading.value = false;
-      if (result.img) {
-        setImgData(result.img);
-      }
       webViewData.value = result['webView'];
       activity.value = result['activity'];
       break;
@@ -1513,22 +1510,17 @@ const install = (apk) => {
 };
 const getElement = () => {
   elementLoading.value = true;
-  if (oldBlob !== undefined) {
-    setImgData(undefined);
-  }
+  setImgData();
   websocket.send(
       JSON.stringify({
         type: 'debug',
         detail: 'tree',
-        hasScreen: oldBlob !== undefined,
       }),
   );
 };
 const getPoco = (type) => {
   pocoLoading.value = true;
-  if (oldBlob !== undefined) {
-    setPocoImgData(undefined);
-  }
+  setPocoImgData();
   websocket.send(
       JSON.stringify({
         type: 'poco',
