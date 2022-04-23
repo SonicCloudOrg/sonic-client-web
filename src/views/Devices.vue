@@ -1,25 +1,6 @@
 <script setup>
-/*
- *  Copyright (C) [SonicCloudOrg] Sonic Project
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
 import {ref, onMounted, watch, onUnmounted, onBeforeMount} from "vue";
 import {useRouter} from "vue-router";
-import {useI18n} from 'vue-i18n'
-
-const {t: $t} = useI18n()
 import Pageable from "../components/Pageable.vue";
 import axios from "../http/axios";
 import RenderStatus from "../components/RenderStatus.vue"
@@ -93,24 +74,31 @@ const manufacturer = ref([
 ]);
 const statusList = ref([
   {
+    name: "空闲中",
     value: "ONLINE",
   },
   {
+    name: "占用中",
     value: "DEBUGGING",
   },
   {
+    name: "测试中",
     value: "TESTING",
   },
   {
+    name: "已断开",
     value: "DISCONNECTED",
   },
   {
+    name: "已离线",
     value: "OFFLINE",
   },
   {
+    name: "未授权",
     value: "UNAUTHORIZED",
   },
   {
+    name: "异常中",
     value: "ERROR",
   },
 ]);
@@ -150,11 +138,11 @@ const copy = (value) => {
   try {
     toClipboard(value);
     ElMessage.success({
-      message: $t('dialog.copy.success'),
+      message: "复制成功！",
     });
   } catch (e) {
     ElMessage.error({
-      message: $t('dialog.copy.fail'),
+      message: "复制失败！",
     });
   }
 }
@@ -329,7 +317,7 @@ const handleFindAll = (pageNum, pageSize) => {
   findAll(currDevicesPage.value, pageSize)
 }
 const findAgentById = (id) => {
-  let result = $t('form.unknown')
+  let result = '未知'
   for (let i in agentList.value) {
     if (agentList.value[i].id === id) {
       result = agentList.value[i].name
@@ -395,7 +383,7 @@ const beforeAvatarUpload = (file) => {
     return true;
   } else {
     ElMessage.error({
-      message: $t('dialog.suffixError'),
+      message: "文件格式有误！",
     });
     return false;
   }
@@ -508,9 +496,9 @@ onUnmounted(() => {
           class="demo-table-expand"
           label-width="90px"
       >
-        <el-form-item :label="$t('devices.filter.platform.ANDROID')">
+        <el-form-item label="安卓系统">
           <el-checkbox
-              :label="$t('devices.filter.all')"
+              label="全选"
               :indeterminate="isAllAndroid"
               v-model="checkAllAndroid"
               @change="handleAndroid"
@@ -534,9 +522,9 @@ onUnmounted(() => {
             >
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item :label="$t('devices.filter.platform.IOS')">
+        <el-form-item label="iOS系统">
           <el-checkbox
-              :label="$t('devices.filter.all')"
+              label="全选"
               :indeterminate="isAlliOS"
               v-model="checkAlliOS"
               @change="handleIOS"
@@ -555,9 +543,9 @@ onUnmounted(() => {
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item :label="$t('devices.filter.manufacturer')">
+        <el-form-item label="设备制造商">
           <el-checkbox
-              :label="$t('devices.filter.all')"
+              label="全选"
               :indeterminate="isAllMan"
               v-model="checkAllMan"
               @change="handleMan"
@@ -593,9 +581,9 @@ onUnmounted(() => {
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item :label="$t('devices.filter.cpu')">
+        <el-form-item label="CPU处理器">
           <el-checkbox
-              :label="$t('devices.filter.all')"
+              label="全选"
               :indeterminate="isAllCpu"
               v-model="checkAllCpu"
               @change="handleCpu"
@@ -604,9 +592,9 @@ onUnmounted(() => {
             <el-checkbox v-for="c in cpus" :key="c" :label="c"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item :label="$t('devices.filter.size')">
+        <el-form-item label="屏幕分辨率">
           <el-checkbox
-              :label="$t('devices.filter.all')"
+              label="全选"
               :indeterminate="isAllSize"
               v-model="checkAllSize"
               @change="handleSize"
@@ -615,9 +603,9 @@ onUnmounted(() => {
             <el-checkbox v-for="s in sizes" :key="s" :label="s"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item :label="$t('devices.filter.agent')">
+        <el-form-item label="所在位置">
           <el-checkbox
-              :label="$t('devices.filter.all')"
+              label="全选"
               :indeterminate="isAllAgent"
               v-model="checkAllAgent"
               @change="handleAgent"
@@ -632,9 +620,9 @@ onUnmounted(() => {
             >
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item :label="$t('devices.filter.status')">
+        <el-form-item label="设备状态">
           <el-checkbox
-              :label="$t('devices.filter.all')"
+              label="全选"
               :indeterminate="isAllStatus"
               v-model="checkAllStatus"
               @change="handleStatus"
@@ -644,7 +632,7 @@ onUnmounted(() => {
                 v-for="statusDevice in statusList"
                 :key="statusDevice"
                 :label="statusDevice.value"
-            >{{ $t('devices.status.' + statusDevice.value) }}
+            >{{ statusDevice.name }}
             </el-checkbox
             >
           </el-checkbox-group>
@@ -653,31 +641,30 @@ onUnmounted(() => {
     </el-scrollbar>
   </el-drawer>
   <el-tabs type="border-card" stretch>
-    <el-tab-pane :label="$t('devices.deviceCenter')">
+    <el-tab-pane label="设备中心">
       <el-card>
         <el-input
-            style="width: 440px"
+            style="width: 400px"
             v-model="name"
             type="text"
             size="small"
-            :placeholder="$t('devices.filter.placeholder')"
+            placeholder="输入要筛选的型号、设备名称或设备序列号"
             maxlength="40"
             clearable
             @input="handleInput"
         >
           <template #append>
-            <el-button @click="drawer = true">{{ $t('devices.filter.button') }}</el-button>
+            <el-button @click="drawer = true">高级筛选</el-button>
           </template>
         </el-input>
 
         <el-switch class="refresh" active-value="1"
-                   inactive-value="0" @change="refreshNow" style="margin-left: 15px"
-                   :active-text=" $t('devices.refresh') "
+                   inactive-value="0" @change="refreshNow" style="margin-left: 15px" active-text="自动刷新"
                    active-color="#13ce66"
                    v-model="isFlush"/>
 
         <strong v-if="avgTem!==0" style="float: right; display: flex;align-items: center;
-        font-size: 16px;color: #909399;">{{$t('devices.avgTem')}}
+        font-size: 16px;color: #909399;">当前平均电池温度：
           <div :style="'position: relative; display: flex;align-items: center;color:'
         +(avgTem<300?'#67C23A':(avgTem<350?'#E6A23C':'#F56C6C'))">
             <ColorImg
@@ -691,7 +678,7 @@ onUnmounted(() => {
         </strong>
 
         <div style="text-align: center;margin-top: 20px">
-          <el-divider class="device-card-divider">{{$t('devices.list')}}</el-divider>
+          <el-divider class="device-card-divider">设备列表</el-divider>
         </div>
         <el-row :gutter="20">
           <el-col
@@ -732,11 +719,11 @@ onUnmounted(() => {
                       label-width="70px"
                       style="margin: 0 0 15px 10px"
                   >
-                    <el-form-item :label="$t('devices.form.model')">
+                    <el-form-item label="设备型号">
                       <div>{{ device.model }}
                       </div>
                     </el-form-item>
-                    <el-form-item :label="$t('devices.form.manufacturer')">
+                    <el-form-item label="制造商">
                       <img
                           v-if="device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'|| device.manufacturer === 'motorola'|| device.manufacturer === 'HONOR'"
                           style="width: 80px"
@@ -759,42 +746,20 @@ onUnmounted(() => {
                       />
 
                     </el-form-item>
-                    <el-form-item :label="$t('devices.form.system')">
+                    <el-form-item label="设备系统">
                       <img
                           style="width: 30px"
                           :src="getImg(device.platform===1?'ANDROID':'IOS')"
-                      /><span style="margin-left: 6px">{{ device.version }}</span>
+                      />
                     </el-form-item>
-                    <el-form-item :label="$t('devices.form.battery.level')">
-                      <div :style="'position: relative; display: flex;align-items: center;color:'+((device['level'] === 0 ||
-                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))?'#606266':
-                      device['level']<=30?'#F56C6C':(device['level']<=70?'#E6A23C':'#67C23A'))">
-                        <ColorImg
-                            style="margin-right:5px;"
-                            v-if="(device['level'] !== 0 &&
-                              (device.status === 'ONLINE' || device.status === 'DEBUGGING' || device.status === 'TESTING'))"
-                            :src="device['level'] <=25?img['./../assets/img/powerLow.png'].default
-                            :(device['level'] <=50?img['./../assets/img/powerMid.png'].default
-                            :(device['level'] <=75?img['./../assets/img/powerHigh.png'].default
-                            :img['./../assets/img/powerFull.png'].default))"
-                            :width="20"
-                            :height="20"
-                            :color="(device['level']===0?'#606266':
-                      device['level']<=30?'#F56C6C':(device['level']<=70?'#E6A23C':'#67C23A'))"
-                        />
-                        {{
-                          (device['level'] === 0 ||
-                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))
-                              ? $t('form.unknown') : device['level']
-                        }}
-                      </div>
+                    <el-form-item label="系统版本">
+                      <div>{{ device.version }}</div>
                     </el-form-item>
-                    <el-form-item :label="$t('devices.form.battery.temperature')">
+                    <el-form-item label="电池温度">
                       <div :style="'position: relative; display: flex;align-items: center;color:'+((device['temperature'] === 0 ||
                               (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))?'#606266':
                       device['temperature']<300?'#67C23A':(device['temperature']<350?'#E6A23C':'#F56C6C'))">
                         <ColorImg
-                            style="margin-left:-4px;margin-right:3px"
                             v-if="(device['temperature'] !== 0 &&
                               (device.status === 'ONLINE' || device.status === 'DEBUGGING' || device.status === 'TESTING'))"
                             :src="img['./../assets/img/tem.png'].default"
@@ -806,11 +771,11 @@ onUnmounted(() => {
                         {{
                           (device['temperature'] === 0 ||
                               (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))
-                              ? $t('form.unknown') : (device['temperature'] / 10).toFixed(1) + " ℃"
+                              ? "未知" : (device['temperature'] / 10).toFixed(1) + " ℃"
                         }}
                       </div>
                     </el-form-item>
-                    <el-form-item :label="$t('devices.form.agent')">
+                    <el-form-item label="所在位置">
                       <div>{{ findAgentById(device.agentId) }}</div>
                     </el-form-item>
                   </el-form>
@@ -818,9 +783,9 @@ onUnmounted(() => {
               </el-row>
               <div style="text-align: center">
                 <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'"
-                           @click="jump(device.id,device.platform)">{{$t('devices.useRightNow')}}
+                           @click="jump(device.id,device.platform)">马上使用
                 </el-button>
-                <el-popover placement="top" width="340px" trigger="hover">
+                <el-popover placement="top" width="300px" trigger="hover">
                   <el-form
                       label-position="left"
                       class="demo-table-expand"
@@ -828,7 +793,7 @@ onUnmounted(() => {
                       style="margin-left: 10px; word-break: break-all"
                       v-if="device.id"
                   >
-                    <el-form-item :label="$t('devices.detail.image')">
+                    <el-form-item label="设备图片">
                       <el-upload
                           style="width: 30px"
                           :data="{id:device.id}"
@@ -840,18 +805,18 @@ onUnmounted(() => {
                       >
                         <el-button
                             type="primary"
-                            size="mini">{{$t('devices.detail.uploadImg')}}
+                            size="mini">点击上传
                         </el-button
                         >
                       </el-upload>
                     </el-form-item>
-                    <el-form-item :label="$t('devices.detail.nickName')">
+                    <el-form-item label="设备备注">
                       <el-input
                           show-word-limit
                           v-model="device['nickName']"
                           type="text"
                           size="mini"
-                          :placeholder="$t('devices.detail.nickPlaceholder')"
+                          placeholder="输入设备备注信息"
                           maxlength="30"
                           style="position: absolute; top: 7px; bottom: 7px"
                       >
@@ -859,34 +824,34 @@ onUnmounted(() => {
                           <el-button
                               size="mini"
                               @click="saveDetail(device)"
-                          >{{$t('form.save')}}
+                          >保存
                           </el-button
                           >
                         </template>
                       </el-input>
                     </el-form-item>
-                    <el-form-item :label="$t('devices.detail.name')">
+                    <el-form-item label="设备名称">
                       <span>{{ device.name }}</span>
                     </el-form-item>
-                    <el-form-item :label="$t('devices.detail.model')">
+                    <el-form-item label="设备型号">
                       <span>{{ device.model }}</span>
                     </el-form-item>
-                    <el-form-item :label="$t('devices.detail.udId')">
+                    <el-form-item label="设备序列号">
                       <span>{{ device.udId }}</span>
                     </el-form-item>
-                    <el-form-item :label="$t('devices.detail.size')">
+                    <el-form-item label="屏幕分辨率">
                       <span>{{ device.size }}</span>
                     </el-form-item>
-                    <el-form-item :label="$t('devices.detail.cpu')">
+                    <el-form-item label="CPU类型">
                       <span>{{ device.cpu }}</span>
                     </el-form-item>
-                    <el-form-item :label="$t('devices.detail.pwd')">
+                    <el-form-item label="安装密码">
                       <el-input
                           show-word-limit
                           v-model="device.password"
                           type="text"
                           size="mini"
-                          :placeholder="$t('devices.detail.pwdPlaceholder')"
+                          placeholder="默认为Sonic123456"
                           maxlength="30"
                           style="position: absolute; top: 7px; bottom: 7px"
                       >
@@ -894,7 +859,7 @@ onUnmounted(() => {
                           <el-button
                               size="mini"
                               @click="saveDetail(device)"
-                          >{{$t('form.save')}}
+                          >保存
                           </el-button
                           >
                         </template>
@@ -947,7 +912,7 @@ onUnmounted(() => {
                     </el-form-item>
                   </el-form>
                   <template #reference>
-                    <el-button size="mini">{{$t('devices.moreDetail')}}</el-button>
+                    <el-button size="mini">更多信息</el-button>
                   </template>
                 </el-popover>
               </div>
@@ -963,7 +928,7 @@ onUnmounted(() => {
         ></pageable>
       </el-card>
     </el-tab-pane>
-    <el-tab-pane :label="$t('devices.agentCenter')">
+    <el-tab-pane label="Agent中心">
       <el-button type="primary" size="mini" @click="openAgent">新增Agent</el-button>
       <div style="text-align: center;margin-top: 20px">
         <el-divider class="device-card-divider">Agent列表</el-divider>
@@ -1020,7 +985,7 @@ onUnmounted(() => {
                   <img
                       style="margin-left: 10px"
                       v-if="
-                     agent['systemType']!=='unknown' &&
+                     agent['systemType']!=='未知' &&
                       (agent['systemType'].indexOf('Mac') !== -1 ||
                         agent['systemType'].indexOf('Windows') !== -1 ||
                         agent['systemType'].indexOf('Linux') !== -1)

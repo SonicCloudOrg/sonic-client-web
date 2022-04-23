@@ -96,4 +96,4 @@ Thank you to all our sponsors!
 
 ## LICENSE
 
-[License](LICENSE)
+[MIT License](LICENSE)

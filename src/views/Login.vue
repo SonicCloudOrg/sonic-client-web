@@ -1,10 +1,6 @@
 <script setup>
 import background from "../../src/assets/img/background.svg";
 import logo from "../../src/assets/img/logo2.png";
-import logoT from "../../src/assets/logo.png";
-import pad from "../../src/assets/img/pad.png";
-import phone from "../../src/assets/img/phone.png";
-import watch from "../../src/assets/img/watch.png";
 import {onMounted, ref} from "vue";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
@@ -24,20 +20,6 @@ const register = ref({
   role: 2
 })
 const loginForm = ref(null)
-const configLoading = ref(true)
-const config = ref({
-  registerEnable: false,
-  normalEnable: false,
-  ldapEnable: false
-})
-const getLoginConfig = () => {
-  axios.get("/controller/users/loginConfig").then(resp => {
-    if (resp['code'] === 2000) {
-      configLoading.value = false
-      config.value = resp.data
-    }
-  })
-}
 const loginPost = (u) => {
   loading.value = true
   axios.post("/controller/users/login", u).then(resp => {
@@ -81,23 +63,18 @@ const registerIn = () => {
 }
 const loading = ref(false)
 onMounted(() => {
-  getLoginConfig()
+  ElMessage.error({
+    message: '请先登录！',
+  });
 })
 </script>
 <template>
-  <img class="play1" style="position: absolute;right: 40px;top:20px;z-index:9999" :src="logoT" width="120"/>
-  <img class="play2" style="position: absolute;right: 30px;top:180px;z-index:9999" :src="logoT" width="40"/>
-  <img class="play3" style="position: absolute;right: 180px;top:40px;z-index:9999" :src="logoT" width="60"/>
-  <img class="play4" style="position: absolute;right: 120px;top:140px;z-index:9999" :src="logoT" width="50"/>
-  <img class="play5" style="position: absolute;left: 280px;top:40px;z-index:9999" :src="watch" width="120"/>
-  <img class="play6" style="position: absolute;right: 180px;bottom:40px;z-index:9999" :src="phone" width="190"/>
-  <img class="play7" style="position: absolute;left: 30px;top:200px;z-index:9999" :src="pad" width="190"/>
   <div
       class="login"
       :style="
-      'background:  url(' +
+      'background: linear-gradient(to bottom right, rgba(255, 255, 255, 0), rgba(189, 218, 248, 1)), url(' +
       background +
-      ');background-repeat:no-repeat; background-size:60% 60%;background-origin: content-box;background-position: left bottom;'
+      ');background-size:cover'
     "
   >
     <el-card
@@ -105,10 +82,9 @@ onMounted(() => {
         body-style="background-color:#FFFFFF;text-align:center;position:relative"
     >
       <img :src="logo" width="270"/>
-      <el-divider class="device-card-divider">一站式云真机测试平台</el-divider>
-      <el-tabs type="border-card" stretch style="margin-top: 30px" v-loading="configLoading">
-        <el-tab-pane :label="(config.normalEnable&&config.ldapEnable)?'注册账号/LDAP域账号登录':
-(config.normalEnable?'注册账号登录':(config.ldapEnable?'LDAP域账号登录':''))">
+      <el-divider class="device-card-divider">云真机测试平台</el-divider>
+      <el-tabs type="border-card" stretch style="margin-top: 30px">
+        <el-tab-pane label="登 录">
           <el-form
               style="margin-top: 10px"
               ref="loginForm"
@@ -143,7 +119,7 @@ onMounted(() => {
             >
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="注 册" v-if="config.registerEnable">
+        <el-tab-pane label="注 册">
           <el-form
               style="margin-top: 10px"
               ref="registerForm"
@@ -187,32 +163,3 @@ onMounted(() => {
     </el-card>
   </div>
 </template>
-<style>
-.play1 {
-  animation: bounce-down 1.8s linear infinite;
-}
-
-.play2 {
-  animation: bounce-down 1.6s linear infinite;
-}
-
-.play3 {
-  animation: bounce-down 1.3s linear infinite;
-}
-
-.play4 {
-  animation: bounce-down 1.5s linear infinite;
-}
-
-@-webkit-keyframes bounce-down {
-  25% {
-    -webkit-transform: translateY(-10px);
-  }
-  50%, 100% {
-    -webkit-transform: translateY(0);
-  }
-  75% {
-    -webkit-transform: translateY(10px);
-  }
-}
-</style>
