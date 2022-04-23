@@ -404,19 +404,28 @@ const copy = (value) => {
 const removeScreen = () => {
   screenUrls.value = [];
 };
+const getVideoScreenshot = () => {
+  const canvas = document.createElement("canvas");
+  const canvasCtx = canvas.getContext("2d");
+  const video = document.getElementById('scrcpy-video');
+  // 默认生成图片大小
+  const imgWidth = canvas.width = 369;
+  const imgHeight = canvas.height = 800;
+  canvasCtx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, imgWidth, imgHeight);
+  return canvas.toDataURL('image/png',1);
+}
 const quickCap = () => {
+  let imageUrl;
   if (oldBlob) {
-    const img = new Image();
     const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
-    const u = URL.createObjectURL(blob);
-    screenUrls.value.push(u);
-    img.src = u;
+    imageUrl = URL.createObjectURL(blob);
   } else {
-    ElMessage.error({
-      message: '快速截图失败！',
-    });
+    imageUrl = getVideoScreenshot()
   }
+  const img = new Image();
+  screenUrls.value.push(imageUrl);
+  img.src = imageUrl;
 };
 const setPocoImgData = (data) => {
   const img = new Image();
@@ -1358,7 +1367,12 @@ const changeScreenMode = (type, isInit) => {
     screenMode.value = type;
     oldBlob = undefined;
   }
-  touchWrapper = type == 'Minicap' ? document.getElementById('canvas') : document.getElementById('scrcpy-video');
+  if (type === 'Minicap') {
+    touchWrapper = document.getElementById('canvas');
+  } else {
+    oldBlob = undefined // 清除记录
+    touchWrapper = document.getElementById('scrcpy-video');
+  }
   // 储存最后模式
   window.localStorage.setItem('screenMode', type);
 };
