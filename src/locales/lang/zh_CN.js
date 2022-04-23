@@ -4,6 +4,16 @@
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
 const devices = {
+    list:'设备列表',
+    form: {
+        model: '设备型号',
+        manufacturer: '制造商',
+        system:'设备系统',
+        battery:{
+            level:'电池电量',
+            temperature:'电池温度'
+        }
+    },
     deviceCenter: '设备中心',
     agentCenter: 'Agent中心',
     status: {

@@ -691,7 +691,7 @@ onUnmounted(() => {
         </strong>
 
         <div style="text-align: center;margin-top: 20px">
-          <el-divider class="device-card-divider">设备列表</el-divider>
+          <el-divider class="device-card-divider">{{$t('devices.list')}}</el-divider>
         </div>
         <el-row :gutter="20">
           <el-col
@@ -732,11 +732,11 @@ onUnmounted(() => {
                       label-width="70px"
                       style="margin: 0 0 15px 10px"
                   >
-                    <el-form-item label="设备型号">
+                    <el-form-item :label="$t('devices.form.model')">
                       <div>{{ device.model }}
                       </div>
                     </el-form-item>
-                    <el-form-item label="制造商">
+                    <el-form-item :label="$t('devices.form.manufacturer')">
                       <img
                           v-if="device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'|| device.manufacturer === 'motorola'|| device.manufacturer === 'HONOR'"
                           style="width: 80px"
@@ -759,13 +759,13 @@ onUnmounted(() => {
                       />
 
                     </el-form-item>
-                    <el-form-item label="设备系统">
+                    <el-form-item :label="$t('devices.form.system')">
                       <img
                           style="width: 30px"
                           :src="getImg(device.platform===1?'ANDROID':'IOS')"
                       /><span style="margin-left: 6px">{{ device.version }}</span>
                     </el-form-item>
-                    <el-form-item label="电池电量">
+                    <el-form-item :label="$t('devices.form.battery.level')">
                       <div :style="'position: relative; display: flex;align-items: center;color:'+((device['level'] === 0 ||
                               (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))?'#606266':
                       device['level']<=30?'#F56C6C':(device['level']<=70?'#E6A23C':'#67C23A'))">
@@ -789,7 +789,7 @@ onUnmounted(() => {
                         }}
                       </div>
                     </el-form-item>
-                    <el-form-item label="电池温度">
+                    <el-form-item :label="$t('devices.form.battery.temperature')">
                       <div :style="'position: relative; display: flex;align-items: center;color:'+((device['temperature'] === 0 ||
                               (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))?'#606266':
                       device['temperature']<300?'#67C23A':(device['temperature']<350?'#E6A23C':'#F56C6C'))">

@@ -4,6 +4,16 @@
 import en from 'element-plus/es/locale/lang/en'
 
 const devices = {
+    list: 'Device List',
+    form: {
+        model: 'Model',
+        manufacturer: 'MFR',
+        system:'System',
+        battery:{
+            level:'Level',
+            temperature:'Temp'
+        }
+    },
     deviceCenter: 'Device Center',
     agentCenter: 'Agent Center',
     status: {
@@ -16,21 +26,21 @@ const devices = {
         ERROR: 'ERROR'
     },
     filter: {
-        all:'All',
+        all: 'All',
         platform: {
             ANDROID: 'Android',
-            IOS:'iOS'
+            IOS: 'iOS'
         },
         manufacturer: 'Manufacturer',
-        cpu:'CPU',
-        size:'Screen Size',
-        agent:'Agent',
-        status:'Status',
-        placeholder:'Please enter the model, name, or serialNumber',
-        button:'Filter'
+        cpu: 'CPU',
+        size: 'Screen Size',
+        agent: 'Agent',
+        status: 'Status',
+        placeholder: 'Please enter the model, name, or serialNumber',
+        button: 'Filter'
     },
-    refresh:'Auto refresh',
-    avgTem:'Current average battery temperature: '
+    refresh: 'Auto refresh',
+    avgTem: 'Current average battery temperature: '
 }
 
 // 布局相关
