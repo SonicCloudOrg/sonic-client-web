@@ -3,6 +3,15 @@
  */
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
+const agent={
+    newAgent: "新增Agent",
+    agentList:'Agent列表',
+    status:{
+        online:'在线',
+        offline:'离线'
+    }
+}
+
 const devices = {
     title:'Sonic云真机测试平台 -',
     list:'设备列表',
@@ -28,7 +37,10 @@ const devices = {
         cpu:'CPU类型',
         pwd:'安装密码',
         pwdPlaceholder:'默认为Sonic123456',
-        operation:'快捷操作'
+        operation:'快捷操作',
+        reboot:'重启',
+        rebootTips:'确定重启该设备吗？',
+        deleteTips:'确定删除该设备吗？'
     },
     useRightNow:'马上使用',
     moreDetail:'更多信息',
@@ -94,7 +106,8 @@ const form = {
     newPassword: "新密码",
     inputNewPassword: "请输入新密码",
     inputNewPasswordAgain: "请再次输入新密码",
-    confirm: "确 定"
+    confirm: "确定",
+    cancel:"取消"
 }
 // 弹窗相关
 const dialog = {
@@ -108,8 +121,15 @@ const dialog = {
     }
 }
 
+//通用操作
+const common = {
+    delete:'删除'
+}
+
 export default {
     message: {
+        agent,
+        common,
         devices,
         layout,
         form,

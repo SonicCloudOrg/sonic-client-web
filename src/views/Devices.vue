@@ -900,15 +900,15 @@ onUnmounted(() => {
                         </template>
                       </el-input>
                     </el-form-item>
-                    <el-form-item label="快捷操作">
+                    <el-form-item :label="$t('devices.detail.operation')">
                       <el-popconfirm
                           placement="top"
-                          confirmButtonText="确认"
-                          cancelButtonText="取消"
+                          :confirmButtonText="$t('form.confirm')"
+                          :cancelButtonText="$t('form.cancel')"
                           @confirm="reboot(device.id)"
                           icon="el-icon-warning"
                           iconColor="red"
-                          title="确定重启该设备吗？"
+                          :title="$t('devices.detail.rebootTips')"
                       >
                         <template #reference>
                           <el-button
@@ -918,19 +918,19 @@ onUnmounted(() => {
                           &&device.status !== 'DEBUGGING'
                           &&device.status !== 'TESTING'
                            &&device.status !== 'ERROR'"
-                          >重启
+                          >{{$t('devices.detail.reboot')}}
                           </el-button
                           >
                         </template>
                       </el-popconfirm>
                       <el-popconfirm
                           placement="top"
-                          confirmButtonText="确认"
-                          cancelButtonText="取消"
+                          :confirmButtonText="$t('form.confirm')"
+                          :cancelButtonText="$t('form.cancel')"
                           @confirm="deleteDevice(device.id)"
                           icon="el-icon-warning"
                           iconColor="red"
-                          title="确定删除该设备吗？"
+                          :title="$t('devices.detail.deleteTips')"
                       >
                         <template #reference>
                           <el-button
@@ -939,7 +939,7 @@ onUnmounted(() => {
                               :disabled="device.status === 'ONLINE'
                           &&device.status === 'DEBUGGING'
                           &&device.status === 'TESTING'"
-                          >删除
+                          >{{$t('common.delete')}}
                           </el-button
                           >
                         </template>
@@ -964,9 +964,9 @@ onUnmounted(() => {
       </el-card>
     </el-tab-pane>
     <el-tab-pane :label="$t('devices.agentCenter')">
-      <el-button type="primary" size="mini" @click="openAgent">新增Agent</el-button>
+      <el-button type="primary" size="mini" @click="openAgent">{{$t('agent.newAgent')}}</el-button>
       <div style="text-align: center;margin-top: 20px">
-        <el-divider class="device-card-divider">Agent列表</el-divider>
+        <el-divider class="device-card-divider">{{$t('agent.agentList')}}</el-divider>
       </div>
       <el-row :gutter="20">
         <el-col
@@ -990,14 +990,14 @@ onUnmounted(() => {
                     size="small"
                     type="success"
                     v-if="agent.status === 1"
-                >在线
+                >{{$t('agent.status.online')}}
                 </el-tag
                 >
                 <el-tag
                     size="small"
                     type="info"
                     v-if="agent.status === 2"
-                >离线
+                >{{$t('agent.status.offline')}}
                 </el-tag
                 >
               </div>

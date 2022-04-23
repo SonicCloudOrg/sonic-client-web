@@ -3,35 +3,47 @@
  */
 import en from 'element-plus/es/locale/lang/en'
 
+const agent = {
+    newAgent: "New Agent",
+    agentList:'Agent List',
+    status:{
+        online:'ONLINE',
+        offline:'OFFLINE'
+    }
+}
+
 const devices = {
-    title:'',
+    title: '',
     list: 'Device List',
     form: {
         model: 'Model',
         manufacturer: 'MFR',
-        system:'System',
-        battery:{
-            level:'Level',
-            temperature:'Temp'
+        system: 'System',
+        battery: {
+            level: 'Level',
+            temperature: 'Temp'
         },
-        agent:'Agent'
+        agent: 'Agent'
     },
-    detail:{
-        image:'Image',
-        uploadImg:'Click to Upload',
-        nickName:'NickName',
-        nickPlaceholder:'Enter device nickname',
-        name:'Name',
-        model:'Model',
-        udId:'UDID',
-        size:'Screen Size',
-        cpu:'CPU',
-        pwd:'Password',
-        pwdPlaceholder:'Default Sonic123456',
-        operation:'Operation'
+    detail: {
+        image: 'Image',
+        uploadImg: 'Click to Upload',
+        nickName: 'NickName',
+        nickPlaceholder: 'Enter device nickname',
+        name: 'Name',
+        model: 'Model',
+        udId: 'UDID',
+        size: 'Screen Size',
+        cpu: 'CPU',
+        pwd: 'Password',
+        pwdPlaceholder: 'Default Sonic123456',
+        operation: 'Operation',
+        reboot: 'Reboot',
+        rebootTips: 'Are you sure to reboot the device?',
+        deleteTips: 'Are you sure to delete the device?'
     },
-    useRightNow:'Use Now',
-    moreDetail:'More',
+    useRightNow: 'Use Now',
+    moreDetail: 'More',
     deviceCenter: 'Device Center',
     agentCenter: 'Agent Center',
     status: {
@@ -79,7 +91,7 @@ const layout = {
 }
 // 表单相关
 const form = {
-    save:'Save',
+    save: 'Save',
     unknown: 'Unknown',
     notEmpty: "Not Empty!",
     differentInput: "The twice inputs are inconsistent!",
@@ -94,7 +106,8 @@ const form = {
     newPassword: "New Password",
     inputNewPassword: "Please enter your new password",
     inputNewPasswordAgain: "Please enter your new password again",
-    confirm: "Confirm"
+    confirm: "Confirm",
+    cancel: "Cancel"
 }
 // 弹窗相关
 const dialog = {
@@ -108,8 +121,15 @@ const dialog = {
     }
 }
 
+//通用操作
+const common = {
+    delete: 'Delete'
+}
+
 export default {
     message: {
+        agent,
+        common,
         devices,
         layout,
         form,
