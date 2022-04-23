@@ -1,4 +1,20 @@
 <script setup>
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 import {useRoute, useRouter} from 'vue-router';
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {useStore} from 'vuex';
@@ -376,7 +392,7 @@ const websocketOnmessage = (message) => {
     }
     case 'tree': {
       ElMessage.success({
-        message: '获取控件元素成功！',
+        message: '获取原生控件元素成功！',
       });
       let result = JSON.parse(message.data);
       currentId.value = [1];
@@ -1270,10 +1286,10 @@ onMounted(() => {
                     <div v-else v-loading="remoteAppiumPort===0"
                          element-loading-spinner="el-icon-lock"
                          element-loading-background="rgba(255, 255, 255, 1)"
-                         element-loading-text="Appium启动失败！"
+                         element-loading-text="AppiumDriver未初始化！"
                          style="margin-top: 18px;margin-bottom: 18px">
                       <el-card>
-                        <strong>Appium启动失败！</strong>
+                        <strong>AppiumDriver未初始化！</strong>
                       </el-card>
                     </div>
                   </el-tab-pane>
@@ -1695,34 +1711,34 @@ onMounted(() => {
                       shadow="hover"
                       v-if="isShowTree"
                   >
-                    <div style="text-align: center; margin-bottom: 10px" v-if="project && project['id']">
-                      <el-button
-                          :disabled="elementDetail === null"
-                          plain
-                          size="small"
-                          type="primary"
-                          round
-                          @click="dialogElement = true"
-                      >添加控件
-                      </el-button
-                      >
-                      <el-button
-                          v-if="
+                    <div style="height: 695px">
+                      <div style="text-align: center; margin-bottom: 10px" v-if="project && project['id']">
+                        <el-button
+                            :disabled="elementDetail === null"
+                            plain
+                            size="small"
+                            type="primary"
+                            round
+                            @click="dialogElement = true"
+                        >添加控件
+                        </el-button
+                        >
+                        <el-button
+                            v-if="
                         elementDetail && elementDetail['xpath'] && isDriverFinish
                       "
-                          :loading="elementScreenLoading"
-                          style="margin-left: 5px"
-                          plain
-                          size="small"
-                          round
-                          @click="getEleScreen(elementDetail['xpath'])"
-                      >控件快照
-                      </el-button
-                      >
-                    </div>
-                    <el-alert style="margin-bottom: 10px" v-else title="关联项目后即可保存控件" type="info" show-icon
-                              close-text="Get!"/>
-                    <div style="height: 655px">
+                            :loading="elementScreenLoading"
+                            style="margin-left: 5px"
+                            plain
+                            size="small"
+                            round
+                            @click="getEleScreen(elementDetail['xpath'])"
+                        >控件快照
+                        </el-button
+                        >
+                      </div>
+                      <el-alert style="margin-bottom: 10px" v-else title="关联项目后即可保存控件" type="info" show-icon
+                                close-text="Get!"/>
                       <el-scrollbar
                           style="height: 100%"
                           class="element-tree-scrollbar"
