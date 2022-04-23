@@ -12,8 +12,25 @@ const devices = {
         battery:{
             level:'Level',
             temperature:'Temp'
-        }
+        },
+        agent:'Agent'
     },
+    detail:{
+        image:'Image',
+        uploadImg:'Click to Upload',
+        nickName:'NickName',
+        nickPlaceholder:'Enter device nickname',
+        name:'Name',
+        model:'Model',
+        udId:'UDID',
+        size:'Screen Size',
+        cpu:'CPU',
+        pwd:'Password',
+        pwdPlaceholder:'Default Sonic123456',
+        operation:'Operation'
+    },
+    useRightNow:'Use Now',
+    moreDetail:'More',
     deviceCenter: 'Device Center',
     agentCenter: 'Agent Center',
     status: {
@@ -61,7 +78,8 @@ const layout = {
 }
 // 表单相关
 const form = {
-    unknown: 'unknown',
+    save:'Save',
+    unknown: 'Unknown',
     notEmpty: "Not Empty!",
     differentInput: "The twice inputs are inconsistent!",
     username: "User Name",

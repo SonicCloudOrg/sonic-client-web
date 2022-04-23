@@ -785,7 +785,7 @@ onUnmounted(() => {
                         {{
                           (device['level'] === 0 ||
                               (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))
-                              ? "未知" : device['level']
+                              ? $t('form.unknown') : device['level']
                         }}
                       </div>
                     </el-form-item>
@@ -806,11 +806,11 @@ onUnmounted(() => {
                         {{
                           (device['temperature'] === 0 ||
                               (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))
-                              ? "未知" : (device['temperature'] / 10).toFixed(1) + " ℃"
+                              ? $t('form.unknown') : (device['temperature'] / 10).toFixed(1) + " ℃"
                         }}
                       </div>
                     </el-form-item>
-                    <el-form-item label="所在位置">
+                    <el-form-item :label="$t('devices.form.agent')">
                       <div>{{ findAgentById(device.agentId) }}</div>
                     </el-form-item>
                   </el-form>
@@ -818,9 +818,9 @@ onUnmounted(() => {
               </el-row>
               <div style="text-align: center">
                 <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'"
-                           @click="jump(device.id,device.platform)">马上使用
+                           @click="jump(device.id,device.platform)">{{$t('devices.useRightNow')}}
                 </el-button>
-                <el-popover placement="top" width="300px" trigger="hover">
+                <el-popover placement="top" width="340px" trigger="hover">
                   <el-form
                       label-position="left"
                       class="demo-table-expand"
@@ -828,7 +828,7 @@ onUnmounted(() => {
                       style="margin-left: 10px; word-break: break-all"
                       v-if="device.id"
                   >
-                    <el-form-item label="设备图片">
+                    <el-form-item :label="$t('devices.detail.image')">
                       <el-upload
                           style="width: 30px"
                           :data="{id:device.id}"
@@ -840,18 +840,18 @@ onUnmounted(() => {
                       >
                         <el-button
                             type="primary"
-                            size="mini">点击上传
+                            size="mini">{{$t('devices.detail.uploadImg')}}
                         </el-button
                         >
                       </el-upload>
                     </el-form-item>
-                    <el-form-item label="设备备注">
+                    <el-form-item :label="$t('devices.detail.nickName')">
                       <el-input
                           show-word-limit
                           v-model="device['nickName']"
                           type="text"
                           size="mini"
-                          placeholder="输入设备备注信息"
+                          :placeholder="$t('devices.detail.nickPlaceholder')"
                           maxlength="30"
                           style="position: absolute; top: 7px; bottom: 7px"
                       >
@@ -859,34 +859,34 @@ onUnmounted(() => {
                           <el-button
                               size="mini"
                               @click="saveDetail(device)"
-                          >保存
+                          >{{$t('form.save')}}
                           </el-button
                           >
                         </template>
                       </el-input>
                     </el-form-item>
-                    <el-form-item label="设备名称">
+                    <el-form-item :label="$t('devices.detail.name')">
                       <span>{{ device.name }}</span>
                     </el-form-item>
-                    <el-form-item label="设备型号">
+                    <el-form-item :label="$t('devices.detail.model')">
                       <span>{{ device.model }}</span>
                     </el-form-item>
-                    <el-form-item label="设备序列号">
+                    <el-form-item :label="$t('devices.detail.udId')">
                       <span>{{ device.udId }}</span>
                     </el-form-item>
-                    <el-form-item label="屏幕分辨率">
+                    <el-form-item :label="$t('devices.detail.size')">
                       <span>{{ device.size }}</span>
                     </el-form-item>
-                    <el-form-item label="CPU类型">
+                    <el-form-item :label="$t('devices.detail.cpu')">
                       <span>{{ device.cpu }}</span>
                     </el-form-item>
-                    <el-form-item label="安装密码">
+                    <el-form-item :label="$t('devices.detail.pwd')">
                       <el-input
                           show-word-limit
                           v-model="device.password"
                           type="text"
                           size="mini"
-                          placeholder="默认为Sonic123456"
+                          :placeholder="$t('devices.detail.pwdPlaceholder')"
                           maxlength="30"
                           style="position: absolute; top: 7px; bottom: 7px"
                       >
@@ -894,7 +894,7 @@ onUnmounted(() => {
                           <el-button
                               size="mini"
                               @click="saveDetail(device)"
-                          >保存
+                          >{{$t('form.save')}}
                           </el-button
                           >
                         </template>
@@ -947,7 +947,7 @@ onUnmounted(() => {
                     </el-form-item>
                   </el-form>
                   <template #reference>
-                    <el-button size="mini">更多信息</el-button>
+                    <el-button size="mini">{{$t('devices.moreDetail')}}</el-button>
                   </template>
                 </el-popover>
               </div>

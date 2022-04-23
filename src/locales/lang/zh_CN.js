@@ -12,8 +12,25 @@ const devices = {
         battery:{
             level:'电池电量',
             temperature:'电池温度'
-        }
+        },
+        agent:'所在位置'
     },
+    detail:{
+        image:'设备图片',
+        uploadImg:'点击上传',
+        nickName:'设备备注',
+        nickPlaceholder:'输入设备备注信息',
+        name:'设备名称',
+        model:'设备型号',
+        udId:'设备序列号',
+        size:'屏幕分辨率',
+        cpu:'CPU类型',
+        pwd:'安装密码',
+        pwdPlaceholder:'默认为Sonic123456',
+        operation:'快捷操作'
+    },
+    useRightNow:'马上使用',
+    moreDetail:'更多信息',
     deviceCenter: '设备中心',
     agentCenter: 'Agent中心',
     status: {
@@ -61,6 +78,7 @@ const layout = {
 }
 // 表单相关
 const form = {
+    save:'保存',
     unknown:'未知',
     notEmpty: "不能为空！",
     differentInput: "两次输入不一致！",
