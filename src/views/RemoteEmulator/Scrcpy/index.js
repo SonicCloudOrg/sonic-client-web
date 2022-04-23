@@ -108,11 +108,15 @@ class Scrcpy {
   }
   destroy(){
     this.jmuxer && this.jmuxer.destroy();
+    // 释放内存
     this.jmuxer = null
+    window.onfocus = null
   }
   onPageFocus() {
+    const videoDom = document.getElementById(this.props?.node || 'player')
     window.onfocus = function() {
-      this.jmuxer && this.jmuxer.reset();
+      // 将当前播放进度更新至当前最新缓冲时间
+      videoDom.currentTime = Math.ceil(videoDom.buffered.end(0))
     }
   }
 }
