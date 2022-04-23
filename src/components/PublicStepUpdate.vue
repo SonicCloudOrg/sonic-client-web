@@ -3,9 +3,9 @@ import {onMounted, ref, watch} from "vue";
 import axios from "../http/axios";
 import StepShow from '../components/StepShow.vue'
 import StepUpdate from './StepUpdate.vue'
+import StepDraggable from './StepDraggable.vue'
 import Pageable from '../components/Pageable.vue'
-import {Delete, Rank, Edit, Plus} from "@element-plus/icons";
-import {VueDraggableNext} from 'vue-draggable-next';
+import {Delete, Edit, Plus} from "@element-plus/icons";
 import {ElMessage} from "element-plus";
 
 const props = defineProps({
@@ -21,6 +21,7 @@ const publicStep = ref({
   steps: []
 })
 const updatePub = ref(null)
+const parentId = ref(0)
 const pageData = ref({});
 const pageSize = ref(10);
 const dialogVisible = ref(false)
@@ -69,8 +70,12 @@ const deleteStep = (id) => {
 watch(dialogVisible, (newValue, oldValue) => {
   if (!newValue) {
     stepId.value = 0
+    parentId.value = 0
   }
 })
+const setParent = (id) => {
+  parentId.value = id
+}
 const editStep = async (id) => {
   stepId.value = id
   await addStep()
@@ -78,18 +83,34 @@ const editStep = async (id) => {
 const addStep = () => {
   dialogVisible.value = true
 }
-const flush = () => {
+let isAddOrRemoved = false;
+const flush = async () => {
+  if (isAddOrRemoved) {
+    await axios.put("/controller/publicSteps", publicStep.value).then(resp => {
+      if (resp['code'] === 2000) {
+        ElMessage.success({
+          message: '自动保存中...',
+        });
+      }
+    })
+    isAddOrRemoved = false;
+  }
   dialogVisible.value = false
+  if (publicStep.value.id !== 0 && publicStep.value.id !== null) {
+    await getPublicStepInfo(publicStep.value.id)
+  }
   getStepList();
 }
 const addToPublic = (e) => {
   publicStep.value.steps.push(e)
+  isAddOrRemoved = true
   ElMessage.success({
     message: "选择成功！已加入到已选步骤",
   });
 }
 const removeFromPublic = (e) => {
   publicStep.value.steps.splice(e, 1);
+  isAddOrRemoved = true
   ElMessage.success({
     message: "移出成功！",
   });
@@ -103,7 +124,12 @@ const summit = () => {
           ElMessage.success({
             message: resp['message'],
           });
-          emit('flush');
+          if (publicStep.value.id === null || publicStep.value.id === 0) {
+            getPublicStepInfo(resp.data.id)
+            emit('flush', false);
+          } else {
+            emit('flush', true);
+          }
         }
       })
     }
@@ -113,22 +139,20 @@ const getPublicStepInfo = (id) => {
   axios.get("/controller/publicSteps", {params: {id}}).then(resp => {
     if (resp['code'] === 2000) {
       publicStep.value = resp.data
-      getStepList()
     }
   })
 }
 onMounted(() => {
   if (props.publicStepId !== 0) {
     getPublicStepInfo(props.publicStepId)
-  } else {
-    getStepList()
   }
+  getStepList()
 })
 </script>
 <template>
   <el-dialog v-model="dialogVisible" title="步骤信息" width="600px">
     <step-update v-if="dialogVisible" :step-id="stepId" :case-id="0"
-                 :project-id="projectId"
+                 :project-id="projectId" :parent-id="parentId"
                  :platform="publicStep.platform" @flush="flush"></step-update>
   </el-dialog>
   <el-form ref="updatePub" :model="publicStep" size="small" class="demo-table-expand" label-width="110px"
@@ -184,91 +208,18 @@ onMounted(() => {
       </el-select>
     </el-form-item>
   </el-form>
-  <el-tabs type="border-card" stretch v-model="tabValue">
+  <el-card v-if="publicStep.id===0 || publicStep.id===null">
+    <el-result icon="info" title="保存后即可编辑已选步骤">
+    </el-result>
+  </el-card>
+  <el-tabs v-else type="border-card" stretch v-model="tabValue">
     <el-tab-pane label="已选步骤" name="select">
-      <el-timeline v-if="publicStep.steps.length>0">
-        <VueDraggableNext tag="div"
-                          v-model="publicStep.steps"
-                          handle=".handle"
-                          animation="200"
-                          forceFallback="true"
-                          fallbackClass="shake"
-                          ghostClass="g-host"
-                          chosenClass="move">
-          <el-timeline-item
-              v-for="(s, index) in publicStep.steps"
-              :key="index"
-              :timestamp="'步骤' + (index + 1)"
-              placement="top"
-              :type="s['error']===1?'primary':(s['error']===2?'warning':'danger')"
-              style="padding-bottom: 0px!important;"
-              :hollow="true"
-          >
-            <el-card v-if="s.conditionType !== 0">
-              <template #header>
-                <step-show :step="s"></step-show>
-                <div style="float: right">
-                  <el-button
-                      class="handle"
-                      circle
-                      size="mini"
-                  >
-                    <el-icon :size="13" style="vertical-align: middle;">
-                      <Rank/>
-                    </el-icon>
-                  </el-button>
-                  <el-button
-                      circle
-                      type="danger"
-                      size="mini"
-                      @click="removeFromPublic(index)"
-                  >
-                    <el-icon :size="13" style="vertical-align: middle;">
-                      <Delete/>
-                    </el-icon>
-                  </el-button>
-                </div>
-              </template>
-              <el-timeline v-if="s['childSteps'].length>0">
-                <el-timeline-item v-for="(sc,index) in s['childSteps']" :timestamp="'步骤' + (index + 1)"
-                                  placement="top"
-                                  :type="sc['error']===1?'primary':(sc['error']===2?'warning':'danger')"
-                                  style="padding-bottom: 0px!important;"
-                                  :hollow="true">
-                  <step-show :step="sc"></step-show>
-                </el-timeline-item>
-              </el-timeline>
-            </el-card>
-            <div v-else>
-              <step-show :step="s"></step-show>
-              <div style="float: right">
-                <el-button
-                    class="handle"
-                    circle
-                    size="mini"
-                >
-                  <el-icon :size="13" style="vertical-align: middle;">
-                    <Rank/>
-                  </el-icon>
-                </el-button>
-                <el-button
-                    circle
-                    type="danger"
-                    size="mini"
-                    @click="removeFromPublic(index)"
-                >
-                  <el-icon :size="13" style="vertical-align: middle;">
-                    <Delete/>
-                  </el-icon>
-                </el-button>
-              </div>
-            </div>
-          </el-timeline-item>
-        </VueDraggableNext>
-      </el-timeline>
-      <el-empty description="暂无步骤" v-else>
-        <el-button size="mini" @click="tabValue = 'list'">马上添加</el-button>
-      </el-empty>
+      <step-draggable :is-edit="true" :steps="publicStep.steps" @setParent="setParent" @addStep="addStep"
+                      @flush="flush"
+                      @editStep="editStep"
+                      @remove="removeFromPublic"
+                      @deleteStep="deleteStep"/>
+
     </el-tab-pane>
     <el-tab-pane label="步骤列表" name="list">
       <el-alert style="margin-bottom: 10px" show-icon title="从此处添加或编辑步骤，并加入到已选步骤中" type="info" close-text="Get!"/>
@@ -338,6 +289,6 @@ onMounted(() => {
     </el-tab-pane>
   </el-tabs>
   <div style="text-align: center;margin-top: 20px">
-    <el-button @click="summit" size="small" type="primary">提交</el-button>
+    <el-button @click="summit" size="small" type="primary">保存</el-button>
   </div>
 </template>

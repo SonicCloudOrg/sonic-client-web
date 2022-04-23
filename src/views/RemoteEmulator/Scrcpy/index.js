@@ -1,3 +1,19 @@
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 import JMuxer from 'jmuxer';
 
 class Scrcpy {
@@ -8,10 +24,12 @@ class Scrcpy {
     } = props;
     this.props = props;
     this.excuteMode = excuteMode;
-    //
+    // JMuxer初始化
     this.initial(props)
-    //
+    // websocket初始化
     this.websocketInit(props);
+    // 监听页面激活状态
+    this.onPageFocus()
   }
 
   cmdFN(cmd) {
@@ -75,6 +93,7 @@ class Scrcpy {
   }
   switchMode = (mode) => {
     this.excuteMode = mode;
+    this.destroy();
     this.initial(this.props);
     this.websocket.send(
       JSON.stringify({
@@ -89,6 +108,12 @@ class Scrcpy {
   }
   destroy(){
     this.jmuxer && this.jmuxer.destroy();
+    this.jmuxer = null
+  }
+  onPageFocus() {
+    window.onfocus = function() {
+      this.jmuxer && this.jmuxer.reset();
+    }
   }
 }
 
