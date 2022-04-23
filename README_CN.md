@@ -97,4 +97,4 @@ docker build -t sonicorg/sonic-client-web .
 
 ## 开源许可协议
 
-[License](LICENSE)
+[MIT License](LICENSE)

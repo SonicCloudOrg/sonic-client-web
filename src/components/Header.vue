@@ -9,9 +9,6 @@ import ProjectUpdate from '../components/ProjectUpdate.vue'
 import defaultLogo from '../assets/logo.png'
 import {Cellphone, HomeFilled} from "@element-plus/icons";
 import {ElMessage} from "element-plus";
-import {localeList} from '@/config/locale'
-import useLocale from '@/locales/useLocale'
-import {useI18n} from 'vue-i18n'
 
 const changePwdForm = ref(null)
 const changePwd = ref({
@@ -21,10 +18,10 @@ const changePwd = ref({
 })
 const validatePass = (rule, value, callback) => {
   if (value === '') {
-    callback(new Error($t('form.notEmpty')))
+    callback(new Error('不能为空！'))
   } else {
     if (changePwd.value.newPwd !== changePwd.value.newPwdSec) {
-      callback(new Error($t('form.differentInput')))
+      callback(new Error('两次输入不一致！'))
     }
     callback()
   }
@@ -104,14 +101,6 @@ onMounted(() => {
   toggleClass(theme.value);
   getProjectList();
 })
-
-// 国际化设置
-const {t: $t} = useI18n()
-const changeLocaleHandler = function (val) {
-  const {changeLocale} = useLocale(store)
-  changeLocale(val.index)
-}
-
 </script>
 <template>
   <el-container direction="vertical">
@@ -126,7 +115,8 @@ const changeLocaleHandler = function (val) {
             <Expand/>
           </el-icon>
         </div>
-        <el-tooltip :content="$t('layout.theme')+theme.toUpperCase()" placement="bottom">
+
+        <el-tooltip :content="'当前主题: '+theme.toUpperCase()" placement="bottom">
           <el-switch v-model="theme" @change="toggleClass"
                      style="margin-left: 15px;"
                      :width="33"
@@ -135,20 +125,6 @@ const changeLocaleHandler = function (val) {
                      active-color="#C0C4CC" inactive-color="#ffffff"
                      active-icon-class="el-icon-sunny" inactive-icon-class="el-icon-moon"></el-switch>
         </el-tooltip>
-        <el-menu :ellipsis="false" :background-color="store.state.menuBack" :text-color="store.state.menuText"
-                 :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font">
-          <el-sub-menu index="Language">
-            <template #title>{{ $t('layout.languages') }}</template>
-            <el-menu-item v-for="item in localeList" :key="item.event" :index="item.event"
-                          @click="changeLocaleHandler">{{ item.text }} <el-badge
-                v-if="item.building"
-                type="primary"
-                value="building"
-                style="margin: 0 0 5px 5px"
-            ></el-badge>
-            </el-menu-item>
-          </el-sub-menu>
-        </el-menu>
       </div>
       <div class="flex-center">
 
@@ -161,29 +137,35 @@ const changeLocaleHandler = function (val) {
             <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
               <Cellphone/>
             </el-icon>
-            {{ $t('layout.deviceCenter') }}
+            设备中心
           </el-menu-item>
           <el-menu-item index="/Index" @click="pushIndex('/Index')"
-                        v-if="route.params.projectId|| route.fullPath==='/Index/Devices'">
+                        v-if="route.params.projectId|| route.fullPath==='/Index/Devices'"
+          >
             <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
               <HomeFilled/>
             </el-icon>
-            {{ $t('layout.backHome') }}
+            回到首页
           </el-menu-item>
           <el-sub-menu index="1">
-            <template #title>
-              <el-avatar size="medium" style="background: #409eff!important; margin-right: 5px">
+            <template #title
+            >
+              <el-avatar size="medium"
+                         style="background: #409eff!important; margin-right: 5px"
+              >
                 {{
                   (store.state.userInfo.userName && store.state.userInfo.userName.length > 1) ? store.state.userInfo.userName.substring(store.state.userInfo.userName.length - 2) : store.state.userInfo.userName
                 }}
-              </el-avatar>
+              </el-avatar
+              >
               {{
                 store.state.userInfo.userName
               }}
-            </template>
-            <el-menu-item index="1-1" @click="dialogUserInfo = true">{{ $t('layout.myInfo') }}</el-menu-item>
-            <el-menu-item index="1-2" @click="dialogChangePwd = true">{{ $t('layout.changePassword') }}</el-menu-item>
-            <el-menu-item index="1-3" @click="logout">{{ $t('layout.signOut') }}</el-menu-item>
+            </template
+            >
+            <el-menu-item index="1-1" @click="dialogUserInfo = true">我的信息</el-menu-item>
+            <el-menu-item index="1-2" @click="dialogChangePwd = true">修改密码</el-menu-item>
+            <el-menu-item index="1-3" @click="logout"> 注销</el-menu-item>
             <el-sub-menu index="2">
               <template #title
               ><span
@@ -192,18 +174,18 @@ const changeLocaleHandler = function (val) {
                   style="margin-right: 5px"
                   width="20"
                   :src="logo"
-              />{{ $t('layout.aboutSonic') }}</span
+              />关于Sonic</span
               >
               </template
               >
               <el-menu-item index="2-1"
                             @click="goToUrl('http://sonic-cloud.gitee.io/#/Home')"
-              >{{ $t('layout.officialWebSite') }}
+              >Sonic官方网站
               </el-menu-item
               >
               <el-menu-item index="2-2"
                             @click="goToUrl('http://sonic-cloud.gitee.io/#/Version')"
-              >{{ $t('layout.versionUpdateRecord') }}
+              >版本更新记录
                 <el-badge
                     value="New"
                     style="margin: 0 0 5px 5px"
@@ -220,11 +202,11 @@ const changeLocaleHandler = function (val) {
       </div>
     </el-header>
     <el-backtop :right="20" :bottom="20" target=".demo-tree-scrollbar .el-scrollbar__wrap"></el-backtop>
-    <el-dialog v-model="dialogVisible" :title="$t('dialog.projectInfo')" width="600px">
+    <el-dialog v-model="dialogVisible" title="项目信息" width="600px">
       <project-update v-if="dialogVisible" :is-update="false" @flush="flush"/>
     </el-dialog>
     <el-dialog
-        :title="$t('dialog.myInfo')"
+        title="我的信息"
         v-model="dialogUserInfo"
         width="420px"
         center
@@ -235,18 +217,16 @@ const changeLocaleHandler = function (val) {
           label-width="90px"
           style="margin-left: 10px; word-break: break-all"
       >
-        <el-form-item :label="$t('form.username')">
+        <el-form-item label="用户名">
           <span>{{ store.state.userInfo.userName }}</span>
         </el-form-item>
-        <el-form-item :label="$t('form.role')">
-          <el-tag size="small">
-            {{ store.state.userInfo.role === 2 ? $t('form.testEngineer') : $t('form.developmentEngineer') }}
-          </el-tag>
+        <el-form-item label="角色">
+          <el-tag size="small">{{ store.state.userInfo.role === 2 ? '测试工程师' : '开发工程师' }}</el-tag>
         </el-form-item>
       </el-form>
     </el-dialog>
     <el-dialog
-        :title="$t('dialog.changePassword')"
+        title="修改密码"
         v-model="dialogChangePwd"
         width="520px"
     >
@@ -261,28 +241,28 @@ const changeLocaleHandler = function (val) {
       >
         <el-form-item :rules="{
           required: true,
-          message: $t('form.oldPasswordNotEmpty'),
+          message: '旧密码不能为空',
           trigger: 'blur',
-        }" prop="oldPwd" :label="$t('form.oldPassword')">
+        }" prop="oldPwd" label="旧密码">
           <el-input
               prefix-icon="el-icon-lock"
               type="password"
               show-password
               v-model="changePwd.oldPwd"
-              :placeholder="$t('form.inputOldPassword')"
+              placeholder="请输入旧密码"
           ></el-input>
         </el-form-item>
         <el-form-item :rules="{
           required: true,
-          message: $t('form.newPasswordNotEmpty'),
+          message: '新密码不能为空',
           trigger: 'blur',
-        }" prop="newPwd" :label="$t('form.newPassword')">
+        }" prop="newPwd" label="新密码">
           <el-input
               prefix-icon="el-icon-lock"
               type="password"
               show-password
               v-model="changePwd.newPwd"
-              :placeholder="$t('form.inputNewPassword')"
+              placeholder="请输入新密码"
           ></el-input>
         </el-form-item>
         <el-form-item prop="newPwdSec" :rules="{
@@ -294,12 +274,12 @@ const changeLocaleHandler = function (val) {
               type="password"
               show-password
               v-model="changePwd.newPwdSec"
-              :placeholder="$t('form.inputNewPasswordAgain')"
+              placeholder="请再次输入新密码"
           ></el-input>
         </el-form-item>
       </el-form>
       <div style="text-align: center">
-        <el-button size="small" type="primary" @click="changePwdSummit">{{ $t('form.confirm') }}</el-button>
+        <el-button size="small" type="primary" @click="changePwdSummit">确 定</el-button>
       </div>
     </el-dialog>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
@@ -308,16 +288,14 @@ const changeLocaleHandler = function (val) {
       </el-main>
       <el-main v-else>
         <el-alert
-            :title="$t('layout.welcomeSpeech')"
+            title="欢迎来到Sonic云真机测试平台，请选择项目进入"
             type="info"
             center
             :closable="false"
         >
         </el-alert>
         <div style="text-align: center">
-          <el-button type="primary" size="small" style="margin-top: 15px" @click="dialogVisible = true">
-            {{ $t('layout.addProject') }}
-          </el-button>
+          <el-button type="primary" size="small" style="margin-top: 15px" @click="dialogVisible = true">新增项目</el-button>
         </div>
         <el-row style="margin-top: 10px" justify="center" type="flex" v-if="projectData&&projectData.length>0">
           <el-col
