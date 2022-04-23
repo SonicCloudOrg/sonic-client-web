@@ -140,7 +140,12 @@ const changeLocaleHandler = function (val) {
           <el-sub-menu index="Language">
             <template #title>{{ $t('layout.languages') }}</template>
             <el-menu-item v-for="item in localeList" :key="item.event" :index="item.event"
-                          @click="changeLocaleHandler">{{ item.text }}
+                          @click="changeLocaleHandler">{{ item.text }} <el-badge
+                v-if="item.building"
+                type="primary"
+                value="building"
+                style="margin: 0 0 5px 5px"
+            ></el-badge>
             </el-menu-item>
           </el-sub-menu>
         </el-menu>

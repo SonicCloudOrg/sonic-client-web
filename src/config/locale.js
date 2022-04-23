@@ -10,10 +10,12 @@ export const LOCALE = {
 export const localeList = [
   {
     text: '简体中文',
+    building: false,
     event: LOCALE.ZH_CN,
   },
   {
     text: 'English',
+    building: true,
     event: LOCALE.EN_US,
   },
   // ...更多语言

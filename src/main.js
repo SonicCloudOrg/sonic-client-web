@@ -22,7 +22,7 @@ import store from './store/index.js'
 import 'element-plus/dist/index.css'
 import axios from "./http/axios";
 import {ElMessage} from 'element-plus'
-import {setupI18n,i18n} from './locales/setupI18n'
+import {setupI18n} from './locales/setupI18n'
 
 async function initApp() {
   const app = createApp(App)
@@ -46,7 +46,7 @@ async function initApp() {
 initApp()
 
 router.beforeEach((to, from, next) => {
-    document.title = i18n.global.t('title')
+    document.title = 'Sonic云真机测试平台 -'
     if (to.meta['title']) {
         document.title += " " + to.meta['title']
     }
