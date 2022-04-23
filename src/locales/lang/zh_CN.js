@@ -4,6 +4,7 @@
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
 const devices = {
+    title:'Sonic云真机测试平台 -',
     list:'设备列表',
     form: {
         model: '设备型号',

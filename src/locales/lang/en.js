@@ -4,6 +4,7 @@
 import en from 'element-plus/es/locale/lang/en'
 
 const devices = {
+    title:'',
     list: 'Device List',
     form: {
         model: 'Model',
