@@ -45,9 +45,8 @@ $http.interceptors.response.use(response => {
             if (response.data.message) {
                 ElMessage.error({
                     message: response.data.message,
-                })
+                });
             }
-            ;
     }
     return response.data;
 }, err => {
