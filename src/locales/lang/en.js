@@ -1,14 +1,26 @@
 /**
- * English language
+ * EN language
  */
 import en from 'element-plus/es/locale/lang/en'
 
 const agent = {
+    hub:{
+        manager:'Cabinet Management'
+    },
     newAgent: "New Agent",
-    agentList:'Agent List',
-    status:{
-        online:'ONLINE',
-        offline:'OFFLINE'
+    status: {
+        name:'Status',
+        online: 'ONLINE',
+        offline: 'OFFLINE'
+    },
+    system: 'System',
+    version: 'Version',
+    operation: 'Operation',
+    shutdown: 'Shutdown',
+    edit: {
+        name: 'Name',
+        rule: 'Agent name cannot be empty',
+        namePlaceholder: 'Please enter the Agent name'
     }
 }
 
@@ -113,6 +125,7 @@ const form = {
 const dialog = {
     suffixError: 'Incorrect file suffix!',
     projectInfo: "Project Information",
+    agentInfo: 'Agent Information',
     myInfo: "My Information",
     changePassword: "Change Password",
     copy: {
@@ -123,7 +136,8 @@ const dialog = {
 
 //通用操作
 const common = {
-    delete: 'Delete'
+    delete: 'Delete',
+    edit: 'Edit'
 }
 
 export default {
