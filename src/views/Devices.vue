@@ -997,7 +997,7 @@ onUnmounted(() => {
         <el-table-column prop="version" :label="$t('agent.version')" align="center" width="150"></el-table-column>
         <el-table-column prop="secretKey" label="Agent Key" align="center" width="150">
           <template #default="scope">
-            <el-button size="mini" @click="copy(scope.row.secretKey)">点击复制</el-button>
+            <el-button size="mini" @click="copy(scope.row.secretKey)">{{$t('agent.clickToCopy')}}</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="status" :label="$t('agent.status.name')" align="center" width="90">

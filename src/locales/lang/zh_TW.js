@@ -7,6 +7,7 @@ const agent = {
         manager:'機櫃管理'
     },
     newAgent: "新增Agent",
+    clickToCopy:'點擊複製',
     status: {
         name:'狀態',
         online: '線上',

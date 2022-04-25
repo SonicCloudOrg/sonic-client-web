@@ -7,6 +7,7 @@ const agent = {
         manager:'机柜管理'
     },
     newAgent: "新增Agent",
+    clickToCopy:'点击复制',
     status: {
         name:'状态',
         online: '在线',

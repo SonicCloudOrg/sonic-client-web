@@ -7,6 +7,7 @@ const agent = {
         manager:'Cabinet Management'
     },
     newAgent: "New Agent",
+    clickToCopy:'Copy Key',
     status: {
         name:'Status',
         online: 'ONLINE',

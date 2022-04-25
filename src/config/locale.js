@@ -3,7 +3,7 @@
  */
 export const LOCALE = {
     ZH_CN: 'zh_CN',
-    EN_US: 'en',
+    EN_US: 'en_US',
     ZH_TW: 'zh_TW'
     // ...更多语言
 };
@@ -32,5 +32,5 @@ export const localeSetting = {
     // Locale
     locale: LOCALE.ZH_CN,
     // available Locales
-    availableLocales: [LOCALE.ZH_CN, LOCALE.EN_US], // ...更多语言
+    availableLocales: [LOCALE.ZH_CN, LOCALE.EN_US, LOCALE.ZH_TW], // ...更多语言
 };
