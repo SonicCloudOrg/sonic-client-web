@@ -1,8 +1,6 @@
 /**
  * EN language
  */
-import en from 'element-plus/es/locale/lang/en'
-
 const agent = {
     hub:{
         manager:'Cabinet Management'
@@ -147,7 +145,6 @@ export default {
         devices,
         layout,
         form,
-        dialog,
-        en
+        dialog
     }
 }

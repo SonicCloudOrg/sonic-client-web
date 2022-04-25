@@ -4,13 +4,23 @@ import { getLocal } from '@/utils/cache/localStorage'
 import { LOCALE_KEY } from '@/config/cache'
 import { LOCALE } from '@/config/locale'
 import { setHtmlPageLang, getSystemLanguage, supportLanguage } from './helper'
+// 按需引入组件库语言包
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import zhTW from 'element-plus/es/locale/lang/zh-tw'
+import en from 'element-plus/es/locale/lang/en'
+import ja from 'element-plus/es/locale/lang/ja'
+// ...更多语言
 
 const langDefault = LOCALE.ZH_CN
 
-async function createI18nOptions() {
+function defaultLanguage() {
   const systemLocale = getSystemLanguage()
   // 查找顺序：浏览器缓存、浏览器系统、默认
-  const locale = getLocal(LOCALE_KEY)?.locale || supportLanguage(systemLocale) || langDefault
+  return getLocal(LOCALE_KEY)?.locale || supportLanguage(systemLocale) || langDefault
+}
+
+async function createI18nOptions() {
+  const locale = defaultLanguage()
   const defaultLocal = await import(`./lang/${locale}.js`);
   const message = defaultLocal.default?.message ?? {};
   
@@ -26,6 +36,18 @@ async function createI18nOptions() {
 }
 
 export let i18n = null
+
+// 获取组件库语言包
+export function getElementPlusLocale() {
+  const locale = defaultLanguage()
+  const localeMap = {
+    [LOCALE.ZH_CN]: zhCn,
+    [LOCALE.ZH_TW]: zhTW,
+    [LOCALE.EN_US]: en
+    // ...更多语言
+  }
+  return localeMap[locale]
+}
 
 export async function setupI18n(app) {
   const options = await createI18nOptions();

@@ -1,7 +1,6 @@
 /**
  * ZH_CN language
  */
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
 const agent = {
     hub:{
@@ -147,7 +146,6 @@ export default {
         devices,
         layout,
         form,
-        dialog,
-        zhCn
+        dialog
     }
 }
