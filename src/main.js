@@ -26,6 +26,9 @@ import {setupI18n} from './locales/setupI18n'
 
 async function initApp() {
   const app = createApp(App)
+  
+  // 国际化
+  await setupI18n(app)
 
   // 初始化组件库
   app.use(ElementPlus)
@@ -35,9 +38,6 @@ async function initApp() {
 
   // 初始化vuex
   app.use(store)
-
-  // 国际化
-  await setupI18n(app)
 
   app.mount('#app')
 }
