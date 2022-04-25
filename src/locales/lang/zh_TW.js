@@ -1,7 +1,6 @@
 /**
  * ZH_TW language
  */
-import zhTw from 'element-plus/es/locale/lang/zh-tw'
 
 const agent = {
     hub:{
@@ -148,6 +147,5 @@ export default {
         layout,
         form,
         dialog,
-        zhTw
     }
 }

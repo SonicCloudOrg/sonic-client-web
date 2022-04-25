@@ -1,6 +1,7 @@
 /**
  * EN language
  */
+
 const agent = {
     hub:{
         manager:'Cabinet Management'
