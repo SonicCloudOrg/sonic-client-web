@@ -743,12 +743,12 @@ onUnmounted(() => {
                           :src="getImg(device.manufacturer)"
                       />
                       <img
-                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'||device.manufacturer === 'LGE'||device.manufacturer === 'HTC'||device.manufacturer === 'deltainno'"
+                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'LGE'||device.manufacturer === 'HTC'||device.manufacturer === 'deltainno'"
                           style="width: 30px"
                           :src="getImg(device.manufacturer)"
                       />
                       <img
-                          v-else-if="device.manufacturer === 'blackshark'"
+                          v-else-if="device.manufacturer === 'blackshark' ||device.manufacturer === 'APPLE'"
                           style="width: 22px"
                           :src="getImg(device.manufacturer)"
                       />
@@ -761,9 +761,16 @@ onUnmounted(() => {
                     </el-form-item>
                     <el-form-item :label="$t('devices.form.system')">
                       <img
+                          v-if="device.platform===1"
                           style="width: 30px"
-                          :src="getImg(device.platform===1?'ANDROID':'IOS')"
-                      /><span style="margin-left: 6px">{{ device.version }}</span>
+                          :src="getImg('ANDROID')"
+                      />
+                      <img
+                          v-if="device.platform===2"
+                          style="width: 22px"
+                          :src="getImg('IOS')"
+                      />
+                      <span style="margin-left: 6px">{{ device.version }}</span>
                     </el-form-item>
                     <el-form-item :label="$t('devices.form.battery.level')">
                       <div :style="'position: relative; display: flex;align-items: center;color:'+((device['level'] === 0 ||
