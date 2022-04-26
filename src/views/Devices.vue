@@ -115,6 +115,30 @@ const statusList = ref([
   },
 ]);
 const agentList = ref([]);
+const cabinetList = ref([]);
+const dialogCabinet = ref(false)
+const updateCabinetForm = ref(null)
+watch(dialogCabinet, (newValue, oldValue) => {
+  if (!newValue) {
+    cabinet.value = {
+      id: 0,
+      name: "",
+      size: 1
+    }
+  }
+})
+const cabinet = ref({
+  id: 0,
+  name: "",
+  size: 1
+})
+const editCabinet = async (id, name, size) => {
+  cabinet.value = {id, name, size}
+  await openCabinet()
+}
+const openCabinet = () => {
+  dialogCabinet.value = true
+}
 const dialogAgent = ref(false)
 const updateAgentForm = ref(null)
 watch(dialogAgent, (newValue, oldValue) => {
@@ -168,6 +192,21 @@ const updateAgent = () => {
           });
           dialogAgent.value = false
           getAllAgents()
+        }
+      })
+    }
+  })
+}
+const updateCabinet = () => {
+  updateCabinetForm['value'].validate((valid) => {
+    if (valid) {
+      axios.put("/controller/cabinet", cabinet.value).then(resp => {
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+          dialogCabinet.value = false
+          getAllCabinet()
         }
       })
     }
@@ -338,10 +377,31 @@ const findAgentById = (id) => {
   }
   return result
 }
+const findCabinetById = (id) => {
+  let result = $t('common.null')
+  for (let i in cabinetList.value) {
+    if (cabinetList.value[i].id === id) {
+      result = cabinetList.value[i].name
+      break
+    }
+  }
+  return result
+}
 const getAllAgents = () => {
   axios
       .get("/controller/agents/list").then((resp) => {
     agentList.value = resp.data
+  }).catch(() => {
+    clearInterval(timer.value);
+  });
+}
+const cabinetLoading = ref(false)
+const getAllCabinet = () => {
+  cabinetLoading.value = true;
+  axios
+      .get("/controller/cabinet/list").then((resp) => {
+    cabinetList.value = resp.data
+    cabinetLoading.value = false
   }).catch(() => {
     clearInterval(timer.value);
   });
@@ -466,6 +526,7 @@ const refresh = () => {
   getFilterOption();
   handleFindAll();
   getAllAgents();
+  getAllCabinet();
   findTemper();
   if (refreshTime.value === 2) {
     clearInterval(timer.value);
@@ -972,9 +1033,23 @@ onUnmounted(() => {
     </el-tab-pane>
     <el-tab-pane :label="$t('devices.agentCenter')">
       <el-button type="primary" size="mini" @click="openAgent">{{ $t('agent.newAgent') }}</el-button>
+      <el-switch class="refresh" active-value="1"
+                 inactive-value="0" @change="refreshNow" style="margin-left: 15px"
+                 :active-text=" $t('devices.refresh') "
+                 active-color="#13ce66"
+                 v-model="isFlush"/>
       <el-table :data="agentList" border style="margin-top: 10px">
         <el-table-column prop="id" label="Agent ID" align="center" width="90"></el-table-column>
         <el-table-column prop="name" label="Agent Name" header-align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="cabinetId" :label="$t('agent.cabinet.label')" header-align="center" show-overflow-tooltip
+                         width="150">
+          <template #default="scope">
+            <div style="text-align: center" v-if="scope.row.cabinetId===0">
+              <el-tag type="info" size="mini">{{ $t('common.null') }}</el-tag>
+            </div>
+            <span v-else>{{ findCabinetById(scope.row.cabinetId) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="host" label="Host" align="center" show-overflow-tooltip width="150"></el-table-column>
         <el-table-column prop="port" label="Port" align="center" width="90"></el-table-column>
         <el-table-column prop="systemType" :label="$t('agent.system')" align="center" width="150">
@@ -997,7 +1072,7 @@ onUnmounted(() => {
         <el-table-column prop="version" :label="$t('agent.version')" align="center" width="150"></el-table-column>
         <el-table-column prop="secretKey" label="Agent Key" align="center" width="150">
           <template #default="scope">
-            <el-button size="mini" @click="copy(scope.row.secretKey)">{{$t('agent.clickToCopy')}}</el-button>
+            <el-button size="mini" @click="copy(scope.row.secretKey)">{{ $t('agent.clickToCopy') }}</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="status" :label="$t('agent.status.name')" align="center" width="90">
@@ -1019,7 +1094,9 @@ onUnmounted(() => {
         </el-table-column>
         <el-table-column :label="$t('agent.operation')" align="center" width="180">
           <template #default="scope">
-            <el-button size="mini" type="primary" @click="editAgent(scope.row.id,scope.row.name)">{{ $t('common.edit') }}
+            <el-button size="mini" type="primary" @click="editAgent(scope.row.id,scope.row.name)">{{
+                $t('common.edit')
+              }}
             </el-button>
             <el-button size="mini" type="danger" @click="shutdownAgent(scope.row.id)" :disabled="scope.row.status===2">
               {{ $t('agent.shutdown') }}
@@ -1028,7 +1105,30 @@ onUnmounted(() => {
         </el-table-column>
       </el-table>
     </el-tab-pane>
-    <el-tab-pane :label="$t('agent.hub.manager')"></el-tab-pane>
+    <el-tab-pane :label="$t('agent.cabinet.manager')">
+      <el-button type="primary" size="mini" @click="openCabinet">{{ $t('agent.cabinet.newCabinet') }}</el-button>
+      <el-switch class="refresh" active-value="1"
+                 inactive-value="0" @change="refreshNow" style="margin-left: 15px"
+                 :active-text=" $t('devices.refresh') "
+                 active-color="#13ce66"
+                 v-model="isFlush"/>
+      <el-carousel v-if="cabinetList.length>0&&!cabinetLoading" trigger="click" height="550px"
+                   :autoplay="false" arrow="always" :loop="false">
+        <el-carousel-item v-for="item in cabinetList" :key="item">
+          <el-row :gutter="30">
+            <el-col :span="12">
+
+            </el-col>
+            <el-col :span="12">
+
+            </el-col>
+          </el-row>
+          <h3 class="small">{{ item }}</h3>
+          <el-button @click="editCabinet(item.id,item.name,item.size)"></el-button>
+        </el-carousel-item>
+      </el-carousel>
+      <el-empty v-else description="暂无机柜"></el-empty>
+    </el-tab-pane>
   </el-tabs>
   <el-dialog v-model="dialogAgent" :title="$t('dialog.agentInfo')" width="500px">
     <el-form v-if="dialogAgent" ref="updateAgentForm" :model="agent" size="small" class="demo-table-expand"
@@ -1051,6 +1151,39 @@ onUnmounted(() => {
     </el-form>
     <div style="text-align: center">
       <el-button size="small" type="primary" @click="updateAgent">{{ $t('form.confirm') }}</el-button>
+    </div>
+  </el-dialog>
+  <el-dialog v-model="dialogCabinet" :title="$t('dialog.cabinetInfo')" width="500px">
+    <el-form v-if="dialogCabinet" ref="updateCabinetForm" :model="cabinet" size="small" class="demo-table-expand"
+             label-width="90px"
+             label-position="left">
+      <el-form-item
+          prop="name"
+          :label="$t('agent.cabinet.edit.name')"
+          :rules="{
+          required: true,
+          message: $t('agent.cabinet.edit.rule'),
+          trigger: 'blur',
+        }"
+      >
+        <el-input
+            v-model="cabinet.name"
+            :placeholder="$t('agent.cabinet.edit.namePlaceholder')"
+        ></el-input>
+      </el-form-item>
+      <el-form-item
+          prop="size"
+          :label="$t('agent.cabinet.edit.size')"
+      >
+        <el-select v-model="cabinet.size">
+          <el-option :label="$t('agent.cabinet.edit.small')" :value="1"></el-option>
+          <el-option :label="$t('agent.cabinet.edit.middle')" :value="2"></el-option>
+          <el-option :label="$t('agent.cabinet.edit.large')" :value="3"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <div style="text-align: center">
+      <el-button size="small" type="primary" @click="updateCabinet">{{ $t('form.confirm') }}</el-button>
     </div>
   </el-dialog>
 </template>

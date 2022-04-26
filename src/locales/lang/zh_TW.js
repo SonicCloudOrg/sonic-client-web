@@ -3,13 +3,24 @@
  */
 
 const agent = {
-    hub:{
-        manager:'機櫃管理'
+    cabinet: {
+        label:'所屬機櫃',
+        manager: '機櫃管理',
+        newCabinet: '新增機櫃',
+        edit: {
+            name: '機櫃名稱',
+            rule: '機櫃名稱不能為空',
+            namePlaceholder: '請輸入機櫃名稱',
+            size: '機櫃規格',
+            small: '小型機櫃',
+            middle: '中型機櫃',
+            large: '大型機櫃'
+        }
     },
     newAgent: "新增Agent",
-    clickToCopy:'點擊複製',
+    clickToCopy: '點擊複製',
     status: {
-        name:'狀態',
+        name: '狀態',
         online: '線上',
         offline: '離線'
     },
@@ -124,6 +135,7 @@ const form = {
 // 彈出型視窗相關
 const dialog = {
     suffixError: '檔案格式有誤！',
+    cabinetInfo:'機櫃信息',
     projectInfo: "專案資訊",
     agentInfo: 'Agent信息',
     myInfo: "我的信息",
@@ -136,6 +148,7 @@ const dialog = {
 
 //一般操作
 const common = {
+    null: '無',
     delete: '刪除',
     edit: '編輯'
 }

@@ -3,13 +3,24 @@
  */
 
 const agent = {
-    hub:{
-        manager:'机柜管理'
+    cabinet: {
+        label: '所属机柜',
+        manager: '机柜管理',
+        newCabinet: '新增机柜',
+        edit: {
+            name: '机柜名称',
+            rule: '机柜名称不能为空',
+            namePlaceholder: '请输入机柜名称',
+            size: '机柜规格',
+            small: '小型机柜',
+            middle: '中型机柜',
+            large: '大型机柜'
+        }
     },
     newAgent: "新增Agent",
-    clickToCopy:'点击复制',
+    clickToCopy: '点击复制',
     status: {
-        name:'状态',
+        name: '状态',
         online: '在线',
         offline: '离线'
     },
@@ -124,6 +135,7 @@ const form = {
 // 弹窗相关
 const dialog = {
     suffixError: '文件格式有误！',
+    cabinetInfo: '机柜信息',
     projectInfo: "项目信息",
     agentInfo: 'Agent信息',
     myInfo: "我的信息",
@@ -136,6 +148,7 @@ const dialog = {
 
 //通用操作
 const common = {
+    null: '无',
     delete: '删除',
     edit: '编辑'
 }
