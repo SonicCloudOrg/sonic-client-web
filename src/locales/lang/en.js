@@ -23,7 +23,7 @@ const agent = {
 }
 
 const devices = {
-    title: '',
+    title: 'Sonic Cloud',
     list: 'Device List',
     form: {
         model: 'Model',
@@ -138,6 +138,28 @@ const common = {
     edit: 'Edit'
 }
 
+// 路由
+const routes = {
+  login: "Login",
+  home: "Home ",
+  deviceCenter: "Device Center",
+  remoteControl: "Remote Control",
+  androidTestCase: "Android Test Case",
+  iosTestCase: 'IOS Test Case',
+  operateSteps: "Operating Steps",
+  testSuite: "Test Suite",
+  testResult: "Test Result",
+  reportDetails: "Report Details",
+  publicSteps: "Public Steps",
+  controlElement: "Control Element",
+  globalParameter: "Global Parameter",
+  moduleManage: "Modules Management",
+  versionIteration: "Version Iteration",
+  timedTask: "Timed Task",
+  projectSetting: "Project Setting",
+  projectPage: "Project Home"
+}
+
 export default {
     message: {
         agent,
@@ -145,6 +167,7 @@ export default {
         devices,
         layout,
         form,
-        dialog
+        dialog,
+        routes
     }
 }

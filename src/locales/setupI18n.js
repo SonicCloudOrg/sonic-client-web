@@ -12,6 +12,7 @@ import ja from 'element-plus/es/locale/lang/ja'
 // ...更多语言
 
 const langDefault = LOCALE.ZH_CN
+let localeData = null
 
 function defaultLanguage() {
   const systemLocale = getSystemLanguage()
@@ -23,6 +24,7 @@ async function createI18nOptions() {
   const locale = defaultLanguage()
   const defaultLocal = await import(`./lang/${locale}.js`);
   const message = defaultLocal.default?.message ?? {};
+  localeData = message
   
   setHtmlPageLang(locale);
 
@@ -47,6 +49,19 @@ export function getElementPlusLocale() {
     // ...更多语言
   }
   return localeMap[locale]
+}
+
+// 本地文件匹配
+export function $tc(params) {
+  if (!localeData) {
+    throw new Error('not init localeData!')
+  }
+  const arr = typeof params === 'string' ? params.split('.') : []
+  let data = localeData
+  for (let i = 0; i < arr.length; i++) {
+    data = data[arr[i]]
+  }
+  return data
 }
 
 export async function setupI18n(app) {

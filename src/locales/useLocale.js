@@ -33,6 +33,8 @@ export default function useLocale(store) {
     store.dispatch('changeLocaleInfo', { locale })
     globalI18n.setLocaleMessage(locale, message);
     setI18nLanguage(locale);
+    // 强刷当前页面
+    location.reload()
     return locale;
   }
 
