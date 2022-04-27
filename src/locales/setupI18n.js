@@ -1,9 +1,9 @@
 // locales/i18n.ts
-import { createI18n } from 'vue-i18n';
-import { getLocal } from '@/utils/cache/localStorage'
-import { LOCALE_KEY } from '@/config/cache'
-import { LOCALE } from '@/config/locale'
-import { setHtmlPageLang, getSystemLanguage, supportLanguage } from './helper'
+import {createI18n} from 'vue-i18n';
+import {getLocal} from '@/utils/cache/localStorage'
+import {LOCALE_KEY} from '@/config/cache'
+import {LOCALE} from '@/config/locale'
+import {setHtmlPageLang, getSystemLanguage, supportLanguage} from './helper'
 // 按需引入组件库语言包
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import zhTW from 'element-plus/es/locale/lang/zh-tw'
@@ -14,43 +14,44 @@ import ja from 'element-plus/es/locale/lang/ja'
 const langDefault = LOCALE.ZH_CN
 
 function defaultLanguage() {
-  const systemLocale = getSystemLanguage()
-  // 查找顺序：浏览器缓存、浏览器系统、默认
-  return getLocal(LOCALE_KEY)?.locale || supportLanguage(systemLocale) || langDefault
+    const systemLocale = getSystemLanguage()
+    // 查找顺序：浏览器缓存、浏览器系统、默认
+    return getLocal(LOCALE_KEY)?.locale || supportLanguage(systemLocale) || langDefault
 }
 
 async function createI18nOptions() {
-  const locale = defaultLanguage()
-  const defaultLocal = await import(`./lang/${locale}.js`);
-  const message = defaultLocal.default?.message ?? {};
-  
-  setHtmlPageLang(locale);
+    const locale = defaultLanguage()
+    const defaultLocal = await import(`./lang/${locale}.js`);
+    const message = defaultLocal.default?.message ?? {};
 
-  return {
-    legacy: false, // composition API
-    locale,
-    messages: {
-      [locale]: message,
-    }
-  };
+    setHtmlPageLang(locale);
+
+    return {
+        legacy: false, // composition API
+        locale,
+        messages: {
+            [locale]: message,
+        }
+    };
 }
 
 export let i18n = null
 
 // 获取组件库语言包
 export function getElementPlusLocale() {
-  const locale = defaultLanguage()
-  const localeMap = {
-    [LOCALE.ZH_CN]: zhCn,
-    [LOCALE.ZH_TW]: zhTW,
-    [LOCALE.EN_US]: en
-    // ...更多语言
-  }
-  return localeMap[locale]
+    const locale = defaultLanguage()
+    const localeMap = {
+        [LOCALE.ZH_CN]: zhCn,
+        [LOCALE.ZH_TW]: zhTW,
+        [LOCALE.EN_US]: en,
+        [LOCALE.JA_JP]: ja
+        // ...更多语言
+    }
+    return localeMap[locale]
 }
 
 export async function setupI18n(app) {
-  const options = await createI18nOptions();
-  i18n = createI18n(options);
-  app.use(i18n);
+    const options = await createI18nOptions();
+    i18n = createI18n(options);
+    app.use(i18n);
 }

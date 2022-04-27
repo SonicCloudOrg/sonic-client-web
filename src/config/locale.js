@@ -4,7 +4,8 @@
 export const LOCALE = {
     ZH_CN: 'zh_CN',
     EN_US: 'en_US',
-    ZH_TW: 'zh_TW'
+    ZH_TW: 'zh_TW',
+    JA_JP: 'ja_JP'
     // ...更多语言
 };
 
@@ -24,6 +25,11 @@ export const localeList = [
         building: true,
         event: LOCALE.EN_US,
     },
+    {
+        text: '日本語',
+        building: true,
+        event: LOCALE.JA_JP,
+    },
     // ...更多语言
 ];
 
@@ -32,5 +38,5 @@ export const localeSetting = {
     // Locale
     locale: LOCALE.ZH_CN,
     // available Locales
-    availableLocales: [LOCALE.ZH_CN, LOCALE.EN_US, LOCALE.ZH_TW], // ...更多语言
+    availableLocales: [LOCALE.ZH_CN, LOCALE.EN_US, LOCALE.ZH_TW, LOCALE.JA_JP], // ...更多语言
 };
