@@ -144,10 +144,10 @@ const formatHighTemp = (value) => {
   return value + " ℃"
 }
 const formatToolTipLow = (value) => {
-  return value + "档（推荐1档）"
+  return value + $t('agent.cabinet.edit.lowFormat')
 }
 const formatToolTipHigh = (value) => {
-  return value + "档（推荐14档）"
+  return value + $t('agent.cabinet.edit.highFormat')
 }
 const robotList = [{name: "钉钉群机器人", value: 1, img: "DingTalk"}
   , {name: "企业微信机器人(即将开放)", value: 2, img: "WeChat", disabled: true},
@@ -1308,15 +1308,7 @@ onUnmounted(() => {
               :closable="false"
           >
             <template #default>
-              <div>当设备电量≤<span style="color: #409EFF">低电量值</span>时，对应充电口会释放<span style="color: #67C23A">高电流档位</span>的电流。
-              </div>
-              <div>当设备电量≥<span style="color: #409EFF">高电量值</span>时，对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流。
-              </div>
-              <div>当设备温度≥<span style="color: #409EFF">高温值</span>时（仅安卓），对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流并机器人通知。
-              </div>
-              <div>当<span style="color: #E6A23C">高温超时</span>时间内温度持续≥<span style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人并<span
-                  style="color: #F56C6C">关机</span>。
-              </div>
+              <span v-html="$t('agent.cabinet.tips.content')"></span>
             </template>
           </el-alert>
         </el-col>
