@@ -59,7 +59,7 @@ const agent = {
 }
 
 const devices = {
-    title: 'Sonic云真机测试平台 -',
+    title: 'Sonic云真机测试平台',
     list: '设备列表',
     form: {
         model: '设备型号',
@@ -176,6 +176,28 @@ const common = {
     edit: '编辑'
 }
 
+// 路由
+const routes = {
+    login: "登录",
+    home: "首页",
+    deviceCenter: "设备中心",
+    remoteControl: "远程控制",
+    androidTestCase: "安卓测试用例",
+    iosTestCase: 'IOS测试用例',
+    operateSteps: "运行步骤",
+    testSuite: "测试套件",
+    testResult: "测试结果",
+    reportDetails: "报告详情",
+    publicSteps: "公共步骤",
+    controlElement: "控件元素",
+    globalParameter: "全局参数",
+    moduleManage: "模块管理",
+    versionIteration: "版本迭代",
+    timedTask: "定时任务",
+    projectSetting: "项目设置",
+    projectPage: "项目首页"
+}
+
 export default {
     message: {
         robot,
@@ -184,6 +206,7 @@ export default {
         devices,
         layout,
         form,
-        dialog
+        dialog,
+        routes
     }
 }

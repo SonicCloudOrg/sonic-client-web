@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {ElMessage} from 'element-plus'
-import router from '../router/index.js'
+import {router} from '../router/index.js'
 import {i18n} from '@/locales/setupI18n'
 
 let baseURL = '';

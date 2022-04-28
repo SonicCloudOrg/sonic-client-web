@@ -59,7 +59,7 @@ const agent = {
 }
 
 const devices = {
-    title: 'Sonicクラウドデバイステストプラットフォーム -',
+    title: 'Sonicクラウドデバイステストプラットフォーム',
     list: 'デバイスリスト',
     form: {
         model: 'モデル',
@@ -176,6 +176,28 @@ const common = {
     edit: '编辑'
 }
 
+// 路由
+const routes = {
+  login: "ログイン",
+  home: "トップページ",
+  deviceCenter: "設備センター",
+  remoteControl: "リモートコントロール",
+  androidTestCase: "Androidテストケース",
+  iosTestCase: 'IOSテストケース',
+  operateSteps: "ステップの実行",
+  testSuite: "テストキット",
+  testResult: "テスト結果",
+  reportDetails: "詳細のレポート",
+  publicSteps: "共通の手順",
+  controlElement: "コントロール要素",
+  globalParameter: "グローバルパラメータ",
+  moduleManage: "モジュール管理",
+  versionIteration: "バージョン反復",
+  timedTask: "タイミングタスク",
+  projectSetting: "プロジェクトの設定",
+  projectPage: "プロジェクトのトップページ"
+}
+
 export default {
     message: {
         robot,
@@ -184,6 +206,7 @@ export default {
         devices,
         layout,
         form,
-        dialog
+        dialog,
+        routes
     }
 }

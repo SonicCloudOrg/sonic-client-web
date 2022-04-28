@@ -1,11 +1,12 @@
 import {createRouter, createWebHistory} from 'vue-router';
+import {$tc} from '@/locales/setupI18n'
 
-const routes = [
+const getRoutes = () => [
     {
         path: '/Login',
         component: () =>
             import ("../views/Login.vue"),
-        meta: {title: "登录"}
+        meta: {title: $tc('routes.login')}
     },
     {
         path: '/',
@@ -15,25 +16,25 @@ const routes = [
         path: '/Index',
         component: () =>
             import ("../views/Index.vue"),
-        meta: {title: "首页"},
+        meta: {title: $tc('routes.home')},
         children: [
             {
                 path: 'Devices',
                 component: () =>
                     import ("../views/Devices.vue"),
-                meta: {title: "设备中心"}
+                meta: {title: $tc('routes.deviceCenter')}
             },
             {
                 path: 'AndroidRemote/:deviceId(\\d+)',
                 component: () =>
                     import ("../views/RemoteEmulator/index.vue"),
-                meta: {title: "远程控制"}
+                meta: {title: $tc('routes.remoteControl')}
             },
             {
                 path: 'IOSRemote/:deviceId(\\d+)',
                 component: () =>
                     import ("../views/RemoteEmulator/indexIOS.vue"),
-                meta: {title: "远程控制"}
+                meta: {title: $tc('routes.remoteControl')}
             },
         ]
     },
@@ -47,123 +48,130 @@ const routes = [
                 path: 'Devices',
                 component: () =>
                     import ("../views/Devices.vue"),
-                meta: {title: "设备中心"}
+                meta: {title: $tc('routes.deviceCenter')}
             },
             {
                 path: 'AndroidRemote/:deviceId(\\d+)',
                 component: () =>
                     import ("../views/RemoteEmulator/index.vue"),
-                meta: {title: "远程控制"}
+                meta: {title: $tc('routes.remoteControl')}
             },
             {
                 path: 'IOSRemote/:deviceId(\\d+)',
                 component: () =>
                     import ("../views/RemoteEmulator/indexIOS.vue"),
-                meta: {title: "远程控制"}
+                meta: {title: $tc('routes.remoteControl')}
             },
             {
                 path: 'AndroidTestCase',
                 name: 'AndroidTestCase',
                 component: () =>
                     import ("../views/AndroidTestCase.vue"),
-                meta: {title: "安卓测试用例"},
+                meta: {title: $tc('routes.androidTestCase')},
             },
             {
                 path: 'IOSTestCase',
                 name: 'IOSTestCase',
                 component: () =>
                     import ("../views/IOSTestCase.vue"),
-                meta: {title: "iOS测试用例"},
+                meta: {title: $tc('routes.iosTestCase')},
             },
             {
                 path: 'StepListView/:caseId(\\d+)',
                 name: 'StepListView',
                 component: () =>
                     import ("../views/StepListView.vue"),
-                meta: {title: "运行步骤"}
+                meta: {title: $tc('routes.operateSteps')}
             },
             {
                 path: 'TestSuites',
                 name: 'TestSuites',
                 component: () =>
                     import ("../views/TestSuites.vue"),
-                meta: {title: "测试套件"}
+                meta: {title: $tc('routes.testSuite')}
             },
             {
                 path: 'Results',
                 name: 'Results',
                 component: () =>
                     import ("../views/Results.vue"),
-                meta: {title: "测试结果"}
+                meta: {title: $tc('routes.testResult')}
             },
             {
                 path: 'ResultDetail/:resultId(\\d+)',
                 name: 'ResultDetail',
                 component: () =>
                     import ("../views/ResultDetail.vue"),
-                meta: {title: "报告详情"}
+                meta: {title: $tc('routes.reportDetails')}
             },
             {
                 path: 'PublicStep',
                 name: 'PublicStep',
                 component: () =>
                     import ("../views/PublicStep.vue"),
-                meta: {title: "公共步骤"}
+                meta: {title: $tc('routes.publicSteps')}
             },
             {
                 path: 'Elements',
                 name: 'Elements',
                 component: () =>
                     import ("../views/Elements.vue"),
-                meta: {title: "控件元素"}
+                meta: {title: $tc('routes.controlElement')}
             },
             {
                 path: 'GlobalParams',
                 name: 'GlobalParams',
                 component: () =>
                     import ("../views/GlobalParams.vue"),
-                meta: {title: "全局参数"}
+                meta: {title: $tc('routes.globalParameter')}
             },
             {
                 path: 'Modules',
                 name: 'Modules',
                 component: () =>
                     import ("../views/Modules.vue"),
-                meta: {title: "模块管理"}
+                meta: {title: $tc('routes.moduleManage')}
             },
             {
                 path: 'Versions',
                 name: 'Versions',
                 component: () =>
                     import ("../views/Versions.vue"),
-                meta: {title: "版本迭代"}
+                meta: {title: $tc('routes.versionIteration')}
             },
             {
                 path: 'Jobs',
                 name: 'Jobs',
                 component: () =>
                     import ("../views/Jobs.vue"),
-                meta: {title: "定时任务"}
+                meta: {title: $tc('routes.timedTask')}
             },
             {
                 path: 'ProjectOption',
                 name: 'ProjectOption',
                 component: () =>
                     import ("../views/ProjectOption.vue"),
-                meta: {title: "项目设置"}
+                meta: {title: $tc('routes.projectSetting')}
             },
             {
                 path: 'ProjectIndex',
                 name: 'ProjectIndex',
                 component: () =>
                     import ("../views/ProjectIndex.vue"),
-                meta: {title: "项目首页"}
+                meta: {title: $tc('routes.projectPage')}
             },
         ]
     }
 ]
 
-export default createRouter({
-    history: createWebHistory(),
-    routes,
-})
+
+
+export let router = null
+
+export function setupRouter(app) {
+  router = createRouter({
+      history: createWebHistory(),
+      routes: getRoutes(),
+  })
+  app.use(router)
+}
