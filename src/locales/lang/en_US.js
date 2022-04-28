@@ -1,13 +1,26 @@
 /**
  * EN language
  */
+
 const agent = {
-    hub:{
-        manager:'Cabinet Management'
+    cabinet: {
+        label:'Cabinet',
+        manager: 'Cabinet Management',
+        newCabinet: 'New Cabinet',
+        edit: {
+            name: 'Name',
+            rule: 'Cabinet name cannot be empty',
+            namePlaceholder: 'Please enter the Cabinet name',
+            size: 'Size',
+            small: 'Small',
+            middle: 'Middle',
+            large: 'Large'
+        }
     },
     newAgent: "New Agent",
+    clickToCopy: 'Copy Key',
     status: {
-        name:'Status',
+        name: 'Status',
         online: 'ONLINE',
         offline: 'OFFLINE'
     },
@@ -122,6 +135,7 @@ const form = {
 // 弹窗相关
 const dialog = {
     suffixError: 'Incorrect file suffix!',
+    cabinetInfo:'Cabinet Info',
     projectInfo: "Project Information",
     agentInfo: 'Agent Information',
     myInfo: "My Information",
@@ -134,6 +148,7 @@ const dialog = {
 
 //通用操作
 const common = {
+    null: 'Null',
     delete: 'Delete',
     edit: 'Edit'
 }
