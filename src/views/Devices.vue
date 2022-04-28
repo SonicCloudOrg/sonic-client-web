@@ -133,7 +133,7 @@ watch(dialogCabinet, (newValue, oldValue) => {
       highTempTime: 15,
       robotSecret: '',
       robotToken: '',
-      robotType: ''
+      robotType: 1
     }
   }
 })
@@ -165,7 +165,7 @@ const cabinet = ref({
   highTempTime: 15,
   robotSecret: '',
   robotToken: '',
-  robotType: ''
+  robotType: 1
 })
 const editCabinet = async (t) => {
   cabinet.value = t
@@ -431,11 +431,23 @@ const getAllAgents = () => {
   });
 }
 const cabinetLoading = ref(false)
+const cabinetAgentList = ref([])
+const findByCabinet = (cabinetId) => {
+  axios
+      .get("/controller/agents/findByCabinet", {params: {cabinetId}}).then((resp) => {
+    cabinetAgentList.value = resp.data
+  }).catch(() => {
+    clearInterval(timer.value);
+  });
+}
 const getAllCabinet = () => {
   cabinetLoading.value = true;
   axios
       .get("/controller/cabinet/list").then((resp) => {
     cabinetList.value = resp.data
+    if (cabinetList.value.length > 0) {
+      findByCabinet(cabinetList.value[0].id)
+    }
     cabinetLoading.value = false
   }).catch(() => {
     clearInterval(timer.value);
@@ -565,7 +577,7 @@ const refresh = () => {
   findTemper();
   if (refreshTime.value === 2) {
     clearInterval(timer.value);
-    timer.value = setInterval(refresh, 10000);
+    timer.value = setInterval(refresh, 20000);
   }
 }
 const refreshNow = (t) => {
@@ -1152,17 +1164,17 @@ onUnmounted(() => {
         <el-carousel-item v-for="item in cabinetList" :key="item">
           <el-row :gutter="40">
             <el-col :span="12">
-
+              {{ cabinetAgentList }}
             </el-col>
             <el-col :span="12">
 
             </el-col>
           </el-row>
           <h3 class="small">{{ item }}</h3>
-          <el-button @click="editCabinet(item)"></el-button>
+          <el-button @click="editCabinet(item)">编辑信息</el-button>
         </el-carousel-item>
       </el-carousel>
-      <el-empty v-else description="暂无机柜"></el-empty>
+      <el-empty v-else></el-empty>
     </el-tab-pane>
   </el-tabs>
   <el-dialog v-model="dialogAgent" :title="$t('dialog.agentInfo')" width="500px">
