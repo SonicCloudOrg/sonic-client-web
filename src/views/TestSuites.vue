@@ -182,8 +182,8 @@ onMounted(() => {
         <el-button size="mini" type="primary" @click="editSuite(scope.row.id)">编辑</el-button>
         <el-popconfirm
             style="margin-left: 10px"
-            confirmButtonText="确认"
-            cancelButtonText="取消"
+            :confirmButtonText="$t('form.confirm')"
+            :cancelButtonText="$t('form.cancel')"
             @confirm="deleteSuite(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {ElMessage} from 'element-plus'
 import router from '../router/index.js'
+import {i18n} from '@/locales/setupI18n'
 
 let baseURL = '';
 if (process.env.NODE_ENV === 'development') {
@@ -18,7 +19,8 @@ $http.defaults.withCredentials = true;
 $http.interceptors.request.use(
     config => {
         config.headers = {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept-Language': i18n.global.locale.value
         }
         if (localStorage.getItem('SonicToken')) {
             config.headers.SonicToken = localStorage.getItem('SonicToken');

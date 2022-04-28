@@ -138,8 +138,8 @@ onMounted(() => {
         >
         <el-popconfirm
             style="margin-left: 10px"
-            confirmButtonText="确认"
-            cancelButtonText="取消"
+            :confirmButtonText="$t('form.confirm')"
+            :cancelButtonText="$t('form.cancel')"
             @confirm="deleteGlobal(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"

@@ -115,6 +115,30 @@ const statusList = ref([
   },
 ]);
 const agentList = ref([]);
+const cabinetList = ref([]);
+const dialogCabinet = ref(false)
+const updateCabinetForm = ref(null)
+watch(dialogCabinet, (newValue, oldValue) => {
+  if (!newValue) {
+    cabinet.value = {
+      id: 0,
+      name: "",
+      size: 1
+    }
+  }
+})
+const cabinet = ref({
+  id: 0,
+  name: "",
+  size: 1
+})
+const editCabinet = async (id, name, size) => {
+  cabinet.value = {id, name, size}
+  await openCabinet()
+}
+const openCabinet = () => {
+  dialogCabinet.value = true
+}
 const dialogAgent = ref(false)
 const updateAgentForm = ref(null)
 watch(dialogAgent, (newValue, oldValue) => {
@@ -168,6 +192,21 @@ const updateAgent = () => {
           });
           dialogAgent.value = false
           getAllAgents()
+        }
+      })
+    }
+  })
+}
+const updateCabinet = () => {
+  updateCabinetForm['value'].validate((valid) => {
+    if (valid) {
+      axios.put("/controller/cabinet", cabinet.value).then(resp => {
+        if (resp['code'] === 2000) {
+          ElMessage.success({
+            message: resp['message'],
+          });
+          dialogCabinet.value = false
+          getAllCabinet()
         }
       })
     }
@@ -338,10 +377,31 @@ const findAgentById = (id) => {
   }
   return result
 }
+const findCabinetById = (id) => {
+  let result = $t('common.null')
+  for (let i in cabinetList.value) {
+    if (cabinetList.value[i].id === id) {
+      result = cabinetList.value[i].name
+      break
+    }
+  }
+  return result
+}
 const getAllAgents = () => {
   axios
       .get("/controller/agents/list").then((resp) => {
     agentList.value = resp.data
+  }).catch(() => {
+    clearInterval(timer.value);
+  });
+}
+const cabinetLoading = ref(false)
+const getAllCabinet = () => {
+  cabinetLoading.value = true;
+  axios
+      .get("/controller/cabinet/list").then((resp) => {
+    cabinetList.value = resp.data
+    cabinetLoading.value = false
   }).catch(() => {
     clearInterval(timer.value);
   });
@@ -466,6 +526,7 @@ const refresh = () => {
   getFilterOption();
   handleFindAll();
   getAllAgents();
+  getAllCabinet();
   findTemper();
   if (refreshTime.value === 2) {
     clearInterval(timer.value);
@@ -677,7 +738,7 @@ onUnmounted(() => {
                    v-model="isFlush"/>
 
         <strong v-if="avgTem!==0" style="float: right; display: flex;align-items: center;
-        font-size: 16px;color: #909399;">{{$t('devices.avgTem')}}
+        font-size: 16px;color: #909399;">{{ $t('devices.avgTem') }}
           <div :style="'position: relative; display: flex;align-items: center;color:'
         +(avgTem<300?'#67C23A':(avgTem<350?'#E6A23C':'#F56C6C'))">
             <ColorImg
@@ -691,7 +752,7 @@ onUnmounted(() => {
         </strong>
 
         <div style="text-align: center;margin-top: 20px">
-          <el-divider class="device-card-divider">{{$t('devices.list')}}</el-divider>
+          <el-divider class="device-card-divider">{{ $t('devices.list') }}</el-divider>
         </div>
         <el-row :gutter="20">
           <el-col
@@ -743,12 +804,12 @@ onUnmounted(() => {
                           :src="getImg(device.manufacturer)"
                       />
                       <img
-                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'APPLE'||device.manufacturer === 'LGE'||device.manufacturer === 'HTC'||device.manufacturer === 'deltainno'"
+                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'LGE'||device.manufacturer === 'HTC'||device.manufacturer === 'deltainno'"
                           style="width: 30px"
                           :src="getImg(device.manufacturer)"
                       />
                       <img
-                          v-else-if="device.manufacturer === 'blackshark'"
+                          v-else-if="device.manufacturer === 'blackshark' ||device.manufacturer === 'APPLE'"
                           style="width: 22px"
                           :src="getImg(device.manufacturer)"
                       />
@@ -761,9 +822,16 @@ onUnmounted(() => {
                     </el-form-item>
                     <el-form-item :label="$t('devices.form.system')">
                       <img
+                          v-if="device.platform===1"
                           style="width: 30px"
-                          :src="getImg(device.platform===1?'ANDROID':'IOS')"
-                      /><span style="margin-left: 6px">{{ device.version }}</span>
+                          :src="getImg('ANDROID')"
+                      />
+                      <img
+                          v-if="device.platform===2"
+                          style="width: 22px"
+                          :src="getImg('IOS')"
+                      />
+                      <span style="margin-left: 6px">{{ device.version }}</span>
                     </el-form-item>
                     <el-form-item :label="$t('devices.form.battery.level')">
                       <div :style="'position: relative; display: flex;align-items: center;color:'+((device['level'] === 0 ||
@@ -818,7 +886,7 @@ onUnmounted(() => {
               </el-row>
               <div style="text-align: center">
                 <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'"
-                           @click="jump(device.id,device.platform)">{{$t('devices.useRightNow')}}
+                           @click="jump(device.id,device.platform)">{{ $t('devices.useRightNow') }}
                 </el-button>
                 <el-popover placement="top" width="340px" trigger="hover">
                   <el-form
@@ -840,7 +908,7 @@ onUnmounted(() => {
                       >
                         <el-button
                             type="primary"
-                            size="mini">{{$t('devices.detail.uploadImg')}}
+                            size="mini">{{ $t('devices.detail.uploadImg') }}
                         </el-button
                         >
                       </el-upload>
@@ -859,7 +927,7 @@ onUnmounted(() => {
                           <el-button
                               size="mini"
                               @click="saveDetail(device)"
-                          >{{$t('form.save')}}
+                          >{{ $t('form.save') }}
                           </el-button
                           >
                         </template>
@@ -894,21 +962,21 @@ onUnmounted(() => {
                           <el-button
                               size="mini"
                               @click="saveDetail(device)"
-                          >{{$t('form.save')}}
+                          >{{ $t('form.save') }}
                           </el-button
                           >
                         </template>
                       </el-input>
                     </el-form-item>
-                    <el-form-item label="快捷操作">
+                    <el-form-item :label="$t('devices.detail.operation')">
                       <el-popconfirm
                           placement="top"
-                          confirmButtonText="确认"
-                          cancelButtonText="取消"
+                          :confirmButtonText="$t('form.confirm')"
+                          :cancelButtonText="$t('form.cancel')"
                           @confirm="reboot(device.id)"
                           icon="el-icon-warning"
                           iconColor="red"
-                          title="确定重启该设备吗？"
+                          :title="$t('devices.detail.rebootTips')"
                       >
                         <template #reference>
                           <el-button
@@ -918,19 +986,19 @@ onUnmounted(() => {
                           &&device.status !== 'DEBUGGING'
                           &&device.status !== 'TESTING'
                            &&device.status !== 'ERROR'"
-                          >重启
+                          >{{ $t('devices.detail.reboot') }}
                           </el-button
                           >
                         </template>
                       </el-popconfirm>
                       <el-popconfirm
                           placement="top"
-                          confirmButtonText="确认"
-                          cancelButtonText="取消"
+                          :confirmButtonText="$t('form.confirm')"
+                          :cancelButtonText="$t('form.cancel')"
                           @confirm="deleteDevice(device.id)"
                           icon="el-icon-warning"
                           iconColor="red"
-                          title="确定删除该设备吗？"
+                          :title="$t('devices.detail.deleteTips')"
                       >
                         <template #reference>
                           <el-button
@@ -939,7 +1007,7 @@ onUnmounted(() => {
                               :disabled="device.status === 'ONLINE'
                           &&device.status === 'DEBUGGING'
                           &&device.status === 'TESTING'"
-                          >删除
+                          >{{ $t('common.delete') }}
                           </el-button
                           >
                         </template>
@@ -947,7 +1015,7 @@ onUnmounted(() => {
                     </el-form-item>
                   </el-form>
                   <template #reference>
-                    <el-button size="mini">{{$t('devices.moreDetail')}}</el-button>
+                    <el-button size="mini">{{ $t('devices.moreDetail') }}</el-button>
                   </template>
                 </el-popover>
               </div>
@@ -964,120 +1032,158 @@ onUnmounted(() => {
       </el-card>
     </el-tab-pane>
     <el-tab-pane :label="$t('devices.agentCenter')">
-      <el-button type="primary" size="mini" @click="openAgent">新增Agent</el-button>
-      <div style="text-align: center;margin-top: 20px">
-        <el-divider class="device-card-divider">Agent列表</el-divider>
-      </div>
-      <el-row :gutter="20">
-        <el-col
-            :xs="12"
-            :sm="12"
-            :md="12"
-            :lg="8"
-            :xl="8"
-            v-for="agent in agentList"
-            :key="agent"
-            style="margin-top: 20px"
-        >
-          <el-card
-              shadow="hover"
-              :body-style="{ padding: '10px 20px 15px 10px'}"
-          >
-            <template #header>
-              <strong>{{ agent.name }}</strong>
-              <div style="float: right">
-                <el-tag
-                    size="small"
-                    type="success"
-                    v-if="agent.status === 1"
-                >在线
-                </el-tag
-                >
-                <el-tag
-                    size="small"
-                    type="info"
-                    v-if="agent.status === 2"
-                >离线
-                </el-tag
-                >
-              </div>
-            </template>
-            <el-form
-                style="margin-left: 10px"
-                label-position="left"
-                class="demo-table-expand"
-                label-width="100px"
+      <el-button type="primary" size="mini" @click="openAgent">{{ $t('agent.newAgent') }}</el-button>
+      <el-switch class="refresh" active-value="1"
+                 inactive-value="0" @change="refreshNow" style="margin-left: 15px"
+                 :active-text=" $t('devices.refresh') "
+                 active-color="#13ce66"
+                 v-model="isFlush"/>
+      <el-table :data="agentList" border style="margin-top: 10px">
+        <el-table-column prop="id" label="Agent ID" align="center" width="90"></el-table-column>
+        <el-table-column prop="name" label="Agent Name" header-align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="cabinetId" :label="$t('agent.cabinet.label')" header-align="center" show-overflow-tooltip
+                         width="150">
+          <template #default="scope">
+            <div style="text-align: center" v-if="scope.row.cabinetId===0">
+              <el-tag type="info" size="mini">{{ $t('common.null') }}</el-tag>
+            </div>
+            <span v-else>{{ findCabinetById(scope.row.cabinetId) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="host" label="Host" align="center" show-overflow-tooltip width="150"></el-table-column>
+        <el-table-column prop="port" label="Port" align="center" width="90"></el-table-column>
+        <el-table-column prop="systemType" :label="$t('agent.system')" align="center" width="150">
+          <template #default="scope">
+            <div style="display: flex; align-items: center;justify-content: center">
+              {{ scope.row.systemType }}
+              <img
+                  style="margin-left: 10px"
+                  v-if="scope.row.systemType!=='unknown' &&
+                                    (scope.row.systemType.indexOf('Mac') !== -1 ||
+                                      scope.row.systemType.indexOf('Windows') !== -1 ||
+                                      scope.row.systemType.indexOf('Linux') !== -1)"
+                  height="20"
+                  :src="getImg(scope.row.systemType.indexOf('Mac') !== -1
+                                      ? 'Mac': scope.row.systemType.indexOf('Linux') !== -1?'Linux':'Windows')"
+              />
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="version" :label="$t('agent.version')" align="center" width="150"></el-table-column>
+        <el-table-column prop="secretKey" label="Agent Key" align="center" width="150">
+          <template #default="scope">
+            <el-button size="mini" @click="copy(scope.row.secretKey)">{{ $t('agent.clickToCopy') }}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" :label="$t('agent.status.name')" align="center" width="90">
+          <template #default="scope">
+            <el-tag
+                size="small"
+                type="success"
+                v-if="scope.row.status === 1"
+            >{{ $t('agent.status.online') }}
+            </el-tag
             >
-              <el-form-item label="Agent ID">
-                <span>#{{ agent.id }}</span>
-              </el-form-item>
-              <el-form-item label="Agent所在IP">
-                <span>{{ agent.host }}</span>
-              </el-form-item>
-              <el-form-item label="部署系统">
-                <div style="display: flex; align-items: center">
-                  {{ agent['systemType'] }}
-                  <img
-                      style="margin-left: 10px"
-                      v-if="
-                     agent['systemType']!=='unknown' &&
-                      (agent['systemType'].indexOf('Mac') !== -1 ||
-                        agent['systemType'].indexOf('Windows') !== -1 ||
-                        agent['systemType'].indexOf('Linux') !== -1)
-                    "
-                      height="20"
-                      :src="
-                      getImg(agent['systemType'].indexOf('Mac') !== -1
-                        ? 'Mac'
-                        : agent['systemType'].indexOf('Linux') !== -1?'Linux':'Windows')
-                    "
-                  />
-                </div>
-              </el-form-item>
-              <el-form-item label="开启端口">
-                <span>{{ agent.port }}</span>
-              </el-form-item>
-              <el-form-item label="Agent端版本">
-                <span>{{ agent.version }}</span>
-              </el-form-item>
-              <el-form-item label="AgentKey">
-                <div style="white-space: nowrap;cursor: pointer" @click="copy(agent['secretKey'])">{{
-                    agent['secretKey']
-                  }}
-                </div>
-              </el-form-item>
-              <el-form-item label="Agent操作">
-                <el-button size="mini" type="primary" @click="editAgent(agent.id,agent.name)">编辑</el-button>
-                <el-button size="mini" type="danger" @click="shutdownAgent(agent.id)" :disabled="agent.status===2">终止运行
-                </el-button>
-              </el-form-item>
-            </el-form>
-          </el-card>
-        </el-col>
-      </el-row>
+            <el-tag
+                size="small"
+                type="info"
+                v-if="scope.row.status === 2"
+            >{{ $t('agent.status.offline') }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('agent.operation')" align="center" width="180">
+          <template #default="scope">
+            <el-button size="mini" type="primary" @click="editAgent(scope.row.id,scope.row.name)">{{
+                $t('common.edit')
+              }}
+            </el-button>
+            <el-button size="mini" type="danger" @click="shutdownAgent(scope.row.id)" :disabled="scope.row.status===2">
+              {{ $t('agent.shutdown') }}
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-tab-pane>
+    <el-tab-pane :label="$t('agent.cabinet.manager')">
+      <el-button type="primary" size="mini" @click="openCabinet">{{ $t('agent.cabinet.newCabinet') }}</el-button>
+      <el-switch class="refresh" active-value="1"
+                 inactive-value="0" @change="refreshNow" style="margin-left: 15px"
+                 :active-text=" $t('devices.refresh') "
+                 active-color="#13ce66"
+                 v-model="isFlush"/>
+      <el-carousel v-if="cabinetList.length>0&&!cabinetLoading" trigger="click" height="550px"
+                   :autoplay="false" arrow="always" :loop="false">
+        <el-carousel-item v-for="item in cabinetList" :key="item">
+          <el-row :gutter="30">
+            <el-col :span="12">
+
+            </el-col>
+            <el-col :span="12">
+
+            </el-col>
+          </el-row>
+          <h3 class="small">{{ item }}</h3>
+          <el-button @click="editCabinet(item.id,item.name,item.size)"></el-button>
+        </el-carousel-item>
+      </el-carousel>
+      <el-empty v-else description="暂无机柜"></el-empty>
     </el-tab-pane>
   </el-tabs>
-  <el-dialog v-model="dialogAgent" title="Agent信息" width="500px">
+  <el-dialog v-model="dialogAgent" :title="$t('dialog.agentInfo')" width="500px">
     <el-form v-if="dialogAgent" ref="updateAgentForm" :model="agent" size="small" class="demo-table-expand"
              label-width="90px"
              label-position="left">
       <el-form-item
           prop="name"
-          label="Agent名称"
+          :label="$t('agent.edit.name')"
           :rules="{
           required: true,
-          message: 'Agent名称不能为空',
+          message: $t('agent.edit.rule'),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="agent.name"
-            placeholder="请输入Agent名称"
+            :placeholder="$t('agent.edit.namePlaceholder')"
         ></el-input>
       </el-form-item>
     </el-form>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="updateAgent">确 定</el-button>
+      <el-button size="small" type="primary" @click="updateAgent">{{ $t('form.confirm') }}</el-button>
+    </div>
+  </el-dialog>
+  <el-dialog v-model="dialogCabinet" :title="$t('dialog.cabinetInfo')" width="500px">
+    <el-form v-if="dialogCabinet" ref="updateCabinetForm" :model="cabinet" size="small" class="demo-table-expand"
+             label-width="90px"
+             label-position="left">
+      <el-form-item
+          prop="name"
+          :label="$t('agent.cabinet.edit.name')"
+          :rules="{
+          required: true,
+          message: $t('agent.cabinet.edit.rule'),
+          trigger: 'blur',
+        }"
+      >
+        <el-input
+            v-model="cabinet.name"
+            :placeholder="$t('agent.cabinet.edit.namePlaceholder')"
+        ></el-input>
+      </el-form-item>
+      <el-form-item
+          prop="size"
+          :label="$t('agent.cabinet.edit.size')"
+      >
+        <el-select v-model="cabinet.size">
+          <el-option :label="$t('agent.cabinet.edit.small')" :value="1"></el-option>
+          <el-option :label="$t('agent.cabinet.edit.middle')" :value="2"></el-option>
+          <el-option :label="$t('agent.cabinet.edit.large')" :value="3"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <div style="text-align: center">
+      <el-button size="small" type="primary" @click="updateCabinet">{{ $t('form.confirm') }}</el-button>
     </div>
   </el-dialog>
 </template>

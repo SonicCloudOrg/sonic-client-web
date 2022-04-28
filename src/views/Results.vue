@@ -111,8 +111,8 @@ onMounted(() => {
       <template #default="scope">
         <el-popconfirm
             style="margin-left: 10px"
-            confirmButtonText="确认"
-            cancelButtonText="取消"
+            :confirmButtonText="$t('form.confirm')"
+            :cancelButtonText="$t('form.cancel')"
             @confirm="forceStopSuite(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"
@@ -131,8 +131,8 @@ onMounted(() => {
         </el-popconfirm>
         <el-popconfirm
             style="margin-left: 10px"
-            confirmButtonText="确认"
-            cancelButtonText="取消"
+            :confirmButtonText="$t('form.confirm')"
+            :cancelButtonText="$t('form.cancel')"
             @confirm="delResult(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"

@@ -1,37 +1,72 @@
 /**
- * English language
+ * EN language
  */
-import en from 'element-plus/es/locale/lang/en'
+
+const agent = {
+    cabinet: {
+        label:'Cabinet',
+        manager: 'Cabinet Management',
+        newCabinet: 'New Cabinet',
+        edit: {
+            name: 'Name',
+            rule: 'Cabinet name cannot be empty',
+            namePlaceholder: 'Please enter the Cabinet name',
+            size: 'Size',
+            small: 'Small',
+            middle: 'Middle',
+            large: 'Large'
+        }
+    },
+    newAgent: "New Agent",
+    clickToCopy: 'Copy Key',
+    status: {
+        name: 'Status',
+        online: 'ONLINE',
+        offline: 'OFFLINE'
+    },
+    system: 'System',
+    version: 'Version',
+    operation: 'Operation',
+    shutdown: 'Shutdown',
+    edit: {
+        name: 'Name',
+        rule: 'Agent name cannot be empty',
+        namePlaceholder: 'Please enter the Agent name'
+    }
+}
 
 const devices = {
-    title:'',
+    title: '',
     list: 'Device List',
     form: {
         model: 'Model',
         manufacturer: 'MFR',
-        system:'System',
-        battery:{
-            level:'Level',
-            temperature:'Temp'
+        system: 'System',
+        battery: {
+            level: 'Level',
+            temperature: 'Temp'
         },
-        agent:'Agent'
+        agent: 'Agent'
     },
-    detail:{
-        image:'Image',
-        uploadImg:'Click to Upload',
-        nickName:'NickName',
-        nickPlaceholder:'Enter device nickname',
-        name:'Name',
-        model:'Model',
-        udId:'UDID',
-        size:'Screen Size',
-        cpu:'CPU',
-        pwd:'Password',
-        pwdPlaceholder:'Default Sonic123456',
-        operation:'Operation'
+    detail: {
+        image: 'Image',
+        uploadImg: 'Click to Upload',
+        nickName: 'NickName',
+        nickPlaceholder: 'Enter device nickname',
+        name: 'Name',
+        model: 'Model',
+        udId: 'UDID',
+        size: 'Screen Size',
+        cpu: 'CPU',
+        pwd: 'Password',
+        pwdPlaceholder: 'Default Sonic123456',
+        operation: 'Operation',
+        reboot: 'Reboot',
+        rebootTips: 'Are you sure to reboot the device?',
+        deleteTips: 'Are you sure to delete the device?'
     },
-    useRightNow:'Use Now',
-    moreDetail:'More',
+    useRightNow: 'Use Now',
+    moreDetail: 'More',
     deviceCenter: 'Device Center',
     agentCenter: 'Agent Center',
     status: {
@@ -79,7 +114,7 @@ const layout = {
 }
 // 表单相关
 const form = {
-    save:'Save',
+    save: 'Save',
     unknown: 'Unknown',
     notEmpty: "Not Empty!",
     differentInput: "The twice inputs are inconsistent!",
@@ -94,12 +129,15 @@ const form = {
     newPassword: "New Password",
     inputNewPassword: "Please enter your new password",
     inputNewPasswordAgain: "Please enter your new password again",
-    confirm: "Confirm"
+    confirm: "Confirm",
+    cancel: "Cancel"
 }
 // 弹窗相关
 const dialog = {
     suffixError: 'Incorrect file suffix!',
+    cabinetInfo:'Cabinet Info',
     projectInfo: "Project Information",
+    agentInfo: 'Agent Information',
     myInfo: "My Information",
     changePassword: "Change Password",
     copy: {
@@ -108,12 +146,20 @@ const dialog = {
     }
 }
 
+//通用操作
+const common = {
+    null: 'Null',
+    delete: 'Delete',
+    edit: 'Edit'
+}
+
 export default {
     message: {
+        agent,
+        common,
         devices,
         layout,
         form,
-        dialog,
-        en
+        dialog
     }
 }
