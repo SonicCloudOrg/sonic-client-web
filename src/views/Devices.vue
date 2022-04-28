@@ -18,6 +18,7 @@
 import {ref, onMounted, watch, onUnmounted, onBeforeMount} from "vue";
 import {useRouter} from "vue-router";
 import {useI18n} from 'vue-i18n'
+import {Operation} from '@element-plus/icons';
 
 const {t: $t} = useI18n()
 import Pageable from "../components/Pageable.vue";
@@ -123,17 +124,51 @@ watch(dialogCabinet, (newValue, oldValue) => {
     cabinet.value = {
       id: 0,
       name: "",
-      size: 1
+      size: 1,
+      lowLevel: 40,
+      lowGear: 1,
+      highLevel: 90,
+      highGear: 14,
+      highTemp: 45,
+      highTempTime: 15,
+      robotSecret: '',
+      robotToken: '',
+      robotType: ''
     }
   }
 })
+const formatLevel = (value) => {
+  return value + " %"
+}
+const formatHighTemp = (value) => {
+  return value + " ℃"
+}
+const formatToolTipLow = (value) => {
+  return value + "档（推荐1档）"
+}
+const formatToolTipHigh = (value) => {
+  return value + "档（推荐14档）"
+}
+const robotList = [{name: "钉钉群机器人", value: 1, img: "DingTalk"}
+  , {name: "企业微信机器人(即将开放)", value: 2, img: "WeChat", disabled: true},
+  {name: "飞书群机器人", value: 3, img: "FeiShu"},
+  {name: "友空间机器人(即将开放)", value: 4, img: "You", disabled: true}]
 const cabinet = ref({
   id: 0,
   name: "",
-  size: 1
+  size: 1,
+  lowLevel: 40,
+  lowGear: 1,
+  highLevel: 90,
+  highGear: 14,
+  highTemp: 45,
+  highTempTime: 15,
+  robotSecret: '',
+  robotToken: '',
+  robotType: ''
 })
-const editCabinet = async (id, name, size) => {
-  cabinet.value = {id, name, size}
+const editCabinet = async (t) => {
+  cabinet.value = t
   await openCabinet()
 }
 const openCabinet = () => {
@@ -1115,7 +1150,7 @@ onUnmounted(() => {
       <el-carousel v-if="cabinetList.length>0&&!cabinetLoading" trigger="click" height="550px"
                    :autoplay="false" arrow="always" :loop="false">
         <el-carousel-item v-for="item in cabinetList" :key="item">
-          <el-row :gutter="30">
+          <el-row :gutter="40">
             <el-col :span="12">
 
             </el-col>
@@ -1124,7 +1159,7 @@ onUnmounted(() => {
             </el-col>
           </el-row>
           <h3 class="small">{{ item }}</h3>
-          <el-button @click="editCabinet(item.id,item.name,item.size)"></el-button>
+          <el-button @click="editCabinet(item)"></el-button>
         </el-carousel-item>
       </el-carousel>
       <el-empty v-else description="暂无机柜"></el-empty>
@@ -1153,36 +1188,141 @@ onUnmounted(() => {
       <el-button size="small" type="primary" @click="updateAgent">{{ $t('form.confirm') }}</el-button>
     </div>
   </el-dialog>
-  <el-dialog v-model="dialogCabinet" :title="$t('dialog.cabinetInfo')" width="500px">
+  <el-dialog v-model="dialogCabinet" :title="$t('dialog.cabinetInfo')" width="1100px">
     <el-form v-if="dialogCabinet" ref="updateCabinetForm" :model="cabinet" size="small" class="demo-table-expand"
              label-width="90px"
              label-position="left">
-      <el-form-item
-          prop="name"
-          :label="$t('agent.cabinet.edit.name')"
-          :rules="{
+      <el-row :gutter="40">
+        <el-col :span="12">
+          <el-form-item
+              prop="name"
+              :label="$t('agent.cabinet.edit.name')"
+              :rules="{
           required: true,
           message: $t('agent.cabinet.edit.rule'),
           trigger: 'blur',
         }"
-      >
-        <el-input
-            v-model="cabinet.name"
-            :placeholder="$t('agent.cabinet.edit.namePlaceholder')"
-        ></el-input>
-      </el-form-item>
-      <el-form-item
-          prop="size"
-          :label="$t('agent.cabinet.edit.size')"
-      >
-        <el-select v-model="cabinet.size">
-          <el-option :label="$t('agent.cabinet.edit.small')" :value="1"></el-option>
-          <el-option :label="$t('agent.cabinet.edit.middle')" :value="2"></el-option>
-          <el-option :label="$t('agent.cabinet.edit.large')" :value="3"></el-option>
-        </el-select>
-      </el-form-item>
+          >
+            <el-input
+                v-model="cabinet.name"
+                :placeholder="$t('agent.cabinet.edit.namePlaceholder')"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+              prop="size"
+              :label="$t('agent.cabinet.edit.size')"
+          >
+            <el-select v-model="cabinet.size">
+              <el-option :label="$t('agent.cabinet.edit.small')" :value="1"></el-option>
+              <el-option :label="$t('agent.cabinet.edit.middle')" :value="2"></el-option>
+              <el-option :label="$t('agent.cabinet.edit.large')" :value="3"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-divider>
+            <el-icon>
+              <Operation/>
+            </el-icon>
+          </el-divider>
+          <el-form-item
+              prop="name"
+              :label="$t('agent.cabinet.edit.lowLevel')"
+          >
+            <el-slider show-input :format-tooltip="formatLevel" v-model="cabinet.lowLevel" :max="100" :min="1"/>
+          </el-form-item>
+          <el-form-item
+              prop="name"
+              :label="$t('agent.cabinet.edit.highGear')"
+          >
+            <el-slider :format-tooltip="formatToolTipHigh" v-model="cabinet.highGear" show-stops :max="14" :min="1"/>
+          </el-form-item>
+          <el-form-item
+              prop="name"
+              :label="$t('agent.cabinet.edit.highLevel')"
+          >
+            <el-slider show-input :format-tooltip="formatLevel" v-model="cabinet.highLevel" :max="100" :min="1"/>
+          </el-form-item>
+          <el-form-item
+              prop="name"
+              :label="$t('agent.cabinet.edit.lowGear')"
+          >
+            <el-slider :format-tooltip="formatToolTipLow" v-model="cabinet.lowGear" show-stops :max="14" :min="1"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+              prop="name"
+              :label="$t('agent.cabinet.edit.highTemp')"
+          >
+            <el-slider :format-tooltip="formatHighTemp" v-model="cabinet.highTemp" show-input :max="80" :min="1"/>
+          </el-form-item>
+          <el-form-item
+              prop="name"
+              :label="$t('agent.cabinet.edit.highTempTime')"
+          >
+            <el-input-number v-model="cabinet.highTempTime" show-input :max="120" :min="1"/>
+            <span style="margin-left: 10px">min</span>
+          </el-form-item>
+          <el-form-item :label="$t('robot.robotType')">
+            <el-select
+                style="width: 100%"
+                v-model="cabinet.robotType"
+                :placeholder="$t('robot.robotTypePlaceholder')"
+            >
+              <el-option
+                  v-for="item in robotList"
+                  :key="item.name"
+                  :value="item.value"
+                  :label="item.name"
+                  :disabled="item['disabled']"
+              >
+                <div style="display: flex;align-items: center">
+                  <el-avatar
+                      style="margin-right: 10px"
+                      :size="30"
+                      :src="getImg(item.img)"
+                      shape="square"
+                  ></el-avatar
+                  >
+                  {{ item.name }}
+                </div>
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item :label="$t('robot.robotToken')" prop="robotToken">
+            <el-input
+                v-model="cabinet.robotToken"
+                :placeholder="$t('robot.robotTokenPlaceholder')"
+            ></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('robot.robotSecret')" prop="robotSecret">
+            <el-input
+                v-model="cabinet.robotSecret"
+                :placeholder="$t('robot.robotSecretPlaceholder')"
+                type="password"
+            ></el-input>
+          </el-form-item>
+          <el-alert
+              :title="$t('agent.cabinet.tips.title')"
+              type="info"
+              show-icon
+              :closable="false"
+          >
+            <template #default>
+              <div>当设备电量≤<span style="color: #409EFF">低电量值</span>时，对应充电口会释放<span style="color: #67C23A">高电流档位</span>的电流。
+              </div>
+              <div>当设备电量≥<span style="color: #409EFF">高电量值</span>时，对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流。
+              </div>
+              <div>当设备温度≥<span style="color: #409EFF">高温值</span>时（仅安卓），对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流并机器人通知。
+              </div>
+              <div>当<span style="color: #E6A23C">高温超时</span>时间内温度持续≥<span style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人并<span
+                  style="color: #F56C6C">关机</span>。
+              </div>
+            </template>
+          </el-alert>
+        </el-col>
+      </el-row>
     </el-form>
-    <div style="text-align: center">
+    <div style="text-align: center;margin-top: 20px">
       <el-button size="small" type="primary" @click="updateCabinet">{{ $t('form.confirm') }}</el-button>
     </div>
   </el-dialog>

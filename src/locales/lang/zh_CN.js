@@ -1,7 +1,14 @@
 /**
  * ZH_CN language
  */
-
+const robot = {
+    robotType:'机器人类型',
+    robotTypePlaceholder:'请选择机器人类型',
+    robotToken:'WebHook',
+    robotTokenPlaceholder:'请输入群机器人的WebHook',
+    robotSecret:'Secret',
+    robotSecretPlaceholder:'请输入群机器人的密钥'
+}
 const agent = {
     cabinet: {
         label: '所属机柜',
@@ -12,9 +19,18 @@ const agent = {
             rule: '机柜名称不能为空',
             namePlaceholder: '请输入机柜名称',
             size: '机柜规格',
-            small: '小型机柜',
-            middle: '中型机柜',
-            large: '大型机柜'
+            small: '小型机柜（5x2）',
+            middle: '中型机柜（10x4）',
+            large: '大型机柜（10x8）',
+            lowLevel: '低电量值',
+            highGear:'高电流档位',
+            highLevel:'高电量值',
+            lowGear:'低电流档位',
+            highTemp:'高温值',
+            highTempTime:'高温超时'
+        },
+        tips:{
+            title:'设置提示'
         }
     },
     newAgent: "新增Agent",
@@ -155,6 +171,7 @@ const common = {
 
 export default {
     message: {
+        robot,
         agent,
         common,
         devices,
