@@ -36,7 +36,7 @@ const agent = {
 }
 
 const devices = {
-    title: 'Sonic雲真機測試平臺 -',
+    title: 'Sonic雲真機測試平臺',
     list: '設備清單',
     form: {
         model: '設備型號',
@@ -153,6 +153,28 @@ const common = {
     edit: '編輯'
 }
 
+// 路由
+const routes = {
+  login: "登入",
+  home: "首頁",
+  deviceCenter: "設備中心",
+  remoteControl: "遠程控制",
+  androidTestCase: "安卓測試用例",
+  iosTestCase: 'IOS測試用例',
+  operateSteps: "運行步驟",
+  testSuite: "測試套件",
+  testResult: "測試結果",
+  reportDetails: "報告詳情",
+  publicSteps: "公共步驟",
+  controlElement: "控制項元素",
+  globalParameter: "全域參數",
+  moduleManage: "模塊管理",
+  versionIteration: "版本反覆運算",
+  timedTask: "定時任務",
+  projectSetting: "項目設定",
+  projectPage: "項目首頁"
+}
+
 export default {
     message: {
         agent,
@@ -161,5 +183,6 @@ export default {
         layout,
         form,
         dialog,
+        routes
     }
 }
