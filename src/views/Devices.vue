@@ -437,6 +437,13 @@ const findByCabinet = (cabinetId) => {
   axios
       .get("/controller/agents/findByCabinet", {params: {cabinetId}}).then((resp) => {
     cabinetAgentList.value = resp.data
+    for(let i in cabinetAgentList.value){
+      for(let j in cabinetAgentList.value[i].devices){
+        cabinetModel[(cabinetAgentList.value[i].agent.storey-1)
+        *10+cabinetAgentList.value[i].devices[j].position] = cabinetAgentList.value[i].devices[j]
+      }
+    }
+    console.log(cabinetModel)
   }).catch(() => {
     clearInterval(timer.value);
   });
@@ -448,9 +455,19 @@ const getAllCabinet = () => {
     cabinetList.value = resp.data
     if (cabinetList.value.length > 0) {
       findByCabinet(cabinetList.value[0].id)
-      if(cabinetList.value[0].size===1){
-        cabinetModel = []
-        for(let i in 10){
+      cabinetModel = []
+      if (cabinetList.value[0].size === 1) {
+        for (let i = 0; i < 10; i++) {
+          cabinetModel.push(0)
+        }
+      }
+      if (cabinetList.value[0].size === 2) {
+        for (let i = 0; i < 40; i++) {
+          cabinetModel.push(0)
+        }
+      }
+      if (cabinetList.value[0].size === 3) {
+        for (let i = 0; i < 80; i++) {
           cabinetModel.push(0)
         }
       }
