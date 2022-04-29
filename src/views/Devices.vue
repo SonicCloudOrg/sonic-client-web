@@ -432,6 +432,7 @@ const getAllAgents = () => {
 }
 const cabinetLoading = ref(false)
 const cabinetAgentList = ref([])
+let cabinetModel = []
 const findByCabinet = (cabinetId) => {
   axios
       .get("/controller/agents/findByCabinet", {params: {cabinetId}}).then((resp) => {
@@ -447,6 +448,12 @@ const getAllCabinet = () => {
     cabinetList.value = resp.data
     if (cabinetList.value.length > 0) {
       findByCabinet(cabinetList.value[0].id)
+      if(cabinetList.value[0].size===1){
+        cabinetModel = []
+        for(let i in 10){
+          cabinetModel.push(0)
+        }
+      }
     }
     cabinetLoading.value = false
   }).catch(() => {
