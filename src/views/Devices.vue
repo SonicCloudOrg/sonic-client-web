@@ -20,21 +20,21 @@ import {useRouter} from "vue-router";
 import {useI18n} from 'vue-i18n'
 import {Operation} from '@element-plus/icons';
 import {useStore} from "vuex";
+import DeviceDes from '../components/DeviceDes.vue';
 
 const store = useStore();
 const {t: $t} = useI18n()
 import Pageable from "../components/Pageable.vue";
 import axios from "../http/axios";
-import RenderStatus from "../components/RenderStatus.vue"
 import {ElMessage} from "element-plus";
 import useClipboard from "vue-clipboard3";
-import RenderDeviceName from "../components/RenderDeviceName.vue";
 import ColorImg from '@/components/ColorImg.vue';
 
 const {toClipboard} = useClipboard();
 const img = import.meta.globEager("./../assets/img/*")
 const router = useRouter();
 const timer = ref(null);
+const currentDevice = ref({})
 const refreshTime = ref(0);
 const avgTem = ref(0);
 const checkAllAndroid = ref(false);
@@ -249,17 +249,6 @@ const updateCabinet = () => {
     }
   })
 }
-const jump = (id, platform) => {
-  if (platform === 1) {
-    router.push({
-      path: "AndroidRemote/" + id
-    });
-  } else {
-    router.push({
-      path: "IOSRemote/" + id
-    });
-  }
-}
 const handleAndroid = (val) => {
   androidSystem.value = val ? androidSystemVersion.value : [];
   isAllAndroid.value = false;
@@ -404,16 +393,6 @@ const handleFindAll = (pageNum, pageSize) => {
   }
   findAll(currDevicesPage.value, pageSize)
 }
-const findAgentById = (id) => {
-  let result = $t('form.unknown')
-  for (let i in agentList.value) {
-    if (agentList.value[i].id === id) {
-      result = agentList.value[i].name
-      break
-    }
-  }
-  return result
-}
 const findCabinetById = (id) => {
   let result = $t('common.null')
   for (let i in cabinetList.value) {
@@ -466,11 +445,13 @@ const generateStorey = (c, data) => {
           for (let h in defDevices) {
             if (data[i].devices[k].position - 1 === parseInt(h)) {
               defDevices[h] = data[i].devices[k]
+              break
             }
           }
         }
         data[i].devices = defDevices
         cabinetAgentList.value[j] = data[i]
+        break
       }
     }
   }
@@ -488,29 +469,6 @@ const getAllCabinet = () => {
     clearInterval(timer.value);
   });
 }
-const saveDetail = (device) => {
-  axios
-      .put("/controller/devices/saveDetail", {
-        id: device.id, password: device.password,
-        nickName: device.nickName
-      }).then((resp) => {
-    if (resp['code'] === 2000) {
-      ElMessage.success({
-        message: resp['message'],
-      });
-    }
-  })
-}
-const reboot = (id) => {
-  axios
-      .get("/transport/exchange/reboot", {params: {id: id}}).then((resp) => {
-    if (resp['code'] === 2000) {
-      ElMessage.success({
-        message: resp['message'],
-      });
-    }
-  })
-}
 const getImg = (name) => {
   let result;
   if (name === 'meizu') {
@@ -522,61 +480,6 @@ const getImg = (name) => {
     result = img['./../assets/img/unName.jpg'].default
   }
   return result;
-}
-const getPhoneImg = (name, url) => {
-  let result;
-  if (url === null || url.length === 0) {
-    result = img['./../assets/img/default.png'].default
-  } else {
-    result = url;
-  }
-  return result;
-}
-const beforeAvatarUpload = (file) => {
-  if (file.name.endsWith(".jpg") || file.name.endsWith(".png")) {
-    return true;
-  } else {
-    ElMessage.error({
-      message: $t('dialog.suffixError'),
-    });
-    return false;
-  }
-}
-const upload = (content) => {
-  let formData = new FormData();
-  formData.append("file", content.file);
-  formData.append("type", 'keepFiles');
-  axios
-      .post("/folder/upload", formData, {headers: {"Content-type": "multipart/form-data"}})
-      .then((resp) => {
-        if (resp['code'] === 2000) {
-          updateImg(content.data.id, resp.data)
-        }
-      });
-}
-const updateImg = (id, imgUrl) => {
-  axios
-      .put("/controller/devices/updateImg", {id, imgUrl})
-      .then((resp) => {
-        if (resp['code'] === 2000) {
-          ElMessage.success({
-            message: resp['message'],
-          });
-          findAll();
-        }
-      });
-}
-const deleteDevice = (id) => {
-  axios
-      .delete("/controller/devices", {params: {id}})
-      .then((resp) => {
-        if (resp['code'] === 2000) {
-          ElMessage.success({
-            message: resp['message'],
-          });
-          findAll();
-        }
-      });
 }
 const getFilterOption = () => {
   axios
@@ -847,261 +750,7 @@ onUnmounted(() => {
               :key="device"
               style="margin-top: 20px"
           >
-            <el-card
-                shadow="hover"
-                :body-style="{ padding: '15px 20px 15px 10px' }"
-                class="device-card"
-            >
-              <template #header>
-                <RenderDeviceName :device="device"></RenderDeviceName>
-                <RenderStatus :status="device.status" :user="device.user"></RenderStatus>
-              </template>
-              <el-row>
-                <el-col :span="10">
-                  <div style="text-align: center">
-                    <el-image
-                        style="height: 160px"
-                        fit="contain"
-                        :src="getPhoneImg(device.model,device['imgUrl'])"
-                        :preview-src-list="[getPhoneImg(device.model,device['imgUrl'])]"
-                        hide-on-click-modal
-                    />
-                  </div>
-                </el-col>
-                <el-col :span="14">
-                  <el-form
-                      label-position="left"
-                      class="device-form"
-                      label-width="70px"
-                      style="margin: 0 0 15px 10px"
-                  >
-                    <el-form-item :label="$t('devices.form.model')">
-                      <div>{{ device.model }}
-                      </div>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.form.manufacturer')">
-                      <img
-                          v-if="device.manufacturer === 'HUAWEI' || device.manufacturer === 'samsung' || device.manufacturer === 'OnePlus'||device.manufacturer === 'GIONEE'|| device.manufacturer === 'motorola'|| device.manufacturer === 'HONOR'"
-                          style="width: 80px"
-                          :src="getImg(device.manufacturer)"
-                      />
-                      <img
-                          v-else-if="device.manufacturer === 'Xiaomi' ||device.manufacturer === 'LGE'||device.manufacturer === 'HTC'||device.manufacturer === 'deltainno'"
-                          style="width: 30px"
-                          :src="getImg(device.manufacturer)"
-                      />
-                      <img
-                          v-else-if="device.manufacturer === 'blackshark' ||device.manufacturer === 'APPLE'"
-                          style="width: 22px"
-                          :src="getImg(device.manufacturer)"
-                      />
-                      <img
-                          v-else
-                          style="width: 70px"
-                          :src="getImg(device.manufacturer)"
-                      />
-
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.form.system')">
-                      <img
-                          v-if="device.platform===1"
-                          style="width: 30px"
-                          :src="getImg('ANDROID')"
-                      />
-                      <img
-                          v-if="device.platform===2"
-                          style="width: 22px"
-                          :src="getImg('IOS')"
-                      />
-                      <span style="margin-left: 6px">{{ device.version }}</span>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.form.battery.level')">
-                      <div :style="'position: relative; display: flex;align-items: center;color:'+((device['level'] === 0 ||
-                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))?'#606266':
-                      device['level']<=30?'#F56C6C':(device['level']<=70?'#E6A23C':'#67C23A'))">
-                        <ColorImg
-                            style="margin-right:5px;"
-                            v-if="(device['level'] !== 0 &&
-                              (device.status === 'ONLINE' || device.status === 'DEBUGGING' || device.status === 'TESTING'))"
-                            :src="device['level'] <=25?img['./../assets/img/powerLow.png'].default
-                            :(device['level'] <=50?img['./../assets/img/powerMid.png'].default
-                            :(device['level'] <=75?img['./../assets/img/powerHigh.png'].default
-                            :img['./../assets/img/powerFull.png'].default))"
-                            :width="20"
-                            :height="20"
-                            :color="(device['level']===0?'#606266':
-                      device['level']<=30?'#F56C6C':(device['level']<=70?'#E6A23C':'#67C23A'))"
-                        />
-                        {{
-                          (device['level'] === 0 ||
-                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))
-                              ? $t('form.unknown') : device['level']
-                        }}
-                      </div>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.form.battery.temperature')">
-                      <div :style="'position: relative; display: flex;align-items: center;color:'+((device['temperature'] === 0 ||
-                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))?'#606266':
-                      device['temperature']<300?'#67C23A':(device['temperature']<350?'#E6A23C':'#F56C6C'))">
-                        <ColorImg
-                            style="margin-left:-4px;margin-right:3px"
-                            v-if="(device['temperature'] !== 0 &&
-                              (device.status === 'ONLINE' || device.status === 'DEBUGGING' || device.status === 'TESTING'))"
-                            :src="img['./../assets/img/tem.png'].default"
-                            :width="20"
-                            :height="20"
-                            :color="(device['temperature']===0?'#606266':
-                      device['temperature']<300?'#67C23A':(device['temperature']<350?'#E6A23C':'#F56C6C'))"
-                        />
-                        {{
-                          (device['temperature'] === 0 ||
-                              (device.status !== 'ONLINE' && device.status !== 'DEBUGGING' && device.status !== 'TESTING'))
-                              ? $t('form.unknown') : (device['temperature'] / 10).toFixed(1) + " ℃"
-                        }}
-                      </div>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.form.agent')">
-                      <div>{{ findAgentById(device.agentId) }}</div>
-                    </el-form-item>
-                  </el-form>
-                </el-col>
-              </el-row>
-              <div style="text-align: center">
-                <el-button type="primary" size="mini" :disabled="device.status!=='ONLINE'"
-                           @click="jump(device.id,device.platform)">{{ $t('devices.useRightNow') }}
-                </el-button>
-                <el-popover placement="top" width="340px" trigger="hover">
-                  <el-form
-                      label-position="left"
-                      class="demo-table-expand"
-                      label-width="90px"
-                      style="margin-left: 10px; word-break: break-all"
-                      v-if="device.id"
-                  >
-                    <el-form-item :label="$t('devices.detail.image')">
-                      <el-upload
-                          style="width: 30px"
-                          :data="{id:device.id}"
-                          action=""
-                          :with-credentials="true"
-                          :before-upload="beforeAvatarUpload"
-                          :http-request="upload"
-                          :show-file-list="false"
-                      >
-                        <el-button
-                            type="primary"
-                            size="mini">{{ $t('devices.detail.uploadImg') }}
-                        </el-button
-                        >
-                      </el-upload>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.detail.nickName')">
-                      <el-input
-                          show-word-limit
-                          v-model="device['nickName']"
-                          type="text"
-                          size="mini"
-                          :placeholder="$t('devices.detail.nickPlaceholder')"
-                          maxlength="30"
-                          style="position: absolute; top: 7px; bottom: 7px"
-                      >
-                        <template #append>
-                          <el-button
-                              size="mini"
-                              @click="saveDetail(device)"
-                          >{{ $t('form.save') }}
-                          </el-button
-                          >
-                        </template>
-                      </el-input>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.detail.name')">
-                      <span>{{ device.name }}</span>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.detail.model')">
-                      <span>{{ device.model }}</span>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.detail.udId')">
-                      <span>{{ device.udId }}</span>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.detail.size')">
-                      <span>{{ device.size }}</span>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.detail.cpu')">
-                      <span>{{ device.cpu }}</span>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.detail.pwd')">
-                      <el-input
-                          show-word-limit
-                          v-model="device.password"
-                          type="text"
-                          size="mini"
-                          :placeholder="$t('devices.detail.pwdPlaceholder')"
-                          maxlength="30"
-                          style="position: absolute; top: 7px; bottom: 7px"
-                      >
-                        <template #append>
-                          <el-button
-                              size="mini"
-                              @click="saveDetail(device)"
-                          >{{ $t('form.save') }}
-                          </el-button
-                          >
-                        </template>
-                      </el-input>
-                    </el-form-item>
-                    <el-form-item :label="$t('devices.detail.operation')">
-                      <el-popconfirm
-                          placement="top"
-                          :confirmButtonText="$t('form.confirm')"
-                          :cancelButtonText="$t('form.cancel')"
-                          @confirm="reboot(device.id)"
-                          icon="el-icon-warning"
-                          iconColor="red"
-                          :title="$t('devices.detail.rebootTips')"
-                      >
-                        <template #reference>
-                          <el-button
-                              type="danger"
-                              size="mini"
-                              :disabled="device.status !== 'ONLINE'
-                          &&device.status !== 'DEBUGGING'
-                          &&device.status !== 'TESTING'
-                           &&device.status !== 'ERROR'"
-                          >{{ $t('devices.detail.reboot') }}
-                          </el-button
-                          >
-                        </template>
-                      </el-popconfirm>
-                      <el-popconfirm
-                          placement="top"
-                          :confirmButtonText="$t('form.confirm')"
-                          :cancelButtonText="$t('form.cancel')"
-                          @confirm="deleteDevice(device.id)"
-                          icon="el-icon-warning"
-                          iconColor="red"
-                          :title="$t('devices.detail.deleteTips')"
-                      >
-                        <template #reference>
-                          <el-button
-                              type="danger"
-                              size="mini"
-                              :disabled="device.status === 'ONLINE'
-                          &&device.status === 'DEBUGGING'
-                          &&device.status === 'TESTING'"
-                          >{{ $t('common.delete') }}
-                          </el-button
-                          >
-                        </template>
-                      </el-popconfirm>
-                    </el-form-item>
-                  </el-form>
-                  <template #reference>
-                    <el-button size="mini">{{ $t('devices.moreDetail') }}</el-button>
-                  </template>
-                </el-popover>
-              </div>
-            </el-card>
+            <DeviceDes :device="device" :agent-list="agentList" @flush="findAll"/>
           </el-col>
         </el-row>
         <pageable
@@ -1194,114 +843,141 @@ onUnmounted(() => {
                  :active-text=" $t('devices.refresh') "
                  active-color="#13ce66"
                  v-model="isFlush"/>
-      <el-carousel style="margin-top: 20px;text-align: center" v-if="cabinetList.length>0&&!cabinetLoading" trigger="click" height="750px"
+      <el-carousel style="margin-top: 20px;" v-if="cabinetList.length>0&&!cabinetLoading"
+                   trigger="click" height="650px"
                    :autoplay="false" arrow="always" :loop="false">
         <el-carousel-item v-for="item in cabinetList" :key="item">
-          <h1>{{item.name}}</h1>
-          <div style="width: 420px;margin: 0 auto;">
-            <el-card :body-style="{padding:'10px',backgroundColor:store.state.cabinetBack}">
-              <el-space wrap direction="vertical" fill style="width: 100%">
-                <el-card v-for="a in cabinetAgentList" :style="'border: 0;'+(
+          <div style="text-align: center"><h1>{{ item.name }}</h1></div>
+          <div style="display: flex;justify-content: center">
+            <div style="width: 420px;">
+              <el-card :body-style="{padding:'14px',backgroundColor:store.state.cabinetBack}">
+                <el-space wrap direction="vertical" fill style="width: 100%">
+                  <el-card v-for="a in cabinetAgentList" :style="'border: 0;'+(
                     store.state.currentTheme!=='light'?'background-color:#606266':'')"
-                         :body-style="{padding:'5px',backgroundColor:store.state.cabinetItemBack}">
-                  <div style="display: flex;justify-content: center;align-items: center">
-                    <el-tooltip
-                        class="box-item"
-                        effect="dark"
-                        :content="d==0?'未接入设备':d.udId"
-                        placement="top"
-                        v-for="d in a.devices"
-                    >
-                      <ColorImg :style="'margin-right: -6px;'+(d==0?'':'cursor: pointer')"
-                                :src="img['./../assets/img/phoneIn.png'].default"
-                                :width="40"
-                                :height="40"
-                                :color="d==0?(store.state.currentTheme!=='light'?'#909399':'#EBEEF5'):(d.status==='ONLINE'?'#67C23A':
+                           :body-style="{padding:'5px',backgroundColor:store.state.cabinetItemBack}">
+                    <div style="display: flex;justify-content: center;align-items: center">
+                      <el-tooltip
+                          class="box-item"
+                          effect="dark"
+                          :content="d==0?'未接入设备':d.udId"
+                          placement="top"
+                          v-for="d in a.devices"
+                      >
+                        <ColorImg :style="'margin-right: -6px;'+(d==0?'':'cursor: pointer')"
+                                  :src="img['./../assets/img/phoneIn.png'].default"
+                                  :width="40"
+                                  :height="40"
+                                  :color="d==0?(store.state.currentTheme!=='light'?'#909399':'#EBEEF5'):(d.status==='ONLINE'?'#67C23A':
                               (d.status==='OFFLINE'||d.status==='DISCONNECTED'?
                               (store.state.currentTheme!=='light'?'#EBEEF5':'#909399'):(d.status==='DEBUGGING'||d.status==='TESTING'?
-                              '#409EFF':(d.status==='ERROR'?'#E6A23C':'#F56C6C'))))"/>
-                    </el-tooltip>
-                    <el-popover
-                        placement="right"
-                        :width="300"
-                        trigger="hover"
-                        :disabled="a.agent===0"
-                    >
-                      <el-form
-                          style="margin-left: 6px"
-                          label-position="left"
-                          class="demo-table-expand"
-                          label-width="100px"
-                          v-if="a.agent!==0"
+                              '#409EFF':(d.status==='ERROR'?'#E6A23C':'#F56C6C'))))"
+                                  @click="currentDevice = d"/>
+                      </el-tooltip>
+                      <el-popover
+                          placement="right"
+                          :width="300"
+                          trigger="hover"
+                          :disabled="a.agent===0"
                       >
-                        <el-form-item label="Agent ID">
-                          <span>#{{ a.agent.id }}</span>
-                        </el-form-item>
-                        <el-form-item label="Agent Name">
-                          <span>{{ a.agent.name }}</span>
-                        </el-form-item>
-                        <el-form-item label="Host">
-                          <span>{{ a.agent.host }}</span>
-                        </el-form-item>
-                        <el-form-item :label="$t('agent.system')">
-                          <div style="display: flex; align-items: center">
-                            {{ a.agent.systemType }}
-                            <img
-                                style="margin-left: 10px"
-                                v-if="a.agent.systemType!=='unknown' &&
+                        <el-form
+                            style="margin-left: 6px"
+                            label-position="left"
+                            class="demo-table-expand"
+                            label-width="100px"
+                            v-if="a.agent!==0"
+                        >
+                          <el-form-item label="Agent ID">
+                            <span>#{{ a.agent.id }}</span>
+                          </el-form-item>
+                          <el-form-item label="Agent Name">
+                            <span>{{ a.agent.name }}</span>
+                          </el-form-item>
+                          <el-form-item label="Host">
+                            <span>{{ a.agent.host }}</span>
+                          </el-form-item>
+                          <el-form-item :label="$t('agent.system')">
+                            <div style="display: flex; align-items: center">
+                              {{ a.agent.systemType }}
+                              <img
+                                  style="margin-left: 10px"
+                                  v-if="a.agent.systemType!=='unknown' &&
                                     (a.agent.systemType.indexOf('Mac') !== -1 ||
                                       a.agent.systemType.indexOf('Windows') !== -1 ||
                                       a.agent.systemType.indexOf('Linux') !== -1)"
-                                height="20"
-                                :src="getImg(a.agent.systemType.indexOf('Mac') !== -1
+                                  height="20"
+                                  :src="getImg(a.agent.systemType.indexOf('Mac') !== -1
                                       ? 'Mac': a.agent.systemType.indexOf('Linux') !== -1?'Linux':'Windows')"
-                            />
-                          </div>
-                        </el-form-item>
-                        <el-form-item label="Port">
-                          <span>{{ a.agent.port }}</span>
-                        </el-form-item>
-                        <el-form-item :label="$t('agent.version')">
-                          <span>{{ a.agent.version }}</span>
-                        </el-form-item>
-                        <el-form-item :label="$t('agent.status.name')">
-                          <el-tag
-                              size="small"
-                              type="success"
-                              v-if="a.agent.status === 1"
-                          >{{ $t('agent.status.online') }}
-                          </el-tag
-                          >
-                          <el-tag
-                              size="small"
-                              type="info"
-                              v-if="a.agent.status === 2"
-                          >{{ $t('agent.status.offline') }}
-                          </el-tag>
-                        </el-form-item>
-                        <el-form-item :label="$t('agent.operation')">
-                          <el-button size="mini" type="primary" @click="editAgent(a.agent.id,a.agent.name)">
-                            {{ $t('common.edit') }}
-                          </el-button>
-                          <el-button size="mini" type="danger" @click="shutdownAgent(a.agent.id)"
-                                     :disabled="a.agent.status===2">{{ $t('agent.shutdown') }}
-                          </el-button>
-                        </el-form-item>
-                      </el-form>
-                      <template #reference>
-                        <ColorImg :style="a.agent==0?'cursor: not-allowed':'cursor: pointer'"
-                                  :src="img['./../assets/img/phyLinux.png'].default"
-                                  :width="42" :height="21"
-                                  :color="a.agent==0?'#909399':(a.agent.status===1?'#67C23A':'#F56C6C')"/>
-                      </template>
-                    </el-popover>
-                  </div>
-                </el-card>
-              </el-space>
-            </el-card>
+                              />
+                            </div>
+                          </el-form-item>
+                          <el-form-item label="Port">
+                            <span>{{ a.agent.port }}</span>
+                          </el-form-item>
+                          <el-form-item :label="$t('agent.version')">
+                            <span>{{ a.agent.version }}</span>
+                          </el-form-item>
+                          <el-form-item :label="$t('agent.status.name')">
+                            <el-tag
+                                size="small"
+                                type="success"
+                                v-if="a.agent.status === 1"
+                            >{{ $t('agent.status.online') }}
+                            </el-tag
+                            >
+                            <el-tag
+                                size="small"
+                                type="info"
+                                v-if="a.agent.status === 2"
+                            >{{ $t('agent.status.offline') }}
+                            </el-tag>
+                          </el-form-item>
+                          <el-form-item :label="$t('agent.operation')">
+                            <el-button size="mini" type="primary" @click="editAgent(a.agent.id,a.agent.name)">
+                              {{ $t('common.edit') }}
+                            </el-button>
+                            <el-button size="mini" type="danger" @click="shutdownAgent(a.agent.id)"
+                                       :disabled="a.agent.status===2">{{ $t('agent.shutdown') }}
+                            </el-button>
+                          </el-form-item>
+                        </el-form>
+                        <template #reference>
+                          <ColorImg :style="a.agent==0?'cursor: not-allowed':'cursor: pointer'"
+                                    :src="img['./../assets/img/phyLinux.png'].default"
+                                    :width="42" :height="21"
+                                    :color="a.agent==0?'#909399':(a.agent.status===1?'#67C23A':'#F56C6C')"/>
+                        </template>
+                      </el-popover>
+                    </div>
+                  </el-card>
+                </el-space>
+              </el-card>
+            </div>
+            <div style="display: flow">
+              <el-card shadow="hover" style="margin-left: 30px;margin-bottom: 14px">
+                <el-descriptions title="机柜信息" border :column="2" size="small">
+                  <el-descriptions-item label="ID">{{ item.id }}</el-descriptions-item>
+                  <el-descriptions-item label="名称">{{ item.name }}</el-descriptions-item>
+                  <el-descriptions-item label="规格">
+                    {{
+                      item.size === 1 ? $t('agent.cabinet.edit.small') : (item.size === 2 ? $t('agent.cabinet.edit.middle') : $t('agent.cabinet.edit.large'))
+                    }}
+                  </el-descriptions-item>
+                  <el-descriptions-item label="Key">
+                    <el-button @click="copy(item.secretKey)" size="mini">{{ $t('agent.clickToCopy') }}</el-button>
+                  </el-descriptions-item>
+                  <template #extra>
+                    <el-button type="primary" size="mini" @click="editCabinet(item)">机柜配置</el-button>
+                  </template>
+                </el-descriptions>
+              </el-card>
+              <DeviceDes :detail="true" style="width: 350px;height:300px;margin-left: 30px" v-if="currentDevice.id"
+                         :device="currentDevice" :agent-list="agentList"
+                         @flush="findAll"/>
+              <el-card shadow="hover" v-else style="width: 350px;height:300px;margin-left: 30px">
+                <el-empty description="请选择设备"></el-empty>
+              </el-card>
+            </div>
           </div>
-          <h3 class="small">{{ item }}</h3>
-          <el-button @click="editCabinet(item)">编辑信息</el-button>
         </el-carousel-item>
       </el-carousel>
       <el-empty v-else></el-empty>
