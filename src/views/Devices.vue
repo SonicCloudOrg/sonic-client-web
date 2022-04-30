@@ -442,27 +442,32 @@ const findByCabinet = (cabinet) => {
 }
 const generateStorey = (c, data) => {
   cabinetAgentList.value = []
+  let def = {agent: 0, devices: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
   if (c.size === 1) {
-    cabinetAgentList.value = [0]
+    cabinetAgentList.value = [def]
   }
   if (c.size === 2) {
-    cabinetAgentList.value = [0, 0, 0, 0]
+    for (let i = 0; i < 4; i++) {
+      cabinetAgentList.value.push(def)
+    }
   }
   if (c.size === 3) {
-    cabinetAgentList.value = [0, 0, 0, 0, 0, 0, 0, 0]
+    for (let i = 0; i < 8; i++) {
+      cabinetAgentList.value.push(def)
+    }
   }
   for (let i in data) {
     for (let j in cabinetAgentList.value) {
-        let devices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       if (data[i].agent.storey - 1 === parseInt(j)) {
+        let defDevices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for (let k in data[i].devices) {
-          for (let h in devices) {
+          for (let h in defDevices) {
             if (data[i].devices[k].position - 1 === parseInt(h)) {
-              devices[k] = data[i].devices[k]
+              defDevices[h] = data[i].devices[k]
             }
           }
         }
-        data[i].devices = devices
+        data[i].devices = defDevices
         cabinetAgentList.value[j] = data[i]
       }
     }
@@ -1193,17 +1198,18 @@ onUnmounted(() => {
           <el-row :gutter="40">
             <el-col :span="12">
               <el-card v-for="a in cabinetAgentList">
-                <!--                {{a.agent}}-->
-                <div style="display: flex">
+                <div style="display: flex;justify-content: center;align-items: center">
                   <div v-for="d in a.devices">
                     <ColorImg :src="img['./../assets/img/phoneIn.png'].default"
-                              :width="20"
-                              :height="20"
-                              :color="(d.status==='ONLINE'?'#67C23A':
+                              :width="40"
+                              :height="40"
+                              :color="d==0?'#EBEEF5':(d.status==='ONLINE'?'#67C23A':
                               (d.status==='OFFLINE'||d.status==='DISCONNECTED'?
                               '#909399':(d.status==='DEBUGGING'||d.status==='TESTING'?
                               '#409EFF':(d.status==='ERROR'?'#E6A23C':'#F56C6C'))))"/>
                   </div>
+                  <ColorImg :src="img['./../assets/img/phyLinux.png'].default"
+                            :width="40" :height="20" :color="a.agent==0?'#EBEEF5':'#67C23A'"/>
                 </div>
               </el-card>
             </el-col>
