@@ -1198,7 +1198,7 @@ onUnmounted(() => {
                    :autoplay="false" arrow="always" :loop="false">
         <el-carousel-item v-for="item in cabinetList" :key="item">
           <h1>{{item.name}}</h1>
-          <div style="width: 420px;">
+          <div style="width: 420px;margin: 0 auto;">
             <el-card :body-style="{padding:'10px',backgroundColor:store.state.cabinetBack}">
               <el-space wrap direction="vertical" fill style="width: 100%">
                 <el-card v-for="a in cabinetAgentList" :style="'border: 0;'+(
