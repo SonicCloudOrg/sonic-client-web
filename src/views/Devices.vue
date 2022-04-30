@@ -19,7 +19,9 @@ import {ref, onMounted, watch, onUnmounted, onBeforeMount} from "vue";
 import {useRouter} from "vue-router";
 import {useI18n} from 'vue-i18n'
 import {Operation} from '@element-plus/icons';
+import {useStore} from "vuex";
 
+const store = useStore();
 const {t: $t} = useI18n()
 import Pageable from "../components/Pageable.vue";
 import axios from "../http/axios";
@@ -1192,31 +1194,112 @@ onUnmounted(() => {
                  :active-text=" $t('devices.refresh') "
                  active-color="#13ce66"
                  v-model="isFlush"/>
-      <el-carousel v-if="cabinetList.length>0&&!cabinetLoading" trigger="click" height="550px"
+      <el-carousel style="margin-top: 20px;text-align: center" v-if="cabinetList.length>0&&!cabinetLoading" trigger="click" height="750px"
                    :autoplay="false" arrow="always" :loop="false">
         <el-carousel-item v-for="item in cabinetList" :key="item">
-          <el-row :gutter="40">
-            <el-col :span="12">
-              <el-card v-for="a in cabinetAgentList">
-                <div style="display: flex;justify-content: center;align-items: center">
-                  <div v-for="d in a.devices">
-                    <ColorImg :src="img['./../assets/img/phoneIn.png'].default"
-                              :width="40"
-                              :height="40"
-                              :color="d==0?'#EBEEF5':(d.status==='ONLINE'?'#67C23A':
+          <h1>{{item.name}}</h1>
+          <div style="width: 420px;">
+            <el-card :body-style="{padding:'10px',backgroundColor:store.state.cabinetBack}">
+              <el-space wrap direction="vertical" fill style="width: 100%">
+                <el-card v-for="a in cabinetAgentList" :style="'border: 0;'+(
+                    store.state.currentTheme!=='light'?'background-color:#606266':'')"
+                         :body-style="{padding:'5px',backgroundColor:store.state.cabinetItemBack}">
+                  <div style="display: flex;justify-content: center;align-items: center">
+                    <el-tooltip
+                        class="box-item"
+                        effect="dark"
+                        :content="d==0?'未接入设备':d.udId"
+                        placement="top"
+                        v-for="d in a.devices"
+                    >
+                      <ColorImg :style="'margin-right: -6px;'+(d==0?'':'cursor: pointer')"
+                                :src="img['./../assets/img/phoneIn.png'].default"
+                                :width="40"
+                                :height="40"
+                                :color="d==0?(store.state.currentTheme!=='light'?'#909399':'#EBEEF5'):(d.status==='ONLINE'?'#67C23A':
                               (d.status==='OFFLINE'||d.status==='DISCONNECTED'?
-                              '#909399':(d.status==='DEBUGGING'||d.status==='TESTING'?
+                              (store.state.currentTheme!=='light'?'#EBEEF5':'#909399'):(d.status==='DEBUGGING'||d.status==='TESTING'?
                               '#409EFF':(d.status==='ERROR'?'#E6A23C':'#F56C6C'))))"/>
+                    </el-tooltip>
+                    <el-popover
+                        placement="right"
+                        :width="300"
+                        trigger="hover"
+                        :disabled="a.agent===0"
+                    >
+                      <el-form
+                          style="margin-left: 6px"
+                          label-position="left"
+                          class="demo-table-expand"
+                          label-width="100px"
+                          v-if="a.agent!==0"
+                      >
+                        <el-form-item label="Agent ID">
+                          <span>#{{ a.agent.id }}</span>
+                        </el-form-item>
+                        <el-form-item label="Agent Name">
+                          <span>{{ a.agent.name }}</span>
+                        </el-form-item>
+                        <el-form-item label="Host">
+                          <span>{{ a.agent.host }}</span>
+                        </el-form-item>
+                        <el-form-item :label="$t('agent.system')">
+                          <div style="display: flex; align-items: center">
+                            {{ a.agent.systemType }}
+                            <img
+                                style="margin-left: 10px"
+                                v-if="a.agent.systemType!=='unknown' &&
+                                    (a.agent.systemType.indexOf('Mac') !== -1 ||
+                                      a.agent.systemType.indexOf('Windows') !== -1 ||
+                                      a.agent.systemType.indexOf('Linux') !== -1)"
+                                height="20"
+                                :src="getImg(a.agent.systemType.indexOf('Mac') !== -1
+                                      ? 'Mac': a.agent.systemType.indexOf('Linux') !== -1?'Linux':'Windows')"
+                            />
+                          </div>
+                        </el-form-item>
+                        <el-form-item label="Port">
+                          <span>{{ a.agent.port }}</span>
+                        </el-form-item>
+                        <el-form-item :label="$t('agent.version')">
+                          <span>{{ a.agent.version }}</span>
+                        </el-form-item>
+                        <el-form-item :label="$t('agent.status.name')">
+                          <el-tag
+                              size="small"
+                              type="success"
+                              v-if="a.agent.status === 1"
+                          >{{ $t('agent.status.online') }}
+                          </el-tag
+                          >
+                          <el-tag
+                              size="small"
+                              type="info"
+                              v-if="a.agent.status === 2"
+                          >{{ $t('agent.status.offline') }}
+                          </el-tag>
+                        </el-form-item>
+                        <el-form-item :label="$t('agent.operation')">
+                          <el-button size="mini" type="primary" @click="editAgent(a.agent.id,a.agent.name)">
+                            {{ $t('common.edit') }}
+                          </el-button>
+                          <el-button size="mini" type="danger" @click="shutdownAgent(a.agent.id)"
+                                     :disabled="a.agent.status===2">{{ $t('agent.shutdown') }}
+                          </el-button>
+                        </el-form-item>
+                      </el-form>
+                      <template #reference>
+                        <ColorImg :style="a.agent==0?'cursor: not-allowed':'cursor: pointer'"
+                                  :src="img['./../assets/img/phyLinux.png'].default"
+                                  :width="42" :height="21"
+                                  :color="a.agent==0?'#909399':(a.agent.status===1?'#67C23A':'#F56C6C')"/>
+                      </template>
+                    </el-popover>
                   </div>
-                  <ColorImg :src="img['./../assets/img/phyLinux.png'].default"
-                            :width="40" :height="20" :color="a.agent==0?'#EBEEF5':'#67C23A'"/>
-                </div>
-              </el-card>
-            </el-col>
-            <el-col :span="12">
-
-            </el-col>
-          </el-row>
+                </el-card>
+              </el-space>
+            </el-card>
+          </div>
           <h3 class="small">{{ item }}</h3>
           <el-button @click="editCabinet(item)">编辑信息</el-button>
         </el-carousel-item>
