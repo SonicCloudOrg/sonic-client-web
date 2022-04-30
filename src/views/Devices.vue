@@ -432,21 +432,41 @@ const getAllAgents = () => {
 }
 const cabinetLoading = ref(false)
 const cabinetAgentList = ref([])
-let cabinetModel = []
-const findByCabinet = (cabinetId) => {
+const findByCabinet = (cabinet) => {
   axios
-      .get("/controller/agents/findByCabinet", {params: {cabinetId}}).then((resp) => {
-    cabinetAgentList.value = resp.data
-    for(let i in cabinetAgentList.value){
-      for(let j in cabinetAgentList.value[i].devices){
-        cabinetModel[(cabinetAgentList.value[i].agent.storey-1)
-        *10+cabinetAgentList.value[i].devices[j].position] = cabinetAgentList.value[i].devices[j]
-      }
-    }
-    console.log(cabinetModel)
+      .get("/controller/agents/findByCabinet", {params: {cabinetId: cabinet.id}}).then((resp) => {
+    generateStorey(cabinet, resp.data)
   }).catch(() => {
     clearInterval(timer.value);
   });
+}
+const generateStorey = (c, data) => {
+  cabinetAgentList.value = []
+  if (c.size === 1) {
+    cabinetAgentList.value = [0]
+  }
+  if (c.size === 2) {
+    cabinetAgentList.value = [0, 0, 0, 0]
+  }
+  if (c.size === 3) {
+    cabinetAgentList.value = [0, 0, 0, 0, 0, 0, 0, 0]
+  }
+  for (let i in data) {
+    for (let j in cabinetAgentList.value) {
+        let devices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      if (data[i].agent.storey - 1 === parseInt(j)) {
+        for (let k in data[i].devices) {
+          for (let h in devices) {
+            if (data[i].devices[k].position - 1 === parseInt(h)) {
+              devices[k] = data[i].devices[k]
+            }
+          }
+        }
+        data[i].devices = devices
+        cabinetAgentList.value[j] = data[i]
+      }
+    }
+  }
 }
 const getAllCabinet = () => {
   cabinetLoading.value = true;
@@ -454,23 +474,7 @@ const getAllCabinet = () => {
       .get("/controller/cabinet/list").then((resp) => {
     cabinetList.value = resp.data
     if (cabinetList.value.length > 0) {
-      findByCabinet(cabinetList.value[0].id)
-      cabinetModel = []
-      if (cabinetList.value[0].size === 1) {
-        for (let i = 0; i < 10; i++) {
-          cabinetModel.push(0)
-        }
-      }
-      if (cabinetList.value[0].size === 2) {
-        for (let i = 0; i < 40; i++) {
-          cabinetModel.push(0)
-        }
-      }
-      if (cabinetList.value[0].size === 3) {
-        for (let i = 0; i < 80; i++) {
-          cabinetModel.push(0)
-        }
-      }
+      findByCabinet(cabinetList.value[0])
     }
     cabinetLoading.value = false
   }).catch(() => {
@@ -1188,7 +1192,20 @@ onUnmounted(() => {
         <el-carousel-item v-for="item in cabinetList" :key="item">
           <el-row :gutter="40">
             <el-col :span="12">
-              {{ cabinetAgentList }}
+              <el-card v-for="a in cabinetAgentList">
+                <!--                {{a.agent}}-->
+                <div style="display: flex">
+                  <div v-for="d in a.devices">
+                    <ColorImg :src="img['./../assets/img/phoneIn.png'].default"
+                              :width="20"
+                              :height="20"
+                              :color="(d.status==='ONLINE'?'#67C23A':
+                              (d.status==='OFFLINE'||d.status==='DISCONNECTED'?
+                              '#909399':(d.status==='DEBUGGING'||d.status==='TESTING'?
+                              '#409EFF':(d.status==='ERROR'?'#E6A23C':'#F56C6C'))))"/>
+                  </div>
+                </div>
+              </el-card>
             </el-col>
             <el-col :span="12">
 
