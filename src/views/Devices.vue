@@ -33,6 +33,7 @@ import ColorImg from '@/components/ColorImg.vue';
 const {toClipboard} = useClipboard();
 const img = import.meta.globEager("./../assets/img/*")
 const router = useRouter();
+const currentTab = ref("")
 const timer = ref(null);
 const currentDevice = ref({})
 const refreshTime = ref(0);
@@ -423,9 +424,10 @@ const findByCabinet = (cabinet) => {
 }
 const generateStorey = (c, data) => {
   cabinetAgentList.value = []
+  let sdef = {agent: 0, devices: [0, 0, 0, 0, 0]}
   let def = {agent: 0, devices: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
   if (c.size === 1) {
-    cabinetAgentList.value = [def]
+    cabinetAgentList.value = [sdef, sdef]
   }
   if (c.size === 2) {
     for (let i = 0; i < 4; i++) {
@@ -439,11 +441,23 @@ const generateStorey = (c, data) => {
   }
   for (let i in data) {
     for (let j in cabinetAgentList.value) {
+      if (c.size === 1 && parseInt(j) === 1) {
+        break
+      }
       if (data[i].agent.storey - 1 === parseInt(j)) {
-        let defDevices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        let defDevices;
+        if (c.size === 1) {
+          defDevices = [0, 0, 0, 0, 0]
+        } else {
+          defDevices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
         for (let k in data[i].devices) {
           for (let h in defDevices) {
-            if (data[i].devices[k].position - 1 === parseInt(h)) {
+            if (c.size === 1 && j == 1 &&
+                data[i].devices[k].position - 1 === parseInt(h) + 5) {
+              defDevices[h] = data[i].devices[k]
+              break
+            } else if (data[i].devices[k].position - 1 === parseInt(h)) {
               defDevices[h] = data[i].devices[k]
               break
             }
@@ -468,6 +482,9 @@ const getAllCabinet = () => {
   }).catch(() => {
     clearInterval(timer.value);
   });
+}
+const switchCabinet = (n, o) => {
+  findByCabinet(cabinetList.value[n])
 }
 const getImg = (name) => {
   let result;
@@ -506,38 +523,64 @@ const findTemper = () => {
     clearInterval(timer.value);
   });
 }
+const switchTabs = (e) => {
+  console.log(e)
+  refreshNow('switch')
+}
 const refresh = () => {
   refreshTime.value++;
-  getFilterOption();
-  handleFindAll();
-  getAllAgents();
-  getAllCabinet();
-  findTemper();
+  switch (currentTab.value) {
+    case "device":
+      handleFindAll();
+      findTemper();
+      break
+    case "agent":
+      getAllAgents();
+      break
+    case "cabinet":
+      getAllCabinet();
+      break
+  }
   if (refreshTime.value === 2) {
     clearInterval(timer.value);
-    timer.value = setInterval(refresh, 20000);
+    timer.value = setInterval(refresh, 15000);
   }
 }
 const refreshNow = (t) => {
-  localStorage.setItem('SonicIsRefresh', t);
-  if (t === '1') {
+  if (t !== 'switch') {
+    localStorage.setItem('SonicIsRefresh', t);
+  }
+  if (t === '1' || t === 'switch') {
     refreshTime.value = 1
     refresh()
   } else {
     clearInterval(timer.value);
   }
 }
+const isFirst = ref('0')
+const setFirst = (t) => {
+  localStorage.setItem('IsCabinetMain', t)
+}
 onBeforeMount(() => {
   isFlush.value = localStorage.getItem('SonicIsRefresh') ? localStorage.getItem('SonicIsRefresh') : '0'
+  isFirst.value = localStorage.getItem('IsCabinetMain') ? localStorage.getItem('IsCabinetMain') : '0'
+  currentTab.value = isFirst.value === '1' ? 'cabinet' : 'device'
 })
 onMounted(() => {
   refresh();
-  if (isFlush.value === '1') {
+  if (isFlush.value === '1' && currentTab.value === 'device') {
     timer.value = setInterval(refresh, 1500);
+  } else {
+    timer.value = setInterval(refresh, 15000);
   }
 })
 onUnmounted(() => {
   clearInterval(timer.value);
+})
+watch(drawer, (newVal, oldVal) => {
+  if (newVal) {
+    getFilterOption();
+  }
 })
 </script>
 
@@ -698,8 +741,8 @@ onUnmounted(() => {
       </el-form>
     </el-scrollbar>
   </el-drawer>
-  <el-tabs type="border-card" stretch>
-    <el-tab-pane :label="$t('devices.deviceCenter')">
+  <el-tabs type="border-card" stretch v-model="currentTab" @tab-click="switchTabs">
+    <el-tab-pane name="device" :label="$t('devices.deviceCenter')">
       <el-card>
         <el-input
             style="width: 440px"
@@ -762,7 +805,7 @@ onUnmounted(() => {
         ></pageable>
       </el-card>
     </el-tab-pane>
-    <el-tab-pane :label="$t('devices.agentCenter')">
+    <el-tab-pane name="agent" :label="$t('devices.agentCenter')">
       <el-button type="primary" size="mini" @click="openAgent">{{ $t('agent.newAgent') }}</el-button>
       <el-switch class="refresh" active-value="1"
                  inactive-value="0" @change="refreshNow" style="margin-left: 15px"
@@ -836,25 +879,34 @@ onUnmounted(() => {
         </el-table-column>
       </el-table>
     </el-tab-pane>
-    <el-tab-pane :label="$t('agent.cabinet.manager')">
+    <el-tab-pane name="cabinet" :label="$t('agent.cabinet.manager')">
       <el-button type="primary" size="mini" @click="openCabinet">{{ $t('agent.cabinet.newCabinet') }}</el-button>
       <el-switch class="refresh" active-value="1"
                  inactive-value="0" @change="refreshNow" style="margin-left: 15px"
                  :active-text=" $t('devices.refresh') "
                  active-color="#13ce66"
                  v-model="isFlush"/>
+      <el-switch class="refresh" active-value="1"
+                 inactive-value="0" @change="setFirst" style="margin-left: 15px"
+                 active-text="设为首页"
+                 active-color="#13ce66"
+                 v-model="isFirst"/>
       <el-carousel style="margin-top: 20px;" v-if="cabinetList.length>0&&!cabinetLoading"
                    trigger="click" height="650px"
+                   @change="switchCabinet"
                    :autoplay="false" arrow="always" :loop="false">
         <el-carousel-item v-for="item in cabinetList" :key="item">
           <div style="text-align: center"><h1>{{ item.name }}</h1></div>
-          <div style="display: flex;justify-content: center">
+          <div style="display: flex;justify-content: center;align-items: center">
             <div style="width: 420px;">
-              <el-card :body-style="{padding:'14px',backgroundColor:store.state.cabinetBack}">
-                <el-space wrap direction="vertical" fill style="width: 100%">
-                  <el-card v-for="a in cabinetAgentList" :style="'border: 0;'+(
+              <el-card :body-style="{padding:(item.size===3?'14px':(item.size===2?'40px 14px':'40px 20px'))
+              ,backgroundColor:store.state.cabinetBack}">
+                <el-space wrap direction="vertical" fill style="width: 100%" :size="
+                item.size===3?8:(item.size===2?28:40)">
+                  <el-card v-for="(a,i) in cabinetAgentList" :style="'border: 0;'+(
                     store.state.currentTheme!=='light'?'background-color:#606266':'')"
-                           :body-style="{padding:'5px',backgroundColor:store.state.cabinetItemBack}">
+                           :body-style="{padding:(item.size===3?'5px':(item.size===2?'20px 5px':''))
+                           ,backgroundColor:store.state.cabinetItemBack}">
                     <div style="display: flex;justify-content: center;align-items: center">
                       <el-tooltip
                           class="box-item"
@@ -865,8 +917,8 @@ onUnmounted(() => {
                       >
                         <ColorImg :style="'margin-right: -6px;'+(d==0?'':'cursor: pointer')"
                                   :src="img['./../assets/img/phoneIn.png'].default"
-                                  :width="40"
-                                  :height="40"
+                                  :width="item.size!==1?40:60"
+                                  :height="item.size!==1?40:60"
                                   :color="d==0?(store.state.currentTheme!=='light'?'#909399':'#EBEEF5'):(d.status==='ONLINE'?'#67C23A':
                               (d.status==='OFFLINE'||d.status==='DISCONNECTED'?
                               (store.state.currentTheme!=='light'?'#EBEEF5':'#909399'):(d.status==='DEBUGGING'||d.status==='TESTING'?
@@ -878,6 +930,7 @@ onUnmounted(() => {
                           :width="300"
                           trigger="hover"
                           :disabled="a.agent===0"
+                          v-if="!(item.size===1&&i===1)"
                       >
                         <el-form
                             style="margin-left: 6px"
@@ -943,10 +996,11 @@ onUnmounted(() => {
                         <template #reference>
                           <ColorImg :style="a.agent==0?'cursor: not-allowed':'cursor: pointer'"
                                     :src="img['./../assets/img/phyLinux.png'].default"
-                                    :width="42" :height="21"
+                                    :width="item.size!==1?42:66" :height="item.size!==1?21:33"
                                     :color="a.agent==0?'#909399':(a.agent.status===1?'#67C23A':'#F56C6C')"/>
                         </template>
                       </el-popover>
+                      <div v-else style="margin-left:66px"></div>
                     </div>
                   </el-card>
                 </el-space>
