@@ -5,7 +5,9 @@ import RenderDeviceName from "../components/RenderDeviceName.vue";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import ColorImg from '@/components/ColorImg.vue';
+import {useRouter} from "vue-router";
 
+const router = useRouter()
 const {t: $t} = useI18n()
 const img = import.meta.globEager("./../assets/img/*")
 const props = defineProps({
