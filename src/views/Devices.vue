@@ -1084,7 +1084,7 @@ watch(drawer, (newVal, oldVal) => {
               prop="size"
               :label="$t('agent.cabinet.edit.size')"
           >
-            <el-select v-model="cabinet.size">
+            <el-select v-model="cabinet.size" :disabled="cabinet.id!==0">
               <el-option :label="$t('agent.cabinet.edit.small')" :value="1"></el-option>
               <el-option :label="$t('agent.cabinet.edit.middle')" :value="2"></el-option>
               <el-option :label="$t('agent.cabinet.edit.large')" :value="3"></el-option>
