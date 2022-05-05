@@ -36,7 +36,6 @@ const router = useRouter();
 const currentTab = ref("")
 const timer = ref(null);
 const currentDevice = ref({})
-const refreshTime = ref(0);
 const avgTem = ref(0);
 const checkAllAndroid = ref(false);
 const isAllAndroid = ref(false);
@@ -524,15 +523,14 @@ const findTemper = () => {
   });
 }
 const switchTabs = (e) => {
-  console.log(e)
   refreshNow('switch')
 }
 const refresh = () => {
-  refreshTime.value++;
   switch (currentTab.value) {
     case "device":
       handleFindAll();
       findTemper();
+      getAllAgents();
       break
     case "agent":
       getAllAgents();
@@ -541,17 +539,16 @@ const refresh = () => {
       getAllCabinet();
       break
   }
-  if (refreshTime.value === 2) {
-    clearInterval(timer.value);
-    timer.value = setInterval(refresh, 15000);
-  }
+  clearInterval(laterTimer.value);
 }
 const refreshNow = (t) => {
   if (t !== 'switch') {
     localStorage.setItem('SonicIsRefresh', t);
   }
   if (t === '1' || t === 'switch') {
-    refreshTime.value = 1
+    if (t === '1') {
+      timer.value = setInterval(refresh, 15000);
+    }
     refresh()
   } else {
     clearInterval(timer.value);
@@ -566,15 +563,18 @@ onBeforeMount(() => {
   isFirst.value = localStorage.getItem('IsCabinetMain') ? localStorage.getItem('IsCabinetMain') : '0'
   currentTab.value = isFirst.value === '1' ? 'cabinet' : 'device'
 })
+const laterTimer = ref(null)
 onMounted(() => {
   refresh();
-  if (isFlush.value === '1' && currentTab.value === 'device') {
-    timer.value = setInterval(refresh, 1500);
-  } else {
+  if (isFlush.value === '1') {
+    if (currentTab.value === 'device') {
+      laterTimer.value = setInterval(refresh, 1500);
+    }
     timer.value = setInterval(refresh, 15000);
   }
 })
 onUnmounted(() => {
+  clearInterval(laterTimer.value);
   clearInterval(timer.value);
 })
 watch(drawer, (newVal, oldVal) => {
@@ -911,7 +911,7 @@ watch(drawer, (newVal, oldVal) => {
                       <el-tooltip
                           class="box-item"
                           effect="dark"
-                          :content="d==0?'未接入设备':d.udId"
+                          :content="d==0?'未接入设备':(a.agent!=0?d.udId:'Agent未接入')"
                           placement="top"
                           v-for="d in a.devices"
                       >
