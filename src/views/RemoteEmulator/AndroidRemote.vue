@@ -404,32 +404,51 @@ const copy = (value) => {
 const removeScreen = () => {
   screenUrls.value = [];
 };
+const getVideoScreenshot = () => {
+  const canvas = document.createElement("canvas");
+  const canvasCtx = canvas.getContext("2d");
+  const video = document.getElementById('scrcpy-video');
+  // 默认生成图片大小
+  let imgWidth, imgHeight;
+  if (directionStatus.value === 0 || directionStatus.value === 180) {
+    // 竖屏
+    imgWidth = 369;
+    imgHeight = 800;
+  } else {
+    // 横屏
+    imgWidth = 800;
+    imgHeight = 369;
+  }
+  canvas.width = imgWidth;
+  canvas.height = imgHeight;
+  canvasCtx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, imgWidth, imgHeight);
+  return canvas.toDataURL('image/png', 1);
+}
 const quickCap = () => {
+  let imageUrl;
   if (oldBlob) {
-    const img = new Image();
     const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
-    const u = URL.createObjectURL(blob);
-    screenUrls.value.push(u);
-    img.src = u;
+    imageUrl = URL.createObjectURL(blob);
   } else {
-    ElMessage.error({
-      message: '快速截图失败！',
-    });
+    imageUrl = getVideoScreenshot()
   }
-};
-const setPocoImgData = (data) => {
   const img = new Image();
-  if (data) {
-    imgUrl.value = data;
-    img.src = data;
-  } else {
+  screenUrls.value.push(imageUrl);
+  img.src = imageUrl;
+};
+const setPocoImgData = () => {
+  let imageUrl;
+  if (oldBlob) {
     const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
-    const u = URL.createObjectURL(blob);
-    imgUrl.value = u;
-    img.src = u;
+    imageUrl = URL.createObjectURL(blob);
+  } else {
+    imageUrl = getVideoScreenshot()
   }
+  const img = new Image();
+  img.src = imageUrl;
+  imgUrl.value = imageUrl;
   const canvasPoco = document.getElementById('debugPocoPic');
   img.onload = function () {
     canvasPoco.width = img.width;
@@ -437,18 +456,18 @@ const setPocoImgData = (data) => {
   };
   isShowPocoImg.value = true;
 };
-const setImgData = (data) => {
-  const img = new Image();
-  if (data) {
-    imgUrl.value = data;
-    img.src = data;
-  } else {
+const setImgData = () => {
+  let imageUrl;
+  if (oldBlob) {
     const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
-    const u = URL.createObjectURL(blob);
-    imgUrl.value = u;
-    img.src = u;
+    imageUrl = URL.createObjectURL(blob);
+  } else {
+    imageUrl = getVideoScreenshot()
   }
+  const img = new Image();
+  img.src = imageUrl;
+  imgUrl.value = imageUrl;
   const canvas = document.getElementById('debugPic');
   img.onload = function () {
     canvas.width = img.width;
@@ -724,9 +743,6 @@ const websocketOnmessage = (message) => {
       elementData.value = result.detail;
       isShowTree.value = true;
       elementLoading.value = false;
-      if (result.img) {
-        setImgData(result.img);
-      }
       webViewData.value = result['webView'];
       activity.value = result['activity'];
       break;
@@ -1358,7 +1374,12 @@ const changeScreenMode = (type, isInit) => {
     screenMode.value = type;
     oldBlob = undefined;
   }
-  touchWrapper = type == 'Minicap' ? document.getElementById('canvas') : document.getElementById('scrcpy-video');
+  if (type === 'Minicap') {
+    touchWrapper = document.getElementById('canvas');
+  } else {
+    oldBlob = undefined // 清除记录
+    touchWrapper = document.getElementById('scrcpy-video');
+  }
   // 储存最后模式
   window.localStorage.setItem('screenMode', type);
 };
@@ -1499,22 +1520,17 @@ const install = (apk) => {
 };
 const getElement = () => {
   elementLoading.value = true;
-  if (oldBlob !== undefined) {
-    setImgData(undefined);
-  }
+  setImgData();
   websocket.send(
       JSON.stringify({
         type: 'debug',
         detail: 'tree',
-        hasScreen: oldBlob !== undefined,
       }),
   );
 };
 const getPoco = (type) => {
   pocoLoading.value = true;
-  if (oldBlob !== undefined) {
-    setPocoImgData(undefined);
-  }
+  setPocoImgData();
   websocket.send(
       JSON.stringify({
         type: 'poco',
