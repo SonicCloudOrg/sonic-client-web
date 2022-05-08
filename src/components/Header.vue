@@ -140,12 +140,13 @@ const changeLocaleHandler = function (val) {
           <el-sub-menu index="Language">
             <template #title>{{ $t('layout.languages') }}</template>
             <el-menu-item v-for="item in localeList" :key="item.event" :index="item.event"
-                          @click="changeLocaleHandler">{{ item.text }} <el-badge
-                v-if="item.building"
-                type="primary"
-                value="building"
-                style="margin: 0 0 5px 5px"
-            ></el-badge>
+                          @click="changeLocaleHandler">{{ item.text }}
+              <el-badge
+                  v-if="item.building"
+                  type="primary"
+                  value="building"
+                  style="margin: 0 0 5px 5px"
+              ></el-badge>
             </el-menu-item>
           </el-sub-menu>
         </el-menu>
@@ -199,6 +200,11 @@ const changeLocaleHandler = function (val) {
               <el-menu-item index="2-1"
                             @click="goToUrl('http://sonic-cloud.gitee.io/#/Home')"
               >{{ $t('layout.officialWebSite') }}
+              </el-menu-item
+              >
+              <el-menu-item index="2-0"
+                            @click="goToUrl('http://sonic-cloud.gitee.io/#/Document')"
+              >使用文档
               </el-menu-item
               >
               <el-menu-item index="2-2"
