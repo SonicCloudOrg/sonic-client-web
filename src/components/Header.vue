@@ -198,17 +198,17 @@ const changeLocaleHandler = function (val) {
               </template
               >
               <el-menu-item index="2-1"
-                            @click="goToUrl('http://sonic-cloud.gitee.io/#/Home')"
+                            @click="goToUrl('https://sonic-cloud.gitee.io/#/Home')"
               >{{ $t('layout.officialWebSite') }}
               </el-menu-item
               >
               <el-menu-item index="2-0"
-                            @click="goToUrl('http://sonic-cloud.gitee.io/#/Document')"
+                            @click="goToUrl('https://sonic-cloud.gitee.io/#/Document')"
               >使用文档
               </el-menu-item
               >
               <el-menu-item index="2-2"
-                            @click="goToUrl('http://sonic-cloud.gitee.io/#/Version')"
+                            @click="goToUrl('https://sonic-cloud.gitee.io/#/Version')"
               >{{ $t('layout.versionUpdateRecord') }}
                 <el-badge
                     value="New"
