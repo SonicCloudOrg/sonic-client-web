@@ -2,9 +2,6 @@
 import background from "../../src/assets/img/background.svg";
 import logo from "../../src/assets/img/logo2.png";
 import logoT from "../../src/assets/logo.png";
-import pad from "../../src/assets/img/pad.png";
-import phone from "../../src/assets/img/phone.png";
-import watch from "../../src/assets/img/watch.png";
 import {onMounted, ref} from "vue";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
@@ -89,9 +86,6 @@ onMounted(() => {
   <img class="play2" style="position: absolute;right: 30px;top:180px;z-index:9999" :src="logoT" width="40"/>
   <img class="play3" style="position: absolute;right: 180px;top:40px;z-index:9999" :src="logoT" width="60"/>
   <img class="play4" style="position: absolute;right: 120px;top:140px;z-index:9999" :src="logoT" width="50"/>
-  <img class="play5" style="position: absolute;left: 280px;top:40px;z-index:9999" :src="watch" width="120"/>
-  <img class="play6" style="position: absolute;right: 180px;bottom:40px;z-index:9999" :src="phone" width="190"/>
-  <img class="play7" style="position: absolute;left: 30px;top:200px;z-index:9999" :src="pad" width="190"/>
   <div
       class="login"
       :style="
