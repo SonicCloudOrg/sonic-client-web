@@ -34,7 +34,7 @@ const open = () => {
   dialogVisible.value = true
 }
 const getJobsList = (pageNum, pSize) => {
-  axios.get("/task/jobs/list", {
+  axios.get("/controller/jobs/list", {
     params: {
       projectId: route.params.projectId,
       page: pageNum || 1,
@@ -45,7 +45,7 @@ const getJobsList = (pageNum, pSize) => {
   })
 }
 const getJobInfo = (id) => {
-  axios.get("/task/jobs", {
+  axios.get("/controller/jobs", {
     params: {
       id
     }
@@ -54,7 +54,7 @@ const getJobInfo = (id) => {
   })
 }
 const updateStatus = (id, type) => {
-  axios.get("/task/jobs/updateStatus", {
+  axios.get("/controller/jobs/updateStatus", {
     params: {
       id, type
     }
@@ -76,7 +76,7 @@ const getSuiteList = () => {
   })
 }
 const deleteJob = (id) => {
-  axios.delete("/task/jobs", {
+  axios.delete("/controller/jobs", {
     params: {
       id
     }
@@ -102,7 +102,7 @@ const getSuiteName = (id) => {
 const summit = () => {
   updateJob['value'].validate((valid) => {
     if (valid) {
-      axios.put("/task/jobs", jobs.value).then(resp => {
+      axios.put("/controller/jobs", jobs.value).then(resp => {
         if (resp['code'] === 2000) {
           ElMessage.success({
             message: resp['message'],
