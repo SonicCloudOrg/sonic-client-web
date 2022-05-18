@@ -119,6 +119,8 @@ onMounted(() => {
         </el-option-group>
       </el-select>
     </el-form-item>
+    <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+              title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
     <el-form-item prop="eleValue" label="控件元素值">
       <el-upload
           v-if="element.eleType === 'image'"
