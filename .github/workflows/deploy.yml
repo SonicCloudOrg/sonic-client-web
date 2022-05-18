@@ -26,6 +26,6 @@ jobs:
     - name: login docker hub
       run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login -u zhouyixun --password-stdin
     - name: build docker image
-      run: docker build -t sonicorg/sonic-client-web:v1.3.2-release .
+      run: docker build -t sonicorg/sonic-client-web:v1.4.0-beta .
     - name: push docker image
-      run: docker push sonicorg/sonic-client-web:v1.3.2-release
+      run: docker push sonicorg/sonic-client-web:v1.4.0-beta
