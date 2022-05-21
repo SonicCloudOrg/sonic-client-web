@@ -17,19 +17,27 @@ export default createStore({
             menuBack: "",
             menuText: "",
             menuActiveText: "",
+            cabinetBack: "",
+            cabinetItemBack: "",
+            currentTheme: 'light',
             localInfo: getLocal(LOCALE_KEY) || localeSetting
         }
     },
     mutations: {
         saveTheme(state, payload) {
+            state.currentTheme = payload
             if (payload === 'light') {
                 state.menuBack = "#ffffff"
                 state.menuText = "#909399"
                 state.menuActiveText = "#409EFF"
+                state.cabinetBack = "#ffffff"
+                state.cabinetItemBack = "#ffffff"
             } else {
                 state.menuBack = "#545c64"
                 state.menuText = "#ffffff"
                 state.menuActiveText = "#ffd04b"
+                state.cabinetBack = "#303133"
+                state.cabinetItemBack = "#606266"
             }
         },
         saveProjectList(state, payload) {
@@ -59,20 +67,20 @@ export default createStore({
             localStorage.removeItem('SonicToken');
         },
         setLocaleInfo(state, info) {
-          state.localInfo = info
+            state.localInfo = info
         }
     },
     getters: {
-      getLocale(state) {
-        return state.localInfo?.locale ?? 'zh_CN';
-      }
+        getLocale(state) {
+            return state.localInfo?.locale ?? 'zh_CN';
+        }
     },
     actions: {
-      // 设置国际化相关信息
-      changeLocaleInfo({ commit, state }, info) {
-        const localInfo = { ...state.localInfo, ...info };
-        commit('setLocaleInfo', localInfo);
-        setLocal(LOCALE_KEY, localInfo);
-      }
+        // 设置国际化相关信息
+        changeLocaleInfo({commit, state}, info) {
+            const localInfo = {...state.localInfo, ...info};
+            commit('setLocaleInfo', localInfo);
+            setLocal(LOCALE_KEY, localInfo);
+        }
     }
 });

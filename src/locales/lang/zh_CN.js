@@ -1,7 +1,14 @@
 /**
  * ZH_CN language
  */
-
+const robot = {
+    robotType: '机器人类型',
+    robotTypePlaceholder: '请选择机器人类型',
+    robotToken: 'WebHook',
+    robotTokenPlaceholder: '请输入群机器人的WebHook',
+    robotSecret: 'Secret',
+    robotSecretPlaceholder: '请输入群机器人的密钥'
+}
 const agent = {
     cabinet: {
         label: '所属机柜',
@@ -12,9 +19,25 @@ const agent = {
             rule: '机柜名称不能为空',
             namePlaceholder: '请输入机柜名称',
             size: '机柜规格',
-            small: '小型机柜',
-            middle: '中型机柜',
-            large: '大型机柜'
+            small: '小型机柜（5x2）',
+            middle: '中型机柜（10x4）',
+            large: '大型机柜（10x8）',
+            lowLevel: '低电量值',
+            highGear: '高电流档位',
+            highLevel: '高电量值',
+            lowGear: '低电流档位',
+            highTemp: '高温值',
+            highTempTime: '高温超时',
+            lowFormat: '档（推荐1档）',
+            highFormat: '档（推荐14档）'
+        },
+        tips: {
+            title: '设置提示',
+            content: `<div>当设备电量≤<span style="color: #409EFF">低电量值</span>时，对应充电口会释放<span style="color: #67C23A">高电流档位</span>的电流。</div>
+<div>当设备电量≥<span style="color: #409EFF">高电量值</span>时，对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流。</div>
+<div>当设备温度≥<span style="color: #409EFF">高温值</span>时（仅安卓），对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流并通知机器人。</div>
+<div>当<span style="color: #E6A23C">高温超时</span>时间内温度持续≥<span style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人并<span
+    style="color: #F56C6C">关机</span>。</div>`
         }
     },
     newAgent: "新增Agent",
@@ -36,7 +59,7 @@ const agent = {
 }
 
 const devices = {
-    title: 'Sonic云真机测试平台 -',
+    title: 'Sonic云真机测试平台',
     list: '设备列表',
     form: {
         model: '设备型号',
@@ -153,13 +176,37 @@ const common = {
     edit: '编辑'
 }
 
+// 路由
+const routes = {
+    login: "登录",
+    home: "首页",
+    deviceCenter: "设备中心",
+    remoteControl: "远程控制",
+    androidTestCase: "安卓测试用例",
+    iosTestCase: 'IOS测试用例',
+    operateSteps: "运行步骤",
+    testSuite: "测试套件",
+    testResult: "测试结果",
+    reportDetails: "报告详情",
+    publicSteps: "公共步骤",
+    controlElement: "控件元素",
+    globalParameter: "全局参数",
+    moduleManage: "模块管理",
+    versionIteration: "版本迭代",
+    timedTask: "定时任务",
+    projectSetting: "项目设置",
+    projectPage: "项目首页"
+}
+
 export default {
     message: {
+        robot,
         agent,
         common,
         devices,
         layout,
         form,
-        dialog
+        dialog,
+        routes
     }
 }

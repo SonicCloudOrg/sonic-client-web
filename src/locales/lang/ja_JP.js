@@ -1,7 +1,14 @@
 /**
  * JP language
  */
-
+const robot = {
+    robotType: '机器人类型',
+    robotTypePlaceholder: '请选择机器人类型',
+    robotToken: 'WebHook',
+    robotTokenPlaceholder: '请输入群机器人的WebHook',
+    robotSecret: 'Secret',
+    robotSecretPlaceholder: '请输入群机器人的密钥'
+}
 const agent = {
     cabinet: {
         label: '所属キャビネット',
@@ -12,9 +19,25 @@ const agent = {
             rule: 'キャビネット名は空にできません',
             namePlaceholder: 'キャビネット名を入力してください',
             size: '仕様',
-            small: 'ミニキャビネット',
-            middle: '中型キャビネット',
-            large: '大型キャビネット'
+            small: 'ミニキャビネット（5x2）',
+            middle: '中型キャビネット（10x4）',
+            large: '大型キャビネット（10x8）',
+            lowLevel: '低电量值',
+            highGear: '高电流档位',
+            highLevel: '高电量值',
+            lowGear: '低电流档位',
+            highTemp: '高温值',
+            highTempTime: '高温超时',
+            lowFormat: '档（推荐1档）',
+            highFormat: '档（推荐14档）'
+        },
+        tips: {
+            title: '设置提示',
+            content: `<div>当设备电量≤<span style="color: #409EFF">低电量值</span>时，对应充电口会释放<span style="color: #67C23A">高电流档位</span>的电流。</div>
+<div>当设备电量≥<span style="color: #409EFF">高电量值</span>时，对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流。</div>
+<div>当设备温度≥<span style="color: #409EFF">高温值</span>时（仅安卓），对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流并通知机器人。</div>
+<div>当<span style="color: #E6A23C">高温超时</span>时间内温度持续≥<span style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人并<span
+    style="color: #F56C6C">关机</span>。</div>`
         }
     },
     newAgent: "エージェント追加",
@@ -36,7 +59,7 @@ const agent = {
 }
 
 const devices = {
-    title: 'Sonicクラウドデバイステストプラットフォーム -',
+    title: 'Sonicクラウドデバイステストプラットフォーム',
     list: 'デバイスリスト',
     form: {
         model: 'モデル',
@@ -153,13 +176,37 @@ const common = {
     edit: '编辑'
 }
 
+// 路由
+const routes = {
+  login: "ログイン",
+  home: "トップページ",
+  deviceCenter: "設備センター",
+  remoteControl: "リモートコントロール",
+  androidTestCase: "Androidテストケース",
+  iosTestCase: 'IOSテストケース',
+  operateSteps: "ステップの実行",
+  testSuite: "テストキット",
+  testResult: "テスト結果",
+  reportDetails: "詳細のレポート",
+  publicSteps: "共通の手順",
+  controlElement: "コントロール要素",
+  globalParameter: "グローバルパラメータ",
+  moduleManage: "モジュール管理",
+  versionIteration: "バージョン反復",
+  timedTask: "タイミングタスク",
+  projectSetting: "プロジェクトの設定",
+  projectPage: "プロジェクトのトップページ"
+}
+
 export default {
     message: {
+        robot,
         agent,
         common,
         devices,
         layout,
         form,
-        dialog
+        dialog,
+        routes
     }
 }
