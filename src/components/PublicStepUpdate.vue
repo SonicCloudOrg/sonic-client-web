@@ -59,7 +59,7 @@ const getStepList = (pageNum, pSize) => {
 //搜索步骤列表
 const searchListOfSteps=(pageNum,pSize)=>{
   if (searchText.value.length ===0){
-    getStepList()
+    getStepList(pageNum,pSize)
   }else {
     axios.get("/controller/steps/search/list",{
       params: {
@@ -245,10 +245,10 @@ onMounted(() => {
     <el-tab-pane label="步骤列表" name="list">
       <el-alert style="margin-bottom: 10px" show-icon title="从此处添加或编辑步骤，并加入到已选步骤中" type="info" close-text="Get!"/>
       <el-button size="mini" round type="primary" @click="addStep">添加步骤</el-button>
-      <el-input style="width: 200px ; margin-left: 321px"  type="text" placeholder="按照控件元素名称搜索"
-                v-model="searchText"
+      <el-input style="width: 200px ; margin-left: 321px"  type="text" placeholder="按照控件元素名称搜索" size="mini"
+                v-model="searchText"  @keyup.enter="searchListOfSteps()"
       ></el-input>
-      <el-button style="margin-left: 5px " type="primary" v-on:click="searchListOfSteps()"  >搜索</el-button>
+      <el-button style="margin-left: 5px " type="primary" size="mini"  v-on:click="searchListOfSteps()"  >搜索</el-button>
       <el-table :data="pageData['content']" border style="margin-top:10px"   >
         <el-table-column width="80" label="步骤Id" prop="id" align="center" show-overflow-tooltip/>
         <el-table-column width="90" label="所属用例Id" align="center">

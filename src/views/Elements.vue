@@ -69,6 +69,21 @@ const deleteEle = (id) => {
     }
   })
 }
+//复制元素，复制以后重新拉去列表
+const copyElement = (id) =>{
+  axios.get("/controller/elements/copyEle", {
+    params:{
+      id
+    }
+  }).then(resp => {
+    if (resp['code'] === 2000) {
+      ElMessage.success({
+        message: resp['message'],
+      });
+      getElementList();
+    }
+  })
+}
 const deleteReal = (id) => {
   axios.delete("/controller/elements", {
     params: {
@@ -186,8 +201,12 @@ onMounted(() => {
       </template>
     </el-table-column>
 
-    <el-table-column label="操作" width="170" align="center">
+    <el-table-column label="操作" width="210" align="center">
       <template #default="scope">
+        <el-button type="primary"  size="mini"
+        @click="copyElement(scope.row.id)">
+          复制
+        </el-button>
         <el-button
             type="primary"
             size="mini"
