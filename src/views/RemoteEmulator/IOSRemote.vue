@@ -378,12 +378,7 @@ const websocketOnmessage = (message) => {
       break;
     }
     case 'appListDetail': {
-      let list = JSON.parse(message.data).appList;
-      for (let i in list) {
-        if (list[i].name !== "" && list[i].bundleId !== "" && list[i].version !== "") {
-          appList.value.push(list[i])
-        }
-      }
+      appList.value.push(JSON.parse(message.data).detail);
       break
     }
     case 'appiumPort': {
@@ -1468,13 +1463,18 @@ onMounted(() => {
             </el-row>
             <el-card shadow="hover" style="margin-top:15px">
               <el-table :data="currAppListPageData" border>
-                <el-table-column width="150" show-overflow-tooltip header-align="center">
+                <el-table-column width="90" show-overflow-tooltip header-align="center">
                   <template #header>
                     <el-button size="mini" @click="refreshAppList">刷新</el-button>
                   </template>
                   <template #default="scope">
-                    {{ scope.row.name }}
+                    <div style="display: flex;align-items: center;justify-content: center;">
+                      <el-avatar shape="square" :size="40"
+                                 :src="'data:image/png;base64,'+scope.row.iconBase64"></el-avatar>
+                    </div>
                   </template>
+                </el-table-column>
+                <el-table-column width="150" show-overflow-tooltip header-align="center" prop="name" label="应用名">
                 </el-table-column>
                 <el-table-column header-align="center" show-overflow-tooltip prop="bundleId"
                                  label="包名">
