@@ -475,15 +475,15 @@ const setImgData = () => {
   };
   isShowImg.value = true;
 };
-const openSocket = (host, port, udId, key) => {
+const openSocket = (host, port, key, udId) => {
   if ('WebSocket' in window) {
     //
     websocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/android/' + udId + '/' + key + '/' + localStorage.getItem('SonicToken'),
+        'ws://' + host + ':' + port + '/websockets/android/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
     );
     //
     __Scrcpy = new Scrcpy({
-      socketURL: 'ws://' + host + ':' + port + '/websockets/android/screen/' + udId + '/' + key + '/' + localStorage.getItem('SonicToken'),
+      socketURL: 'ws://' + host + ':' + port + '/websockets/android/screen/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
       node: 'scrcpy-video',
       onmessage: screenWebsocketOnmessage,
       excuteMode: screenMode.value
@@ -492,7 +492,7 @@ const openSocket = (host, port, udId, key) => {
     changeScreenMode(screenMode.value, 1)
     //
     terminalWebsocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/terminal/' + udId + '/' + key,
+        'ws://' + host + ':' + port + '/websockets/android/terminal/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
     );
   } else {
     console.error('不支持WebSocket');

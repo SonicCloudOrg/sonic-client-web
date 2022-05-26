@@ -355,10 +355,10 @@ const setImgData = (data) => {
   };
   isShowImg.value = true;
 };
-const openSocket = (host, port, udId, key) => {
+const openSocket = (host, port, key, udId) => {
   if ('WebSocket' in window) {
     websocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/ios/' + udId + '/' + key + '/' + localStorage.getItem('SonicToken'),
+        'ws://' + host + ':' + port + '/websockets/ios/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
     );
   } else {
     console.error('不支持WebSocket');
