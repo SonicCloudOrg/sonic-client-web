@@ -25,6 +25,7 @@ import StepList from '@/components/StepList.vue';
 import TestCaseList from '@/components/TestCaseList.vue';
 import StepLog from '@/components/StepLog.vue';
 import ElementUpdate from '@/components/ElementUpdate.vue';
+import Pageable from '@/components/Pageable.vue';
 import defaultLogo from '@/assets/logo.png';
 import {
   Aim,
@@ -137,6 +138,7 @@ const computedCenter = (x, y, width, height) => {
 };
 const img = import.meta.globEager('../../assets/img/*');
 let websocket = null;
+let terminalWebsocket = null;
 
 defineProps({
   tabPosition: String,
@@ -200,7 +202,7 @@ const refreshAppList = () => {
   ElMessage.success({
     message: '加载应用列表中，请稍后...',
   });
-  websocket.send(
+  terminalWebsocket.send(
       JSON.stringify({
         type: 'appList'
       }),
@@ -253,6 +255,9 @@ const switchTabs = (e) => {
     if (appList.value.length === 0) {
       refreshAppList()
     }
+  }
+  if (e.props.name === 'terminal') {
+    terminalHeight.value = document.getElementById('pressKey').offsetTop - 200;
   }
 };
 const switchLocation = () => {
@@ -360,13 +365,62 @@ const openSocket = (host, port, key, udId) => {
     websocket = new WebSocket(
         'ws://' + host + ':' + port + '/websockets/ios/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
     );
+    terminalWebsocket = new WebSocket(
+        'ws://' + host + ':' + port + '/websockets/ios/terminal/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
+    );
   } else {
     console.error('不支持WebSocket');
   }
   websocket.onmessage = websocketOnmessage;
   websocket.onclose = (e) => {
   };
+  terminalWebsocket.onmessage = terminalWebsocketOnmessage;
+  terminalWebsocket.onclose = (e) => {
+  };
 };
+const logOutPut = ref([])
+const logFilter = ref("")
+const terminalScroll = ref(null)
+const getSyslog = ()=>{
+    terminalWebsocket.send(
+        JSON.stringify({
+          type: 'syslog',
+          filter:logFilter.value
+        }),
+    );
+}
+const stopSyslog = ()=>{
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: 'stopSyslog',
+      }),
+  );
+}
+const clearLogcat = () => {
+  logOutPut.value = [];
+};
+const terminalWebsocketOnmessage = (message) => {
+  switch (JSON.parse(message.data)['msg']) {
+    case 'appListDetail': {
+      appList.value.push(JSON.parse(message.data).detail);
+      break
+    }
+    case 'terminal':
+      logOutPut.value.push('连接成功！');
+      break;
+    case 'logDetail':
+      logOutPut.value.push(
+          JSON.parse(message.data)['detail']
+              .replace(/Notice/g, '<span style=\'color: #0d84ff\'>Notice</span>')
+              .replace(/Error/g, '<span style=\'color: #F56C6C\'>Error</span>')
+      );
+      nextTick(() => {
+        terminalScroll['value'].wrap.scrollTop =
+            terminalScroll['value'].wrap.scrollHeight;
+      });
+      break;
+  }
+}
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
     case 'proxyResult': {
@@ -376,10 +430,6 @@ const websocketOnmessage = (message) => {
         iFrameHeight.value = document.body.clientHeight - 280;
       });
       break;
-    }
-    case 'appListDetail': {
-      appList.value.push(JSON.parse(message.data).detail);
-      break
     }
     case 'appiumPort': {
       remoteAppiumPort.value = JSON.parse(message.data).port
@@ -827,6 +877,10 @@ const close = () => {
   if (websocket !== null) {
     websocket.close();
     websocket = null;
+  }
+  if (terminalWebsocket !== null) {
+    terminalWebsocket.close();
+    terminalWebsocket = null;
   }
 };
 onBeforeUnmount(() => {
@@ -1463,7 +1517,7 @@ onMounted(() => {
             </el-row>
             <el-card shadow="hover" style="margin-top:15px">
               <el-table :data="currAppListPageData" border>
-                <el-table-column width="90" show-overflow-tooltip header-align="center">
+                <el-table-column width="90" header-align="center">
                   <template #header>
                     <el-button size="mini" @click="refreshAppList">刷新</el-button>
                   </template>
@@ -1534,6 +1588,35 @@ onMounted(() => {
                 </el-steps>
               </div>
             </el-card>
+          </el-tab-pane>
+          <el-tab-pane label="Terminal" name="terminal">
+            <el-tabs stretch type="border-card">
+            <el-tab-pane label="Syslog">
+              <el-card
+                  style="border: 0px"
+                  :body-style="{color:'#FFFFFF',backgroundColor:'#303133',lineHeight:'1.5'}">
+                <div style="display: flex;margin-bottom: 10px">
+                  <el-input style="margin-left: 5px" size="mini" v-model="logFilter"
+                            placeholder="请输入输入过滤文本">
+                    <template #prepend>| grep</template>
+                  </el-input>
+                  <el-button size="mini" @click="getSyslog"
+                             style="margin-left: 5px" type="primary">Search
+                  </el-button>
+                  <el-button size="mini" @click="stopSyslog"
+                             style="margin-left: 5px" type="danger">Stop
+                  </el-button>
+                  <el-button size="mini" @click="clearLogcat"
+                             style="margin-left: 5px" type="warning">Clear
+                  </el-button>
+                </div>
+                <el-scrollbar noresize ref="terminalScroll" :style="'height:'+terminalHeight+'px;min-height:450px'">
+                  <div v-html="l" v-for="l in logOutPut" style="white-space: pre-wrap">
+                  </div>
+                </el-scrollbar>
+              </el-card>
+            </el-tab-pane>
+            </el-tabs>
           </el-tab-pane>
           <el-tab-pane label="UI自动化" name="auto">
             <div v-if="testCase['id']">
