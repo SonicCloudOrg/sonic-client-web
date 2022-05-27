@@ -381,15 +381,15 @@ const openSocket = (host, port, key, udId) => {
 const logOutPut = ref([])
 const logFilter = ref("")
 const terminalScroll = ref(null)
-const getSyslog = ()=>{
-    terminalWebsocket.send(
-        JSON.stringify({
-          type: 'syslog',
-          filter:logFilter.value
-        }),
-    );
+const getSyslog = () => {
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: 'syslog',
+        filter: logFilter.value
+      }),
+  );
 }
-const stopSyslog = ()=>{
+const stopSyslog = () => {
   terminalWebsocket.send(
       JSON.stringify({
         type: 'stopSyslog',
@@ -1359,85 +1359,38 @@ onMounted(() => {
                   </div>
                 </el-card>
               </el-col>
-              <!--                        <el-col :span="12" style="margin-top: 20px">-->
-              <!--                          <el-card>-->
-              <!--                            <template #header>-->
-              <!--                              <strong>扫描二维码</strong>-->
-              <!--                            </template>-->
-              <!--                            <el-alert title="OPPO、vivo部分机型上传二维码后不出现在相册，需要重启后生效" type="info" show-icon :closable="false">-->
-              <!--                            </el-alert>-->
-              <!--                            <div style="text-align: center;margin-top: 20px">-->
-              <!--                              <el-upload-->
-              <!--                                  drag-->
-              <!--                                  action=""-->
-              <!--                                  :with-credentials="true"-->
-              <!--                                  :limit="1"-->
-              <!--                                  :before-upload="beforeAvatarUpload"-->
-              <!--                                  :on-exceed="limitOut"-->
-              <!--                                  :http-request="uploadScan"-->
-              <!--                                  list-type="picture"-->
-              <!--                              >-->
-              <!--                                <i class="el-icon-upload"></i>-->
-              <!--                                <div class="el-upload__text">将二维码图片拖到此处，或<em>点击上传</em></div>-->
-              <!--                                <template #tip>-->
-              <!--                                  <div class="el-upload__tip">只能上传jpg/png文件</div>-->
-              <!--                                </template>-->
-              <!--                              </el-upload>-->
-              <!--                            </div>-->
-              <!--                          </el-card>-->
-              <!--                        </el-col>-->
-              <!--              <el-col :span="12" style="margin-top: 20px">-->
-              <!--                <el-card>-->
-              <!--                  <template #header>-->
-              <!--                    <strong>安装IPA</strong>-->
-              <!--                  </template>-->
-              <!--                  <el-tabs type="border-card">-->
-              <!--                    <el-tab-pane label="上传安装">-->
-              <!--                      <div style="text-align: center">-->
-              <!--                        <el-upload-->
-              <!--                            v-loading="uploadLoading"-->
-              <!--                            drag-->
-              <!--                            action=""-->
-              <!--                            :with-credentials="true"-->
-              <!--                            :limit="1"-->
-              <!--                            :before-upload="beforeAvatarUpload2"-->
-              <!--                            :on-exceed="limitOut"-->
-              <!--                            :http-request="uploadPackage"-->
-              <!--                        >-->
-              <!--                          <i class="el-icon-upload"></i>-->
-              <!--                          <div class="el-upload__text">将ipa文件拖到此处，或<em>点击上传</em></div>-->
-              <!--                          <template #tip>-->
-              <!--                            <div class="el-upload__tip">只能上传ipa文件</div>-->
-              <!--                          </template>-->
-              <!--                        </el-upload>-->
-              <!--                      </div>-->
-              <!--                    </el-tab-pane>-->
-              <!--                    <el-tab-pane label="URL安装">-->
-              <!--                      <el-input-->
-              <!--                          clearable-->
-              <!--                          v-model="uploadUrl"-->
-              <!--                          size="small"-->
-              <!--                          placeholder="请输入ipa下载链接或本地路径"-->
-              <!--                      ></el-input>-->
-              <!--                      <div style="text-align: center;margin-top: 20px">-->
-              <!--                        <el-button-->
-              <!--                            size="mini"-->
-              <!--                            type="primary"-->
-              <!--                            :disabled="uploadUrl.length===0"-->
-              <!--                            @click="install(uploadUrl)"-->
-              <!--                        >发送-->
-              <!--                        </el-button>-->
-              <!--                      </div>-->
-              <!--                    </el-tab-pane>-->
-              <!--                    <el-tab-pane label="已有包安装（即将开放）" disabled>-->
-              <!--                    </el-tab-pane>-->
-              <!--                  </el-tabs>-->
-              <!--                </el-card>-->
-              <!--              </el-col>-->
+              <el-col :span="12" style="margin-top: 20px">
+                <el-card>
+                  <template #header>
+                    <strong>扫描二维码</strong>
+                  </template>
+                  <div style="text-align: center" v-loading="true"
+                       element-loading-spinner="el-icon-lock"
+                       element-loading-background="rgba(255, 255, 255, 1)"
+                       element-loading-text="该功能即将开放">
+                    <el-upload
+                        drag
+                        action=""
+                        :with-credentials="true"
+                        :limit="1"
+                        :before-upload="beforeAvatarUpload"
+                        :on-exceed="limitOut"
+                        :http-request="uploadScan"
+                        list-type="picture"
+                    >
+                      <i class="el-icon-upload"></i>
+                      <div class="el-upload__text">将二维码图片拖到此处，或<em>点击上传</em></div>
+                      <template #tip>
+                        <div class="el-upload__tip">只能上传jpg/png文件</div>
+                      </template>
+                    </el-upload>
+                  </div>
+                </el-card>
+              </el-col>
               <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
-                    <strong>文件互传（即将开放）</strong>
+                    <strong>文件互传与崩溃日志</strong>
                   </template>
                   <div style="text-align: center" v-loading="true"
                        element-loading-spinner="el-icon-lock"
@@ -1591,31 +1544,31 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane label="Terminal" name="terminal">
             <el-tabs stretch type="border-card">
-            <el-tab-pane label="Syslog">
-              <el-card
-                  style="border: 0px"
-                  :body-style="{color:'#FFFFFF',backgroundColor:'#303133',lineHeight:'1.5'}">
-                <div style="display: flex;margin-bottom: 10px">
-                  <el-input style="margin-left: 5px" size="mini" v-model="logFilter"
-                            placeholder="请输入输入过滤文本">
-                    <template #prepend>| grep</template>
-                  </el-input>
-                  <el-button size="mini" @click="getSyslog"
-                             style="margin-left: 5px" type="primary">Search
-                  </el-button>
-                  <el-button size="mini" @click="stopSyslog"
-                             style="margin-left: 5px" type="danger">Stop
-                  </el-button>
-                  <el-button size="mini" @click="clearLogcat"
-                             style="margin-left: 5px" type="warning">Clear
-                  </el-button>
-                </div>
-                <el-scrollbar noresize ref="terminalScroll" :style="'height:'+terminalHeight+'px;min-height:450px'">
-                  <div v-html="l" v-for="l in logOutPut" style="white-space: pre-wrap">
+              <el-tab-pane label="Syslog">
+                <el-card
+                    style="border: 0px"
+                    :body-style="{color:'#FFFFFF',backgroundColor:'#303133',lineHeight:'1.5'}">
+                  <div style="display: flex;margin-bottom: 10px">
+                    <el-input style="margin-left: 5px" size="mini" v-model="logFilter"
+                              placeholder="请输入输入过滤文本">
+                      <template #prepend>| grep</template>
+                    </el-input>
+                    <el-button size="mini" @click="getSyslog"
+                               style="margin-left: 5px" type="primary">Search
+                    </el-button>
+                    <el-button size="mini" @click="stopSyslog"
+                               style="margin-left: 5px" type="danger">Stop
+                    </el-button>
+                    <el-button size="mini" @click="clearLogcat"
+                               style="margin-left: 5px" type="warning">Clear
+                    </el-button>
                   </div>
-                </el-scrollbar>
-              </el-card>
-            </el-tab-pane>
+                  <el-scrollbar noresize ref="terminalScroll" :style="'height:'+terminalHeight+'px;min-height:450px'">
+                    <div v-html="l" v-for="l in logOutPut" style="white-space: pre-wrap">
+                    </div>
+                  </el-scrollbar>
+                </el-card>
+              </el-tab-pane>
             </el-tabs>
           </el-tab-pane>
           <el-tab-pane label="UI自动化" name="auto">
