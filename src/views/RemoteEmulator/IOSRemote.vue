@@ -1390,7 +1390,7 @@ onMounted(() => {
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="远程Appium">
-                    <div style="padding: 14px 0">
+                    <div style="padding: 13px 0">
                       <div v-if="remoteAppiumPort!==0" style="margin-top: 20px;margin-bottom: 20px">
                         <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
                                  @click="copy('http://'+agent['host']+':'+remoteAppiumPort+'/wd/hub')">
