@@ -189,6 +189,28 @@ const filterTableData = computed(() => {
   transformPageable(list);
   return list;
 })
+const simLocation = ref({
+  long: 0.000000,
+  lat: 0.000000
+})
+const locationSet = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'location',
+        detail: 'set',
+        long: simLocation.value.long + "",
+        lat: simLocation.value.lat + ""
+      }),
+  );
+}
+const locationUnset = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'location',
+        detail: 'unset',
+      }),
+  );
+}
 const openApp = (pkg) => {
   websocket.send(
       JSON.stringify({
@@ -1281,30 +1303,63 @@ onMounted(() => {
           <el-tab-pane label="远控面板" name="main">
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-card>
-                  <template #header>
-                    <strong>发送Siri命令</strong>
-                  </template>
-                  <el-form size="small" :model="text">
-                    <el-form-item
-                    >
-                      <el-input
-                          clearable
-                          v-model="text.content"
-                          size="small"
-                          placeholder="请输入siri指令，例：what day is it today?"
-                      ></el-input>
-                    </el-form-item>
-                  </el-form>
-                  <div style="text-align: center;">
-                    <el-button
-                        size="mini"
-                        type="primary"
-                        @click="sendCommand(text.content)"
-                    >发送
-                    </el-button>
-                  </div>
-                </el-card>
+                <el-tabs type="border-card" stretch>
+                  <el-tab-pane label="模拟定位">
+                    <el-form size="small" :model="simLocation">
+                      <el-form-item label="经度">
+                        <el-input-number
+                            :precision="6"
+                            :step="0.1"
+                            v-model="simLocation.long"
+                            controls-position="right"
+                        />
+                      </el-form-item>
+                      <el-form-item label="纬度">
+                        <el-input-number
+                            :precision="6"
+                            :step="0.1"
+                            v-model="simLocation.lat"
+                            controls-position="right"
+                        />
+                      </el-form-item>
+                    </el-form>
+                    <div style="text-align: center;">
+                      <el-button
+                          size="mini"
+                          type="primary"
+                          @click="locationSet"
+                      >开始模拟
+                      </el-button>
+                      <el-button
+                          size="mini"
+                          type="primary"
+                          @click="locationUnset"
+                      >恢复定位
+                      </el-button>
+                    </div>
+                  </el-tab-pane>
+                  <el-tab-pane label="Siri指令">
+                    <el-form size="small" :model="text">
+                      <el-form-item
+                      >
+                        <el-input
+                            clearable
+                            v-model="text.content"
+                            size="small"
+                            placeholder="请输入siri指令，例：what day is it today?"
+                        ></el-input>
+                      </el-form-item>
+                    </el-form>
+                    <div style="text-align: center;">
+                      <el-button
+                          size="mini"
+                          type="primary"
+                          @click="sendCommand(text.content)"
+                      >发送
+                      </el-button>
+                    </div>
+                  </el-tab-pane>
+                </el-tabs>
               </el-col>
               <el-col :span="8">
                 <el-tabs type="border-card" stretch>
