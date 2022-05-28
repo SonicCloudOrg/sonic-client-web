@@ -202,6 +202,9 @@ const locationSet = () => {
         lat: simLocation.value.lat + ""
       }),
   );
+  ElMessage.success({
+    message: '开始模拟定位...',
+  });
 }
 const locationUnset = () => {
   websocket.send(
@@ -210,6 +213,9 @@ const locationUnset = () => {
         detail: 'unset',
       }),
   );
+  ElMessage.success({
+    message: '已恢复定位',
+  });
 }
 const openApp = (pkg) => {
   websocket.send(
@@ -1302,12 +1308,33 @@ onMounted(() => {
         >
           <el-tab-pane label="远控面板" name="main">
             <el-row :gutter="20">
-              <el-col :span="8">
+              <el-col :span="12">
                 <el-tabs type="border-card" stretch>
+                  <el-tab-pane label="Siri指令">
+                    <el-form size="small" :model="text" style="padding: 24px 0">
+                      <el-form-item>
+                        <el-input
+                            clearable
+                            v-model="text.content"
+                            size="small"
+                            placeholder="请输入siri指令，例：what day is it today?"
+                        ></el-input>
+                      </el-form-item>
+                      <div style="text-align: center;">
+                        <el-button
+                            size="mini"
+                            type="primary"
+                            @click="sendCommand(text.content)"
+                        >发送
+                        </el-button>
+                      </div>
+                    </el-form>
+                  </el-tab-pane>
                   <el-tab-pane label="模拟定位">
                     <el-form size="small" :model="simLocation">
                       <el-form-item label="经度">
                         <el-input-number
+                            style="width: 100%"
                             :precision="6"
                             :step="0.1"
                             v-model="simLocation.long"
@@ -1316,6 +1343,7 @@ onMounted(() => {
                       </el-form-item>
                       <el-form-item label="纬度">
                         <el-input-number
+                            style="width: 100%"
                             :precision="6"
                             :step="0.1"
                             v-model="simLocation.lat"
@@ -1338,82 +1366,67 @@ onMounted(() => {
                       </el-button>
                     </div>
                   </el-tab-pane>
-                  <el-tab-pane label="Siri指令">
-                    <el-form size="small" :model="text">
-                      <el-form-item
-                      >
-                        <el-input
-                            clearable
-                            v-model="text.content"
-                            size="small"
-                            placeholder="请输入siri指令，例：what day is it today?"
-                        ></el-input>
-                      </el-form-item>
-                    </el-form>
-                    <div style="text-align: center;">
-                      <el-button
-                          size="mini"
-                          type="primary"
-                          @click="sendCommand(text.content)"
-                      >发送
-                      </el-button>
-                    </div>
-                  </el-tab-pane>
                 </el-tabs>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="12">
                 <el-tabs type="border-card" stretch>
                   <el-tab-pane label="远程WDA">
-                    <div v-if="remoteWDAPort!==0" style="margin-top: 20px;margin-bottom: 20px">
-                      <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
-                               @click="copy('http://'+agent['host']+':'+remoteWDAPort)">
-                        <strong style="color: #F2F6FC">{{ 'http://' + agent['host'] + ':' + remoteWDAPort }}</strong>
-                      </el-card>
-                    </div>
-                    <div v-else v-loading="remoteWDAPort.length===0"
-                         element-loading-spinner="el-icon-lock"
-                         element-loading-background="rgba(255, 255, 255, 1)"
-                         element-loading-text="driver未初始化成功"
-                         style="margin-top: 18px;margin-bottom: 18px">
-                      <el-card>
-                        <strong>driver未初始化成功</strong>
-                      </el-card>
+                    <div style="padding: 13px 0">
+                      <div v-if="remoteWDAPort!==0" style="margin-top: 20px;margin-bottom: 20px">
+                        <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
+                                 @click="copy('http://'+agent['host']+':'+remoteWDAPort)">
+                          <strong style="color: #F2F6FC">{{ 'http://' + agent['host'] + ':' + remoteWDAPort }}</strong>
+                        </el-card>
+                      </div>
+                      <div v-else v-loading="remoteWDAPort.length===0"
+                           element-loading-spinner="el-icon-lock"
+                           element-loading-background="rgba(255, 255, 255, 1)"
+                           element-loading-text="driver未初始化成功"
+                           style="margin-top: 18px;margin-bottom: 18px">
+                        <el-card>
+                          <strong>driver未初始化成功</strong>
+                        </el-card>
+                      </div>
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="远程Appium">
-                    <div v-if="remoteAppiumPort!==0" style="margin-top: 20px;margin-bottom: 20px">
-                      <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
-                               @click="copy('http://'+agent['host']+':'+remoteAppiumPort+'/wd/hub')">
-                        <strong style="color: #F2F6FC">http://{{ agent['host'] }}:{{ remoteAppiumPort }}/wd/hub</strong>
-                      </el-card>
-                    </div>
-                    <div v-else v-loading="remoteAppiumPort===0"
-                         element-loading-spinner="el-icon-lock"
-                         element-loading-background="rgba(255, 255, 255, 1)"
-                         element-loading-text="AppiumDriver未初始化！"
-                         style="margin-top: 18px;margin-bottom: 18px">
-                      <el-card>
-                        <strong>AppiumDriver未初始化！</strong>
-                      </el-card>
+                    <div style="padding: 14px 0">
+                      <div v-if="remoteAppiumPort!==0" style="margin-top: 20px;margin-bottom: 20px">
+                        <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
+                                 @click="copy('http://'+agent['host']+':'+remoteAppiumPort+'/wd/hub')">
+                          <strong style="color: #F2F6FC">http://{{ agent['host'] }}:{{
+                              remoteAppiumPort
+                            }}/wd/hub</strong>
+                        </el-card>
+                      </div>
+                      <div v-else v-loading="remoteAppiumPort===0"
+                           element-loading-spinner="el-icon-lock"
+                           element-loading-background="rgba(255, 255, 255, 1)"
+                           element-loading-text="AppiumDriver未初始化！"
+                           style="margin-top: 18px;margin-bottom: 18px">
+                        <el-card>
+                          <strong>AppiumDriver未初始化！</strong>
+                        </el-card>
+                      </div>
                     </div>
                   </el-tab-pane>
                 </el-tabs>
               </el-col>
-              <el-col :span="8">
-                <el-card>
-                  <template #header>
-                    <strong>录制屏幕（即将开放）</strong>
-                  </template>
-                  <div style="text-align: center">
-                    <el-button size="mini" type="success" disabled>开始录制</el-button>
-                    <el-button size="mini" type="info" disabled>暂停录制</el-button>
-                    <el-button size="mini" type="danger" disabled>结束录制</el-button>
-                    <div style="margin-top: 20px">
-                      <el-button size="mini" type="primary" disabled>下载录像</el-button>
-                    </div>
-                  </div>
-                </el-card>
-              </el-col>
+              <!--              <el-col :span="8">-->
+              <!--                <el-card>-->
+              <!--                  <template #header>-->
+              <!--                    <strong>录制屏幕（即将开放）</strong>-->
+              <!--                  </template>-->
+              <!--                  <div style="text-align: center">-->
+              <!--                    <el-button size="mini" type="success" disabled>开始录制</el-button>-->
+              <!--                    <el-button size="mini" type="info" disabled>暂停录制</el-button>-->
+              <!--                    <el-button size="mini" type="danger" disabled>结束录制</el-button>-->
+              <!--                    <div style="margin-top: 20px">-->
+              <!--                      <el-button size="mini" type="primary" disabled>下载录像</el-button>-->
+              <!--                    </div>-->
+              <!--                  </div>-->
+              <!--                </el-card>-->
+              <!--              </el-col>-->
               <el-col :span="12" style="margin-top: 20px">
                 <el-card>
                   <template #header>
