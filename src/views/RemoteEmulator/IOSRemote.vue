@@ -25,6 +25,7 @@ import StepList from '@/components/StepList.vue';
 import TestCaseList from '@/components/TestCaseList.vue';
 import StepLog from '@/components/StepLog.vue';
 import ElementUpdate from '@/components/ElementUpdate.vue';
+import Pageable from '@/components/Pageable.vue';
 import defaultLogo from '@/assets/logo.png';
 import {
   Aim,
@@ -137,6 +138,7 @@ const computedCenter = (x, y, width, height) => {
 };
 const img = import.meta.globEager('../../assets/img/*');
 let websocket = null;
+let terminalWebsocket = null;
 
 defineProps({
   tabPosition: String,
@@ -187,6 +189,34 @@ const filterTableData = computed(() => {
   transformPageable(list);
   return list;
 })
+const simLocation = ref({
+  long: 0.000000,
+  lat: 0.000000
+})
+const locationSet = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'location',
+        detail: 'set',
+        long: simLocation.value.long + "",
+        lat: simLocation.value.lat + ""
+      }),
+  );
+  ElMessage.success({
+    message: '开始模拟定位...',
+  });
+}
+const locationUnset = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'location',
+        detail: 'unset',
+      }),
+  );
+  ElMessage.success({
+    message: '已恢复定位',
+  });
+}
 const openApp = (pkg) => {
   websocket.send(
       JSON.stringify({
@@ -200,7 +230,7 @@ const refreshAppList = () => {
   ElMessage.success({
     message: '加载应用列表中，请稍后...',
   });
-  websocket.send(
+  terminalWebsocket.send(
       JSON.stringify({
         type: 'appList'
       }),
@@ -253,6 +283,9 @@ const switchTabs = (e) => {
     if (appList.value.length === 0) {
       refreshAppList()
     }
+  }
+  if (e.props.name === 'terminal') {
+    terminalHeight.value = document.getElementById('pressKey').offsetTop - 200;
   }
 };
 const switchLocation = () => {
@@ -355,10 +388,13 @@ const setImgData = (data) => {
   };
   isShowImg.value = true;
 };
-const openSocket = (host, port, udId, key) => {
+const openSocket = (host, port, key, udId) => {
   if ('WebSocket' in window) {
     websocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/ios/' + udId + '/' + key + '/' + localStorage.getItem('SonicToken'),
+        'ws://' + host + ':' + port + '/websockets/ios/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
+    );
+    terminalWebsocket = new WebSocket(
+        'ws://' + host + ':' + port + '/websockets/ios/terminal/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
     );
   } else {
     console.error('不支持WebSocket');
@@ -366,7 +402,53 @@ const openSocket = (host, port, udId, key) => {
   websocket.onmessage = websocketOnmessage;
   websocket.onclose = (e) => {
   };
+  terminalWebsocket.onmessage = terminalWebsocketOnmessage;
+  terminalWebsocket.onclose = (e) => {
+  };
 };
+const logOutPut = ref([])
+const logFilter = ref("")
+const terminalScroll = ref(null)
+const getSyslog = () => {
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: 'syslog',
+        filter: logFilter.value
+      }),
+  );
+}
+const stopSyslog = () => {
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: 'stopSyslog',
+      }),
+  );
+}
+const clearLogcat = () => {
+  logOutPut.value = [];
+};
+const terminalWebsocketOnmessage = (message) => {
+  switch (JSON.parse(message.data)['msg']) {
+    case 'appListDetail': {
+      appList.value.push(JSON.parse(message.data).detail);
+      break
+    }
+    case 'terminal':
+      logOutPut.value.push('连接成功！');
+      break;
+    case 'logDetail':
+      logOutPut.value.push(
+          JSON.parse(message.data)['detail']
+              .replace(/Notice/g, '<span style=\'color: #0d84ff\'>Notice</span>')
+              .replace(/Error/g, '<span style=\'color: #F56C6C\'>Error</span>')
+      );
+      nextTick(() => {
+        terminalScroll['value'].wrap.scrollTop =
+            terminalScroll['value'].wrap.scrollHeight;
+      });
+      break;
+  }
+}
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
     case 'proxyResult': {
@@ -376,15 +458,6 @@ const websocketOnmessage = (message) => {
         iFrameHeight.value = document.body.clientHeight - 280;
       });
       break;
-    }
-    case 'appListDetail': {
-      let list = JSON.parse(message.data).appList;
-      for (let i in list) {
-        if (list[i].name !== "" && list[i].bundleId !== "" && list[i].version !== "") {
-          appList.value.push(list[i])
-        }
-      }
-      break
     }
     case 'appiumPort': {
       remoteAppiumPort.value = JSON.parse(message.data).port
@@ -833,6 +906,10 @@ const close = () => {
     websocket.close();
     websocket = null;
   }
+  if (terminalWebsocket !== null) {
+    terminalWebsocket.close();
+    terminalWebsocket = null;
+  }
 };
 onBeforeUnmount(() => {
   close();
@@ -1231,164 +1308,157 @@ onMounted(() => {
         >
           <el-tab-pane label="远控面板" name="main">
             <el-row :gutter="20">
-              <el-col :span="8">
-                <el-card>
-                  <template #header>
-                    <strong>发送Siri命令</strong>
-                  </template>
-                  <el-form size="small" :model="text">
-                    <el-form-item
-                    >
-                      <el-input
-                          clearable
-                          v-model="text.content"
-                          size="small"
-                          placeholder="请输入siri指令，例：what day is it today?"
-                      ></el-input>
-                    </el-form-item>
-                  </el-form>
-                  <div style="text-align: center;">
-                    <el-button
-                        size="mini"
-                        type="primary"
-                        @click="sendCommand(text.content)"
-                    >发送
-                    </el-button>
-                  </div>
-                </el-card>
-              </el-col>
-              <el-col :span="8">
+              <el-col :span="12">
                 <el-tabs type="border-card" stretch>
-                  <el-tab-pane label="远程WDA">
-                    <div v-if="remoteWDAPort!==0" style="margin-top: 20px;margin-bottom: 20px">
-                      <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
-                               @click="copy('http://'+agent['host']+':'+remoteWDAPort)">
-                        <strong style="color: #F2F6FC">{{ 'http://' + agent['host'] + ':' + remoteWDAPort }}</strong>
-                      </el-card>
-                    </div>
-                    <div v-else v-loading="remoteWDAPort.length===0"
-                         element-loading-spinner="el-icon-lock"
-                         element-loading-background="rgba(255, 255, 255, 1)"
-                         element-loading-text="driver未初始化成功"
-                         style="margin-top: 18px;margin-bottom: 18px">
-                      <el-card>
-                        <strong>driver未初始化成功</strong>
-                      </el-card>
-                    </div>
+                  <el-tab-pane label="Siri指令">
+                    <el-form size="small" :model="text" style="padding: 24px 0">
+                      <el-form-item>
+                        <el-input
+                            clearable
+                            v-model="text.content"
+                            size="small"
+                            placeholder="请输入siri指令，例：what day is it today?"
+                        ></el-input>
+                      </el-form-item>
+                      <div style="text-align: center;">
+                        <el-button
+                            size="mini"
+                            type="primary"
+                            @click="sendCommand(text.content)"
+                        >发送
+                        </el-button>
+                      </div>
+                    </el-form>
                   </el-tab-pane>
-                  <el-tab-pane label="远程Appium">
-                    <div v-if="remoteAppiumPort!==0" style="margin-top: 20px;margin-bottom: 20px">
-                      <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
-                               @click="copy('http://'+agent['host']+':'+remoteAppiumPort+'/wd/hub')">
-                        <strong style="color: #F2F6FC">http://{{ agent['host'] }}:{{ remoteAppiumPort }}/wd/hub</strong>
-                      </el-card>
-                    </div>
-                    <div v-else v-loading="remoteAppiumPort===0"
-                         element-loading-spinner="el-icon-lock"
-                         element-loading-background="rgba(255, 255, 255, 1)"
-                         element-loading-text="AppiumDriver未初始化！"
-                         style="margin-top: 18px;margin-bottom: 18px">
-                      <el-card>
-                        <strong>AppiumDriver未初始化！</strong>
-                      </el-card>
+                  <el-tab-pane label="模拟定位">
+                    <el-form size="small" :model="simLocation">
+                      <el-form-item label="经度">
+                        <el-input-number
+                            style="width: 100%"
+                            :precision="6"
+                            :step="0.1"
+                            v-model="simLocation.long"
+                            controls-position="right"
+                        />
+                      </el-form-item>
+                      <el-form-item label="纬度">
+                        <el-input-number
+                            style="width: 100%"
+                            :precision="6"
+                            :step="0.1"
+                            v-model="simLocation.lat"
+                            controls-position="right"
+                        />
+                      </el-form-item>
+                    </el-form>
+                    <div style="text-align: center;">
+                      <el-button
+                          size="mini"
+                          type="primary"
+                          @click="locationSet"
+                      >开始模拟
+                      </el-button>
+                      <el-button
+                          size="mini"
+                          type="primary"
+                          @click="locationUnset"
+                      >恢复定位
+                      </el-button>
                     </div>
                   </el-tab-pane>
                 </el-tabs>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="12">
+                <el-tabs type="border-card" stretch>
+                  <el-tab-pane label="远程WDA">
+                    <div style="padding: 13px 0">
+                      <div v-if="remoteWDAPort!==0" style="margin-top: 20px;margin-bottom: 20px">
+                        <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
+                                 @click="copy('http://'+agent['host']+':'+remoteWDAPort)">
+                          <strong style="color: #F2F6FC">{{ 'http://' + agent['host'] + ':' + remoteWDAPort }}</strong>
+                        </el-card>
+                      </div>
+                      <div v-else v-loading="remoteWDAPort.length===0"
+                           element-loading-spinner="el-icon-lock"
+                           element-loading-background="rgba(255, 255, 255, 1)"
+                           element-loading-text="driver未初始化成功"
+                           style="margin-top: 18px;margin-bottom: 18px">
+                        <el-card>
+                          <strong>driver未初始化成功</strong>
+                        </el-card>
+                      </div>
+                    </div>
+                  </el-tab-pane>
+                  <el-tab-pane label="远程Appium">
+                    <div style="padding: 13px 0">
+                      <div v-if="remoteAppiumPort!==0" style="margin-top: 20px;margin-bottom: 20px">
+                        <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
+                                 @click="copy('http://'+agent['host']+':'+remoteAppiumPort+'/wd/hub')">
+                          <strong style="color: #F2F6FC">http://{{ agent['host'] }}:{{
+                              remoteAppiumPort
+                            }}/wd/hub</strong>
+                        </el-card>
+                      </div>
+                      <div v-else v-loading="remoteAppiumPort===0"
+                           element-loading-spinner="el-icon-lock"
+                           element-loading-background="rgba(255, 255, 255, 1)"
+                           element-loading-text="AppiumDriver未初始化！"
+                           style="margin-top: 18px;margin-bottom: 18px">
+                        <el-card>
+                          <strong>AppiumDriver未初始化！</strong>
+                        </el-card>
+                      </div>
+                    </div>
+                  </el-tab-pane>
+                </el-tabs>
+              </el-col>
+              <!--              <el-col :span="8">-->
+              <!--                <el-card>-->
+              <!--                  <template #header>-->
+              <!--                    <strong>录制屏幕（即将开放）</strong>-->
+              <!--                  </template>-->
+              <!--                  <div style="text-align: center">-->
+              <!--                    <el-button size="mini" type="success" disabled>开始录制</el-button>-->
+              <!--                    <el-button size="mini" type="info" disabled>暂停录制</el-button>-->
+              <!--                    <el-button size="mini" type="danger" disabled>结束录制</el-button>-->
+              <!--                    <div style="margin-top: 20px">-->
+              <!--                      <el-button size="mini" type="primary" disabled>下载录像</el-button>-->
+              <!--                    </div>-->
+              <!--                  </div>-->
+              <!--                </el-card>-->
+              <!--              </el-col>-->
+              <el-col :span="12" style="margin-top: 20px">
                 <el-card>
                   <template #header>
-                    <strong>录制屏幕（即将开放）</strong>
+                    <strong>扫描二维码</strong>
                   </template>
-                  <div style="text-align: center">
-                    <el-button size="mini" type="success" disabled>开始录制</el-button>
-                    <el-button size="mini" type="info" disabled>暂停录制</el-button>
-                    <el-button size="mini" type="danger" disabled>结束录制</el-button>
-                    <div style="margin-top: 20px">
-                      <el-button size="mini" type="primary" disabled>下载录像</el-button>
-                    </div>
+                  <div style="text-align: center" v-loading="true"
+                       element-loading-spinner="el-icon-lock"
+                       element-loading-background="rgba(255, 255, 255, 1)"
+                       element-loading-text="该功能即将开放">
+                    <el-upload
+                        drag
+                        action=""
+                        :with-credentials="true"
+                        :limit="1"
+                        :before-upload="beforeAvatarUpload"
+                        :on-exceed="limitOut"
+                        :http-request="uploadScan"
+                        list-type="picture"
+                    >
+                      <i class="el-icon-upload"></i>
+                      <div class="el-upload__text">将二维码图片拖到此处，或<em>点击上传</em></div>
+                      <template #tip>
+                        <div class="el-upload__tip">只能上传jpg/png文件</div>
+                      </template>
+                    </el-upload>
                   </div>
                 </el-card>
               </el-col>
-              <!--                        <el-col :span="12" style="margin-top: 20px">-->
-              <!--                          <el-card>-->
-              <!--                            <template #header>-->
-              <!--                              <strong>扫描二维码</strong>-->
-              <!--                            </template>-->
-              <!--                            <el-alert title="OPPO、vivo部分机型上传二维码后不出现在相册，需要重启后生效" type="info" show-icon :closable="false">-->
-              <!--                            </el-alert>-->
-              <!--                            <div style="text-align: center;margin-top: 20px">-->
-              <!--                              <el-upload-->
-              <!--                                  drag-->
-              <!--                                  action=""-->
-              <!--                                  :with-credentials="true"-->
-              <!--                                  :limit="1"-->
-              <!--                                  :before-upload="beforeAvatarUpload"-->
-              <!--                                  :on-exceed="limitOut"-->
-              <!--                                  :http-request="uploadScan"-->
-              <!--                                  list-type="picture"-->
-              <!--                              >-->
-              <!--                                <i class="el-icon-upload"></i>-->
-              <!--                                <div class="el-upload__text">将二维码图片拖到此处，或<em>点击上传</em></div>-->
-              <!--                                <template #tip>-->
-              <!--                                  <div class="el-upload__tip">只能上传jpg/png文件</div>-->
-              <!--                                </template>-->
-              <!--                              </el-upload>-->
-              <!--                            </div>-->
-              <!--                          </el-card>-->
-              <!--                        </el-col>-->
-              <!--              <el-col :span="12" style="margin-top: 20px">-->
-              <!--                <el-card>-->
-              <!--                  <template #header>-->
-              <!--                    <strong>安装IPA</strong>-->
-              <!--                  </template>-->
-              <!--                  <el-tabs type="border-card">-->
-              <!--                    <el-tab-pane label="上传安装">-->
-              <!--                      <div style="text-align: center">-->
-              <!--                        <el-upload-->
-              <!--                            v-loading="uploadLoading"-->
-              <!--                            drag-->
-              <!--                            action=""-->
-              <!--                            :with-credentials="true"-->
-              <!--                            :limit="1"-->
-              <!--                            :before-upload="beforeAvatarUpload2"-->
-              <!--                            :on-exceed="limitOut"-->
-              <!--                            :http-request="uploadPackage"-->
-              <!--                        >-->
-              <!--                          <i class="el-icon-upload"></i>-->
-              <!--                          <div class="el-upload__text">将ipa文件拖到此处，或<em>点击上传</em></div>-->
-              <!--                          <template #tip>-->
-              <!--                            <div class="el-upload__tip">只能上传ipa文件</div>-->
-              <!--                          </template>-->
-              <!--                        </el-upload>-->
-              <!--                      </div>-->
-              <!--                    </el-tab-pane>-->
-              <!--                    <el-tab-pane label="URL安装">-->
-              <!--                      <el-input-->
-              <!--                          clearable-->
-              <!--                          v-model="uploadUrl"-->
-              <!--                          size="small"-->
-              <!--                          placeholder="请输入ipa下载链接或本地路径"-->
-              <!--                      ></el-input>-->
-              <!--                      <div style="text-align: center;margin-top: 20px">-->
-              <!--                        <el-button-->
-              <!--                            size="mini"-->
-              <!--                            type="primary"-->
-              <!--                            :disabled="uploadUrl.length===0"-->
-              <!--                            @click="install(uploadUrl)"-->
-              <!--                        >发送-->
-              <!--                        </el-button>-->
-              <!--                      </div>-->
-              <!--                    </el-tab-pane>-->
-              <!--                    <el-tab-pane label="已有包安装（即将开放）" disabled>-->
-              <!--                    </el-tab-pane>-->
-              <!--                  </el-tabs>-->
-              <!--                </el-card>-->
-              <!--              </el-col>-->
               <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
-                    <strong>文件互传（即将开放）</strong>
+                    <strong>文件互传与崩溃日志</strong>
                   </template>
                   <div style="text-align: center" v-loading="true"
                        element-loading-spinner="el-icon-lock"
@@ -1468,13 +1538,18 @@ onMounted(() => {
             </el-row>
             <el-card shadow="hover" style="margin-top:15px">
               <el-table :data="currAppListPageData" border>
-                <el-table-column width="150" show-overflow-tooltip header-align="center">
+                <el-table-column width="90" header-align="center">
                   <template #header>
                     <el-button size="mini" @click="refreshAppList">刷新</el-button>
                   </template>
                   <template #default="scope">
-                    {{ scope.row.name }}
+                    <div style="display: flex;align-items: center;justify-content: center;">
+                      <el-avatar shape="square" :size="40"
+                                 :src="'data:image/png;base64,'+scope.row.iconBase64"></el-avatar>
+                    </div>
                   </template>
+                </el-table-column>
+                <el-table-column width="150" show-overflow-tooltip header-align="center" prop="name" label="应用名">
                 </el-table-column>
                 <el-table-column header-align="center" show-overflow-tooltip prop="bundleId"
                                  label="包名">
@@ -1534,6 +1609,35 @@ onMounted(() => {
                 </el-steps>
               </div>
             </el-card>
+          </el-tab-pane>
+          <el-tab-pane label="Terminal" name="terminal">
+            <el-tabs stretch type="border-card">
+              <el-tab-pane label="Syslog">
+                <el-card
+                    style="border: 0px"
+                    :body-style="{color:'#FFFFFF',backgroundColor:'#303133',lineHeight:'1.5'}">
+                  <div style="display: flex;margin-bottom: 10px">
+                    <el-input style="margin-left: 5px" size="mini" v-model="logFilter"
+                              placeholder="请输入输入过滤文本">
+                      <template #prepend>| grep</template>
+                    </el-input>
+                    <el-button size="mini" @click="getSyslog"
+                               style="margin-left: 5px" type="primary">Search
+                    </el-button>
+                    <el-button size="mini" @click="stopSyslog"
+                               style="margin-left: 5px" type="danger">Stop
+                    </el-button>
+                    <el-button size="mini" @click="clearLogcat"
+                               style="margin-left: 5px" type="warning">Clear
+                    </el-button>
+                  </div>
+                  <el-scrollbar noresize ref="terminalScroll" :style="'height:'+terminalHeight+'px;min-height:450px'">
+                    <div v-html="l" v-for="l in logOutPut" style="white-space: pre-wrap">
+                    </div>
+                  </el-scrollbar>
+                </el-card>
+              </el-tab-pane>
+            </el-tabs>
           </el-tab-pane>
           <el-tab-pane label="UI自动化" name="auto">
             <div v-if="testCase['id']">

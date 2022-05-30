@@ -23,6 +23,7 @@ import RenderDeviceName from "./RenderDeviceName.vue";
 import RenderStatus from "./RenderStatus.vue";
 import {VueDraggableNext} from 'vue-draggable-next';
 import {Delete, Rank, Plus} from "@element-plus/icons";
+import Pageable from './Pageable.vue'
 
 const route = useRoute()
 const props = defineProps({
