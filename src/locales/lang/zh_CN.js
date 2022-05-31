@@ -45,7 +45,8 @@ const agent = {
     status: {
         name: '状态',
         online: '在线',
-        offline: '离线'
+        offline: '离线',
+        s2ae: 'S2AE'
     },
     system: '运行系统',
     version: '运行版本',
