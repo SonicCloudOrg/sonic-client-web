@@ -29,6 +29,9 @@ import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import useClipboard from "vue-clipboard3";
 import ColorImg from '@/components/ColorImg.vue';
+import {
+  QuestionFilled,
+} from '@element-plus/icons';
 
 const {toClipboard} = useClipboard();
 const img = import.meta.globEager("./../assets/img/*")
@@ -849,7 +852,25 @@ watch(drawer, (newVal, oldVal) => {
             <el-button size="mini" @click="copy(scope.row.secretKey)">{{ $t('agent.clickToCopy') }}</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="status" :label="$t('agent.status.name')" align="center" width="90">
+        <el-table-column prop="status" align="center" width="90">
+          <template #header>
+            <el-popover
+                placement="top"
+                title="Tips"
+                :width="250"
+                trigger="hover"
+                content="S2AE：Server -> Agent 网络不可达。"
+            >
+              <template #reference>
+                <div style="display: flex;align-items: center;justify-content: center">
+                  <el-icon :size="14" style="vertical-align: middle;">
+                    <QuestionFilled/>
+                  </el-icon>
+                  <span>{{ $t('agent.status.name') }}</span>
+                </div>
+              </template>
+            </el-popover>
+          </template>
           <template #default="scope">
             <el-tag
                 size="small"
@@ -866,7 +887,7 @@ watch(drawer, (newVal, oldVal) => {
             </el-tag>
             <el-tag
                 size="small"
-                type="info"
+                type="warning"
                 v-if="scope.row.status === 3"
             >{{ $t('agent.status.s2ae') }}
             </el-tag>
@@ -991,7 +1012,7 @@ watch(drawer, (newVal, oldVal) => {
                             </el-tag>
                             <el-tag
                                 size="small"
-                                type="info"
+                                type="warning"
                                 v-if="a.agent.status === 3"
                             >{{ $t('agent.status.s2ae') }}
                             </el-tag>
