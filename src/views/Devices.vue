@@ -852,25 +852,7 @@ watch(drawer, (newVal, oldVal) => {
             <el-button size="mini" @click="copy(scope.row.secretKey)">{{ $t('agent.clickToCopy') }}</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="status" align="center" width="90">
-          <template #header>
-            <el-popover
-                placement="top"
-                title="Tips"
-                :width="250"
-                trigger="hover"
-                content="S2AE：Server -> Agent 网络不可达。"
-            >
-              <template #reference>
-                <div style="display: flex;align-items: center;justify-content: center">
-                  <el-icon :size="14" style="vertical-align: middle;">
-                    <QuestionFilled/>
-                  </el-icon>
-                  <span>{{ $t('agent.status.name') }}</span>
-                </div>
-              </template>
-            </el-popover>
-          </template>
+        <el-table-column prop="status" :label="$t('agent.status.name')" align="center" width="90">
           <template #default="scope">
             <el-tag
                 size="small"
