@@ -29,6 +29,9 @@ import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import useClipboard from "vue-clipboard3";
 import ColorImg from '@/components/ColorImg.vue';
+import {
+  QuestionFilled,
+} from '@element-plus/icons';
 
 const {toClipboard} = useClipboard();
 const img = import.meta.globEager("./../assets/img/*")
@@ -864,6 +867,12 @@ watch(drawer, (newVal, oldVal) => {
                 v-if="scope.row.status === 2"
             >{{ $t('agent.status.offline') }}
             </el-tag>
+            <el-tag
+                size="small"
+                type="warning"
+                v-if="scope.row.status === 3"
+            >{{ $t('agent.status.s2ae') }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column :label="$t('agent.operation')" align="center" width="180">
@@ -872,7 +881,7 @@ watch(drawer, (newVal, oldVal) => {
                 $t('common.edit')
               }}
             </el-button>
-            <el-button size="mini" type="danger" @click="shutdownAgent(scope.row.id)" :disabled="scope.row.status===2">
+            <el-button size="mini" type="danger" @click="shutdownAgent(scope.row.id)" :disabled="scope.row.status!==1">
               {{ $t('agent.shutdown') }}
             </el-button>
           </template>
@@ -983,13 +992,19 @@ watch(drawer, (newVal, oldVal) => {
                                 v-if="a.agent.status === 2"
                             >{{ $t('agent.status.offline') }}
                             </el-tag>
+                            <el-tag
+                                size="small"
+                                type="warning"
+                                v-if="a.agent.status === 3"
+                            >{{ $t('agent.status.s2ae') }}
+                            </el-tag>
                           </el-form-item>
                           <el-form-item :label="$t('agent.operation')">
                             <el-button size="mini" type="primary" @click="editAgent(a.agent.id,a.agent.name)">
                               {{ $t('common.edit') }}
                             </el-button>
                             <el-button size="mini" type="danger" @click="shutdownAgent(a.agent.id)"
-                                       :disabled="a.agent.status===2">{{ $t('agent.shutdown') }}
+                                       :disabled="a.agent.status!==1">{{ $t('agent.shutdown') }}
                             </el-button>
                           </el-form-item>
                         </el-form>

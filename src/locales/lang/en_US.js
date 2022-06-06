@@ -45,7 +45,8 @@ const agent = {
     status: {
         name: 'Status',
         online: 'ONLINE',
-        offline: 'OFFLINE'
+        offline: 'OFFLINE',
+        s2ae: 'S2AE'
     },
     system: 'System',
     version: 'Version',

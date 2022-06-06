@@ -26,6 +26,12 @@ jobs:
     - name: login docker hub
       run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login -u zhouyixun --password-stdin
     - name: build docker image
-      run: docker build -t sonicorg/sonic-client-web:v1.3.2-release .
+      run: docker build -t sonicorg/sonic-client-web:v1.4.0-rc .
     - name: push docker image
-      run: docker push sonicorg/sonic-client-web:v1.3.2-release
+      run: docker push sonicorg/sonic-client-web:v1.4.0-rc
+    - name: login docker hub
+      run: echo "${{ secrets.ACCESS_TOKEN_ALIYUN }}" | docker login --username=小虫哔哔 registry.cn-hangzhou.aliyuncs.com --password-stdin
+    - name: tag
+      run : docker tag sonicorg/sonic-client-web:v1.4.0-rc registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-client-web:v1.4.0-rc
+    - name: push docker image
+      run: docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-client-web:v1.4.0-rc

@@ -23,6 +23,7 @@ import RenderDeviceName from "./RenderDeviceName.vue";
 import RenderStatus from "./RenderStatus.vue";
 import {VueDraggableNext} from 'vue-draggable-next';
 import {Delete, Rank, Plus} from "@element-plus/icons";
+import Pageable from './Pageable.vue'
 
 const route = useRoute()
 const props = defineProps({
@@ -43,7 +44,7 @@ const getImg = (name) => {
 }
 const getPhoneImg = (name, url) => {
   let result;
-  if (url === null || url.length === 0) {
+  if (url === null || (url && url.length === 0)) {
     result = img['./../assets/img/default.png'].default
   } else {
     result = url;
