@@ -83,7 +83,7 @@ onMounted(() => {
     <el-table-column width="80" label="套件Id" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>
       <template #header>
-        <el-input v-model="name" size="mini" @input="getTestSuiteList" placeholder="输入测试套件名称搜索"/>
+        <el-input v-model="name" size="mini" @input="getTestSuiteList(1)" placeholder="输入测试套件名称搜索"/>
       </template>
     </el-table-column>
     <el-table-column label="套件平台" min-width="110" align="center">
