@@ -16,7 +16,7 @@
  *
  */
 import {useRoute, useRouter} from 'vue-router';
-import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, nextTick, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {useStore} from 'vuex';
 import axios from '@/http/axios';
 import {ElMessage} from 'element-plus';
@@ -138,6 +138,7 @@ const pocoTypeList = ref([
     img: 'Cocos2dx'
   },
 ])
+const isAudoInit = ref('0')
 let imgWidth = 0;
 let imgHeight = 0;
 // 旋转状态 // 0 90 180 270
@@ -475,15 +476,15 @@ const setImgData = () => {
   };
   isShowImg.value = true;
 };
-const openSocket = (host, port, udId, key) => {
+const openSocket = (host, port, key, udId) => {
   if ('WebSocket' in window) {
     //
     websocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/android/' + udId + '/' + key + '/' + localStorage.getItem('SonicToken'),
+        'ws://' + host + ':' + port + '/websockets/android/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken') + '/' + isAudoInit.value,
     );
     //
     __Scrcpy = new Scrcpy({
-      socketURL: 'ws://' + host + ':' + port + '/websockets/android/screen/' + udId + '/' + key + '/' + localStorage.getItem('SonicToken'),
+      socketURL: 'ws://' + host + ':' + port + '/websockets/android/screen/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
       node: 'scrcpy-video',
       onmessage: screenWebsocketOnmessage,
       excuteMode: screenMode.value
@@ -492,7 +493,7 @@ const openSocket = (host, port, udId, key) => {
     changeScreenMode(screenMode.value, 1)
     //
     terminalWebsocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/terminal/' + udId + '/' + key,
+        'ws://' + host + ':' + port + '/websockets/android/terminal/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
     );
   } else {
     console.error('不支持WebSocket');
@@ -503,7 +504,15 @@ const openSocket = (host, port, udId, key) => {
   terminalWebsocket.onmessage = terminalWebsocketOnmessage;
   terminalWebsocket.onclose = (e) => {
   };
+  if (isAudoInit.value === '1') {
+    driverLoading.value = true
+  }
 };
+const changeAutoInit = (t) => {
+  if (t) {
+    localStorage.setItem('SonicAndroidIsAutoInit', t);
+  }
+}
 const sendLogcat = () => {
   terminalWebsocket.send(
       JSON.stringify({
@@ -1637,7 +1646,9 @@ const resetAudioPlayer = () => {
     message: '远程音频同步成功！',
   });
 };
-
+onBeforeMount(() => {
+  isAudoInit.value = localStorage.getItem('SonicAndroidIsAutoInit') ? localStorage.getItem('SonicAndroidIsAutoInit') : '0'
+})
 onMounted(() => {
   if (store.state.project.id) {
     project.value = store.state.project;
@@ -2397,10 +2408,18 @@ onMounted(() => {
                     <strong>其他</strong>
                   </template>
                   <div style="text-align: center">
-                    <div style="margin: 22px 0px">
+                    <div style="margin: 8px 0px">
                       <el-button size="mini" type="primary" :disabled="isDriverFinish" :loading="driverLoading"
                                  @click="openDriver">初始化AppiumDriver
                       </el-button>
+                      <div style="margin-top: 10px">
+                        <el-switch class="refresh" active-value="1"
+                                   inactive-value="0" @change="changeAutoInit"
+                                   size="mini"
+                                   active-text="下次进入自动初始化"
+                                   active-color="#13ce66"
+                                   v-model="isAudoInit"/>
+                      </div>
                     </div>
                   </div>
                 </el-card>
