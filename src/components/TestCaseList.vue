@@ -47,6 +47,20 @@ const deleteCase = (id) => {
     }
   })
 }
+const copy = (id) => {
+  axios.get("/controller/testCases/copy", {
+    params: {
+      id
+    }
+  }).then(resp => {
+    if (resp['code'] === 2000){
+      ElMessage.success({
+        message: resp['message'],
+      });
+      getTestCaseList()
+    }
+  })
+}
 const emit = defineEmits(['selectCase'])
 const selectCase = (testCase, c, e) => {
   if (props.isReadOnly) {
@@ -62,10 +76,10 @@ watch(dialogVisible, (newValue, oldValue) => {
   }
 })
 watch(
-  () => props.projectId, 
-  () => {
-  getTestCaseList();
-})
+    () => props.projectId,
+    () => {
+      getTestCaseList();
+    })
 const editCase = async (id) => {
   caseId.value = id
   await open()
@@ -108,10 +122,11 @@ defineExpose({open})
     </el-table-column>
     <el-table-column min-width="80" label="设计人" prop="designer" align="center" show-overflow-tooltip/>
     <el-table-column min-width="180" label="最后修改日期" prop="editTime" align="center"/>
-    <el-table-column width="250" fixed="right" label="操作" align="center" v-if="!isReadOnly">
+    <el-table-column width="300" fixed="right" label="操作" align="center" v-if="!isReadOnly">
       <template #default="scope">
         <el-button size="mini" @click="router.push('StepListView/'+scope.row.id)">步骤详情</el-button>
         <el-button size="mini" type="primary" @click="editCase(scope.row.id)">编辑</el-button>
+<!--        <el-button size="mini" type="primary" plain @click="copy(scope.row.id) ">复制</el-button>-->
         <el-popconfirm
             style="margin-left: 10px"
             :confirmButtonText="$t('form.confirm')"

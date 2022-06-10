@@ -41,6 +41,21 @@ const getPublicStepList = (pageNum, pSize) => {
     pageData.value = resp.data
   })
 }
+//复制该公共步骤
+const copyPublicStepId=(id)=>{
+  axios.get("/controller/publicSteps/copy",{
+    params:{
+      id
+    }
+  }).then(resp =>{
+    if (resp['code']===2000){
+      ElMessage.success({
+        message: resp['message']
+      });
+      getPublicStepList()
+    }
+  })
+}
 const deletePublicStep = (id) => {
   axios.delete("/controller/publicSteps", {
     params: {
@@ -60,7 +75,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="公共步骤信息" width="80%">
+  <el-dialog v-model="dialogVisible" title="公共步骤信息" width="750px">
     <public-step-update v-if="dialogVisible" @flush="flush" :public-step-id="publicStepId"
                         :project-id="route.params.projectId"/>
   </el-dialog>
@@ -100,8 +115,14 @@ onMounted(() => {
         </el-popover>
       </template>
     </el-table-column>
-    <el-table-column label="操作" width="180" align="center">
+    <el-table-column label="操作" width="250" align="center">
+
       <template #default="scope">
+        <el-button type="primary"
+                   size="mini"
+                   v-on:click="copyPublicStepId(scope.row.id)"
+        >
+          复制</el-button>
         <el-button
             type="primary"
             size="mini"
@@ -109,6 +130,7 @@ onMounted(() => {
         >
           编辑
         </el-button>
+
         <el-popconfirm
             style="margin-left: 10px"
             :confirmButtonText="$t('form.confirm')"
