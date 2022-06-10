@@ -196,7 +196,13 @@ const routes = {
     versionIteration: "版本迭代",
     timedTask: "定时任务",
     projectSetting: "项目设置",
-    projectPage: "项目首页"
+    projectPage: "项目首页",
+    resource:"",
+    role: ""
+}
+
+const setting = {
+    title: "设置"
 }
 
 export default {
@@ -208,6 +214,7 @@ export default {
         layout,
         form,
         dialog,
-        routes
+        routes,
+        setting
     }
 }

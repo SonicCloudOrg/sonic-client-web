@@ -7,7 +7,7 @@ import logo from "./../assets/logo.png";
 import {Fold, Expand} from "@element-plus/icons";
 import ProjectUpdate from '../components/ProjectUpdate.vue'
 import defaultLogo from '../assets/logo.png'
-import {Cellphone, HomeFilled} from "@element-plus/icons";
+import {Cellphone, HomeFilled, Setting} from "@element-plus/icons";
 import {ElMessage} from "element-plus";
 import {localeList} from '@/config/locale'
 import useLocale from '@/locales/useLocale'
@@ -118,7 +118,7 @@ const changeLocaleHandler = function (val) {
     <el-header>
       <div class="flex-center demo">
         <div style="margin:0 20px;cursor:pointer" @click="store.commit('changeCollapse')"
-             v-if="route.params.projectId">
+             v-if="route.params.projectId || route.fullPath.indexOf('/Setting') != -1">
           <el-icon :size="20" style="vertical-align: middle;" v-if="store.state.isCollapse === false">
             <Fold/>
           </el-icon>
@@ -156,6 +156,13 @@ const changeLocaleHandler = function (val) {
         <el-menu :ellipsis="false" :background-color="store.state.menuBack" :text-color="store.state.menuText"
                  :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
                  :default-active="route.path">
+          <el-menu-item index="/Setting" @click="pushIndex('/Setting')"
+                        v-if="route.fullPath==='/Index'|| route.fullPath==='/Index/Devices'">
+            <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
+              <Setting />
+            </el-icon>
+            {{ $t('setting.title') }}
+          </el-menu-item>
           <el-menu-item :index="route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices'"
                         @click="pushIndex(route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices')"
           >
@@ -165,7 +172,7 @@ const changeLocaleHandler = function (val) {
             {{ $t('layout.deviceCenter') }}
           </el-menu-item>
           <el-menu-item index="/Index" @click="pushIndex('/Index')"
-                        v-if="route.params.projectId|| route.fullPath==='/Index/Devices'">
+                        v-if="route.params.projectId|| route.fullPath==='/Index/Devices' || route.fullPath.indexOf('/Setting') != -1">
             <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
               <HomeFilled/>
             </el-icon>
@@ -246,7 +253,7 @@ const changeLocaleHandler = function (val) {
         </el-form-item>
         <el-form-item :label="$t('form.role')">
           <el-tag size="small">
-            {{ store.state.userInfo.role === 2 ? $t('form.testEngineer') : $t('form.developmentEngineer') }}
+            {{ store.state.userInfo.roleName}}
           </el-tag>
         </el-form-item>
       </el-form>
@@ -309,7 +316,7 @@ const changeLocaleHandler = function (val) {
       </div>
     </el-dialog>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
-      <el-main v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices'">
+      <el-main v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices' || route.fullPath.indexOf('/Setting') != -1">
         <router-view/>
       </el-main>
       <el-main v-else>
