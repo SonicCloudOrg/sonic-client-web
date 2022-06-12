@@ -158,6 +158,7 @@ const form = {
 }
 // 弹窗相关
 const dialog = {
+    permissionDenied:'現在のユーザーには権限がありません！',
     suffixError: 'ファイルフォーマットが間違っています!',
     cabinetInfo: 'キャビネット情報',
     projectInfo: "プロジェクト情報",

@@ -158,6 +158,7 @@ const form = {
 }
 // 彈出型視窗相關
 const dialog = {
+    permissionDenied:'當前用戶暫無許可權！',
     suffixError: '檔案格式有誤！',
     cabinetInfo:'機櫃信息',
     projectInfo: "專案資訊",

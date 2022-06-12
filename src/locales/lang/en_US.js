@@ -158,6 +158,7 @@ const form = {
 }
 // 弹窗相关
 const dialog = {
+    permissionDenied:'Permission denied!',
     suffixError: 'Incorrect file suffix!',
     cabinetInfo:'Cabinet Info',
     projectInfo: "Project Information",

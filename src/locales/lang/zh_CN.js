@@ -158,6 +158,7 @@ const form = {
 }
 // 弹窗相关
 const dialog = {
+    permissionDenied:'当前用户暂无权限！',
     suffixError: '文件格式有误！',
     cabinetInfo: '机柜信息',
     projectInfo: "项目信息",
