@@ -41,9 +41,9 @@ const agent = {
         }
     },
     newAgent: "エージェント追加",
-    clickToCopy:'クリックしてコピー',
+    clickToCopy: 'クリックしてコピー',
     status: {
-        name:'Status',
+        name: 'Status',
         online: 'オンライン',
         offline: 'オフライン',
         s2ae: 'S2AE'
@@ -158,7 +158,7 @@ const form = {
 }
 // 弹窗相关
 const dialog = {
-    permissionDenied:'現在のユーザーには権限がありません！',
+    permissionDenied: '現在のユーザーには権限がありません！',
     suffixError: 'ファイルフォーマットが間違っています!',
     cabinetInfo: 'キャビネット情報',
     projectInfo: "プロジェクト情報",
@@ -180,24 +180,28 @@ const common = {
 
 // 路由
 const routes = {
-  login: "ログイン",
-  home: "トップページ",
-  deviceCenter: "設備センター",
-  remoteControl: "リモートコントロール",
-  androidTestCase: "Androidテストケース",
-  iosTestCase: 'IOSテストケース',
-  operateSteps: "ステップの実行",
-  testSuite: "テストキット",
-  testResult: "テスト結果",
-  reportDetails: "詳細のレポート",
-  publicSteps: "共通の手順",
-  controlElement: "コントロール要素",
-  globalParameter: "グローバルパラメータ",
-  moduleManage: "モジュール管理",
-  versionIteration: "バージョン反復",
-  timedTask: "タイミングタスク",
-  projectSetting: "プロジェクトの設定",
-  projectPage: "プロジェクトのトップページ"
+    login: "ログイン",
+    home: "トップページ",
+    deviceCenter: "設備センター",
+    remoteControl: "リモートコントロール",
+    androidTestCase: "Androidテストケース",
+    iosTestCase: 'IOSテストケース',
+    operateSteps: "ステップの実行",
+    testSuite: "テストキット",
+    testResult: "テスト結果",
+    reportDetails: "詳細のレポート",
+    publicSteps: "共通の手順",
+    controlElement: "コントロール要素",
+    globalParameter: "グローバルパラメータ",
+    moduleManage: "モジュール管理",
+    versionIteration: "バージョン反復",
+    timedTask: "タイミングタスク",
+    projectSetting: "プロジェクトの設定",
+    projectPage: "プロジェクトのトップページ"
+}
+
+const setting = {
+    title: "Permission Center"
 }
 
 export default {
@@ -209,6 +213,7 @@ export default {
         layout,
         form,
         dialog,
-        routes
+        routes,
+        setting
     }
 }

@@ -158,7 +158,7 @@ const form = {
 }
 // 弹窗相关
 const dialog = {
-    permissionDenied:'当前用户暂无权限！',
+    permissionDenied: '当前用户暂无权限！',
     suffixError: '文件格式有误！',
     cabinetInfo: '机柜信息',
     projectInfo: "项目信息",
@@ -198,12 +198,12 @@ const routes = {
     timedTask: "定时任务",
     projectSetting: "项目设置",
     projectPage: "项目首页",
-    resource:"",
+    resource: "",
     role: ""
 }
 
 const setting = {
-    title: "设置"
+    title: "权限中心"
 }
 
 export default {

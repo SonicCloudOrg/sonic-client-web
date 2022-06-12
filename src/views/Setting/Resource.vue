@@ -11,12 +11,9 @@ const pageData = ref({})
 const pageSize = ref(15);
 const path = ref("")
 
-const resourceList = ref([])
-
-
 const updateStatus = (id, needAuth) => {
   axios.put("/controller/resources/edit", {
-      id, needAuth
+    id, needAuth
   }).then(resp => {
     if (resp['code'] === 2000) {
       ElMessage.success({
@@ -28,20 +25,18 @@ const updateStatus = (id, needAuth) => {
 
 const refresh = (id, needAuth) => {
   axios.post("/controller/resources/refresh", {
-      id, needAuth
+    id, needAuth
   }).then(resp => {
     if (resp['code'] === 2000) {
       pageData.value = resp.data
-    }else {
       ElMessage.success({
-          message: resp['message'],
-        });
+        message: "同步成功！",
+      });
     }
-    
   })
 }
 
-const getResourceList = (pageNum, pSize)=> {
+const getResourceList = (pageNum, pSize) => {
   axios.get("/controller/resources/list", {
     params: {
       page: pageNum || 1,
@@ -58,25 +53,25 @@ onMounted(() => {
 })
 </script>
 <template>
-  
-  <el-button size="mini" style="margin-bottom: 10px"  round type="primary" @click="refresh">同步资源</el-button>
+
+  <el-button size="mini" style="margin-bottom: 10px" round type="primary" @click="refresh">同步资源</el-button>
   <el-alert style="margin-bottom: 10px" title="同步资源说明"
-              description="重新全量更新应用内所有请求资源信息，一般版本更新需要同步"
-              type="info" show-icon close-text="Get!"/>
-  
+            description="重新全量更新应用内所有请求资源信息，一般版本更新需要同步"
+            type="info" show-icon close-text="Get!"/>
+
   <el-table
       :data="pageData['content']"
       style="width: 100%; margin-top: 20px"
       border
   >
     <el-table-column label="资源id" width="90" align="center" prop="id"></el-table-column>
-    <el-table-column label="描述"  align="center" prop="desc"></el-table-column>
-    <el-table-column label="路径"  align="center" prop="path">
+    <el-table-column label="描述" align="center" prop="desc"></el-table-column>
+    <el-table-column label="路径" align="center" prop="path">
       <template #header>
         <el-input v-model="path" size="mini" @input="getResourceList(1)" placeholder="输入路径名称"/>
       </template>
     </el-table-column>
-    <el-table-column label="调用方法" width="80"  header-align="center" prop="method"></el-table-column>
+    <el-table-column label="调用方法" width="80" header-align="center" prop="method"></el-table-column>
     <el-table-column label="是否需要鉴权" width="120" align="center">
       <template #default="scope">
         <el-switch
@@ -94,7 +89,7 @@ onMounted(() => {
         </el-switch>
       </template>
     </el-table-column>
-    
+
   </el-table>
   <pageable :is-page-set="true" :total="pageData['totalElements']"
             :current-page="pageData['number']+1"

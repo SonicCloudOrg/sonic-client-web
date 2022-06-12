@@ -156,13 +156,6 @@ const changeLocaleHandler = function (val) {
         <el-menu :ellipsis="false" :background-color="store.state.menuBack" :text-color="store.state.menuText"
                  :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
                  :default-active="route.path">
-          <el-menu-item index="/Setting" @click="pushIndex('/Setting')"
-                        v-if="route.fullPath==='/Index'|| route.fullPath==='/Index/Devices'">
-            <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
-              <Setting />
-            </el-icon>
-            {{ $t('setting.title') }}
-          </el-menu-item>
           <el-menu-item :index="route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices'"
                         @click="pushIndex(route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices')"
           >
@@ -189,6 +182,10 @@ const changeLocaleHandler = function (val) {
                 store.state.userInfo.userName
               }}
             </template>
+            <el-menu-item index="1-0" @click="pushIndex('/Setting')"
+                          v-if="route.fullPath==='/Index'|| route.fullPath==='/Index/Devices'">
+              {{ $t('setting.title') }}
+            </el-menu-item>
             <el-menu-item index="1-1" @click="dialogUserInfo = true">{{ $t('layout.myInfo') }}</el-menu-item>
             <el-menu-item index="1-2" @click="dialogChangePwd = true">{{ $t('layout.changePassword') }}</el-menu-item>
             <el-menu-item index="1-3" @click="logout">{{ $t('layout.signOut') }}</el-menu-item>

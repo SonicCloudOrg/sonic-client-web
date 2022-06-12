@@ -11,7 +11,7 @@ const robot = {
 }
 const agent = {
     cabinet: {
-        label:'所屬機櫃',
+        label: '所屬機櫃',
         manager: '機櫃管理',
         newCabinet: '新增機櫃',
         edit: {
@@ -158,9 +158,9 @@ const form = {
 }
 // 彈出型視窗相關
 const dialog = {
-    permissionDenied:'當前用戶暫無許可權！',
+    permissionDenied: '當前用戶暫無許可權！',
     suffixError: '檔案格式有誤！',
-    cabinetInfo:'機櫃信息',
+    cabinetInfo: '機櫃信息',
     projectInfo: "專案資訊",
     agentInfo: 'Agent信息',
     myInfo: "我的信息",
@@ -180,24 +180,28 @@ const common = {
 
 // 路由
 const routes = {
-  login: "登入",
-  home: "首頁",
-  deviceCenter: "設備中心",
-  remoteControl: "遠程控制",
-  androidTestCase: "安卓測試用例",
-  iosTestCase: 'IOS測試用例',
-  operateSteps: "運行步驟",
-  testSuite: "測試套件",
-  testResult: "測試結果",
-  reportDetails: "報告詳情",
-  publicSteps: "公共步驟",
-  controlElement: "控制項元素",
-  globalParameter: "全域參數",
-  moduleManage: "模塊管理",
-  versionIteration: "版本反覆運算",
-  timedTask: "定時任務",
-  projectSetting: "項目設定",
-  projectPage: "項目首頁"
+    login: "登入",
+    home: "首頁",
+    deviceCenter: "設備中心",
+    remoteControl: "遠程控制",
+    androidTestCase: "安卓測試用例",
+    iosTestCase: 'IOS測試用例',
+    operateSteps: "運行步驟",
+    testSuite: "測試套件",
+    testResult: "測試結果",
+    reportDetails: "報告詳情",
+    publicSteps: "公共步驟",
+    controlElement: "控制項元素",
+    globalParameter: "全域參數",
+    moduleManage: "模塊管理",
+    versionIteration: "版本反覆運算",
+    timedTask: "定時任務",
+    projectSetting: "項目設定",
+    projectPage: "項目首頁"
+}
+
+const setting = {
+    title: "Permission Center"
 }
 
 export default {
@@ -209,6 +213,7 @@ export default {
         layout,
         form,
         dialog,
-        routes
+        routes,
+        setting
     }
 }
