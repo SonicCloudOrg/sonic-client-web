@@ -11,7 +11,7 @@ const robot = {
 }
 const agent = {
     cabinet: {
-        label:'Cabinet',
+        label: 'Cabinet',
         manager: 'Cabinet Management',
         newCabinet: 'New Cabinet',
         edit: {
@@ -158,8 +158,9 @@ const form = {
 }
 // 弹窗相关
 const dialog = {
+    permissionDenied: 'Permission denied!',
     suffixError: 'Incorrect file suffix!',
-    cabinetInfo:'Cabinet Info',
+    cabinetInfo: 'Cabinet Info',
     projectInfo: "Project Information",
     agentInfo: 'Agent Information',
     myInfo: "My Information",
@@ -179,24 +180,28 @@ const common = {
 
 // 路由
 const routes = {
-  login: "Login",
-  home: "Home ",
-  deviceCenter: "Device Center",
-  remoteControl: "Remote Control",
-  androidTestCase: "Android Test Case",
-  iosTestCase: 'IOS Test Case',
-  operateSteps: "Operating Steps",
-  testSuite: "Test Suite",
-  testResult: "Test Result",
-  reportDetails: "Report Details",
-  publicSteps: "Public Steps",
-  controlElement: "Control Element",
-  globalParameter: "Global Parameter",
-  moduleManage: "Modules Management",
-  versionIteration: "Version Iteration",
-  timedTask: "Timed Task",
-  projectSetting: "Project Setting",
-  projectPage: "Project Home"
+    login: "Login",
+    home: "Home ",
+    deviceCenter: "Device Center",
+    remoteControl: "Remote Control",
+    androidTestCase: "Android Test Case",
+    iosTestCase: 'IOS Test Case',
+    operateSteps: "Operating Steps",
+    testSuite: "Test Suite",
+    testResult: "Test Result",
+    reportDetails: "Report Details",
+    publicSteps: "Public Steps",
+    controlElement: "Control Element",
+    globalParameter: "Global Parameter",
+    moduleManage: "Modules Management",
+    versionIteration: "Version Iteration",
+    timedTask: "Timed Task",
+    projectSetting: "Project Setting",
+    projectPage: "Project Home"
+}
+
+const setting = {
+    title: "Permission Center"
 }
 
 export default {
@@ -208,6 +213,7 @@ export default {
         layout,
         form,
         dialog,
-        routes
+        routes,
+        setting
     }
 }

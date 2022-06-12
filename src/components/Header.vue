@@ -7,7 +7,7 @@ import logo from "./../assets/logo.png";
 import {Fold, Expand} from "@element-plus/icons";
 import ProjectUpdate from '../components/ProjectUpdate.vue'
 import defaultLogo from '../assets/logo.png'
-import {Cellphone, HomeFilled} from "@element-plus/icons";
+import {Cellphone, HomeFilled, Setting} from "@element-plus/icons";
 import {ElMessage} from "element-plus";
 import {localeList} from '@/config/locale'
 import useLocale from '@/locales/useLocale'
@@ -118,7 +118,7 @@ const changeLocaleHandler = function (val) {
     <el-header>
       <div class="flex-center demo">
         <div style="margin:0 20px;cursor:pointer" @click="store.commit('changeCollapse')"
-             v-if="route.params.projectId">
+             v-if="route.params.projectId || route.fullPath.indexOf('/Setting') != -1">
           <el-icon :size="20" style="vertical-align: middle;" v-if="store.state.isCollapse === false">
             <Fold/>
           </el-icon>
@@ -165,7 +165,7 @@ const changeLocaleHandler = function (val) {
             {{ $t('layout.deviceCenter') }}
           </el-menu-item>
           <el-menu-item index="/Index" @click="pushIndex('/Index')"
-                        v-if="route.params.projectId|| route.fullPath==='/Index/Devices'">
+                        v-if="route.params.projectId|| route.fullPath==='/Index/Devices' || route.fullPath.indexOf('/Setting') != -1">
             <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
               <HomeFilled/>
             </el-icon>
@@ -182,6 +182,9 @@ const changeLocaleHandler = function (val) {
                 store.state.userInfo.userName
               }}
             </template>
+            <el-menu-item index="1-0" @click="pushIndex('/Setting')">
+              {{ $t('setting.title') }}
+            </el-menu-item>
             <el-menu-item index="1-1" @click="dialogUserInfo = true">{{ $t('layout.myInfo') }}</el-menu-item>
             <el-menu-item index="1-2" @click="dialogChangePwd = true">{{ $t('layout.changePassword') }}</el-menu-item>
             <el-menu-item index="1-3" @click="logout">{{ $t('layout.signOut') }}</el-menu-item>
@@ -246,7 +249,7 @@ const changeLocaleHandler = function (val) {
         </el-form-item>
         <el-form-item :label="$t('form.role')">
           <el-tag size="small">
-            {{ store.state.userInfo.role === 2 ? $t('form.testEngineer') : $t('form.developmentEngineer') }}
+            {{ store.state.userInfo.roleName }}
           </el-tag>
         </el-form-item>
       </el-form>
@@ -309,7 +312,8 @@ const changeLocaleHandler = function (val) {
       </div>
     </el-dialog>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
-      <el-main v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices'">
+      <el-main
+          v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices' || route.fullPath.indexOf('/Setting') != -1">
         <router-view/>
       </el-main>
       <el-main v-else>
