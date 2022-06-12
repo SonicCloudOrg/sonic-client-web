@@ -182,8 +182,7 @@ const changeLocaleHandler = function (val) {
                 store.state.userInfo.userName
               }}
             </template>
-            <el-menu-item index="1-0" @click="pushIndex('/Setting')"
-                          v-if="route.fullPath==='/Index'|| route.fullPath==='/Index/Devices'">
+            <el-menu-item index="1-0" @click="pushIndex('/Setting')">
               {{ $t('setting.title') }}
             </el-menu-item>
             <el-menu-item index="1-1" @click="dialogUserInfo = true">{{ $t('layout.myInfo') }}</el-menu-item>
@@ -250,7 +249,7 @@ const changeLocaleHandler = function (val) {
         </el-form-item>
         <el-form-item :label="$t('form.role')">
           <el-tag size="small">
-            {{ store.state.userInfo.roleName}}
+            {{ store.state.userInfo.roleName }}
           </el-tag>
         </el-form-item>
       </el-form>
@@ -313,7 +312,8 @@ const changeLocaleHandler = function (val) {
       </div>
     </el-dialog>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
-      <el-main v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices' || route.fullPath.indexOf('/Setting') != -1">
+      <el-main
+          v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices' || route.fullPath.indexOf('/Setting') != -1">
         <router-view/>
       </el-main>
       <el-main v-else>
