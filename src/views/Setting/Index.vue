@@ -36,6 +36,11 @@ onMounted(() => {
           ></el-avatar>
           <span class="project-name" v-if="!store.state.isCollapse">权限中心</span>
         </div>
+        <el-sub-menu index="5">
+          <template #title>
+            <i class="el-icon-lock"></i>
+            <span>权限配置</span>
+          </template>
         <el-menu-item :index="'/Setting/Resources'">
           <i class="el-icon-notebook-1"></i>资源管理
         </el-menu-item>
@@ -43,8 +48,9 @@ onMounted(() => {
           <i class="el-icon-place"></i>角色管理
         </el-menu-item>
         <el-menu-item :index="'/Setting/Users'">
-          <i class="el-icon-user"></i>用户角色配置
+          <i class="el-icon-user"></i>用户配置
         </el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
     <Header></Header>
