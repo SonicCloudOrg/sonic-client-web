@@ -27,6 +27,7 @@ if (process.env.NODE_ENV === 'production') {
     baseURL = 'http://SERVER_HOST:SERVER_PORT/server/api'
 }
 const $http = axios.create()
+baseURL = baseURL.replace(":80/", "/")
 $http.defaults.baseURL = baseURL
 // $http.defaults.timeout = 20000;
 $http.defaults.headers['common']['X-Requested-With'] = 'XMLHttpRequest'
