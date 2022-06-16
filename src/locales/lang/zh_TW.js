@@ -197,11 +197,13 @@ const routes = {
     versionIteration: "版本反覆運算",
     timedTask: "定時任務",
     projectSetting: "項目設定",
-    projectPage: "項目首頁"
+    projectPage: "項目首頁",
+    resource: "",
+    role: ""
 }
 
 const setting = {
-    title: "Permission Center"
+    title: "Manage Center"
 }
 
 export default {

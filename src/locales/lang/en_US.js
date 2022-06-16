@@ -197,11 +197,13 @@ const routes = {
     versionIteration: "Version Iteration",
     timedTask: "Timed Task",
     projectSetting: "Project Setting",
-    projectPage: "Project Home"
+    projectPage: "Project Home",
+    resource: "",
+    role: ""
 }
 
 const setting = {
-    title: "Permission Center"
+    title: "Manage Center"
 }
 
 export default {

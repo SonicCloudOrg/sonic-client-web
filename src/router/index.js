@@ -162,6 +162,12 @@ const getRoutes = () => [
         component: () => import('../views/Setting/Users.vue'),
         meta: { title: $tc('routes.role') },
       },
+      {
+        path: 'SysJobs',
+        name: 'SysJobs',
+        component: () => import('../views/Setting/SysJobs.vue'),
+        meta: { title: $tc('routes.role') },
+      },
     ],
   },
 ]

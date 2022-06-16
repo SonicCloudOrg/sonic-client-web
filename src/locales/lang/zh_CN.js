@@ -203,7 +203,7 @@ const routes = {
 }
 
 const setting = {
-    title: "权限中心"
+    title: "后台管理中心"
 }
 
 export default {

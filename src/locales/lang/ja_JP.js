@@ -197,11 +197,13 @@ const routes = {
     versionIteration: "バージョン反復",
     timedTask: "タイミングタスク",
     projectSetting: "プロジェクトの設定",
-    projectPage: "プロジェクトのトップページ"
+    projectPage: "プロジェクトのトップページ",
+    resource: "",
+    role: ""
 }
 
 const setting = {
-    title: "Permission Center"
+    title: "Manage Center"
 }
 
 export default {
