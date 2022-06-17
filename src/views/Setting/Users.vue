@@ -117,7 +117,7 @@ onMounted(() => {
   </el-dialog>
   <el-table
       :data="pageData['content']"
-      style="width: 100%; margin-top: 20px"
+      style="width: 100%;"
       border
   >
     <el-table-column label="用户id" width="90" align="center" prop="id"></el-table-column>
