@@ -10,36 +10,6 @@ const robot = {
     robotSecretPlaceholder: '请输入群机器人的密钥'
 }
 const agent = {
-    cabinet: {
-        label: '所属机柜',
-        manager: '机柜管理',
-        newCabinet: '新增机柜',
-        edit: {
-            name: '机柜名称',
-            rule: '机柜名称不能为空',
-            namePlaceholder: '请输入机柜名称',
-            size: '机柜规格',
-            small: '小型机柜（5x2）',
-            middle: '中型机柜（10x4）',
-            large: '大型机柜（10x8）',
-            lowLevel: '低电量值',
-            highGear: '高电流档位',
-            highLevel: '高电量值',
-            lowGear: '低电流档位',
-            highTemp: '高温值',
-            highTempTime: '高温超时',
-            lowFormat: '档（推荐1档）',
-            highFormat: '档（推荐14档）'
-        },
-        tips: {
-            title: '设置提示',
-            content: `<div>当设备电量≤<span style="color: #409EFF">低电量值</span>时，对应充电口会释放<span style="color: #67C23A">高电流档位</span>的电流。</div>
-<div>当设备电量≥<span style="color: #409EFF">高电量值</span>时，对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流。</div>
-<div>当设备温度≥<span style="color: #409EFF">高温值</span>时（仅安卓），对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流并通知机器人。</div>
-<div>当<span style="color: #E6A23C">高温超时</span>时间内温度持续≥<span style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人并<span
-    style="color: #F56C6C">关机</span>。</div>`
-        }
-    },
     newAgent: "新增Agent",
     clickToCopy: '点击复制',
     status: {
@@ -160,7 +130,6 @@ const form = {
 const dialog = {
     permissionDenied: '当前用户暂无权限！',
     suffixError: '文件格式有误！',
-    cabinetInfo: '机柜信息',
     projectInfo: "项目信息",
     agentInfo: 'Agent信息',
     myInfo: "我的信息",
