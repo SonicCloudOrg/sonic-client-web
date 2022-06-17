@@ -24,6 +24,8 @@ const agent = {
     shutdown: 'ダウン',
     edit: {
         name: 'エージェント名称',
+        highTemp: "高温值",
+        highTempTime: "高温超时",
         rule: 'エージェント名称が必要です',
         namePlaceholder: 'エージェント名称を入力してください'
     }

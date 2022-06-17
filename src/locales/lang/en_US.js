@@ -24,6 +24,8 @@ const agent = {
     shutdown: 'Shutdown',
     edit: {
         name: 'Name',
+        highTemp: "高温值",
+        highTempTime: "高温超时",
         rule: 'Agent name cannot be empty',
         namePlaceholder: 'Please enter the Agent name'
     }

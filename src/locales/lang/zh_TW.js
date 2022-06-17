@@ -24,6 +24,8 @@ const agent = {
     shutdown: '終止運行',
     edit: {
         name: 'Agent名稱',
+        highTemp: "高温值",
+        highTempTime: "高温超时",
         rule: 'Agent名稱不能為空',
         namePlaceholder: '請輸入Agent名稱'
     }
