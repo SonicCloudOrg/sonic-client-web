@@ -180,6 +180,7 @@ const stepLog = ref([]);
 const currentPocoId = ref([])
 const debugLoading = ref(false);
 const dialogElement = ref(false);
+const dialogActElement = ref(false);
 const dialogImgElement = ref(false);
 const imgElementUrl = ref(null);
 const updateImgEle = ref(null);
@@ -1705,6 +1706,10 @@ onMounted(() => {
     <element-update v-if="dialogElement" :project-id="project['id']"
                     :element-id="0" @flush="dialogElement = false"/>
   </el-dialog>
+  <el-dialog v-model="dialogActElement" title="控件元素信息" width="600px">
+    <element-update v-if="dialogActElement" :project-id="project['id']"
+                    :element-id="0" eleType="activity" :eleValue="activity" @flush="dialogActElement = false"/>
+  </el-dialog>
   <el-page-header
       @back="router.go(-1)"
       content="远程控制"
@@ -2850,9 +2855,14 @@ onMounted(() => {
                       重新获取控件元素
                     </el-button
                     >
-                    <span style="margin-right:10px;color: #909399;font-size: 14px; cursor: pointer"
-                          @click="copy(activity)"
-                          v-if="activity.length > 0">当前Activity： {{ activity }}</span>
+                    <div style="display: flex;align-items: center;" v-if="activity.length > 0">
+                      <span style="margin-right:10px;color: #909399;font-size: 14px; cursor: pointer"
+                            @click="copy(activity)">当前Activity： {{ activity }}</span>
+                      <div style="text-align: center;" v-if="project && project['id']">
+                        <el-button plain size="mini" type="primary" round @click="dialogActElement = true">添加
+                        </el-button>
+                      </div>
+                    </div>
                   </div>
                   <el-row
                       :gutter="10"

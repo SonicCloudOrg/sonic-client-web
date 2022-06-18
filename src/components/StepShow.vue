@@ -139,6 +139,12 @@ defineProps({
       <el-tag size="small" style="margin-right: 10px">切换Handle</el-tag>
       Handle页面标题：{{ step.content }}
     </span>
+  <span v-if="step.stepType === 'isExistAct'">
+      <el-tag size="small" style="margin-right: 10px">判断Activity是否存在</el-tag>断言：
+      <el-tag type="info" size="small" style="margin-right: 10px">{{
+          step.elements[0]['eleName']
+        }}</el-tag> {{ step.content === 'true' ? '存在' : '不存在' }}
+  </span>
   <span v-if="step.stepType === 'isExistEle'">
       <el-tag size="small" style="margin-right: 10px">判断控件元素是否存在</el-tag>断言：
       <el-tag type="info" size="small" style="margin-right: 10px">{{

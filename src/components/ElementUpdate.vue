@@ -5,14 +5,16 @@ import axios from "../http/axios";
 
 const props = defineProps({
   projectId: Number,
-  elementId: Number
+  elementId: Number,
+  eleType: String,
+  eleValue: String
 })
 const emit = defineEmits(['flush'])
 const element = ref({
   id: null,
   eleName: "",
-  eleType: "",
-  eleValue: "",
+  eleType: props.eleType,
+  eleValue: props.eleValue,
   projectId: props.projectId,
 })
 const updateEle = ref(null)
@@ -108,6 +110,7 @@ onMounted(() => {
         <el-option-group label="特殊定位方式">
           <el-option label="坐标" value="point"></el-option>
           <el-option label="图片" value="image"></el-option>
+          <el-option label="activity" value="activity"></el-option>
         </el-option-group>
         <el-option-group label="WebView常用定位方式">
           <el-option value="name"></el-option>

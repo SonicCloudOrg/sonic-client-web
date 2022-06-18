@@ -367,6 +367,10 @@ const androidOptions = ref([
     value: "element",
     children: [
       {
+        value: "isExistAct",
+        label: "判断Activity是否存在",
+      },
+      {
         value: "isExistEle",
         label: "判断控件元素是否存在",
       },
@@ -933,6 +937,21 @@ onMounted(() => {
             v-model="step.content"
             placeholder="请输入Handle页面标题的名称"
         ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'isExistAct'">
+      <element-select label="Activity" place="请选择Activity"
+                      :index="0" :project-id="projectId" type="activity" :step="step"/>
+      <el-form-item label="存在与否" prop="content" :rules="{
+            required: true,
+            message: '断言不能为空',
+            trigger: 'change',
+          }">
+        <el-select v-model="step.content">
+          <el-option label="存在" value="true"></el-option>
+          <el-option label="不存在" value="false"></el-option>
+        </el-select>
       </el-form-item>
     </div>
 
