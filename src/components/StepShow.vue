@@ -205,6 +205,10 @@ defineProps({
       <el-tag size="small" style="margin-right: 10px">验证标题</el-tag>
       期望值：{{ step.content }}
     </span>
+  <span v-if="step.stepType === 'getActivity'">
+      <el-tag size="small" style="margin-right: 10px">验证Activity</el-tag>
+      期望值：{{ step.content }}
+  </span>
   <span v-if="step.stepType === 'assertEquals'">
       <el-tag type="warning" size="small">断言验证(相等)</el-tag>
       真实值：{{ step.text }} 期望值：{{ step.content }}
