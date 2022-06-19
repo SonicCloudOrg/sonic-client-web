@@ -18,6 +18,7 @@
 import {onMounted, ref} from "vue";
 import {Tickets, QuestionFilled} from "@element-plus/icons";
 import ElementSelect from './ElementSelect.vue'
+import GlobalParamsSelect from './GlobalParamsSelect.vue'
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 
@@ -407,6 +408,10 @@ const androidOptions = ref([
       {
         value: "getTitle",
         label: "验证标题",
+      },
+      {
+        value: "getActivity",
+        label: "验证Activity",
       },
       {
         value: "assert",
@@ -1025,6 +1030,12 @@ onMounted(() => {
             placeholder="请输入期望值"
         ></el-input>
       </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'getActivity'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
+      <global-params-select label="期望值" place="请输入期望值或选择全局变量" :project-id="projectId" :step="step"/>
     </div>
 
     <div v-if="step.stepType === 'siriCommand'">
