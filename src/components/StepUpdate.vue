@@ -170,6 +170,12 @@ const changeType = (e) => {
   step.value.elements = [];
   step.value.content = "";
   activityList.value = [{name: ""}]
+  if (e === 'getElementAttr') {
+    step.value.content = ref({
+      attr: "",
+      expect: null
+    })
+  }
 }
 const isShowInputNumber = (data) => {
   if (data === "isOpenH5Listener"
@@ -197,6 +203,9 @@ const summitStep = () => {
         removeEmpty(activityList.value)
         step.value.text = JSON.stringify(activityList.value);
         step.value.content = JSON.stringify(monkey.value);
+      }
+      if (step.value.stepType === 'getElementAttr') {
+        step.value.content = JSON.stringify(step.value.content);
       }
       axios.put("/controller/steps", step.value).then(resp => {
         if (resp['code'] === 2000) {
@@ -237,6 +246,9 @@ const getStepInfo = (id) => {
     if (step.value.stepType === 'monkey') {
       monkey.value = JSON.parse(step.value.content);
       activityList.value = JSON.parse(step.value.text);
+    }
+    if (step.value.stepType === 'getElementAttr') {
+      step.value.content = JSON.parse(step.value.content);
     }
   })
 }
@@ -412,6 +424,10 @@ const androidOptions = ref([
       {
         value: "getActivity",
         label: "验证Activity",
+      },
+      {
+        value: "getElementAttr",
+        label: "验证元素属性",
       },
       {
         value: "assert",
@@ -1036,6 +1052,39 @@ onMounted(() => {
       <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
                 title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
       <global-params-select label="期望值" place="请输入期望值或选择全局变量" :project-id="projectId" :step="step"/>
+    </div>
+
+    <div v-if="step.stepType === 'getElementAttr'">
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <el-form-item label="元素属性" prop="content.attr" :rules="{
+        required: true,
+        message: '元素属性不能为空',
+        trigger: 'change',
+        }">
+        <el-select label="属性" placeholder="请选择元素属性" v-model="step.content.attr">
+          <el-option label="可勾选" value="checkable"></el-option>
+          <el-option label="勾选" value="checked"></el-option>
+          <el-option label="可点击" value="clickable"></el-option>
+          <el-option label="被选" value="selected"></el-option>
+          <el-option label="显示" value="displayed"></el-option>
+          <el-option label="可用" value="enabled"></el-option>
+          <el-option label="可聚焦" value="focusable"></el-option>
+          <el-option label="聚焦" value="focused"></el-option>
+          <el-option label="支持长按" value="long-clickable"></el-option>
+          <el-option label="支持滚动" value="scrollable"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="期望值" prop="content.expect" :rules="{
+            required: true,
+            message: '断言不能为空',
+            trigger: 'change',
+          }">
+        <el-select v-model="step.content.expect">
+          <el-option label="True" value="true"></el-option>
+          <el-option label="False" value="false"></el-option>
+        </el-select>
+      </el-form-item>
     </div>
 
     <div v-if="step.stepType === 'siriCommand'">

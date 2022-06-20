@@ -15,8 +15,24 @@
  *  limitations under the License.
  *
  */
+
+import {ref} from "vue";
+
 defineProps({
   step: Object,
+})
+
+const elementAttr = ref({
+  "checkable": "可勾选",
+  "checked": "勾选",
+  "clickable": "可点击",
+  "selected": "被选",
+  "displayed": "显示",
+  "enabled": "可用",
+  "focusable": "可聚焦",
+  "focused": "聚焦",
+  "long-clickable": "支持长按",
+  "scrollable": "支持滚动",
 })
 </script>
 <template>
@@ -208,6 +224,18 @@ defineProps({
   <span v-if="step.stepType === 'getActivity'">
       <el-tag size="small" style="margin-right: 10px">验证Activity</el-tag>
       期望值：{{ step.content }}
+  </span>
+  <span v-if="step.stepType === 'getElementAttr'">
+    <el-tag size="small" style="margin-right: 10px">验证元素属性</el-tag>
+    <el-tag type="info" size="small" style="margin-left: 10px; margin-right: 10px">{{
+        step.elements[0]['eleName']
+      }}</el-tag>
+    断言：
+    <el-tag size="small" style="margin-right: 10px">{{ elementAttr[JSON.parse(step.content).attr] ?? "未知" }}</el-tag>
+      期望值：
+    <el-tag size="small" style="margin-right: 10px; text-transform: capitalize;">{{
+        JSON.parse(step.content).expect
+      }}</el-tag>
   </span>
   <span v-if="step.stepType === 'assertEquals'">
       <el-tag type="warning" size="small">断言验证(相等)</el-tag>
