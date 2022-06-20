@@ -1063,16 +1063,16 @@ onMounted(() => {
         trigger: 'change',
         }">
         <el-select label="属性" placeholder="请选择元素属性" v-model="step.content.attr">
-          <el-option label="可勾选" value="checkable"></el-option>
-          <el-option label="勾选" value="checked"></el-option>
-          <el-option label="可点击" value="clickable"></el-option>
-          <el-option label="被选" value="selected"></el-option>
-          <el-option label="显示" value="displayed"></el-option>
-          <el-option label="可用" value="enabled"></el-option>
-          <el-option label="可聚焦" value="focusable"></el-option>
-          <el-option label="聚焦" value="focused"></el-option>
-          <el-option label="支持长按" value="long-clickable"></el-option>
-          <el-option label="支持滚动" value="scrollable"></el-option>
+          <el-option value="checkable"></el-option>
+          <el-option value="checked"></el-option>
+          <el-option value="clickable"></el-option>
+          <el-option value="selected"></el-option>
+          <el-option value="displayed"></el-option>
+          <el-option value="enabled"></el-option>
+          <el-option value="focusable"></el-option>
+          <el-option value="focused"></el-option>
+          <el-option value="long-clickable"></el-option>
+          <el-option value="scrollable"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="期望值" prop="content.expect" :rules="{
