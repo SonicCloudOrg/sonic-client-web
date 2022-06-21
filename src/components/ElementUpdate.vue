@@ -140,6 +140,8 @@ onMounted(() => {
         </template>
       </el-upload>
       <el-input
+          type="textarea"
+          autosize
           v-else
           v-model="element.eleValue"
           placeholder="请输入控件元素值"
