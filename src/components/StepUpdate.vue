@@ -170,12 +170,6 @@ const changeType = (e) => {
   step.value.elements = [];
   step.value.content = "";
   activityList.value = [{name: ""}]
-  if (e === 'getElementAttr') {
-    step.value.content = ref({
-      attr: "",
-      expect: null
-    })
-  }
 }
 const isShowInputNumber = (data) => {
   if (data === "isOpenH5Listener"
@@ -203,9 +197,6 @@ const summitStep = () => {
         removeEmpty(activityList.value)
         step.value.text = JSON.stringify(activityList.value);
         step.value.content = JSON.stringify(monkey.value);
-      }
-      if (step.value.stepType === 'getElementAttr') {
-        step.value.content = JSON.stringify(step.value.content);
       }
       axios.put("/controller/steps", step.value).then(resp => {
         if (resp['code'] === 2000) {
@@ -246,9 +237,6 @@ const getStepInfo = (id) => {
     if (step.value.stepType === 'monkey') {
       monkey.value = JSON.parse(step.value.content);
       activityList.value = JSON.parse(step.value.text);
-    }
-    if (step.value.stepType === 'getElementAttr') {
-      step.value.content = JSON.parse(step.value.content);
     }
   })
 }
@@ -1057,12 +1045,12 @@ onMounted(() => {
     <div v-if="step.stepType === 'getElementAttr'">
       <element-select label="控件元素" place="请选择控件元素"
                       :index="0" :project-id="projectId" type="normal" :step="step"/>
-      <el-form-item label="元素属性" prop="content.attr" :rules="{
+      <el-form-item label="元素属性" prop="text" :rules="{
         required: true,
         message: '元素属性不能为空',
         trigger: 'change',
         }">
-        <el-select label="属性" placeholder="请选择元素属性" v-model="step.content.attr">
+        <el-select label="属性" placeholder="请选择元素属性" v-model="step.text">
           <el-option value="checkable"></el-option>
           <el-option value="checked"></el-option>
           <el-option value="clickable"></el-option>
@@ -1075,12 +1063,12 @@ onMounted(() => {
           <el-option value="scrollable"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="期望值" prop="content.expect" :rules="{
+      <el-form-item label="期望值" prop="content" :rules="{
             required: true,
             message: '断言不能为空',
             trigger: 'change',
           }">
-        <el-select v-model="step.content.expect">
+        <el-select v-model="step.content">
           <el-option label="True" value="true"></el-option>
           <el-option label="False" value="false"></el-option>
         </el-select>

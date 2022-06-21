@@ -212,11 +212,14 @@ defineProps({
   </span>
   <span v-if="step.stepType === 'getElementAttr'">
     <el-tag size="small" style="margin-right: 10px">验证元素属性</el-tag>
+    <el-tag type="info" size="small" style="margin-left: 10px; margin-right: 10px">{{
+        step.elements[0]['eleName']
+      }}</el-tag>
     断言：
-    <el-tag size="small" style="margin-right: 10px">{{ JSON.parse(step.content).attr }}</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{ step.text }}</el-tag>
       期望值：
     <el-tag size="small" style="margin-right: 10px; text-transform: capitalize;">{{
-        JSON.parse(step.content).expect
+        step.content
       }}</el-tag>
   </span>
   <span v-if="step.stepType === 'assertEquals'">
