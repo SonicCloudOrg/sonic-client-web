@@ -167,6 +167,7 @@ onMounted(() => {
         { text: 'className', value: 'className' },
         { text: 'tagName', value: 'tagName' },
         { text: 'partialLinkText', value: 'partialLinkText' },
+        { text: 'cssSelector&text', value: 'cssSelector&text' },
       ]">
       <template #default="scope">
         <span v-if="scope.row.eleType.length === 0">未指定</span>

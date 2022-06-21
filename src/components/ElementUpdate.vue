@@ -77,6 +77,7 @@ onMounted(() => {
 </script>
 <template>
   <el-alert style="margin-bottom: 10px" title="如选择坐标类型，xy之间用英文逗号隔开，例：111,222" type="info" show-icon close-text="Get!"/>
+  <el-alert style="margin-bottom: 10px" title="如选择cssSelector&text类型，vaule之间用|隔开，例：.van-button--default|购物车" type="info" show-icon close-text="Get!"/>
   <el-form ref="updateEle" :model="element" size="small" class="demo-table-expand" label-width="90px"
            label-position="left">
     <el-form-item
@@ -116,6 +117,7 @@ onMounted(() => {
           <el-option value="className"></el-option>
           <el-option value="tagName"></el-option>
           <el-option value="partialLinkText"></el-option>
+          <el-option value="cssSelector&text"></el-option>
         </el-option-group>
       </el-select>
     </el-form-item>
