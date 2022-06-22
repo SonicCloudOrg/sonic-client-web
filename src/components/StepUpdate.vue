@@ -380,6 +380,10 @@ const androidOptions = ref([
         label: "输入文本",
       },
       {
+        value: "sendKeysByActions",
+        label: "输入文本(Actions)",
+      },
+      {
         value: "swipe2",
         label: "拖拽控件元素",
       },
@@ -596,6 +600,10 @@ const iOSOptions = ref([
       {
         value: "sendKeys",
         label: "输入文本",
+      },
+      {
+        value: "sendKeysByActions",
+        label: "输入文本(Actions)",
       },
       {
         value: "swipe2",
@@ -968,6 +976,21 @@ onMounted(() => {
     <div v-if="step.stepType === 'sendKeys'">
       <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
                 title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <el-form-item label="输入值">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入值"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'sendKeysByActions'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 使用Android Driver在Flutter页面输入文本时使用此方式"/>
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>          
       <element-select label="控件元素" place="请选择控件元素"
                       :index="0" :project-id="projectId" type="normal" :step="step"/>
       <el-form-item label="输入值">
