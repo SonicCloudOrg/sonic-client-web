@@ -18,6 +18,7 @@
 import {onMounted, ref} from "vue";
 import {Tickets, QuestionFilled} from "@element-plus/icons";
 import ElementSelect from './ElementSelect.vue'
+import GlobalParamsSelect from './GlobalParamsSelect.vue'
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 
@@ -379,6 +380,10 @@ const androidOptions = ref([
         label: "输入文本",
       },
       {
+        value: "sendKeysByActions",
+        label: "输入文本(Actions)",
+      },
+      {
         value: "swipe2",
         label: "拖拽控件元素",
       },
@@ -407,6 +412,14 @@ const androidOptions = ref([
       {
         value: "getTitle",
         label: "验证标题",
+      },
+      {
+        value: "getActivity",
+        label: "验证Activity",
+      },
+      {
+        value: "getElementAttr",
+        label: "验证元素属性",
       },
       {
         value: "assert",
@@ -587,6 +600,10 @@ const iOSOptions = ref([
       {
         value: "sendKeys",
         label: "输入文本",
+      },
+      {
+        value: "sendKeysByActions",
+        label: "输入文本(Actions)",
       },
       {
         value: "swipe2",
@@ -969,6 +986,21 @@ onMounted(() => {
       </el-form-item>
     </div>
 
+    <div v-if="step.stepType === 'sendKeysByActions'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 使用Android Driver在Flutter页面输入文本时使用此方式"/>
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>          
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <el-form-item label="输入值">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入值"
+        ></el-input>
+      </el-form-item>
+    </div>
+
     <div v-if="step.stepType === 'swipe2'">
       <element-select label="从控件" place="请选择控件元素"
                       :index="0" :project-id="projectId" type="normal" :step="step"/>
@@ -1024,6 +1056,45 @@ onMounted(() => {
             v-model="step.content"
             placeholder="请输入期望值"
         ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'getActivity'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
+      <global-params-select label="期望值" place="请输入期望值或选择全局变量" :project-id="projectId" :step="step"/>
+    </div>
+
+    <div v-if="step.stepType === 'getElementAttr'">
+      <element-select label="控件元素" place="请选择控件元素"
+                      :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <el-form-item label="元素属性" prop="text" :rules="{
+        required: true,
+        message: '元素属性不能为空',
+        trigger: 'change',
+        }">
+        <el-select label="属性" placeholder="请选择元素属性" v-model="step.text">
+          <el-option value="checkable"></el-option>
+          <el-option value="checked"></el-option>
+          <el-option value="clickable"></el-option>
+          <el-option value="selected"></el-option>
+          <el-option value="displayed"></el-option>
+          <el-option value="enabled"></el-option>
+          <el-option value="focusable"></el-option>
+          <el-option value="focused"></el-option>
+          <el-option value="long-clickable"></el-option>
+          <el-option value="scrollable"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="期望值" prop="content" :rules="{
+            required: true,
+            message: '断言不能为空',
+            trigger: 'change',
+          }">
+        <el-select v-model="step.content">
+          <el-option label="True" value="true"></el-option>
+          <el-option label="False" value="false"></el-option>
+        </el-select>
       </el-form-item>
     </div>
 

@@ -179,7 +179,7 @@ onMounted(() => {
       style="width: 100%; margin-top: 20px"
       border
   >
-    <el-table-column label="角色d" width="90" align="center" prop="id"></el-table-column>
+    <el-table-column label="角色" width="90" align="center" prop="id"></el-table-column>
     <el-table-column label="名称"  align="center" prop="roleName"></el-table-column>
     <el-table-column label="描述"  align="center" prop="comment">
     </el-table-column>

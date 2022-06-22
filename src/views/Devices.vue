@@ -130,16 +130,26 @@ watch(dialogAgent, (newValue, oldValue) => {
   if (!newValue) {
     agent.value = {
       id: 0,
-      name: ""
+      name: "",
+      highTemp: 45,
+      highTempTime: 15,
+      robotSecret: '',
+      robotToken: '',
+      robotType: 1
     }
   }
 })
 const agent = ref({
   id: 0,
-  name: ""
+  name: "",
+  highTemp: 45,
+  highTempTime: 15,
+  robotSecret: '',
+  robotToken: '',
+  robotType: 1
 })
-const editAgent = async (id, name) => {
-  agent.value = {id, name}
+const editAgent = async (id, name, highTemp, highTempTime, robotType, robotToken, robotSecret) => {
+  agent.value = {id, name, highTemp, highTempTime, robotType, robotToken, robotSecret}
   await openAgent()
 }
 const openAgent = () => {
@@ -170,7 +180,7 @@ const copy = (value) => {
 const updateAgent = () => {
   updateAgentForm['value'].validate((valid) => {
     if (valid) {
-      axios.put("/controller/agents/updateName", agent.value).then(resp => {
+      axios.put("/controller/agents/update", agent.value).then(resp => {
         if (resp['code'] === 2000) {
           ElMessage.success({
             message: resp['message'],
@@ -705,7 +715,9 @@ watch(drawer, (newVal, oldVal) => {
         </el-table-column>
         <el-table-column :label="$t('agent.operation')" align="center" width="180">
           <template #default="scope">
-            <el-button size="mini" type="primary" @click="editAgent(scope.row.id,scope.row.name)">{{
+            <el-button size="mini" type="primary"
+                       @click="editAgent(scope.row.id,scope.row.name,scope.row.highTemp,scope.row.highTempTime,scope.row.robotType,scope.row.robotToken,scope.row.robotSecret)">
+              {{
                 $t('common.edit')
               }}
             </el-button>
@@ -717,7 +729,7 @@ watch(drawer, (newVal, oldVal) => {
       </el-table>
     </el-tab-pane>
   </el-tabs>
-  <el-dialog v-model="dialogAgent" :title="$t('dialog.agentInfo')" width="500px">
+  <el-dialog v-model="dialogAgent" :title="$t('dialog.agentInfo')" width="600px">
     <el-form v-if="dialogAgent" ref="updateAgentForm" :model="agent" size="small" class="demo-table-expand"
              label-width="90px"
              label-position="left">
@@ -733,6 +745,72 @@ watch(drawer, (newVal, oldVal) => {
         <el-input
             v-model="agent.name"
             :placeholder="$t('agent.edit.namePlaceholder')"
+        ></el-input>
+      </el-form-item>
+      <el-divider></el-divider>
+      <el-alert
+          style="margin-bottom: 10px"
+          title="设置提示"
+          type="info"
+          show-icon
+          :closable="false"
+      >
+        <template #default>
+          <div>当设备温度≥<span style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人告警。</div>
+          <div>当<span style="color: #E6A23C">高温超时</span>时间内温度持续≥<span style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人并<span
+              style="color: #F56C6C">关机</span>。</div>
+        </template>
+      </el-alert>
+      <el-form-item
+          prop="name"
+          :label="$t('agent.edit.highTemp')"
+      >
+        <el-slider :format-tooltip="formatHighTemp" v-model="agent.highTemp" show-input :max="80" :min="1"/>
+      </el-form-item>
+      <el-form-item
+          prop="name"
+          :label="$t('agent.edit.highTempTime')"
+      >
+        <el-input-number v-model="agent.highTempTime" show-input :max="120" :min="1"/>
+        <span style="margin-left: 10px">min</span>
+      </el-form-item>
+      <el-form-item :label="$t('robot.robotType')">
+        <el-select
+            style="width: 100%"
+            v-model="agent.robotType"
+            :placeholder="$t('robot.robotTypePlaceholder')"
+        >
+          <el-option
+              v-for="item in robotList"
+              :key="item.name"
+              :value="item.value"
+              :label="item.name"
+              :disabled="item['disabled']"
+          >
+            <div style="display: flex;align-items: center">
+              <el-avatar
+                  style="margin-right: 10px"
+                  :size="30"
+                  :src="getImg(item.img)"
+                  shape="square"
+              ></el-avatar
+              >
+              {{ item.name }}
+            </div>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item :label="$t('robot.robotToken')" prop="robotToken">
+        <el-input
+            v-model="agent.robotToken"
+            :placeholder="$t('robot.robotTokenPlaceholder')"
+        ></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('robot.robotSecret')" prop="robotSecret">
+        <el-input
+            v-model="agent.robotSecret"
+            :placeholder="$t('robot.robotSecretPlaceholder')"
+            type="password"
         ></el-input>
       </el-form-item>
     </el-form>
