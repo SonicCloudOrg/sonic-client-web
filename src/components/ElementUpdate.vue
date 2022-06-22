@@ -77,7 +77,7 @@ onMounted(() => {
 </script>
 <template>
   <el-alert style="margin-bottom: 10px" title="如选择坐标类型，xy之间用英文逗号隔开，例：111,222" type="info" show-icon close-text="Get!"/>
-  <el-alert style="margin-bottom: 10px" title="如选择cssSelector&text类型，vaule之间用|隔开，例：.van-button--default|购物车" type="info" show-icon close-text="Get!"/>
+  <el-alert style="margin-bottom: 10px" title="cssSelectorAndText类型，可以通过cssSelector和控件中Text定位控件元素" type="info" show-icon close-text="Get!"/>
   <el-form ref="updateEle" :model="element" size="small" class="demo-table-expand" label-width="90px"
            label-position="left">
     <el-form-item
@@ -117,12 +117,13 @@ onMounted(() => {
           <el-option value="className"></el-option>
           <el-option value="tagName"></el-option>
           <el-option value="partialLinkText"></el-option>
-          <el-option value="cssSelector&text"></el-option>
+          <el-option value="cssSelectorAndText"></el-option>
         </el-option-group>
       </el-select>
     </el-form-item>
     <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
               title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
+    <el-alert style="margin-bottom: 10px" title="如选择cssSelectorAndText类型，vaule之间用|隔开，例：.van-button--default|购物车" type="info" show-icon close-text="Get!"/>          
     <el-form-item prop="eleValue" label="控件元素值">
       <el-upload
           v-if="element.eleType === 'image'"
