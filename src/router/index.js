@@ -137,6 +137,13 @@ const getRoutes = () => [
         component: () => import('../views/ProjectIndex.vue'),
         meta: { title: $tc('routes.projectPage') },
       },
+       {
+                path: 'Packages',
+                name: 'Packages',
+                component: () =>
+                    import ("../views/Packages.vue"),
+                meta: {title: $tc('routes.projectPage')}
+            },
     ],
   },
   {
