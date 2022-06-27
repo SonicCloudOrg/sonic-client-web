@@ -36,7 +36,7 @@ const defaultTime = ref([
 ])
 const getPhoneImg = (name, url) => {
   let result;
-  if (url === null || url.length === 0) {
+  if (url === null || !url || (url && url.length === 0)) {
     result = img['./../assets/img/default.png'].default
   } else {
     result = url;

@@ -10,42 +10,13 @@ const robot = {
     robotSecretPlaceholder: '请输入群机器人的密钥'
 }
 const agent = {
-    cabinet: {
-        label:'所屬機櫃',
-        manager: '機櫃管理',
-        newCabinet: '新增機櫃',
-        edit: {
-            name: '機櫃名稱',
-            rule: '機櫃名稱不能為空',
-            namePlaceholder: '請輸入機櫃名稱',
-            size: '機櫃規格',
-            small: '小型機櫃（5x2）',
-            middle: '中型機櫃（10x4）',
-            large: '大型機櫃（10x8）',
-            lowLevel: '低电量值',
-            highGear: '高电流档位',
-            highLevel: '高电量值',
-            lowGear: '低电流档位',
-            highTemp: '高温值',
-            highTempTime: '高温超时',
-            lowFormat: '档（推荐1档）',
-            highFormat: '档（推荐14档）'
-        },
-        tips: {
-            title: '设置提示',
-            content: `<div>当设备电量≤<span style="color: #409EFF">低电量值</span>时，对应充电口会释放<span style="color: #67C23A">高电流档位</span>的电流。</div>
-<div>当设备电量≥<span style="color: #409EFF">高电量值</span>时，对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流。</div>
-<div>当设备温度≥<span style="color: #409EFF">高温值</span>时（仅安卓），对应充电口会释放<span style="color: #F56C6C">低电流档位</span>的电流并通知机器人。</div>
-<div>当<span style="color: #E6A23C">高温超时</span>时间内温度持续≥<span style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人并<span
-    style="color: #F56C6C">关机</span>。</div>`
-        }
-    },
     newAgent: "新增Agent",
     clickToCopy: '點擊複製',
     status: {
         name: '狀態',
         online: '線上',
-        offline: '離線'
+        offline: '離線',
+        s2ae: 'S2AE'
     },
     system: '運行系統',
     version: '運行版本',
@@ -53,6 +24,8 @@ const agent = {
     shutdown: '終止運行',
     edit: {
         name: 'Agent名稱',
+        highTemp: "高温值",
+        highTempTime: "高温超时",
         rule: 'Agent名稱不能為空',
         namePlaceholder: '請輸入Agent名稱'
     }
@@ -157,8 +130,8 @@ const form = {
 }
 // 彈出型視窗相關
 const dialog = {
+    permissionDenied: '當前用戶暫無許可權！',
     suffixError: '檔案格式有誤！',
-    cabinetInfo:'機櫃信息',
     projectInfo: "專案資訊",
     agentInfo: 'Agent信息',
     myInfo: "我的信息",
@@ -178,24 +151,30 @@ const common = {
 
 // 路由
 const routes = {
-  login: "登入",
-  home: "首頁",
-  deviceCenter: "設備中心",
-  remoteControl: "遠程控制",
-  androidTestCase: "安卓測試用例",
-  iosTestCase: 'IOS測試用例',
-  operateSteps: "運行步驟",
-  testSuite: "測試套件",
-  testResult: "測試結果",
-  reportDetails: "報告詳情",
-  publicSteps: "公共步驟",
-  controlElement: "控制項元素",
-  globalParameter: "全域參數",
-  moduleManage: "模塊管理",
-  versionIteration: "版本反覆運算",
-  timedTask: "定時任務",
-  projectSetting: "項目設定",
-  projectPage: "項目首頁"
+    login: "登入",
+    home: "首頁",
+    deviceCenter: "設備中心",
+    remoteControl: "遠程控制",
+    androidTestCase: "安卓測試用例",
+    iosTestCase: 'IOS測試用例',
+    operateSteps: "運行步驟",
+    testSuite: "測試套件",
+    testResult: "測試結果",
+    reportDetails: "報告詳情",
+    publicSteps: "公共步驟",
+    controlElement: "控制項元素",
+    globalParameter: "全域參數",
+    moduleManage: "模塊管理",
+    versionIteration: "版本反覆運算",
+    timedTask: "定時任務",
+    projectSetting: "項目設定",
+    projectPage: "項目首頁",
+    resource: "",
+    role: ""
+}
+
+const setting = {
+    title: "Manage Center"
 }
 
 export default {
@@ -207,6 +186,7 @@ export default {
         layout,
         form,
         dialog,
-        routes
+        routes,
+        setting
     }
 }

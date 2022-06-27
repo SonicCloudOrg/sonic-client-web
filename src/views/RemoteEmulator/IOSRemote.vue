@@ -81,12 +81,6 @@ const remoteAppiumPort = ref(0)
 // 旋转状态 // 0 90 180 270
 let directionStatus = {
   value: 0,
-  // calcMap: {
-  //   0: 1,
-  //   90: 1,
-  //   180: 1,
-  //   270: -1,
-  // }
 };
 let moveX = 0;
 let moveY = 0;
@@ -451,6 +445,19 @@ const terminalWebsocketOnmessage = (message) => {
 }
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
+    case 'rotation': {
+      const d = JSON.parse(message.data).value;
+      if (directionStatus.value !== d) {
+        if (d !== -1) {
+          ElMessage.success({
+            message: '检测到屏幕旋转！请稍后...',
+          });
+        }
+        directionStatus.value = JSON.parse(message.data).value;
+        location.value = !location.value
+      }
+      break;
+    }
     case 'proxyResult': {
       proxyWebPort.value = JSON.parse(message.data).webPort
       proxyConnPort.value = JSON.parse(message.data).port
@@ -548,41 +555,6 @@ const websocketOnmessage = (message) => {
     }
   }
 };
-// const getCurLocation = () => {
-//   let x, y;
-//   let _x, _y;
-//   const canvas = document.getElementById('canvas');
-//   const rect = canvas.getBoundingClientRect();
-//   if (directionStatus.value != 0 && directionStatus.value != 180) { // 左右旋转
-//     _x = parseInt(
-//         (event.clientY - rect.top) *
-//         (imgWidth / canvas.clientHeight),
-//     );
-//     x = (directionStatus.value == 90) ? imgWidth - _x : _x;
-//     //
-//     _y = parseInt(
-//         (event.clientX - rect.left) *
-//         (imgHeight / canvas.clientWidth),
-//     );
-//     y = (directionStatus.value == 270) ? imgHeight - _y : _y;
-//   } else {
-//     _x = parseInt(
-//         (event.clientX - rect.left) *
-//         (imgWidth / canvas.clientWidth),
-//     );
-//     x = (directionStatus.value == 180) ? imgWidth - _x : _x;
-//     //
-//     _y = parseInt(
-//         (event.clientY - rect.top) *
-//         (imgHeight / canvas.clientHeight),
-//     );
-//     y = (directionStatus.value == 180) ? imgHeight - _y : _y;
-//   }
-//   // console.log('xy', { x, y });
-//   return ({
-//     x, y
-//   })
-// }
 const mouseup = (event) => {
   clearInterval(loop);
   time = 0;

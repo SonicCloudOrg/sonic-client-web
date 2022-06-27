@@ -20,6 +20,8 @@ const publicStep = ref({
   name: "",
   steps: []
 })
+//公共步骤信息页面搜索文案
+const searchText = ref('');
 const updatePub = ref(null)
 const parentId = ref(0)
 const pageData = ref({});
@@ -52,6 +54,25 @@ const getStepList = (pageNum, pSize) => {
   }).then(resp => {
     pageData.value = resp.data
   })
+}
+
+//搜索步骤列表
+const searchListOfSteps=(pageNum,pSize)=>{
+  if (searchText.value.length ===0){
+    getStepList(pageNum,pSize)
+  }else {
+    axios.get("/controller/steps/search/list",{
+      params: {
+        projectId: props.projectId,
+        platform: publicStep.value.platform,
+        page: pageNum || 1,
+        pageSize: pSize || pageSize.value,
+        searchContent: searchText.value,
+      }
+    }).then(resp => {
+      pageData.value = resp.data
+    })
+  }
 }
 const deleteStep = (id) => {
   axios.delete("/controller/steps", {
@@ -224,7 +245,11 @@ onMounted(() => {
     <el-tab-pane label="步骤列表" name="list">
       <el-alert style="margin-bottom: 10px" show-icon title="从此处添加或编辑步骤，并加入到已选步骤中" type="info" close-text="Get!"/>
       <el-button size="mini" round type="primary" @click="addStep">添加步骤</el-button>
-      <el-table :data="pageData['content']" border style="margin-top: 10px">
+      <el-input style="width: 200px ; margin-left: 321px"  type="text" placeholder="按照控件元素名称搜索" size="mini"
+                v-model="searchText"  @keyup.enter="searchListOfSteps()"
+      ></el-input>
+      <el-button style="margin-left: 5px " type="primary" size="mini"  v-on:click="searchListOfSteps()"  >搜索</el-button>
+      <el-table :data="pageData['content']" border style="margin-top:10px"   >
         <el-table-column width="80" label="步骤Id" prop="id" align="center" show-overflow-tooltip/>
         <el-table-column width="90" label="所属用例Id" align="center">
           <template #default="scope">
@@ -285,7 +310,7 @@ onMounted(() => {
       <pageable :is-page-set="false" :total="pageData['totalElements']"
                 :current-page="pageData['number']+1"
                 :page-size="pageData['size']"
-                @change="getStepList"></pageable>
+                @change="searchListOfSteps"></pageable>
     </el-tab-pane>
   </el-tabs>
   <div style="text-align: center;margin-top: 20px">

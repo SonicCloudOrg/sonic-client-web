@@ -220,9 +220,9 @@ const computedCenter = (b1, b2) => {
   return x + ',' + y;
 };
 const switchTabs = (e) => {
-  // if (e.props.name === 'proxy') {
-  //   getWifiList();
-  // }
+  if (e.props.name === 'proxy') {
+    getWifiList();
+  }
   if (e.props.name === 'apps') {
     if (appList.value.length === 0) {
       refreshAppList();
@@ -522,13 +522,13 @@ const sendLogcat = () => {
       }),
   );
 };
-// const getWifiList = () => {
-//   terminalWebsocket.send(
-//       JSON.stringify({
-//         type: 'wifiList',
-//       }),
-//   );
-// };
+const getWifiList = () => {
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: 'wifiList',
+      }),
+  );
+};
 const clearLogcat = () => {
   logcatOutPut.value = [];
 };
@@ -566,11 +566,11 @@ const stopCmd = () => {
 };
 const terminalWebsocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
-      // case 'wifiList': {
-      //   isConnectWifi.value = JSON.parse(message.data).detail.connectWifi;
-      //   currentWifi.value = JSON.parse(message.data).detail.connectedWifi.sSID;
-      //   break;
-      // }
+    case 'wifiListDetail': {
+      isConnectWifi.value = JSON.parse(message.data).detail.isConnectWifi;
+      currentWifi.value = JSON.parse(message.data).detail.connectedWifi.SSID;
+      break;
+    }
     case 'appListDetail': {
       appList.value.push(JSON.parse(message.data).detail);
       break;
@@ -2600,19 +2600,19 @@ onMounted(() => {
                     style="color: #67c23a;float: right;margin-top: 5px">代理连接：{{
                 agent['host'] + ':' + proxyConnPort
               }}</strong>
-            <!--            <span style="float: right;display: flex;-->
-            <!--			   align-items: center;">-->
-            <!--              <el-button size="mini" @click="getWifiList" style="margin-right: 6px">刷新</el-button>-->
-            <!--              <ColorImg-->
-            <!--                  :src="wifiLogo"-->
-            <!--                  :width="18"-->
-            <!--                  :height="18"-->
-            <!--                  :color="isConnectWifi?'#67C23A':'#F56C6C'"-->
-            <!--              />-->
-            <!--              <span style="margin-left:6px;color: #67C23A;font-size: 16px">{{-->
-            <!--                  (currentWifi.length > 0 && isConnectWifi) ? currentWifi.replaceAll('"', '') : ' '-->
-            <!--                }}</span>-->
-            <!--            </span>-->
+            <span style="float: right;display: flex;
+            			   align-items: center;">
+                          <el-button size="mini" @click="getWifiList" style="margin-right: 6px">刷新</el-button>
+                          <ColorImg
+                              :src="wifiLogo"
+                              :width="18"
+                              :height="18"
+                              :color="isConnectWifi?'#67C23A':'#F56C6C'"
+                          />
+                          <span style="margin-left:6px;color: #67C23A;font-size: 16px">{{
+                              (currentWifi.length > 0 && isConnectWifi) ? currentWifi.replaceAll('"', '') : ' '
+                            }}</span>
+                        </span>
             <iframe v-if="proxyWebPort!==0"
                     :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                     :src="'http://'+agent['host']+':'+proxyWebPort"></iframe>
