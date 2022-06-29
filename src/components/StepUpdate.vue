@@ -234,6 +234,13 @@ const getStepInfo = (id) => {
         || step.value.stepType === 'checkImage') {
       step.value.content = parseInt(step.value.content);
     }
+    if (step.value.stepType === 'install') {
+      if (step.value.content === "") {
+        step.value.content = 1
+      } else {
+        step.value.content = parseInt(step.value.content);
+      }
+    }
     if (step.value.stepType === 'monkey') {
       monkey.value = JSON.parse(step.value.content);
       activityList.value = JSON.parse(step.value.text);
@@ -888,6 +895,21 @@ onMounted(() => {
       <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
                 title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
       <el-form-item
+          label="安装方式"
+          prop="content"
+          :rules="{
+            required: true,
+            message: '安装方式不能为空',
+            trigger: 'change',
+          }"
+      >
+        <el-select v-model="step.content">
+          <el-option label="自定义下载路径或本地安装" :value="1"></el-option>
+          <el-option label="已有安装包列表安装" :value="2"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+          v-if="step.content===1"
           prop="text"
           label="安装路径"
           :rules="{
@@ -899,6 +921,18 @@ onMounted(() => {
         <el-input
             v-model="step.text"
             placeholder="请输入App下载路径或本地apk路径"
+        ></el-input>
+      </el-form-item>
+      <el-alert v-if="step.content===2" show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 需要先接入Jenkins插件，并确认安装包管理有对应安装包。多个符合条件的安装包优先选择最新的安装。"/>
+      <el-form-item
+          v-if="step.content===2"
+          prop="text"
+          label="分支名称"
+      >
+        <el-input
+            v-model="step.text"
+            placeholder="请输入分支名称，支持模糊匹配，可以为空"
         ></el-input>
       </el-form-item>
     </div>
@@ -987,10 +1021,12 @@ onMounted(() => {
     </div>
 
     <div v-if="step.stepType === 'sendKeysByActions'">
-      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
-                title="TIPS: 使用Android Driver在Flutter页面输入文本时使用此方式"/>
-      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
-                title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>          
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info">
+        <template #title>
+          <div>TIPS: 使用Android Driver在Flutter页面输入文本时使用此方式。</div>
+          <div> 需要临时变量或全局变量时，可以添加{{ 变量名 }}的形式。</div>
+        </template>
+      </el-alert>
       <element-select label="控件元素" place="请选择控件元素"
                       :index="0" :project-id="projectId" type="normal" :step="step"/>
       <el-form-item label="输入值">
