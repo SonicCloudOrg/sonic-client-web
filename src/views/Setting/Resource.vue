@@ -82,7 +82,7 @@ onMounted(() => {
             @change="
               updateStatus(
                 scope.row.id,
-                scope.row.status === 1 ? true :false
+                scope.row.needAuth === 1 ? true :false
               )
             "
         >
