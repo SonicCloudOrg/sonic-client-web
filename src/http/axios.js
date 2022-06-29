@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
     baseURL = 'http://localhost:8094/api'
 }
 if (process.env.NODE_ENV === 'production') {
-    baseURL = 'http://SERVER_HOST:SERVER_PORT/server/api'
+    baseURL = 'http://SONIC_SERVER_HOST:SONIC_SERVER_PORT/server/api'
 }
 const $http = axios.create()
 baseURL = baseURL.replace(":80/", "/")
