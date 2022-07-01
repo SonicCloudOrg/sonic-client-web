@@ -342,7 +342,10 @@ const removeCase = () => {
 const getImg = (name) => {
   let result;
   if (name === 'meizu') {
-    name = 'Meizu';
+    name = 'Meizu'
+  }
+  if (name === 'LENOVO') {
+    name = 'Lenovo'
   }
   try {
     result = img['../../assets/img/' + name + '.jpg'].default;

@@ -92,6 +92,8 @@ const manufacturer = ref([
   "motorola",
   "asus",
   "Lenovo",
+  "HMD Global",
+  "Teclast"
 ]);
 const statusList = ref([
   {
@@ -348,6 +350,9 @@ const getImg = (name) => {
   let result;
   if (name === 'meizu') {
     name = 'Meizu'
+  }
+  if (name === 'LENOVO') {
+    name = 'Lenovo'
   }
   try {
     result = img['./../assets/img/' + name + '.jpg'].default
@@ -757,8 +762,10 @@ watch(drawer, (newVal, oldVal) => {
       >
         <template #default>
           <div>当设备温度≥<span style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人告警。</div>
-          <div>当<span style="color: #E6A23C">高温超时</span>时间内温度持续≥<span style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人并<span
-              style="color: #F56C6C">关机</span>。</div>
+          <div>当<span style="color: #E6A23C">高温超时</span>时间内温度持续≥<span
+              style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人并<span
+              style="color: #F56C6C">关机</span>。
+          </div>
         </template>
       </el-alert>
       <el-form-item
