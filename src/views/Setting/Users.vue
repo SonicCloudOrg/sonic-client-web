@@ -149,6 +149,7 @@ onMounted(() => {
             <el-button
                 type="danger"
                 size="mini"
+                :disabled="true"
             >
               删除
             </el-button>
