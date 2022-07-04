@@ -51,7 +51,7 @@ const getRolesList = (queryString, cb)=> {
   axios.get("/controller/roles/list", {
     params: {
       page: 1,
-      roleName: queryString
+      isAll: true
     }
   }).then(resp => {
     cb(resp.data.content)
