@@ -51,7 +51,7 @@ const getRolesList = (queryString, cb)=> {
   axios.get("/controller/roles/list", {
     params: {
       page: 1,
-      roleName: queryString
+      isAll: true
     }
   }).then(resp => {
     cb(resp.data.content)
@@ -137,23 +137,6 @@ onMounted(() => {
                 @click="open(scope.row)"
             >角色配置
             </el-button>
-            <el-popconfirm
-            style="margin-left: 10px"
-            :confirmButtonText="$t('form.confirm')"
-            :cancelButtonText="$t('form.cancel')"
-            icon="el-icon-warning"
-            iconColor="red"
-            title="确定删除该用户吗？"
-        >
-          <template #reference>
-            <el-button
-                type="danger"
-                size="mini"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-popconfirm>
       </template>
     </el-table-column>
     
