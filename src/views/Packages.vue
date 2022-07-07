@@ -63,6 +63,8 @@ onMounted(() => {
 })
 </script>
 <template>
+  <a style="float: right;margin-bottom: 20px" href="https://sonic-cloud.gitee.io/#/SCH" target="_blank">
+    <el-button size="mini" plain type="primary">接入指南</el-button></a>
   <el-table :data="pageData['content']" @filter-change="filter" border>
     <el-table-column width="80" label="Id" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column width="110" label="构建链接" prop="buildUrl" align="center">
