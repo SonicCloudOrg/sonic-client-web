@@ -123,7 +123,7 @@ const formatHighTemp = (value) => {
   return value + " ℃"
 }
 const robotList = [{name: "钉钉群机器人", value: 1, img: "DingTalk"}
-  , {name: "企业微信机器人(即将开放)", value: 2, img: "WeChat", disabled: true},
+  , {name: "企业微信机器人", value: 2, img: "WeChat"},
   {name: "飞书群机器人", value: 3, img: "FeiShu"},
   {name: "友空间机器人(即将开放)", value: 4, img: "You", disabled: true}]
 const dialogAgent = ref(false)

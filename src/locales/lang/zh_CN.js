@@ -7,7 +7,7 @@ const robot = {
     robotToken: 'WebHook',
     robotTokenPlaceholder: '请输入群机器人的WebHook',
     robotSecret: 'Secret',
-    robotSecretPlaceholder: '请输入群机器人的密钥'
+    robotSecretPlaceholder: '（可选）请输入群机器人的密钥'
 }
 const agent = {
     newAgent: "新增Agent",
