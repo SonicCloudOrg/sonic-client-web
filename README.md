@@ -15,6 +15,7 @@
   <a href="#">  
     <img src="https://img.shields.io/badge/vue-3.2.14-success">
   </a>
+<a href="https://app.fossa.com/projects/git%2Bgithub.com%2FSonicCloudOrg%2Fsonic-client-web?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FSonicCloudOrg%2Fsonic-client-web.svg?type=shield"/></a>
   <a href="#">  
     <img src="https://img.shields.io/badge/elementPlus-1.1.0/beta.24-success">
   </a>
@@ -30,6 +31,9 @@
     <img src="https://img.shields.io/github/license/SonicCloudOrg/sonic-server?color=green&label=license&logo=license&logoColor=green">
   </a>
 </p>
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FSonicCloudOrg%2Fsonic-client-web.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FSonicCloudOrg%2Fsonic-client-web?ref=badge_large)
 
 ### Official Website
 [Sonic Official Website](https://sonic-cloud.gitee.io)
