@@ -427,7 +427,10 @@ const clearLogcat = () => {
 const terminalWebsocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
     case 'appListDetail': {
-      appList.value.push(JSON.parse(message.data).detail);
+      let de = JSON.parse(message.data).detail;
+      if (de && de !== null) {
+        appList.value.push(de);
+      }
       break
     }
     case 'terminal':
