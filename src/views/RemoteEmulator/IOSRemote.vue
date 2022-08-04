@@ -1453,9 +1453,9 @@ onMounted(() => {
                         :http-request="uploadPackage"
                     >
                       <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">将APK文件拖到此处，或<em>点击上传</em></div>
+                      <div class="el-upload__text">将ipa文件拖到此处，或<em>点击上传</em></div>
                       <template #tip>
-                        <div class="el-upload__tip">只能上传apk文件</div>
+                        <div class="el-upload__tip">只能上传ipa文件</div>
                       </template>
                     </el-upload>
                   </div>
@@ -1500,7 +1500,7 @@ onMounted(() => {
                       clearable
                       v-model="uploadUrl"
                       size="small"
-                      placeholder="请输入apk下载链接或本地路径"
+                      placeholder="请输入ipa下载链接或本地路径"
                   ></el-input>
                   <div style="text-align: center;margin-top: 20px">
                     <el-button
