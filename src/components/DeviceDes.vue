@@ -117,7 +117,12 @@ const getImg = (name) => {
     name = 'Lenovo'
   }
   try {
-    result = img['./../assets/img/' + name + '.jpg'].default
+    if (name === 'HarmonyOs'){
+      result = img['./../assets/img/' + name + '.png'].default
+    }else{
+      result = img['./../assets/img/' + name + '.jpg'].default
+    }
+
   } catch {
     result = img['./../assets/img/unName.jpg'].default
   }
@@ -195,6 +200,11 @@ const findAgentById = (id) => {
                 v-if="device.platform===1"
                 style="width: 30px"
                 :src="getImg('ANDROID')"
+            />
+            <img
+                v-if="device.platform===6"
+                style="width: 22px"
+                :src="getImg('HarmonyOs')"
             />
             <img
                 v-if="device.platform===2"
