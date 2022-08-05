@@ -117,12 +117,7 @@ const getImg = (name) => {
     name = 'Lenovo'
   }
   try {
-    if (name === 'HarmonyOs'){
-      result = img['./../assets/img/' + name + '.png'].default
-    }else{
-      result = img['./../assets/img/' + name + '.jpg'].default
-    }
-
+    result = img['./../assets/img/' + name + '.jpg'].default
   } catch {
     result = img['./../assets/img/unName.jpg'].default
   }
