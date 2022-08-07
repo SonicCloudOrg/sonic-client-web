@@ -2,6 +2,12 @@ import {createRouter, createWebHistory} from 'vue-router'
 import {$tc} from '@/locales/setupI18n'
 
 const getRoutes = () => [
+    // demo page
+    {
+        path: '/demo/focus-input',
+        name: 'focus-input',
+        component: () => import('../views/demo/FocusInput.vue')
+    },
     {
         path: '/Login',
         component: () => import('../views/Login.vue'),
