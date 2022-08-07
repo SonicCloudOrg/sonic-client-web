@@ -451,6 +451,19 @@ const terminalWebsocketOnmessage = (message) => {
 }
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
+    case 'setPaste': {
+      ElMessage.success({
+        message: '发送剪切板成功！',
+      });
+      break
+    }
+    case 'paste': {
+      paste.value = JSON.parse(message.data).detail
+      ElMessage.success({
+        message: '获取剪切板文本成功！',
+      });
+      break
+    }
     case 'rotation': {
       const d = JSON.parse(message.data).value;
       if (directionStatus.value !== d) {
@@ -561,6 +574,45 @@ const websocketOnmessage = (message) => {
     }
   }
 };
+const inputValue = ref('')
+const inputBox = ref(null)
+const inputBoxStyle = ref({})
+const paste = ref("")
+const changeInputHandle = () => {
+  if (inputValue.value) {
+    console.log("aa")
+    websocket.send(
+        JSON.stringify({
+          type: 'send',
+          detail: inputValue.value,
+        }),
+    );
+    inputValue.value = ''
+  }
+}
+const deleteInputHandle = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'send',
+        detail: "\u007F",
+      }),
+  );
+}
+const setPasteboard = (text) => {
+  websocket.send(
+      JSON.stringify({
+        type: 'setPasteboard',
+        detail: text,
+      }),
+  );
+}
+const getPasteboard = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'getPasteboard',
+      }),
+  );
+}
 const mouseup = (event) => {
   clearInterval(loop);
   time = 0;
@@ -587,6 +639,10 @@ const mouseup = (event) => {
         (imgHeight / iosCap.height),
     );
   }
+  inputBoxStyle.value = {
+    left: (event.clientX - rect.left) + 'px',
+    top: (event.clientY - rect.top) + 'px'
+  }
   if (moveX === x && moveY === y) {
     if (!isLongPress) {
       websocket.send(
@@ -596,6 +652,7 @@ const mouseup = (event) => {
             point: x + ',' + y,
           }),
       );
+      inputBox.value.focus()
     }
   } else {
     websocket.send(
@@ -606,6 +663,7 @@ const mouseup = (event) => {
           pointB: x + ',' + y,
         }),
     );
+    inputBox.value.focus()
   }
   isLongPress = false;
 };
@@ -1058,17 +1116,20 @@ onMounted(() => {
           </template>
           <div style="margin-right: 40px; text-align: center">
             <img id="iosCap" v-if="sid===0"/>
-            <img v-else
-                 id="iosCap"
-                 :src="'http://' + agent['host'] + ':'+  sid"
-                 width="100%"
-                 draggable="false"
-                 @mousedown="mousedown"
-                 @mouseleave="mouseleave"
-                 @mouseup="mouseup"
-                 style="display: inline-block"
-                 :style="canvasRectInfo"
-            />
+            <div v-else>
+              <img id="iosCap"
+                   :src="'http://' + agent['host'] + ':'+  sid"
+                   width="100%"
+                   draggable="false"
+                   @mousedown="mousedown"
+                   @mouseleave="mouseleave"
+                   @mouseup="mouseup"
+                   style="display: inline-block"
+                   :style="canvasRectInfo"
+              />
+              <input class="input-box" v-model="inputValue" type="text" ref="inputBox" @input="changeInputHandle"
+                     :style="inputBoxStyle" @keyup.delete="deleteInputHandle">
+            </div>
             <el-button-group id="iOSpressKey">
               <el-button
                   size="small"
@@ -1408,28 +1469,13 @@ onMounted(() => {
               <el-col :span="12" style="margin-top: 20px">
                 <el-card>
                   <template #header>
-                    <strong>扫描二维码</strong>
+                    <strong>剪切板操作</strong>
                   </template>
-                  <div style="text-align: center" v-loading="true"
-                       element-loading-spinner="el-icon-lock"
-                       element-loading-background="rgba(255, 255, 255, 1)"
-                       element-loading-text="该功能即将开放">
-                    <el-upload
-                        drag
-                        action=""
-                        :with-credentials="true"
-                        :limit="1"
-                        :before-upload="beforeAvatarUpload"
-                        :on-exceed="limitOut"
-                        :http-request="uploadScan"
-                        list-type="picture"
-                    >
-                      <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">将二维码图片拖到此处，或<em>点击上传</em></div>
-                      <template #tip>
-                        <div class="el-upload__tip">只能上传jpg/png文件</div>
-                      </template>
-                    </el-upload>
+                  <el-input :rows="7" show-word-limit clearable v-model="paste" type="textarea"
+                            placeholder="请输入你要发送到剪切板的内容"></el-input>
+                  <div style="text-align: center;margin-top: 15px">
+                    <el-button size="mini" type="primary" @click="setPasteboard(paste)">发送到剪切板</el-button>
+                    <el-button size="mini" type="primary" @click="getPasteboard">获取剪切板文本</el-button>
                   </div>
                 </el-card>
               </el-col>
@@ -2020,5 +2066,14 @@ onMounted(() => {
 .url-install-box {
   position: relative;
   height: 100%;
+}
+
+.input-box {
+  position: absolute;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  z-index: -1;
+  width: 1px;
 }
 </style>
