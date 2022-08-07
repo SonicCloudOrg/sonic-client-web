@@ -1158,7 +1158,7 @@ onMounted(() => {
                     <el-dropdown-menu class="divider">
                       <div style="text-align: center">
                         <el-icon :size="14" style="color: #909399;vertical-align: middle;">
-                          <Sunny/>
+                          <Phone/>
                         </el-icon>
                         <el-divider direction="vertical"></el-divider>
                         <el-button-group>
@@ -1169,7 +1169,7 @@ onMounted(() => {
                               @click="pressKey('volumeup')"
                           >
                             <el-icon :size="12" style="vertical-align: middle;">
-                              <CaretLeft/>
+                              <Plus/>
                             </el-icon>
                           </el-button>
                           <el-button
@@ -1179,7 +1179,7 @@ onMounted(() => {
                               @click="pressKey('volumedown')"
                           >
                             <el-icon :size="12" style="vertical-align: middle;">
-                              <CaretRight/>
+                              <Minus/>
                             </el-icon>
                           </el-button>
                         </el-button-group>
