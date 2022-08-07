@@ -197,6 +197,11 @@ const findAgentById = (id) => {
                 :src="getImg('ANDROID')"
             />
             <img
+                v-if="device.platform===6"
+                style="width: 22px"
+                :src="getImg('HarmonyOs')"
+            />
+            <img
                 v-if="device.platform===2"
                 style="width: 22px"
                 :src="getImg('IOS')"
