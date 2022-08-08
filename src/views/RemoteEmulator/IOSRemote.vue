@@ -454,8 +454,27 @@ const stopSyslog = () => {
 const clearLogcat = () => {
   logOutPut.value = [];
 };
+const getProcessList = () => {
+  clearProcess();
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: 'processList',
+      }),
+  );
+}
+const clearProcess = () => {
+  processList.value = [];
+};
+const processList = ref([])
 const terminalWebsocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
+    case 'processListDetail': {
+      let de = JSON.parse(message.data).detail;
+      if (de && de !== null) {
+        processList.value.push(de);
+      }
+      break
+    }
     case 'appListDetail': {
       let de = JSON.parse(message.data).detail;
       if (de && de !== null) {
@@ -1702,6 +1721,23 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane label="Terminal" name="terminal">
             <el-tabs stretch type="border-card">
+              <el-tab-pane label="Process">
+                <div style="text-align: center">
+                  <el-button size="mini" @click="getProcessList"
+                             style="margin-left: 5px" type="primary">Search
+                  </el-button>
+                  <el-button size="mini" @click="clearProcess"
+                             style="margin-left: 5px" type="warning">Clear
+                  </el-button>
+                </div>
+                <el-table style="margin-top: 10px" height="600" border :data="processList">
+                  <el-table-column align="center" label="PID" width="90" prop="pid"/>
+                  <el-table-column align="center" label="Name" width="290" prop="name"/>
+                  <el-table-column header-align="center" label="Real Application Name" show-overflow-tooltip
+                                   prop="realAppName"/>
+                  <el-table-column align="center" label="Start Date" width="250" prop="startDate"/>
+                </el-table>
+              </el-tab-pane>
               <el-tab-pane label="Syslog">
                 <el-card
                     style="border: 0px"
