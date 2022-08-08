@@ -53,6 +53,7 @@ import {
   Wallet,
   Menu,
   CopyDocument,
+  Delete,
   House,
   Back,
   View,
@@ -354,9 +355,6 @@ const findBestXpath = (elementDetail) => {
   }
   return result;
 }
-const downloadImg = () => {
-  window.open(imgUrl.value, '_blank');
-};
 const copy = (value) => {
   try {
     toClipboard(value);
@@ -402,6 +400,38 @@ const openSocket = (host, port, key, udId) => {
   terminalWebsocket.onmessage = terminalWebsocketOnmessage;
   terminalWebsocket.onclose = (e) => {
   };
+};
+const screenUrls = ref([])
+const quickCap = () => {
+  const canvas = document.createElement("canvas");
+  const canvasCtx = canvas.getContext("2d");
+  const cap = document.getElementById('iosCap');
+  let w, h;
+  if (directionStatus.value === 0 || directionStatus.value === 180) {
+    w = imgWidth;
+    h = imgHeight;
+  } else {
+    w = imgHeight;
+    h = imgWidth;
+  }
+  canvas.width = w;
+  canvas.height = h;
+  canvasCtx.drawImage(cap, 0, 0, cap.clientWidth, cap.clientHeight, 0, 0, w, h);
+  screenUrls.value.push(canvas.toDataURL('image/png', 1));
+};
+const removeScreen = () => {
+  screenUrls.value = [];
+};
+const downloadImg = (url) => {
+  let time = new Date().getTime();
+  let link = document.createElement('a');
+  fetch(url).then(res => res.blob()).then(blob => {
+    link.href = URL.createObjectURL(blob);
+    link.download = time + '.jpg';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
 };
 const logOutPut = ref([])
 const logFilter = ref("")
@@ -1633,6 +1663,42 @@ onMounted(() => {
                 </el-steps>
               </div>
             </el-card>
+          </el-tab-pane>
+          <el-tab-pane label="快速截图" name="screenCap">
+            <el-button type="primary" size="small" @click="quickCap">
+              <el-icon :size="12" style="vertical-align: middle;">
+                <Camera/>
+              </el-icon>
+              截图
+            </el-button>
+            <el-button type="danger" size="small" @click="removeScreen">
+              <el-icon :size="12" style="vertical-align: middle;">
+                <Delete/>
+              </el-icon>
+              清空
+            </el-button>
+            <el-card style="height: 100%;margin-top: 10px" v-if="screenUrls.length===0">
+              <el-empty description="暂无截图"></el-empty>
+            </el-card>
+            <el-row :gutter="20" v-else>
+              <el-col :xs="8"
+                      :sm="8"
+                      :md="8"
+                      :lg="4"
+                      :xl="4" v-for="u in screenUrls" style="margin-top: 10px">
+                <el-card shadow="hover" :body-style="{padding:'10px'}">
+                  <el-image :src="u" :preview-src-list="screenUrls" hide-on-click-modal></el-image>
+                  <div style="text-align: center;margin-top: 5px">
+                    <el-button type="primary" plain size="mini" @click="downloadImg(u)">
+                      <el-icon :size="12" style="vertical-align: middle;">
+                        <Download/>
+                      </el-icon>
+                      保存图片
+                    </el-button>
+                  </div>
+                </el-card>
+              </el-col>
+            </el-row>
           </el-tab-pane>
           <el-tab-pane label="Terminal" name="terminal">
             <el-tabs stretch type="border-card">
