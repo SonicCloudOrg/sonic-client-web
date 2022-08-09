@@ -47,6 +47,7 @@ import {
   CaretLeft,
   Operation,
   Cellphone,
+  VideoCamera,
   Refresh,
   RefreshRight,
   RefreshLeft,
@@ -119,6 +120,7 @@ const updateImgEle = ref(null);
 const title = ref('');
 const uploadLoading = ref(false);
 const location = ref(false);
+const screenFps = ref("high")
 const element = ref({
   id: null,
   eleName: '',
@@ -211,6 +213,14 @@ const locationUnset = () => {
   ElMessage.success({
     message: '已恢复定位',
   });
+}
+const switchScreen = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'screen',
+        detail: screenFps.value
+      }),
+  );
 }
 const openApp = (pkg) => {
   websocket.send(
@@ -1193,6 +1203,45 @@ onMounted(() => {
             </el-button-group>
           </div>
           <div style="position: absolute; right: 5px; top: 10px">
+            <el-tooltip
+                :enterable="false"
+                effect="dark"
+                content="清晰度与FPS"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
+            >
+              <div>
+                <el-dropdown
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
+                >
+                  <el-button
+                      size="small"
+                      type="info"
+                      circle
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <VideoCamera/>
+                    </el-icon>
+                  </el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu class="divider">
+                      <el-radio-group
+                          v-loading="loading"
+                          v-model="screenFps"
+                          size="mini"
+                          @change="switchScreen"
+                      >
+                        <el-radio-button label="low">低</el-radio-button>
+                        <el-radio-button label="high">高</el-radio-button>
+                      </el-radio-group>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </div>
+            </el-tooltip>
             <el-tooltip
                 :enterable="false"
                 effect="dark"
