@@ -69,6 +69,7 @@ import {
   Bell,
   Service,
   VideoCamera,
+  Postcard
 } from '@element-plus/icons';
 import RenderDeviceName from '../../components/RenderDeviceName.vue';
 import AudioProcessor from '@/lib/audio-processor';
@@ -327,6 +328,16 @@ const fixTouch = () => {
   });
   isFixTouch = !isFixTouch;
 };
+const fixOri = () => {
+  ElMessage.success({
+    message: '修复成功！',
+  });
+  if (directionStatus.value === 0 || directionStatus.value === 180) {
+    directionStatus.value = 90
+  } else {
+    directionStatus.value = 0
+  }
+}
 const switchIsWebView = () => {
   isWebView.value = true;
 };
@@ -2003,6 +2014,22 @@ onMounted(() => {
                           >
                             <el-icon :size="14" style="vertical-align: middle;">
                               <Pointer/>
+                            </el-icon>
+                          </el-button>
+                        </el-tooltip>
+                        <el-tooltip
+                            effect="dark"
+                            content="修复横竖屏"
+                            placement="top"
+                        >
+                          <el-button
+                              size="small"
+                              type="info"
+                              circle
+                              @click="fixOri"
+                          >
+                            <el-icon :size="14" style="vertical-align: middle;">
+                              <Postcard/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
