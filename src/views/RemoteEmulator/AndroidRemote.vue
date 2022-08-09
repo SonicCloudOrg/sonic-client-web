@@ -413,19 +413,27 @@ const getVideoScreenshot = () => {
   const canvasCtx = canvas.getContext("2d");
   const video = document.getElementById('scrcpy-video');
   // 默认生成图片大小
-  let imgWidth, imgHeight;
+  let w, h;
   if (directionStatus.value === 0 || directionStatus.value === 180) {
-    // 竖屏
-    imgWidth = 369;
-    imgHeight = 800;
+    if (screenMode.value == 'Scrcpy') {
+      w = imgWidth;
+      h = imgHeight
+    } else {
+      w = 369;
+      h = 800;
+    }
   } else {
-    // 横屏
-    imgWidth = 800;
-    imgHeight = 369;
+    if (screenMode.value == 'Scrcpy') {
+      w = imgHeight;
+      h = imgWidth
+    } else {
+      w = 800;
+      h = 369;
+    }
   }
-  canvas.width = imgWidth;
-  canvas.height = imgHeight;
-  canvasCtx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, imgWidth, imgHeight);
+  canvas.width = w;
+  canvas.height = h;
+  canvasCtx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, w, h);
   return canvas.toDataURL('image/png', 1);
 }
 const quickCap = () => {
