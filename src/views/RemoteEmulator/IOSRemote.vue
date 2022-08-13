@@ -464,6 +464,41 @@ const stopSyslog = () => {
 const clearLogcat = () => {
   logOutPut.value = [];
 };
+/**
+ * 获取 process 列表数据 & 处理
+ */
+const processList = ref([]);
+const processListPageData = ref([]);
+const currProcessListPage = ref([]);
+const currProcessListIndex = ref(0);
+const processPageSize = 10;
+// 转换分页数组
+const formatProcessPageable = (data) => {
+  const len = data.length;
+  let start = 0;
+  let end = processPageSize;
+  // 重置分页数组
+  processListPageData.value = [];
+  while (end <= len) {
+    processListPageData.value.push(data.slice(start, end));
+    start = end;
+    end += processPageSize;
+  }
+  if (len % processPageSize) {
+    processListPageData.value.push(data.slice(start, len));
+  }
+  setCurrListPage()
+};
+const changeProcessListPage = (pageNum) => {
+  currProcessListIndex.value = pageNum - 1;
+  setCurrListPage()
+};
+const setCurrListPage = () => {
+  currProcessListPage.value = processListPageData.value[currProcessListIndex.value];
+}
+watch(processList, (newVal) => {
+  formatProcessPageable(newVal);
+})
 const getProcessList = () => {
   clearProcess();
   terminalWebsocket.send(
@@ -475,7 +510,6 @@ const getProcessList = () => {
 const clearProcess = () => {
   processList.value = [];
 };
-const processList = ref([])
 const terminalWebsocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
     case 'processListDetail': {
@@ -1779,13 +1813,20 @@ onMounted(() => {
                              style="margin-left: 5px" type="warning">Clear
                   </el-button>
                 </div>
-                <el-table style="margin-top: 10px" height="600" border :data="processList">
+                <el-table style="margin-top: 10px" height="600" border :data="currProcessListPage">
                   <el-table-column align="center" label="PID" width="90" prop="pid"/>
                   <el-table-column align="center" label="Name" width="290" prop="name"/>
                   <el-table-column header-align="center" label="Real Application Name" show-overflow-tooltip
                                    prop="realAppName"/>
                   <el-table-column align="center" label="Start Date" width="250" prop="startDate"/>
                 </el-table>
+                <Pageable
+                    :isPageSet="false"
+                    :total="processList.length"
+                    :current-page="currProcessListIndex + 1"
+                    :page-size="processPageSize"
+                    @change="changeProcessListPage"
+                ></Pageable>
               </el-tab-pane>
               <el-tab-pane label="Syslog">
                 <el-card
