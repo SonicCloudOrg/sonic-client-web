@@ -289,6 +289,10 @@ const androidOptions = ref([
             label: "系统按键",
           },
           {
+            value: "keyCodeSelf",
+            label: "系统按键（自定义）",
+          },
+          {
             value: "hideKey",
             label: "隐藏键盘",
           },
@@ -359,6 +363,10 @@ const androidOptions = ref([
       {
         value: "runBack",
         label: "后台运行应用",
+      },
+      {
+        value: "appReset",
+        label: "清空App内存缓存",
       },
       {
         value: "toWebView",
@@ -601,10 +609,6 @@ const iOSOptions = ref([
         label: "输入文本",
       },
       {
-        value: "sendKeysByActions",
-        label: "输入文本(Actions)",
-      },
-      {
         value: "swipe2",
         label: "拖拽控件元素",
       },
@@ -759,6 +763,19 @@ onMounted(() => {
         <Tickets/>
       </el-icon>
     </el-divider>
+
+    <div v-if="step.stepType === 'keyCodeSelf'">
+      <el-form-item label="按键Code"
+                    :rules="[
+            { required: true, message: '请输入按键Code', trigger: 'blur' },
+          ]"
+                    prop="content">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入按键Code"
+        ></el-input>
+      </el-form-item>
+    </div>
 
     <div v-if="step.stepType === 'keyCode'">
       <el-form-item label="系统按键"
@@ -952,6 +969,25 @@ onMounted(() => {
             :step="1000"
         ></el-input-number>
         ms
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'appReset'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
+      <el-form-item
+          prop="text"
+          label="清空应用"
+          :rules="{
+            required: true,
+            message: '包名不能为空',
+            trigger: 'blur',
+          }"
+      >
+        <el-input
+            v-model="step.text"
+            placeholder="请输入清空应用的App包名"
+        ></el-input>
       </el-form-item>
     </div>
 

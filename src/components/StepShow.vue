@@ -48,7 +48,7 @@ defineProps({
   <span v-if="step.stepType === 'screenAbort'">
       <el-tag size="small">关闭自动旋转</el-tag>
     </span>
-  <span v-if="step.stepType === 'keyCode'">
+  <span v-if="step.stepType === 'keyCode'||step.stepType === 'keyCodeSelf'">
       <el-tag size="small">按下系统{{ step.content }}键</el-tag>
   </span>
   <span v-if="step.stepType === 'hideKey'">
@@ -131,6 +131,10 @@ defineProps({
   <span v-if="step.stepType === 'runBack'">
       <el-tag size="small" style="margin-right: 10px">后台运行应用</el-tag>
       后台运行 {{ step.content }} ms
+    </span>
+  <span v-if="step.stepType === 'appReset'">
+      <el-tag size="small" style="margin-right: 10px">清空应用缓存内存</el-tag>
+      清空应用 {{ step.text }} 缓存内存
     </span>
   <span v-if="step.stepType === 'toWebView'">
       <el-tag size="small" style="margin-right: 10px">切换WebView</el-tag>
