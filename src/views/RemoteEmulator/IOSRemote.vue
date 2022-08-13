@@ -1813,7 +1813,7 @@ onMounted(() => {
                              style="margin-left: 5px" type="warning">Clear
                   </el-button>
                 </div>
-                <el-table style="margin-top: 10px" height="600" border :data="currProcessListPage">
+                <el-table style="margin-top: 10px" height="552" border :data="currProcessListPage">
                   <el-table-column align="center" label="PID" width="90" prop="pid"/>
                   <el-table-column align="center" label="Name" width="290" prop="name"/>
                   <el-table-column header-align="center" label="Real Application Name" show-overflow-tooltip
