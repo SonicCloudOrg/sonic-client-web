@@ -289,9 +289,6 @@ const switchTabs = (e) => {
       refreshAppList()
     }
   }
-  if (e.props.name === 'terminal') {
-    terminalHeight.value = document.getElementById('pressKey').offsetTop - 200;
-  }
 };
 const switchLocation = () => {
   location.value = !location.value;
@@ -1770,42 +1767,42 @@ onMounted(() => {
               </div>
             </el-card>
           </el-tab-pane>
-          <el-tab-pane label="快速截图" name="screenCap">
-            <el-button type="primary" size="small" @click="quickCap">
-              <el-icon :size="12" style="vertical-align: middle;">
-                <Camera/>
-              </el-icon>
-              截图
-            </el-button>
-            <el-button type="danger" size="small" @click="removeScreen">
-              <el-icon :size="12" style="vertical-align: middle;">
-                <Delete/>
-              </el-icon>
-              清空
-            </el-button>
-            <el-card style="height: 100%;margin-top: 10px" v-if="screenUrls.length===0">
-              <el-empty description="暂无截图"></el-empty>
-            </el-card>
-            <el-row :gutter="20" v-else>
-              <el-col :xs="8"
-                      :sm="8"
-                      :md="8"
-                      :lg="4"
-                      :xl="4" v-for="u in screenUrls" style="margin-top: 10px">
-                <el-card shadow="hover" :body-style="{padding:'10px'}">
-                  <el-image :src="u" :preview-src-list="screenUrls" hide-on-click-modal></el-image>
-                  <div style="text-align: center;margin-top: 5px">
-                    <el-button type="primary" plain size="mini" @click="downloadImg(u)">
-                      <el-icon :size="12" style="vertical-align: middle;">
-                        <Download/>
-                      </el-icon>
-                      保存图片
-                    </el-button>
-                  </div>
-                </el-card>
-              </el-col>
-            </el-row>
-          </el-tab-pane>
+<!--          <el-tab-pane label="快速截图" name="screenCap">-->
+<!--            <el-button type="primary" size="small" @click="quickCap">-->
+<!--              <el-icon :size="12" style="vertical-align: middle;">-->
+<!--                <Camera/>-->
+<!--              </el-icon>-->
+<!--              截图-->
+<!--            </el-button>-->
+<!--            <el-button type="danger" size="small" @click="removeScreen">-->
+<!--              <el-icon :size="12" style="vertical-align: middle;">-->
+<!--                <Delete/>-->
+<!--              </el-icon>-->
+<!--              清空-->
+<!--            </el-button>-->
+<!--            <el-card style="height: 100%;margin-top: 10px" v-if="screenUrls.length===0">-->
+<!--              <el-empty description="暂无截图"></el-empty>-->
+<!--            </el-card>-->
+<!--            <el-row :gutter="20" v-else>-->
+<!--              <el-col :xs="8"-->
+<!--                      :sm="8"-->
+<!--                      :md="8"-->
+<!--                      :lg="4"-->
+<!--                      :xl="4" v-for="u in screenUrls" style="margin-top: 10px">-->
+<!--                <el-card shadow="hover" :body-style="{padding:'10px'}">-->
+<!--                  <el-image :src="u" :preview-src-list="screenUrls" hide-on-click-modal></el-image>-->
+<!--                  <div style="text-align: center;margin-top: 5px">-->
+<!--                    <el-button type="primary" plain size="mini" @click="downloadImg(u)">-->
+<!--                      <el-icon :size="12" style="vertical-align: middle;">-->
+<!--                        <Download/>-->
+<!--                      </el-icon>-->
+<!--                      保存图片-->
+<!--                    </el-button>-->
+<!--                  </div>-->
+<!--                </el-card>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
+<!--          </el-tab-pane>-->
           <el-tab-pane label="Terminal" name="terminal">
             <el-tabs stretch type="border-card">
               <el-tab-pane label="Process">
@@ -1817,7 +1814,7 @@ onMounted(() => {
                              style="margin-left: 5px" type="warning">Clear
                   </el-button>
                 </div>
-                <el-table style="margin-top: 10px" height="552" border :data="currProcessListPage">
+                <el-table style="margin-top: 10px" border :data="currProcessListPage">
                   <el-table-column align="center" label="PID" width="90" prop="pid"/>
                   <el-table-column align="center" label="Name" width="290" prop="name"/>
                   <el-table-column header-align="center" label="Real Application Name" show-overflow-tooltip
