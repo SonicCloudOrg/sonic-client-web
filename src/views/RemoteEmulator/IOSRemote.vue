@@ -497,8 +497,12 @@ const setCurrListPage = () => {
   currProcessListPage.value = processListPageData.value[currProcessListIndex.value];
 }
 watch(processList, (newVal) => {
-  formatProcessPageable(newVal);
-})
+    formatProcessPageable(newVal);
+  }, {
+    immediate:true,
+    deep:true
+  }
+)
 const getProcessList = () => {
   clearProcess();
   terminalWebsocket.send(
