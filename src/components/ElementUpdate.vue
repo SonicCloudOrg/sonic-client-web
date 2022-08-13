@@ -105,6 +105,7 @@ onMounted(() => {
           <el-option label="nsPredicate（仅支持iOS10或以上）" value="nsPredicate"></el-option>
           <el-option label="uiautomator（仅支持Android）" value="androidUIAutomator"></el-option>
           <el-option value="accessibilityId"></el-option>
+          <el-option value="classChain"></el-option>
         </el-option-group>
         <el-option-group label="特殊定位方式">
           <el-option label="坐标" value="point"></el-option>

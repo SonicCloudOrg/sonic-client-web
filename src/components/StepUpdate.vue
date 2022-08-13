@@ -536,10 +536,6 @@ const iOSOptions = ref([
             value: "keyCode",
             label: "系统按键",
           },
-          {
-            value: "hideKey",
-            label: "隐藏键盘",
-          },
         ],
       },
     ],
@@ -559,10 +555,6 @@ const iOSOptions = ref([
       {
         value: "swipe",
         label: "滑动拖拽",
-      },
-      {
-        label: "多点触控",
-        value: "zoom"
       },
     ],
   },
@@ -637,10 +629,6 @@ const iOSOptions = ref([
       {
         value: "getText",
         label: "验证文本",
-      },
-      {
-        value: "getTitle",
-        label: "验证标题",
       },
       {
         value: "assert",
