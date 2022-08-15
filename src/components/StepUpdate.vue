@@ -534,6 +534,10 @@ const iOSOptions = ref([
             value: "siriCommand",
             label: "Siri指令",
           },
+          {
+            value: "sendKeyForce",
+            label: "键盘输入",
+          },
         ],
       },
       {
@@ -1036,6 +1040,17 @@ onMounted(() => {
                 title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
       <element-select label="控件元素" place="请选择控件元素"
                       :index="0" :project-id="projectId" type="normal" :step="step"/>
+      <el-form-item label="输入值">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入值"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'sendKeyForce'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 本功能需要先唤醒系统键盘。需要临时变量或全局变量时，可以添加{{变量名}}的形式。"/>
       <el-form-item label="输入值">
         <el-input
             v-model="step.content"

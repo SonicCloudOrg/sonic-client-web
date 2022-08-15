@@ -163,6 +163,12 @@ defineProps({
       >
       {{ step.content }}
     </span>
+  <span v-if="step.stepType === 'sendKeyForce'">
+      <el-tag size="small" style="margin-right: 10px"
+      >键盘输入</el-tag
+      >
+      {{ step.content }}
+    </span>
   <span v-if="step.stepType === 'sendKeysByActions'">
       <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
       <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
