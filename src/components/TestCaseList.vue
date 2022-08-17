@@ -126,7 +126,7 @@ defineExpose({open})
       <template #default="scope">
         <el-button size="mini" @click="router.push('StepListView/'+scope.row.id)">步骤详情</el-button>
         <el-button size="mini" type="primary" @click="editCase(scope.row.id)">编辑</el-button>
-<!--        <el-button size="mini" type="primary" plain @click="copy(scope.row.id) ">复制</el-button>-->
+        <el-button size="mini" type="primary" plain @click="copy(scope.row.id) ">复制</el-button>
         <el-popconfirm
             style="margin-left: 10px"
             :confirmButtonText="$t('form.confirm')"

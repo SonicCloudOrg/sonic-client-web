@@ -17,7 +17,7 @@
  */
 import {VueDraggableNext} from 'vue-draggable-next';
 import StepShow from './StepShow.vue'
-import {Delete, Rank, Edit, DocumentAdd, Minus} from "@element-plus/icons";
+import {Delete, Rank, Edit, DocumentAdd, Minus , CopyDocument} from "@element-plus/icons";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 
@@ -28,7 +28,7 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(['flush', 'editStep', 'deleteStep', 'setParent', 'addStep', 'remove'])
+const emit = defineEmits(['flush', 'editStep', 'deleteStep', 'setParent', 'addStep', 'remove', 'copyStep'])
 const sortStep = e => {
   if (props.isEdit && props.steps[e.moved.newIndex].parentId === 0) {
     return
@@ -78,6 +78,11 @@ const deleteStep = id => {
 const remove = e => {
   emit('remove', e)
 }
+
+const copyStep = id => {
+  console.log(id)
+  emit('copyStep', id)
+}
 </script>
 
 <template>
@@ -125,6 +130,16 @@ const remove = e => {
                 </el-icon>
               </el-button>
               <el-button
+                  circle
+                  type="primary"
+                  size="mini"
+                  @click="copyStep(s.id)"
+              >
+                <el-icon :size="13" style="vertical-align: middle;">
+                  <CopyDocument/>
+                </el-icon>
+              </el-button>
+              <el-button
                   class="handle"
                   circle
                   size="mini"
@@ -168,7 +183,7 @@ const remove = e => {
             </div>
           </template>
           <step-draggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @flush="emit('flush')"
-                          @editStep="editStep" @deleteStep="deleteStep"/>
+                          @editStep="editStep" @deleteStep="deleteStep" @copyStep = "copyStep"/>
         </el-card>
         <div v-else>
           <step-show :step="s"></step-show>
@@ -181,6 +196,16 @@ const remove = e => {
             >
               <el-icon :size="13" style="vertical-align: middle;">
                 <Edit/>
+              </el-icon>
+            </el-button>
+            <el-button
+                circle
+                type="primary"
+                size="mini"
+                @click="copyStep(s.id)"
+            >
+              <el-icon :size="13" style="vertical-align: middle;">
+                <CopyDocument/>
               </el-icon>
             </el-button>
             <el-button
