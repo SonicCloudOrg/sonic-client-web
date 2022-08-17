@@ -101,7 +101,7 @@ const reboot = (id) => {
 }
 const getPhoneImg = (name, url) => {
   let result;
-  if (url === null || url.length === 0) {
+  if (url === null || !url || (url && url.length === 0)) {
     result = img['./../assets/img/default.png'].default
   } else {
     result = url;
@@ -112,6 +112,9 @@ const getImg = (name) => {
   let result;
   if (name === 'meizu') {
     name = 'Meizu'
+  }
+  if (name === 'LENOVO') {
+    name = 'Lenovo'
   }
   try {
     result = img['./../assets/img/' + name + '.jpg'].default
@@ -246,9 +249,9 @@ const findAgentById = (id) => {
             </div>
           </el-form-item>
           <div v-if="detail">
-          <el-form-item label="电流档位">
-            <div>{{ device.gear }}</div>
-          </el-form-item>
+            <el-form-item label="电流档位">
+              <div>{{ device.gear }}</div>
+            </el-form-item>
             <el-form-item label="Hub接口">
               <div>{{ device.position }}</div>
             </el-form-item>

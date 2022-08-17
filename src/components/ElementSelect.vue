@@ -13,28 +13,20 @@ const props = defineProps({
 const pageData = ref({
   content: []
 });
+const name = ref("")
 const pageSize = ref(10);
 const currentPage = ref(0)
-const findByName = (name) => {
+const findByName = (n) => {
   props.step.elements[props.index] = null
-  axios.get("/controller/elements/list", {
-    params: {
-      name,
-      projectId: props.projectId,
-      type: props.type,
-      page: 1,
-      pageSize: pageSize.value,
-    }
-  }).then(resp => {
-    pageData.value = resp.data
-    currentPage.value = pageData.value['number'] + 1
-  })
+  name.value = n
+  findByProjectIdAndEleType(true)
 }
 const findByProjectIdAndEleType = (event, pageNum, pSize) => {
   if (event) {
     props.step.elements[props.index] = null
     axios.get("/controller/elements/list", {
       params: {
+        name: name.value,
         projectId: props.projectId,
         type: props.type,
         page: pageNum || 1,
