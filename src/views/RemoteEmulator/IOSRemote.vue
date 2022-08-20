@@ -47,12 +47,14 @@ import {
   CaretLeft,
   Operation,
   Cellphone,
+  VideoCamera,
   Refresh,
   RefreshRight,
   RefreshLeft,
   Wallet,
   Menu,
   CopyDocument,
+  Delete,
   House,
   Back,
   View,
@@ -118,6 +120,7 @@ const updateImgEle = ref(null);
 const title = ref('');
 const uploadLoading = ref(false);
 const location = ref(false);
+const screenFps = ref("high")
 const element = ref({
   id: null,
   eleName: '',
@@ -211,6 +214,14 @@ const locationUnset = () => {
     message: '已恢复定位',
   });
 }
+const switchScreen = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'screen',
+        detail: screenFps.value
+      }),
+  );
+}
 const openApp = (pkg) => {
   websocket.send(
       JSON.stringify({
@@ -277,9 +288,6 @@ const switchTabs = (e) => {
     if (appList.value.length === 0) {
       refreshAppList()
     }
-  }
-  if (e.props.name === 'terminal') {
-    terminalHeight.value = document.getElementById('pressKey').offsetTop - 200;
   }
 };
 const switchLocation = () => {
@@ -354,9 +362,6 @@ const findBestXpath = (elementDetail) => {
   }
   return result;
 }
-const downloadImg = () => {
-  window.open(imgUrl.value, '_blank');
-};
 const copy = (value) => {
   try {
     toClipboard(value);
@@ -403,6 +408,38 @@ const openSocket = (host, port, key, udId) => {
   terminalWebsocket.onclose = (e) => {
   };
 };
+const screenUrls = ref([])
+const quickCap = () => {
+  const canvas = document.createElement("canvas");
+  const canvasCtx = canvas.getContext("2d");
+  const cap = document.getElementById('iosCap');
+  let w, h;
+  if (directionStatus.value === 0 || directionStatus.value === 180) {
+    w = imgWidth;
+    h = imgHeight;
+  } else {
+    w = imgHeight;
+    h = imgWidth;
+  }
+  canvas.width = w;
+  canvas.height = h;
+  canvasCtx.drawImage(cap, 0, 0, cap.clientWidth, cap.clientHeight, 0, 0, w, h);
+  screenUrls.value.push(canvas.toDataURL('image/png', 1));
+};
+const removeScreen = () => {
+  screenUrls.value = [];
+};
+const downloadImg = (url) => {
+  let time = new Date().getTime();
+  let link = document.createElement('a');
+  fetch(url).then(res => res.blob()).then(blob => {
+    link.href = URL.createObjectURL(blob);
+    link.download = time + '.jpg';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+};
 const logOutPut = ref([])
 const logFilter = ref("")
 const terminalScroll = ref(null)
@@ -424,10 +461,70 @@ const stopSyslog = () => {
 const clearLogcat = () => {
   logOutPut.value = [];
 };
+/**
+ * 获取 process 列表数据 & 处理
+ */
+const processList = ref([]);
+const processListPageData = ref([]);
+const currProcessListPage = ref([]);
+const currProcessListIndex = ref(0);
+const processPageSize = 10;
+// 转换分页数组
+const formatProcessPageable = (data) => {
+  const len = data.length;
+  let start = 0;
+  let end = processPageSize;
+  // 重置分页数组
+  processListPageData.value = [];
+  while (end <= len) {
+    processListPageData.value.push(data.slice(start, end));
+    start = end;
+    end += processPageSize;
+  }
+  if (len % processPageSize) {
+    processListPageData.value.push(data.slice(start, len));
+  }
+  setCurrListPage()
+};
+const changeProcessListPage = (pageNum) => {
+  currProcessListIndex.value = pageNum - 1;
+  setCurrListPage()
+};
+const setCurrListPage = () => {
+  currProcessListPage.value = processListPageData.value[currProcessListIndex.value];
+}
+watch(processList, (newVal) => {
+    formatProcessPageable(newVal);
+  }, {
+    immediate:true,
+    deep:true
+  }
+)
+const getProcessList = () => {
+  clearProcess();
+  terminalWebsocket.send(
+      JSON.stringify({
+        type: 'processList',
+      }),
+  );
+}
+const clearProcess = () => {
+  processList.value = [];
+};
 const terminalWebsocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
+    case 'processListDetail': {
+      let de = JSON.parse(message.data).detail;
+      if (de && de !== null) {
+        processList.value.push(de);
+      }
+      break
+    }
     case 'appListDetail': {
-      appList.value.push(JSON.parse(message.data).detail);
+      let de = JSON.parse(message.data).detail;
+      if (de && de !== null) {
+        appList.value.push(de);
+      }
       break
     }
     case 'terminal':
@@ -448,6 +545,19 @@ const terminalWebsocketOnmessage = (message) => {
 }
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
+    case 'setPaste': {
+      ElMessage.success({
+        message: '发送剪切板成功！',
+      });
+      break
+    }
+    case 'paste': {
+      paste.value = JSON.parse(message.data).detail
+      ElMessage.success({
+        message: '获取剪切板文本成功！',
+      });
+      break
+    }
     case 'rotation': {
       const d = JSON.parse(message.data).value;
       if (directionStatus.value !== d) {
@@ -558,6 +668,45 @@ const websocketOnmessage = (message) => {
     }
   }
 };
+const inputValue = ref('')
+const inputBox = ref(null)
+const inputBoxStyle = ref({})
+const paste = ref("")
+const changeInputHandle = () => {
+  if (inputValue.value) {
+    console.log("aa")
+    websocket.send(
+        JSON.stringify({
+          type: 'send',
+          detail: inputValue.value,
+        }),
+    );
+    inputValue.value = ''
+  }
+}
+const deleteInputHandle = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'send',
+        detail: "\u007F",
+      }),
+  );
+}
+const setPasteboard = (text) => {
+  websocket.send(
+      JSON.stringify({
+        type: 'setPasteboard',
+        detail: text,
+      }),
+  );
+}
+const getPasteboard = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'getPasteboard',
+      }),
+  );
+}
 const mouseup = (event) => {
   clearInterval(loop);
   time = 0;
@@ -584,6 +733,10 @@ const mouseup = (event) => {
         (imgHeight / iosCap.height),
     );
   }
+  inputBoxStyle.value = {
+    left: (event.clientX - rect.left) + 'px',
+    top: (event.clientY - rect.top) + 'px'
+  }
   if (moveX === x && moveY === y) {
     if (!isLongPress) {
       websocket.send(
@@ -593,6 +746,7 @@ const mouseup = (event) => {
             point: x + ',' + y,
           }),
       );
+      inputBox.value.focus()
     }
   } else {
     websocket.send(
@@ -603,6 +757,7 @@ const mouseup = (event) => {
           pointB: x + ',' + y,
         }),
     );
+    inputBox.value.focus()
   }
   isLongPress = false;
 };
@@ -1055,17 +1210,20 @@ onMounted(() => {
           </template>
           <div style="margin-right: 40px; text-align: center">
             <img id="iosCap" v-if="sid===0"/>
-            <img v-else
-                 id="iosCap"
-                 :src="'http://' + agent['host'] + ':'+  sid"
-                 width="100%"
-                 draggable="false"
-                 @mousedown="mousedown"
-                 @mouseleave="mouseleave"
-                 @mouseup="mouseup"
-                 style="display: inline-block"
-                 :style="canvasRectInfo"
-            />
+            <div v-else>
+              <img id="iosCap"
+                   :src="'http://' + agent['host'] + ':'+  sid"
+                   width="100%"
+                   draggable="false"
+                   @mousedown="mousedown"
+                   @mouseleave="mouseleave"
+                   @mouseup="mouseup"
+                   style="display: inline-block"
+                   :style="canvasRectInfo"
+              />
+              <input class="input-box" v-model="inputValue" type="text" ref="inputBox" @input="changeInputHandle"
+                     :style="inputBoxStyle" @keyup.delete="deleteInputHandle">
+            </div>
             <el-button-group id="iOSpressKey">
               <el-button
                   size="small"
@@ -1080,6 +1238,45 @@ onMounted(() => {
             </el-button-group>
           </div>
           <div style="position: absolute; right: 5px; top: 10px">
+            <el-tooltip
+                :enterable="false"
+                effect="dark"
+                content="清晰度与FPS"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
+            >
+              <div>
+                <el-dropdown
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
+                >
+                  <el-button
+                      size="small"
+                      type="info"
+                      circle
+                  >
+                    <el-icon :size="12" style="vertical-align: middle;">
+                      <VideoCamera/>
+                    </el-icon>
+                  </el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu class="divider">
+                      <el-radio-group
+                          v-loading="loading"
+                          v-model="screenFps"
+                          size="mini"
+                          @change="switchScreen"
+                      >
+                        <el-radio-button label="low">低</el-radio-button>
+                        <el-radio-button label="high">高</el-radio-button>
+                      </el-radio-group>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </div>
+            </el-tooltip>
             <el-tooltip
                 :enterable="false"
                 effect="dark"
@@ -1155,7 +1352,7 @@ onMounted(() => {
                     <el-dropdown-menu class="divider">
                       <div style="text-align: center">
                         <el-icon :size="14" style="color: #909399;vertical-align: middle;">
-                          <Sunny/>
+                          <Phone/>
                         </el-icon>
                         <el-divider direction="vertical"></el-divider>
                         <el-button-group>
@@ -1166,7 +1363,7 @@ onMounted(() => {
                               @click="pressKey('volumeup')"
                           >
                             <el-icon :size="12" style="vertical-align: middle;">
-                              <CaretLeft/>
+                              <Plus/>
                             </el-icon>
                           </el-button>
                           <el-button
@@ -1176,7 +1373,7 @@ onMounted(() => {
                               @click="pressKey('volumedown')"
                           >
                             <el-icon :size="12" style="vertical-align: middle;">
-                              <CaretRight/>
+                              <Minus/>
                             </el-icon>
                           </el-button>
                         </el-button-group>
@@ -1405,28 +1602,13 @@ onMounted(() => {
               <el-col :span="12" style="margin-top: 20px">
                 <el-card>
                   <template #header>
-                    <strong>扫描二维码</strong>
+                    <strong>剪切板操作</strong>
                   </template>
-                  <div style="text-align: center" v-loading="true"
-                       element-loading-spinner="el-icon-lock"
-                       element-loading-background="rgba(255, 255, 255, 1)"
-                       element-loading-text="该功能即将开放">
-                    <el-upload
-                        drag
-                        action=""
-                        :with-credentials="true"
-                        :limit="1"
-                        :before-upload="beforeAvatarUpload"
-                        :on-exceed="limitOut"
-                        :http-request="uploadScan"
-                        list-type="picture"
-                    >
-                      <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">将二维码图片拖到此处，或<em>点击上传</em></div>
-                      <template #tip>
-                        <div class="el-upload__tip">只能上传jpg/png文件</div>
-                      </template>
-                    </el-upload>
+                  <el-input :rows="7" show-word-limit clearable v-model="paste" type="textarea"
+                            placeholder="请输入你要发送到剪切板的内容"></el-input>
+                  <div style="text-align: center;margin-top: 15px">
+                    <el-button size="mini" type="primary" @click="setPasteboard(paste)">发送到剪切板</el-button>
+                    <el-button size="mini" type="primary" @click="getPasteboard">获取剪切板文本</el-button>
                   </div>
                 </el-card>
               </el-col>
@@ -1450,9 +1632,9 @@ onMounted(() => {
                         :http-request="uploadPackage"
                     >
                       <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">将APK文件拖到此处，或<em>点击上传</em></div>
+                      <div class="el-upload__text">将ipa文件拖到此处，或<em>点击上传</em></div>
                       <template #tip>
-                        <div class="el-upload__tip">只能上传apk文件</div>
+                        <div class="el-upload__tip">只能上传ipa文件</div>
                       </template>
                     </el-upload>
                   </div>
@@ -1497,7 +1679,7 @@ onMounted(() => {
                       clearable
                       v-model="uploadUrl"
                       size="small"
-                      placeholder="请输入apk下载链接或本地路径"
+                      placeholder="请输入ipa下载链接或本地路径"
                   ></el-input>
                   <div style="text-align: center;margin-top: 20px">
                     <el-button
@@ -1585,8 +1767,68 @@ onMounted(() => {
               </div>
             </el-card>
           </el-tab-pane>
+<!--          <el-tab-pane label="快速截图" name="screenCap">-->
+<!--            <el-button type="primary" size="small" @click="quickCap">-->
+<!--              <el-icon :size="12" style="vertical-align: middle;">-->
+<!--                <Camera/>-->
+<!--              </el-icon>-->
+<!--              截图-->
+<!--            </el-button>-->
+<!--            <el-button type="danger" size="small" @click="removeScreen">-->
+<!--              <el-icon :size="12" style="vertical-align: middle;">-->
+<!--                <Delete/>-->
+<!--              </el-icon>-->
+<!--              清空-->
+<!--            </el-button>-->
+<!--            <el-card style="height: 100%;margin-top: 10px" v-if="screenUrls.length===0">-->
+<!--              <el-empty description="暂无截图"></el-empty>-->
+<!--            </el-card>-->
+<!--            <el-row :gutter="20" v-else>-->
+<!--              <el-col :xs="8"-->
+<!--                      :sm="8"-->
+<!--                      :md="8"-->
+<!--                      :lg="4"-->
+<!--                      :xl="4" v-for="u in screenUrls" style="margin-top: 10px">-->
+<!--                <el-card shadow="hover" :body-style="{padding:'10px'}">-->
+<!--                  <el-image :src="u" :preview-src-list="screenUrls" hide-on-click-modal></el-image>-->
+<!--                  <div style="text-align: center;margin-top: 5px">-->
+<!--                    <el-button type="primary" plain size="mini" @click="downloadImg(u)">-->
+<!--                      <el-icon :size="12" style="vertical-align: middle;">-->
+<!--                        <Download/>-->
+<!--                      </el-icon>-->
+<!--                      保存图片-->
+<!--                    </el-button>-->
+<!--                  </div>-->
+<!--                </el-card>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
+<!--          </el-tab-pane>-->
           <el-tab-pane label="Terminal" name="terminal">
             <el-tabs stretch type="border-card">
+              <el-tab-pane label="Process">
+                <div style="text-align: center">
+                  <el-button size="mini" @click="getProcessList"
+                             style="margin-left: 5px" type="primary">Search
+                  </el-button>
+                  <el-button size="mini" @click="clearProcess"
+                             style="margin-left: 5px" type="warning">Clear
+                  </el-button>
+                </div>
+                <el-table style="margin-top: 10px" border :data="currProcessListPage">
+                  <el-table-column align="center" label="PID" width="90" prop="pid"/>
+                  <el-table-column align="center" label="Name" width="290" prop="name"/>
+                  <el-table-column header-align="center" label="Real Application Name" show-overflow-tooltip
+                                   prop="realAppName"/>
+                  <el-table-column align="center" label="Start Date" width="250" prop="startDate"/>
+                </el-table>
+                <Pageable
+                    :isPageSet="false"
+                    :total="processList.length"
+                    :current-page="currProcessListIndex + 1"
+                    :page-size="processPageSize"
+                    @change="changeProcessListPage"
+                ></Pageable>
+              </el-tab-pane>
               <el-tab-pane label="Syslog">
                 <el-card
                     style="border: 0px"
@@ -2017,5 +2259,14 @@ onMounted(() => {
 .url-install-box {
   position: relative;
   height: 100%;
+}
+
+.input-box {
+  position: absolute;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  z-index: -1;
+  width: 1px;
 }
 </style>

@@ -13,6 +13,7 @@ const deleteId = ref(0)
 const pageData = ref({});
 const pageSize = ref(15);
 const name = ref("")
+const value = ref("")
 const types = ref([])
 const stepList = ref([])
 const checkDialog = ref(false)
@@ -45,6 +46,7 @@ const getElementList = (pageNum, pSize) => {
       projectId: route.params.projectId,
       eleTypes: types.value.length > 0 ? types.value : undefined,
       name: name.value,
+      value: value.value,
       page: pageNum || 1,
       pageSize: pSize || pageSize.value,
     }
@@ -189,6 +191,9 @@ onMounted(() => {
         label="控件元素值"
         header-align="center"
     >
+      <template #header>
+        <el-input v-model="value" size="mini" @input="getElementList()" placeholder="输入控件元素值搜索"/>
+      </template>
       <template #default="scope">
         <el-image
             :z-index="5000"
