@@ -191,16 +191,18 @@ const findAgentById = (id) => {
 
           </el-form-item>
           <el-form-item :label="$t('devices.form.system')">
-            <img
-                v-if="device.platform===1"
-                style="width: 30px"
-                :src="getImg('ANDROID')"
-            />
-            <img
-                v-if="device.platform===6"
-                style="width: 22px"
-                :src="getImg('HarmonyOs')"
-            />
+            <span v-if="device.platform===1" style="width: 22px">
+              <img
+                  v-if="device['isHM']===0"
+                  style="width: 22px"
+                  :src="getImg('ANDROID')"
+              />
+              <img
+                  v-if="device['isHM']===1"
+                  style="width: 22px"
+                  :src="getImg('HarmonyOs')"
+              />
+            </span>
             <img
                 v-if="device.platform===2"
                 style="width: 22px"
