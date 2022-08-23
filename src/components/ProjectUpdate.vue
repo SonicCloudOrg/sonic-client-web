@@ -28,6 +28,9 @@ const getImg = (name) => {
   if (name === 'meizu') {
     name = 'Meizu'
   }
+  if (name === 'LENOVO') {
+    name = 'Lenovo'
+  }
   try {
     result = img['./../assets/img/' + name + '.jpg'].default
   } catch {
@@ -36,7 +39,7 @@ const getImg = (name) => {
   return result;
 }
 const robotList = [{name: "钉钉群机器人", value: 1, img: "DingTalk"}
-  , {name: "企业微信机器人(即将开放)", value: 2, img: "WeChat", disabled: true},
+  , {name: "企业微信机器人", value: 2, img: "WeChat"},
   {name: "飞书群机器人", value: 3, img: "FeiShu"},
   {name: "友空间机器人(即将开放)", value: 4, img: "You", disabled: true}]
 const beforeAvatarUpload = (file) => {
@@ -183,11 +186,11 @@ onMounted(() => {
     <el-form-item label="机器人密钥" prop="robotSecret">
       <el-input
           v-model="project.robotSecret"
-          placeholder="请输入群机器人的密钥"
+          placeholder="（可选）请输入群机器人的密钥"
           type="password"
       ></el-input>
       <span style="font-size: 13px; color: #999"
-      >填写群机器人的密钥，可在机器人设置页面查看</span
+      >（可选）填写群机器人的密钥，可在机器人设置页面查看</span
       >
     </el-form-item>
   </el-form>

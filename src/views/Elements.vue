@@ -163,10 +163,12 @@ onMounted(() => {
         { text: '坐标', value: 'point' },
         { text: '图片', value: 'image' },
         { text: 'nsPredicate', value: 'nsPredicate' },
+        { text: 'androidUIAutomator', value: 'androidUIAutomator' },
         { text: 'linkText', value: 'linkText' },
         { text: 'className', value: 'className' },
         { text: 'tagName', value: 'tagName' },
         { text: 'partialLinkText', value: 'partialLinkText' },
+        { text: 'cssSelectorAndText', value: 'cssSelectorAndText' },
       ]">
       <template #default="scope">
         <span v-if="scope.row.eleType.length === 0">未指定</span>

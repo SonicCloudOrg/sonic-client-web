@@ -35,6 +35,9 @@ const getImg = (name) => {
   if (name === 'meizu') {
     name = 'Meizu'
   }
+  if (name === 'LENOVO') {
+    name = 'Lenovo'
+  }
   try {
     result = img['./../assets/img/' + name + '.jpg'].default
   } catch {
@@ -44,7 +47,7 @@ const getImg = (name) => {
 }
 const getPhoneImg = (name, url) => {
   let result;
-  if (url === null || url.length === 0) {
+  if (url === null || !url || (url && url.length === 0)) {
     result = img['./../assets/img/default.png'].default
   } else {
     result = url;

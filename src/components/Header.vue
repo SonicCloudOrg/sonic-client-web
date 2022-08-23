@@ -7,11 +7,14 @@ import logo from "./../assets/logo.png";
 import {Fold, Expand} from "@element-plus/icons";
 import ProjectUpdate from '../components/ProjectUpdate.vue'
 import defaultLogo from '../assets/logo.png'
-import {Cellphone, HomeFilled} from "@element-plus/icons";
+import {Cellphone, HomeFilled, Setting} from "@element-plus/icons";
 import {ElMessage} from "element-plus";
 import {localeList} from '@/config/locale'
 import useLocale from '@/locales/useLocale'
 import {useI18n} from 'vue-i18n'
+import useClipboard from 'vue-clipboard3';
+
+const {toClipboard} = useClipboard();
 
 const changePwdForm = ref(null)
 const changePwd = ref({
@@ -19,6 +22,18 @@ const changePwd = ref({
   newPwd: "",
   newPwdSec: ""
 })
+const copy = (value) => {
+  try {
+    toClipboard(value);
+    ElMessage.success({
+      message: '复制成功！',
+    });
+  } catch (e) {
+    ElMessage.error({
+      message: '复制失败！',
+    });
+  }
+};
 const validatePass = (rule, value, callback) => {
   if (value === '') {
     callback(new Error($t('form.notEmpty')))
@@ -30,6 +45,7 @@ const validatePass = (rule, value, callback) => {
   }
 }
 const dialogChangePwd = ref(false)
+const tokenNew = ref("")
 watch(dialogChangePwd, (newValue, oldValue) => {
   if (!newValue) {
     changePwd.value = {
@@ -39,6 +55,18 @@ watch(dialogChangePwd, (newValue, oldValue) => {
     }
   }
 })
+const generateToken = () => {
+  axios.get("/controller/users/generateToken", {
+    params: {day: day.value}
+  }).then(resp => {
+    if (resp['code'] === 2000) {
+      ElMessage.success({
+        message: resp['message'],
+      });
+      tokenNew.value = resp['data']
+    }
+  })
+}
 const changePwdSummit = () => {
   changePwdForm['value'].validate((valid) => {
     if (valid) {
@@ -58,6 +86,8 @@ const changePwdSummit = () => {
 }
 const dialogUserInfo = ref(false)
 const dialogVisible = ref(false)
+const dialogToken = ref(false)
+const day = ref(14)
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
@@ -118,7 +148,7 @@ const changeLocaleHandler = function (val) {
     <el-header>
       <div class="flex-center demo">
         <div style="margin:0 20px;cursor:pointer" @click="store.commit('changeCollapse')"
-             v-if="route.params.projectId">
+             v-if="route.params.projectId || route.fullPath.indexOf('/Setting') != -1">
           <el-icon :size="20" style="vertical-align: middle;" v-if="store.state.isCollapse === false">
             <Fold/>
           </el-icon>
@@ -165,7 +195,7 @@ const changeLocaleHandler = function (val) {
             {{ $t('layout.deviceCenter') }}
           </el-menu-item>
           <el-menu-item index="/Index" @click="pushIndex('/Index')"
-                        v-if="route.params.projectId|| route.fullPath==='/Index/Devices'">
+                        v-if="route.params.projectId|| route.fullPath==='/Index/Devices' || route.fullPath.indexOf('/Setting') != -1">
             <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
               <HomeFilled/>
             </el-icon>
@@ -182,9 +212,12 @@ const changeLocaleHandler = function (val) {
                 store.state.userInfo.userName
               }}
             </template>
+            <el-menu-item index="1-0" @click="pushIndex('/Setting')">
+              {{ $t('setting.title') }}
+            </el-menu-item>
             <el-menu-item index="1-1" @click="dialogUserInfo = true">{{ $t('layout.myInfo') }}</el-menu-item>
             <el-menu-item index="1-2" @click="dialogChangePwd = true">{{ $t('layout.changePassword') }}</el-menu-item>
-            <el-menu-item index="1-3" @click="logout">{{ $t('layout.signOut') }}</el-menu-item>
+            <el-menu-item index="1-4" @click="dialogToken = true">Access Token</el-menu-item>
             <el-sub-menu index="2">
               <template #title
               ><span
@@ -221,6 +254,7 @@ const changeLocaleHandler = function (val) {
                 REST API
               </el-menu-item>
             </el-sub-menu>
+            <el-menu-item index="1-3" @click="logout">{{ $t('layout.signOut') }}</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </div>
@@ -246,7 +280,7 @@ const changeLocaleHandler = function (val) {
         </el-form-item>
         <el-form-item :label="$t('form.role')">
           <el-tag size="small">
-            {{ store.state.userInfo.role === 2 ? $t('form.testEngineer') : $t('form.developmentEngineer') }}
+            {{ store.state.userInfo.roleName ? store.state.userInfo.roleName : "无" }}
           </el-tag>
         </el-form-item>
       </el-form>
@@ -308,8 +342,35 @@ const changeLocaleHandler = function (val) {
         <el-button size="small" type="primary" @click="changePwdSummit">{{ $t('form.confirm') }}</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+        title="AccessToken"
+        v-model="dialogToken"
+        width="520px"
+    >
+      <el-form
+          v-if="dialogToken"
+          label-position="left"
+          class="demo-table-expand"
+          label-width="70px"
+          size="small"
+      >
+        <el-form-item label="过期天数">
+          <el-input-number size="small" :min="1" :max="999" v-model="day"></el-input-number>
+        </el-form-item>
+        <el-form-item label="生成结果">
+          <div style="cursor: pointer" v-if="tokenNew!==''" @click="copy(tokenNew)">
+            {{ tokenNew.substring(0, 15) + "*******(请点击复制)" }}
+          </div>
+          <div v-else>点击确定后在此处复制</div>
+        </el-form-item>
+      </el-form>
+      <div style="text-align: center">
+        <el-button size="small" type="primary" @click="generateToken">{{ $t('form.confirm') }}</el-button>
+      </div>
+    </el-dialog>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
-      <el-main v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices'">
+      <el-main
+          v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices' || route.fullPath.indexOf('/Setting') != -1">
         <router-view/>
       </el-main>
       <el-main v-else>

@@ -17,8 +17,6 @@ export default createStore({
             menuBack: "",
             menuText: "",
             menuActiveText: "",
-            cabinetBack: "",
-            cabinetItemBack: "",
             currentTheme: 'light',
             localInfo: getLocal(LOCALE_KEY) || localeSetting
         }
@@ -30,14 +28,10 @@ export default createStore({
                 state.menuBack = "#ffffff"
                 state.menuText = "#909399"
                 state.menuActiveText = "#409EFF"
-                state.cabinetBack = "#ffffff"
-                state.cabinetItemBack = "#ffffff"
             } else {
                 state.menuBack = "#545c64"
                 state.menuText = "#ffffff"
                 state.menuActiveText = "#ffd04b"
-                state.cabinetBack = "#303133"
-                state.cabinetItemBack = "#606266"
             }
         },
         saveProjectList(state, payload) {

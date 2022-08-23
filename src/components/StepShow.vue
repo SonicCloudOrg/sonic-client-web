@@ -15,6 +15,7 @@
  *  limitations under the License.
  *
  */
+
 defineProps({
   step: Object,
 })
@@ -121,7 +122,7 @@ defineProps({
     </span>
   <span v-if="step.stepType === 'install'">
       <el-tag size="small" style="margin-right: 10px">安装应用</el-tag>
-      App路径：{{ step.text }}
+      {{ step.content === "2" ? "从安装包列表安装" : ("App路径：" + step.text) }}
     </span>
   <span v-if="step.stepType === 'uninstall'">
       <el-tag size="small" style="margin-right: 10px">卸载应用</el-tag>
@@ -155,6 +156,13 @@ defineProps({
       <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
       <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
       >输入文本</el-tag
+      >
+      {{ step.content }}
+    </span>
+  <span v-if="step.stepType === 'sendKeysByActions'">
+      <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
+      <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
+      >输入文本(Actions)</el-tag
       >
       {{ step.content }}
     </span>
@@ -205,6 +213,22 @@ defineProps({
       <el-tag size="small" style="margin-right: 10px">验证标题</el-tag>
       期望值：{{ step.content }}
     </span>
+  <span v-if="step.stepType === 'getActivity'">
+      <el-tag size="small" style="margin-right: 10px">验证Activity</el-tag>
+      期望值：{{ step.content }}
+  </span>
+  <span v-if="step.stepType === 'getElementAttr'">
+    <el-tag size="small" style="margin-right: 10px">验证元素属性</el-tag>
+    <el-tag type="info" size="small" style="margin-left: 10px; margin-right: 10px">{{
+        step.elements[0]['eleName']
+      }}</el-tag>
+    断言：
+    <el-tag size="small" style="margin-right: 10px">{{ step.text }}</el-tag>
+      期望值：
+    <el-tag size="small" style="margin-right: 10px; text-transform: capitalize;">{{
+        step.content
+      }}</el-tag>
+  </span>
   <span v-if="step.stepType === 'assertEquals'">
       <el-tag type="warning" size="small">断言验证(相等)</el-tag>
       真实值：{{ step.text }} 期望值：{{ step.content }}
