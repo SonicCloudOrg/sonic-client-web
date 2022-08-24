@@ -42,20 +42,20 @@ const getPublicStepList = (pageNum, pSize) => {
   })
 }
 //复制该公共步骤
-const copyPublicStepId = (id) => {
-  axios.get("/controller/publicSteps/copy", {
-    params: {
-      id
-    }
-  }).then(resp => {
-    if (resp['code'] === 2000) {
-      ElMessage.success({
-        message: resp['message']
-      });
-      getPublicStepList()
-    }
-  })
-}
+// const copyPublicStepId = (id) => {
+//   axios.get("/controller/publicSteps/copy", {
+//     params: {
+//       id
+//     }
+//   }).then(resp => {
+//     if (resp['code'] === 2000) {
+//       ElMessage.success({
+//         message: resp['message']
+//       });
+//       getPublicStepList()
+//     }
+//   })
+// }
 const deletePublicStep = (id) => {
   axios.delete("/controller/publicSteps", {
     params: {

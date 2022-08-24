@@ -80,7 +80,6 @@ const remove = e => {
 }
 
 const copyStep = id => {
-  console.log(id)
   emit('copyStep', id)
 }
 </script>
