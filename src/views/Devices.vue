@@ -65,8 +65,8 @@ const cpus = ref([]);
 const sizes = ref([]);
 const isFlush = ref('0')
 const drawer = ref(false)
-const androidSystemVersion = ref([5, 6, 7, 8, 9, 10, 11, 12]);
-const iOSSystemVersion = ref([9, 10, 11, 12, 13, 14, 15]);
+const androidSystemVersion = ref([5, 6, 7, 8, 9, 10, 11, 12, 13]);
+const iOSSystemVersion = ref([9, 10, 11, 12, 13, 14, 15, 16]);
 const manufacturer = ref([
   "APPLE",
   "HUAWEI",
