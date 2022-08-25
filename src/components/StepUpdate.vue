@@ -245,6 +245,9 @@ const getStepInfo = (id) => {
       monkey.value = JSON.parse(step.value.content);
       activityList.value = JSON.parse(step.value.text);
     }
+    if (step.value.stepType === 'publicStep'){
+      step.value.text = step.value.content;
+    }
   })
 }
 const publicStepList = ref([])
