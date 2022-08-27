@@ -1,6 +1,6 @@
 {
     "name": "sonic-client-web",
-    "version": "1.5.0-rc",
+    "version": "1.0.0",
     "author": "SonicCloudOrg",
     "scripts": {
         "dev": "vite",
