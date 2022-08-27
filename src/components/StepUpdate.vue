@@ -723,6 +723,7 @@ onMounted(() => {
   if (props.parentId !== 0) {
     step.value.parentId = props.parentId;
   }
+  getPublicStepList()
 })
 </script>
 <template>
@@ -1272,13 +1273,12 @@ onMounted(() => {
             v-model="step.text"
             placeholder="请选择公共步骤"
             no-data-text="该项目暂未添加公共步骤"
-            @visible-change="getPublicStepList"
         >
           <el-option
               v-for="item in publicStepList"
               :key="item.id"
               :label="item.name"
-              :value="item.id + ''"
+              :value="item.id+''"
           ></el-option>
         </el-select>
       </el-form-item>
