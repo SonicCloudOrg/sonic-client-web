@@ -78,7 +78,8 @@ const devices = {
         all: '全选',
         platform: {
             ANDROID: '安卓系统',
-            IOS: 'iOS系统'
+            IOS: 'iOS系统',
+            HARMONY: '鸿蒙系统'
         },
         manufacturer: '设备制造商',
         cpu: 'CPU处理器',

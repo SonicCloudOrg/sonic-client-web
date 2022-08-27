@@ -1780,7 +1780,7 @@ onMounted(() => {
                     <img
                         height="25"
                         style="position: absolute; top: 7px; bottom: 7px; left: 7px"
-                        :src="getImg(device['platform']===1?'ANDROID':'IOS')"
+                        :src="getImg(device['isHm']===1?'HarmonyOs':'ANDROID')"
                     />
                   </el-form-item>
                   <el-form-item label="系统版本">

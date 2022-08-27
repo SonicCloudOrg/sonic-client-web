@@ -78,7 +78,8 @@ const devices = {
         all: '全選択',
         platform: {
             ANDROID: 'アンドロイド',
-            IOS: 'IOS'
+            IOS: 'IOS',
+            HARMONY: 'Harmony'
         },
         manufacturer: 'メーカー',
         cpu: 'CPU',

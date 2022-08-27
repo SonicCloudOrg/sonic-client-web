@@ -40,6 +40,8 @@ const checkAllAndroid = ref(false);
 const isAllAndroid = ref(false);
 const checkAlliOS = ref(false);
 const isAlliOS = ref(false);
+const checkAllHarmony = ref(false);
+const isAllHarmony = ref(false);
 const checkAllMan = ref(false);
 const isAllMan = ref(false);
 const checkAllCpu = ref(false);
@@ -57,6 +59,7 @@ const checkMan = ref([]);
 const name = ref("");
 const androidSystem = ref([]);
 const iOSSystem = ref([]);
+const harmonySystem = ref([]);
 const cpu = ref([]);
 const status = ref([]);
 const size = ref([]);
@@ -64,9 +67,9 @@ const agentIds = ref([]);
 const cpus = ref([]);
 const sizes = ref([]);
 const isFlush = ref('0')
-const drawer = ref(false)
 const androidSystemVersion = ref([5, 6, 7, 8, 9, 10, 11, 12, 13]);
 const iOSSystemVersion = ref([9, 10, 11, 12, 13, 14, 15, 16]);
+const harmonySystemVersion = ref([1, 2]);
 const manufacturer = ref([
   "APPLE",
   "HUAWEI",
@@ -218,6 +221,18 @@ const handleCheckedIOS = (value) => {
       checkedCount > 0 && checkedCount < androidSystemVersion.value.length;
   findAll();
 };
+const handleHarmony = (val) => {
+  harmonySystem.value = val ? harmonySystemVersion.value : [];
+  isAllHarmony.value = false;
+  findAll();
+};
+const handleCheckedHarmony = (value) => {
+  let checkedCount = value.length;
+  checkAllHarmony.value = checkedCount === harmonySystemVersion.value.length;
+  isAllHarmony.value =
+      checkedCount > 0 && checkedCount < harmonySystemVersion.value.length;
+  findAll();
+};
 const handleMan = (val) => {
   checkMan.value = val ? manufacturer.value : [];
   isAllMan.value = false;
@@ -297,6 +312,8 @@ const findAll = (pageNum, pSize) => {
               androidSystem.value.length === 0 ? undefined : androidSystem.value,
           iOSVersion:
               iOSSystem.value.length === 0 ? undefined : iOSSystem.value,
+          hmVersion:
+              harmonySystem.value.length === 0 ? undefined : harmonySystem.value,
           manufacturer:
               checkMan.value.length === 0 ||
               checkMan.value.length === manufacturer.value.length
@@ -420,6 +437,7 @@ onBeforeMount(() => {
 })
 const laterTimer = ref(null)
 onMounted(() => {
+  getFilterOption();
   refresh();
   if (isFlush.value === '1') {
     if (currentTab.value === 'device') {
@@ -432,211 +450,201 @@ onUnmounted(() => {
   clearInterval(laterTimer.value);
   clearInterval(timer.value);
 })
-watch(drawer, (newVal, oldVal) => {
-  if (newVal) {
-    getFilterOption();
-  }
-})
 </script>
 
 <template>
-  <el-drawer
-      v-model="drawer"
-      :with-header="false"
-      size="45%"
-      direction="ltr"
-  >
-    <el-scrollbar>
-      <el-form
-          label-position="left"
-          class="demo-table-expand"
-          label-width="90px"
-      >
-        <el-form-item :label="$t('devices.filter.platform.ANDROID')">
-          <el-checkbox
-              :label="$t('devices.filter.all')"
-              :indeterminate="isAllAndroid"
-              v-model="checkAllAndroid"
-              @change="handleAndroid"
-          ></el-checkbox>
-          <el-checkbox-group
-              v-model="androidSystem"
-              @change="handleCheckedAndroid"
-              class="device-radio-p"
-          >
-            <el-checkbox
-                v-for="version in androidSystemVersion"
-                :key="version"
-                :label="version"
-            >
-              <img
-                  width="30"
-                  :src="getImg('ANDROID')"
-              />
-              {{ version }}
-            </el-checkbox
-            >
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item :label="$t('devices.filter.platform.IOS')">
-          <el-checkbox
-              :label="$t('devices.filter.all')"
-              :indeterminate="isAlliOS"
-              v-model="checkAlliOS"
-              @change="handleIOS"
-          ></el-checkbox>
-          <el-checkbox-group class="device-radio-p" v-model="iOSSystem" @change="handleCheckedIOS">
-            <el-checkbox
-                v-for="version in iOSSystemVersion"
-                :key="version"
-                :label="version"
-            >
-              <img
-                  width="30"
-                  :src="getImg('IOS')"
-              />
-              {{ version }}
-            </el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item :label="$t('devices.filter.manufacturer')">
-          <el-checkbox
-              :label="$t('devices.filter.all')"
-              :indeterminate="isAllMan"
-              v-model="checkAllMan"
-              @change="handleMan"
-          ></el-checkbox>
-          <el-checkbox-group
-              v-model="checkMan"
-              class="device-radio"
-              @change="handleCheckedMan"
-          >
-            <el-checkbox v-for="man in manufacturer" :key="man" :label="man">
-              <img
-                  v-if="
-                        man === 'HUAWEI' || man === 'samsung' || man === 'OnePlus'||man === 'GIONEE'|| man === 'motorola' || man==='HONOR'
-                      "
-                  style="width: 80px"
-                  :src="getImg(man)"
-              />
-              <img
-                  v-else-if="man === 'Xiaomi' ||man === 'APPLE'|| man==='LGE' || man==='HTC'|| man==='deltainno'"
-                  style="width: 30px"
-                  :src="getImg(man)"
-              />
-              <img
-                  v-else-if="man==='blackshark'"
-                  style="width: 22px"
-                  :src="getImg(man)"
-              />
-              <img
-                  v-else
-                  style="width: 70px"
-                  :src="getImg(man)"
-              />
-            </el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item :label="$t('devices.filter.cpu')">
-          <el-checkbox
-              :label="$t('devices.filter.all')"
-              :indeterminate="isAllCpu"
-              v-model="checkAllCpu"
-              @change="handleCpu"
-          ></el-checkbox>
-          <el-checkbox-group v-model="cpu" @change="handleCheckedCpu">
-            <el-checkbox v-for="c in cpus" :key="c" :label="c"></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item :label="$t('devices.filter.size')">
-          <el-checkbox
-              :label="$t('devices.filter.all')"
-              :indeterminate="isAllSize"
-              v-model="checkAllSize"
-              @change="handleSize"
-          ></el-checkbox>
-          <el-checkbox-group v-model="size" @change="handleCheckedSize">
-            <el-checkbox v-for="s in sizes" :key="s" :label="s"></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item :label="$t('devices.filter.agent')">
-          <el-checkbox
-              :label="$t('devices.filter.all')"
-              :indeterminate="isAllAgent"
-              v-model="checkAllAgent"
-              @change="handleAgent"
-          ></el-checkbox>
-          <el-checkbox-group v-model="agentIds" @change="handleCheckedAgent">
-            <el-checkbox
-                v-for="agent in agentList"
-                :key="agent"
-                :label="agent.id"
-            >{{ agent.name }}
-            </el-checkbox
-            >
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item :label="$t('devices.filter.status')">
-          <el-checkbox
-              :label="$t('devices.filter.all')"
-              :indeterminate="isAllStatus"
-              v-model="checkAllStatus"
-              @change="handleStatus"
-          ></el-checkbox>
-          <el-checkbox-group v-model="status" @change="handleCheckedStatus">
-            <el-checkbox
-                v-for="statusDevice in statusList"
-                :key="statusDevice"
-                :label="statusDevice.value"
-            >{{ $t('devices.status.' + statusDevice.value) }}
-            </el-checkbox
-            >
-          </el-checkbox-group>
-        </el-form-item>
-      </el-form>
-    </el-scrollbar>
-  </el-drawer>
-  <el-tabs type="border-card" stretch v-model="currentTab" @tab-click="switchTabs">
+  <el-switch class="refresh" active-value="1"
+             inactive-value="0" @change="refreshNow" style="float:right;margin-top: -10px"
+             :active-text=" $t('devices.refresh') "
+             active-color="#13ce66"
+             v-model="isFlush"/>
+  <el-tabs style="margin-top: 20px" type="border-card" stretch v-model="currentTab" @tab-click="switchTabs">
     <el-tab-pane name="device" :label="$t('devices.deviceCenter')">
       <el-card>
-        <el-input
-            style="width: 440px"
-            v-model="name"
-            type="text"
-            size="small"
-            :placeholder="$t('devices.filter.placeholder')"
-            maxlength="40"
-            clearable
-            @input="handleInput"
-        >
-          <template #append>
-            <el-button @click="drawer = true">{{ $t('devices.filter.button') }}</el-button>
-          </template>
-        </el-input>
+        <el-collapse>
+          <el-collapse-item name="1">
+            <template #title>
+              <el-input
+                  style="width: 440px"
+                  v-model="name"
+                  type="text"
+                  size="small"
+                  :placeholder="$t('devices.filter.placeholder')"
+                  maxlength="40"
+                  clearable
+                  @input="handleInput"
+              >
+              </el-input>
 
-        <el-switch class="refresh" active-value="1"
-                   inactive-value="0" @change="refreshNow" style="margin-left: 15px"
-                   :active-text=" $t('devices.refresh') "
-                   active-color="#13ce66"
-                   v-model="isFlush"/>
+              <strong v-if="avgTem!==0" style="margin-left: 20px; display: flex;align-items: center;
+                      font-size: 16px;color: #909399;">{{ $t('devices.avgTem') }}
+                <div :style="'position: relative; display: flex;align-items: center;color:'
+                     +(avgTem<300?'#67C23A':(avgTem<350?'#E6A23C':'#F56C6C'))">
+                  <ColorImg
+                      :src="img['./../assets/img/tem.png'].default"
+                      :width="20"
+                      :height="20"
+                      :color="(avgTem<300?'#67C23A':(avgTem<350?'#E6A23C':'#F56C6C'))"
+                  />
+                  {{ (avgTem / 10).toFixed(1) + " ℃" }}
+                </div>
+              </strong>
+            </template>
 
-        <strong v-if="avgTem!==0" style="float: right; display: flex;align-items: center;
-        font-size: 16px;color: #909399;">{{ $t('devices.avgTem') }}
-          <div :style="'position: relative; display: flex;align-items: center;color:'
-        +(avgTem<300?'#67C23A':(avgTem<350?'#E6A23C':'#F56C6C'))">
-            <ColorImg
-                :src="img['./../assets/img/tem.png'].default"
-                :width="20"
-                :height="20"
-                :color="(avgTem<300?'#67C23A':(avgTem<350?'#E6A23C':'#F56C6C'))"
-            />
-            {{ (avgTem / 10).toFixed(1) + " ℃" }}
-          </div>
-        </strong>
+            <el-form
+                label-position="left"
+                class="filter-table-expand"
+                label-width="90px"
+            >
+              <el-form-item :label="$t('devices.filter.platform.ANDROID')">
+                <div style="display: flex">
+                  <el-checkbox
+                      :label="$t('devices.filter.all')"
+                      :indeterminate="isAllAndroid"
+                      v-model="checkAllAndroid"
+                      @change="handleAndroid"
+                  ></el-checkbox>
+                  <el-checkbox-group
+                      v-model="androidSystem"
+                      @change="handleCheckedAndroid"
+                      class="device-radio-p"
+                  >
+                    <el-checkbox
+                        v-for="version in androidSystemVersion"
+                        :key="version"
+                        :label="version"
+                    >
+                      {{ version }}
+                    </el-checkbox
+                    >
+                  </el-checkbox-group>
+                </div>
+              </el-form-item>
+              <el-form-item :label="$t('devices.filter.platform.IOS')">
+                <div style="display: flex">
+                  <el-checkbox
+                      :label="$t('devices.filter.all')"
+                      :indeterminate="isAlliOS"
+                      v-model="checkAlliOS"
+                      @change="handleIOS"
+                  ></el-checkbox>
+                  <el-checkbox-group class="device-radio-p" v-model="iOSSystem" @change="handleCheckedIOS">
+                    <el-checkbox
+                        v-for="version in iOSSystemVersion"
+                        :key="version"
+                        :label="version"
+                    >
+                      {{ version }}
+                    </el-checkbox>
+                  </el-checkbox-group>
+                </div>
+              </el-form-item>
+              <el-form-item :label="$t('devices.filter.platform.HARMONY')">
+                <div style="display: flex">
+                  <el-checkbox
+                      :label="$t('devices.filter.all')"
+                      :indeterminate="isAllHarmony"
+                      v-model="checkAllHarmony"
+                      @change="handleHarmony"
+                  ></el-checkbox>
+                  <el-checkbox-group class="device-radio-p" v-model="harmonySystem" @change="handleCheckedHarmony">
+                    <el-checkbox
+                        v-for="version in harmonySystemVersion"
+                        :key="version"
+                        :label="version"
+                    >
+                      {{ version }}
+                    </el-checkbox>
+                  </el-checkbox-group>
+                </div>
+              </el-form-item>
+              <el-form-item :label="$t('devices.filter.manufacturer')">
+                <div style="display: flex">
+                  <el-checkbox
+                      :label="$t('devices.filter.all')"
+                      :indeterminate="isAllMan"
+                      v-model="checkAllMan"
+                      @change="handleMan"
+                  ></el-checkbox>
+                  <el-checkbox-group
+                      v-model="checkMan"
+                      class="device-radio-p"
+                      @change="handleCheckedMan"
+                  >
+                    <el-checkbox v-for="man in manufacturer" :key="man" :label="man">
+                      {{ man }}
+                    </el-checkbox>
+                  </el-checkbox-group>
+                </div>
+              </el-form-item>
+              <el-form-item :label="$t('devices.filter.cpu')">
+                <div style="display: flex">
+                  <el-checkbox
+                      :label="$t('devices.filter.all')"
+                      :indeterminate="isAllCpu"
+                      v-model="checkAllCpu"
+                      @change="handleCpu"
+                  ></el-checkbox>
+                  <el-checkbox-group class="device-radio-p" v-model="cpu" @change="handleCheckedCpu">
+                    <el-checkbox v-for="c in cpus" :key="c" :label="c"></el-checkbox>
+                  </el-checkbox-group>
+                </div>
+              </el-form-item>
+              <el-form-item :label="$t('devices.filter.size')">
+                <div style="display: flex">
+                  <el-checkbox
+                      :label="$t('devices.filter.all')"
+                      :indeterminate="isAllSize"
+                      v-model="checkAllSize"
+                      @change="handleSize"
+                  ></el-checkbox>
+                  <el-checkbox-group class="device-radio-p" v-model="size" @change="handleCheckedSize">
+                    <el-checkbox v-for="s in sizes" :key="s" :label="s"></el-checkbox>
+                  </el-checkbox-group>
+                </div>
+              </el-form-item>
+              <el-form-item :label="$t('devices.filter.agent')">
+                <div style="display: flex">
+                  <el-checkbox
+                      :label="$t('devices.filter.all')"
+                      :indeterminate="isAllAgent"
+                      v-model="checkAllAgent"
+                      @change="handleAgent"
+                  ></el-checkbox>
+                  <el-checkbox-group class="device-radio-p" v-model="agentIds" @change="handleCheckedAgent">
+                    <el-checkbox
+                        v-for="agent in agentList"
+                        :key="agent"
+                        :label="agent.id"
+                    >{{ agent.name }}
+                    </el-checkbox
+                    >
+                  </el-checkbox-group>
+                </div>
+              </el-form-item>
+              <el-form-item :label="$t('devices.filter.status')">
+                <div style="display: flex">
+                  <el-checkbox
+                      :label="$t('devices.filter.all')"
+                      :indeterminate="isAllStatus"
+                      v-model="checkAllStatus"
+                      @change="handleStatus"
+                  ></el-checkbox>
+                  <el-checkbox-group class="device-radio-p" v-model="status" @change="handleCheckedStatus">
+                    <el-checkbox
+                        v-for="statusDevice in statusList"
+                        :key="statusDevice"
+                        :label="statusDevice.value"
+                    >{{ $t('devices.status.' + statusDevice.value) }}
+                    </el-checkbox
+                    >
+                  </el-checkbox-group>
+                </div>
+              </el-form-item>
+            </el-form>
+          </el-collapse-item>
+        </el-collapse>
 
-        <div style="text-align: center;margin-top: 20px">
-          <el-divider class="device-card-divider">{{ $t('devices.list') }}</el-divider>
-        </div>
         <el-row :gutter="20">
           <el-col
               :xs="12"
@@ -662,11 +670,6 @@ watch(drawer, (newVal, oldVal) => {
     </el-tab-pane>
     <el-tab-pane name="agent" :label="$t('devices.agentCenter')">
       <el-button type="primary" size="mini" @click="openAgent">{{ $t('agent.newAgent') }}</el-button>
-      <el-switch class="refresh" active-value="1"
-                 inactive-value="0" @change="refreshNow" style="margin-left: 15px"
-                 :active-text=" $t('devices.refresh') "
-                 active-color="#13ce66"
-                 v-model="isFlush"/>
       <el-table :data="agentList" border style="margin-top: 10px">
         <el-table-column prop="id" label="Agent ID" align="center" width="90"></el-table-column>
         <el-table-column prop="name" label="Agent Name" header-align="center" show-overflow-tooltip></el-table-column>
