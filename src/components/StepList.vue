@@ -63,6 +63,20 @@ const getStepsList = () => {
 const runStep = () => {
   emit('runStep')
 }
+const copyStep = (id) => {
+  axios.get("/controller/steps/copy/steps", {
+    params: {
+      id
+    }
+  }).then(resp => {
+    if (resp['code'] === 2000) {
+      ElMessage.success({
+        message: resp['message'],
+      });
+      getStepsList();
+    }
+  })
+}
 onMounted(() => {
   getStepsList();
 })
@@ -84,5 +98,6 @@ onMounted(() => {
     </el-button-group>
   </div>
   <step-draggable :steps="steps" @setParent="setParent" @addStep="addStep" @flush="flush" @editStep="editStep"
-                 @deleteStep="deleteStep"/>
+                  @copyStep="copyStep"
+                  @deleteStep="deleteStep"/>
 </template>

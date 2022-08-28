@@ -191,16 +191,18 @@ const findAgentById = (id) => {
 
           </el-form-item>
           <el-form-item :label="$t('devices.form.system')">
-            <img
-                v-if="device.platform===1"
-                style="width: 30px"
-                :src="getImg('ANDROID')"
-            />
-            <img
-                v-if="device.platform===6"
-                style="width: 22px"
-                :src="getImg('HarmonyOs')"
-            />
+            <span v-if="device.platform===1">
+              <img
+                  v-if="device['isHm']===0"
+                  style="width: 30px"
+                  :src="getImg('ANDROID')"
+              />
+              <img
+                  v-if="device['isHm']===1"
+                  style="width: 22px"
+                  :src="getImg('HarmonyOs')"
+              />
+            </span>
             <img
                 v-if="device.platform===2"
                 style="width: 22px"
@@ -253,15 +255,7 @@ const findAgentById = (id) => {
               }}
             </div>
           </el-form-item>
-          <div v-if="detail">
-            <el-form-item label="电流档位">
-              <div>{{ device.gear }}</div>
-            </el-form-item>
-            <el-form-item label="Hub接口">
-              <div>{{ device.position }}</div>
-            </el-form-item>
-          </div>
-          <el-form-item v-else :label="$t('devices.form.agent')">
+          <el-form-item :label="$t('devices.form.agent')">
             <div>{{ findAgentById(device.agentId) }}</div>
           </el-form-item>
         </el-form>

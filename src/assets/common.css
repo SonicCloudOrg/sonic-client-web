@@ -125,6 +125,10 @@ body,
     align-items: center;
 }
 
+.device-radio-p {
+    margin-left: 15px
+}
+
 .device-radio-p .el-checkbox__label img {
     vertical-align: middle;
 }
@@ -166,6 +170,22 @@ body,
     margin-right: 0;
     margin-bottom: 0;
     display: flex;
+}
+
+.el-collapse-item__content{
+    padding-bottom:5px!important;
+}
+
+.filter-table-expand label {
+    color: #99a9bf;
+}
+
+.filter-table-expand .el-form-item {
+    margin-bottom: 0;
+}
+
+.filter-table-expand .el-form-item__content {
+    line-height: 1.2;
 }
 
 .el-page-header__content {

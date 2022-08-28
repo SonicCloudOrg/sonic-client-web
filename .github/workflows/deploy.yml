@@ -1,7 +1,8 @@
 name: deploy to dockerHub
 
 on:
-  workflow_dispatch:
+  release:
+    types: [ published ]
 
 jobs:
 
@@ -21,6 +22,8 @@ jobs:
       - name: 'Get Previous tag'
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: replace version
+        run: sed -i "s/SONIC_VERSION/${{ steps.previoustag.outputs.tag }}/g" index.html
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:

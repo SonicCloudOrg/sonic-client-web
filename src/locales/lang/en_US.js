@@ -78,7 +78,8 @@ const devices = {
         all: 'All',
         platform: {
             ANDROID: 'Android',
-            IOS: 'iOS'
+            IOS: 'iOS',
+            HARMONY: 'Harmony'
         },
         manufacturer: 'Manufacturer',
         cpu: 'CPU',
