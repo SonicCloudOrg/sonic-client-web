@@ -416,14 +416,6 @@ const copy = (value) => {
     });
   }
 };
-const toAddElement = (eleType, eleValue) => {
-  if (project) {
-    element.value.eleType = eleType
-    element.value.eleValue = eleValue
-    dialogElement.value = true
-  }
-
-}
 const removeScreen = () => {
   screenUrls.value = [];
 };
@@ -1733,7 +1725,7 @@ onMounted(() => {
   </el-dialog>
   <el-dialog v-model="dialogElement" title="控件元素信息" width="600px">
     <element-update v-if="dialogElement" :project-id="project['id']"
-                    :element-id="0" :element-obj="element" @flush="dialogElement = false"/>
+                    :element-id="0" @flush="dialogElement = false"/>
   </el-dialog>
   <el-page-header
       @back="router.go(-1)"
@@ -2994,7 +2986,7 @@ onMounted(() => {
                                 size="small"
                                 type="primary"
                                 round
-                                @click="toAddElement('','')"
+                                @click="dialogElement = true"
                             >添加控件
                             </el-button
                             >
@@ -3035,24 +3027,23 @@ onMounted(() => {
                                   label="resource-id"
                                   style="cursor: pointer"
                                   v-if="elementDetail['resource-id']"
+                                  @click="copy(elementDetail['resource-id'])"
                               >
-                                <span @click="copy(elementDetail['resource-id'])">{{ elementDetail['resource-id'] }}</span>
-                                <a style="margin-left: 10px" @click="toAddElement('id', elementDetail['resource-id'])"><el-icon color="green" size="16"><Pointer /></el-icon></a>
+                                <span>{{ elementDetail['resource-id'] }}</span>
                               </el-form-item>
                               <el-form-item label="xpath推荐">
                                 <el-table stripe empty-text="暂无xpath推荐语法" border :data="findBestXpath(elementDetail)"
                                           :show-header="false">
                                   <el-table-column>
                                     <template #default="scope">
-                                      <span style="cursor: pointer" @click="copy(scope.row)">{{ scope.row }}</span>
-                                      <a style="margin-left: 10px" @click="toAddElement('xpath', scope.row)"><el-icon color="green" size="16"><Pointer /></el-icon></a>
+                                      <div style="cursor: pointer" @click="copy(scope.row)">{{ scope.row }}</div>
                                     </template>
                                   </el-table-column>
                                 </el-table>
                               </el-form-item>
-                              <el-form-item label="绝对路径" style="cursor: pointer">
-                                <span @click="copy(elementDetail['xpath'])">{{ elementDetail['xpath'] }}</span>
-                                <a style="margin-left: 10px" @click="toAddElement('xpath', elementDetail['xpath'])"><el-icon color="green" size="16"><Pointer /></el-icon></a>
+                              <el-form-item label="绝对路径" style="cursor: pointer"
+                                            @click="copy(elementDetail['xpath'])">
+                                <span>{{ elementDetail['xpath'] }}</span>
                               </el-form-item>
                               <el-form-item
                                   label="text"
@@ -3076,9 +3067,9 @@ onMounted(() => {
                               >
                                 <span>{{ elementDetail['package'] }}</span>
                               </el-form-item>
-                              <el-form-item label="中心坐标" style="cursor: pointer">
-                                <span @click="copy(computedCenter(elementDetail['bStart'], elementDetail['bEnd']))">{{ computedCenter(elementDetail['bStart'], elementDetail['bEnd']) }}</span>
-                                <a style="margin-left: 10px" @click="toAddElement('point', computedCenter(elementDetail['bStart'], elementDetail['bEnd']))"><el-icon color="green" size="16"><Pointer /></el-icon></a>
+                              <el-form-item label="中心坐标" style="cursor: pointer"
+                                            @click="copy(computedCenter(elementDetail['bStart'], elementDetail['bEnd']))">
+                                <span>{{ computedCenter(elementDetail['bStart'], elementDetail['bEnd']) }}</span>
                               </el-form-item>
                               <el-form-item label="index">
                                 <span>{{ elementDetail['index'] }}</span>
