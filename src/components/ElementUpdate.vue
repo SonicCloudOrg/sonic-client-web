@@ -5,7 +5,8 @@ import axios from "../http/axios";
 
 const props = defineProps({
   projectId: Number,
-  elementId: Number
+  elementId: Number,
+  elementObj: Object
 })
 const emit = defineEmits(['flush'])
 const element = ref({
@@ -72,6 +73,11 @@ const saveElement = () => {
 onMounted(() => {
   if (props.elementId !== 0) {
     getElementInfo(props.elementId)
+  }
+  if (props.elementObj) {
+    element.value.eleType = props.elementObj.eleType
+    element.value.eleValue = props.elementObj.eleValue
+    console.log("element:", element.value)
   }
 })
 </script>
