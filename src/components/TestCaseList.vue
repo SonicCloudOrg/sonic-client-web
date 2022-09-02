@@ -18,11 +18,13 @@ const name = ref("")
 const caseId = ref(0)
 const dialogVisible = ref(false)
 const tableLoading = ref(false)
+const moduleIds = ref([])
 const getTestCaseList = (pageNum, pSize) => {
   tableLoading.value = true
   axios.get("/controller/testCases/list", {
     params: {
       projectId: props.projectId,
+      moduleIds: moduleIds.value.length > 0 ? moduleIds.value : undefined,
       platform: props.platform,
       name: name.value,
       page: pageNum || 1,
@@ -53,7 +55,7 @@ const copy = (id) => {
       id
     }
   }).then(resp => {
-    if (resp['code'] === 2000){
+    if (resp['code'] === 2000) {
       ElMessage.success({
         message: resp['message'],
       });
@@ -88,8 +90,24 @@ const flush = () => {
   dialogVisible.value = false
   getTestCaseList();
 }
+const moduleList = ref([])
+const getModuleList = () => {
+  axios.get("/controller/modules/list", {params: {projectId: props.projectId}}).then(resp => {
+    if (resp['code'] === 2000) {
+      resp.data.map(item => {
+        moduleList.value.push({text: item.name, value: item.id})
+      })
+      moduleList.value.push({text: '无', value: 0})
+    }
+  })
+}
+const filter = (e) => {
+  moduleIds.value = e.moduleId
+  getTestCaseList()
+}
 onMounted(() => {
   getTestCaseList();
+  getModuleList();
 })
 defineExpose({open})
 </script>
@@ -100,7 +118,8 @@ defineExpose({open})
                       :case-id="caseId"
                       :platform="platform" @flush="flush"/>
   </el-dialog>
-  <el-table v-loading="tableLoading" :data="pageData['content']" border :row-style="isReadOnly?{cursor:'pointer'}:{}"
+  <el-table @filter-change="filter" v-loading="tableLoading" :data="pageData['content']" border
+            :row-style="isReadOnly?{cursor:'pointer'}:{}"
             @row-click="selectCase" style="margin-top: 15px">
     <el-table-column width="80" label="用例Id" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>
@@ -108,16 +127,17 @@ defineExpose({open})
         <el-input v-model="name" size="mini" @input="getTestCaseList()" placeholder="输入用例名称搜索"/>
       </template>
     </el-table-column>
-    <el-table-column min-width="80" label="模块名称" prop="module" align="center">
+    <el-table-column min-width="110" label="模块名称" prop="moduleId" column-key="moduleId" align="center"
+                     :filters="moduleList">
       <template #default="scope">
         <el-tag size="small" v-if="scope.row.modulesDTO!==null">{{ scope.row.modulesDTO.name }}</el-tag>
-        <span v-else>未填写</span>
+        <span v-else>无</span>
       </template>
     </el-table-column>
     <el-table-column min-width="80" label="版本名称" prop="version" align="center">
       <template #default="scope">
         <el-tag type="info" size="small" v-if="scope.row.version.length > 0">{{ scope.row.version }}</el-tag>
-        <span v-else>未填写</span>
+        <span v-else>无</span>
       </template>
     </el-table-column>
     <el-table-column min-width="80" label="设计人" prop="designer" align="center" show-overflow-tooltip/>
