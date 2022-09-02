@@ -17,7 +17,7 @@ const testCase = ref({
   name: "",
   platform: props.platform,
   projectId: props.projectId,
-  module: "",
+  moduleId: 0,
   version: "",
   designer: "",
   des: ""
@@ -64,14 +64,13 @@ const getCaseInfo = (id) => {
     }
   })
 }
-const getModuleList = (e) => {
-  if (e) {
+const getModuleList = () => {
     axios.get("/controller/modules/list", {params: {projectId: props.projectId}}).then(resp => {
       if (resp['code'] === 2000) {
-        moduleList.value = resp.data
+        moduleList.value = resp.data;
+        moduleList.value.push({id: 0, name: '无'})
       }
     })
-  }
 }
 const getVersionList = (e) => {
   if (e) {
@@ -86,6 +85,7 @@ onMounted(() => {
   if (props.caseId !== 0) {
     getCaseInfo(props.caseId)
   }
+  getModuleList()
 })
 </script>
 <template>
@@ -177,14 +177,13 @@ onMounted(() => {
         label="模块"
     >
       <el-select
-          v-model="testCase.module"
+          v-model="testCase.moduleId"
           placeholder="请选择模块"
-          @visible-change="getModuleList"
       >
         <el-option
             v-for="item in moduleList"
             :key="item.name"
-            :value="item.name"
+            :value="item.id"
             :label="item.name"
         >
         </el-option>

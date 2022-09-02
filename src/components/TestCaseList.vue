@@ -110,7 +110,7 @@ defineExpose({open})
     </el-table-column>
     <el-table-column min-width="80" label="模块名称" prop="module" align="center">
       <template #default="scope">
-        <el-tag size="small" v-if="scope.row.module.length > 0">{{ scope.row.module }}</el-tag>
+        <el-tag size="small" v-if="scope.row.modulesDTO!==null">{{ scope.row.modulesDTO.name }}</el-tag>
         <span v-else>未填写</span>
       </template>
     </el-table-column>
