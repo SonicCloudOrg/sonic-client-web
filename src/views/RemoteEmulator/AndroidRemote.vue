@@ -206,6 +206,7 @@ const logcatFilter = ref({
 let oldBlob = undefined;
 const element = ref({
   id: null,
+  moduleId: 0,
   eleName: '',
   eleType: 'image',
   eleValue: '',
@@ -270,6 +271,7 @@ const tabWebView = (port, id, transTitle) => {
 const saveEle = () => {
   updateImgEle['value'].validate((valid) => {
     if (valid) {
+      element.value.eleType = 'image';
       element.value.eleValue = imgElementUrl.value;
       element.value.projectId = project.value['id'];
       axios.put('/controller/elements', element.value)

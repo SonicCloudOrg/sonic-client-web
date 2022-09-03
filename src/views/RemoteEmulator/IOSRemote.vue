@@ -123,6 +123,7 @@ const location = ref(false);
 const screenFps = ref("high")
 const element = ref({
   id: null,
+  moduleId: 0,
   eleName: '',
   eleType: 'image',
   eleValue: '',
@@ -269,6 +270,7 @@ const installCert = () => {
 const saveEle = () => {
   updateImgEle['value'].validate((valid) => {
     if (valid) {
+      element.value.eleType = 'image';
       element.value.eleValue = imgElementUrl.value;
       element.value.projectId = project.value['id'];
       axios.put('/controller/elements', element.value)
@@ -426,6 +428,14 @@ const quickCap = () => {
   canvasCtx.drawImage(cap, 0, 0, cap.clientWidth, cap.clientHeight, 0, 0, w, h);
   screenUrls.value.push(canvas.toDataURL('image/png', 1));
 };
+const toAddElement = (eleType, eleValue) => {
+  if (project) {
+    element.value.eleType = eleType
+    element.value.eleValue = eleValue
+    dialogElement.value = true
+  }
+
+}
 const removeScreen = () => {
   screenUrls.value = [];
 };
@@ -494,11 +504,11 @@ const setCurrListPage = () => {
   currProcessListPage.value = processListPageData.value[currProcessListIndex.value];
 }
 watch(processList, (newVal) => {
-    formatProcessPageable(newVal);
-  }, {
-    immediate:true,
-    deep:true
-  }
+      formatProcessPageable(newVal);
+    }, {
+      immediate: true,
+      deep: true
+    }
 )
 const getProcessList = () => {
   clearProcess();
@@ -1123,7 +1133,7 @@ onMounted(() => {
   </el-dialog>
   <el-dialog v-model="dialogElement" title="控件元素信息" width="600px">
     <element-update v-if="dialogElement" :project-id="project['id']"
-                    :element-id="0" @flush="dialogElement = false"/>
+                    :element-id="0" :element-obj="element" @flush="dialogElement = false"/>
   </el-dialog>
   <el-page-header
       @back="router.go(-1)"
@@ -1767,42 +1777,42 @@ onMounted(() => {
               </div>
             </el-card>
           </el-tab-pane>
-<!--          <el-tab-pane label="快速截图" name="screenCap">-->
-<!--            <el-button type="primary" size="small" @click="quickCap">-->
-<!--              <el-icon :size="12" style="vertical-align: middle;">-->
-<!--                <Camera/>-->
-<!--              </el-icon>-->
-<!--              截图-->
-<!--            </el-button>-->
-<!--            <el-button type="danger" size="small" @click="removeScreen">-->
-<!--              <el-icon :size="12" style="vertical-align: middle;">-->
-<!--                <Delete/>-->
-<!--              </el-icon>-->
-<!--              清空-->
-<!--            </el-button>-->
-<!--            <el-card style="height: 100%;margin-top: 10px" v-if="screenUrls.length===0">-->
-<!--              <el-empty description="暂无截图"></el-empty>-->
-<!--            </el-card>-->
-<!--            <el-row :gutter="20" v-else>-->
-<!--              <el-col :xs="8"-->
-<!--                      :sm="8"-->
-<!--                      :md="8"-->
-<!--                      :lg="4"-->
-<!--                      :xl="4" v-for="u in screenUrls" style="margin-top: 10px">-->
-<!--                <el-card shadow="hover" :body-style="{padding:'10px'}">-->
-<!--                  <el-image :src="u" :preview-src-list="screenUrls" hide-on-click-modal></el-image>-->
-<!--                  <div style="text-align: center;margin-top: 5px">-->
-<!--                    <el-button type="primary" plain size="mini" @click="downloadImg(u)">-->
-<!--                      <el-icon :size="12" style="vertical-align: middle;">-->
-<!--                        <Download/>-->
-<!--                      </el-icon>-->
-<!--                      保存图片-->
-<!--                    </el-button>-->
-<!--                  </div>-->
-<!--                </el-card>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--          </el-tab-pane>-->
+          <!--          <el-tab-pane label="快速截图" name="screenCap">-->
+          <!--            <el-button type="primary" size="small" @click="quickCap">-->
+          <!--              <el-icon :size="12" style="vertical-align: middle;">-->
+          <!--                <Camera/>-->
+          <!--              </el-icon>-->
+          <!--              截图-->
+          <!--            </el-button>-->
+          <!--            <el-button type="danger" size="small" @click="removeScreen">-->
+          <!--              <el-icon :size="12" style="vertical-align: middle;">-->
+          <!--                <Delete/>-->
+          <!--              </el-icon>-->
+          <!--              清空-->
+          <!--            </el-button>-->
+          <!--            <el-card style="height: 100%;margin-top: 10px" v-if="screenUrls.length===0">-->
+          <!--              <el-empty description="暂无截图"></el-empty>-->
+          <!--            </el-card>-->
+          <!--            <el-row :gutter="20" v-else>-->
+          <!--              <el-col :xs="8"-->
+          <!--                      :sm="8"-->
+          <!--                      :md="8"-->
+          <!--                      :lg="4"-->
+          <!--                      :xl="4" v-for="u in screenUrls" style="margin-top: 10px">-->
+          <!--                <el-card shadow="hover" :body-style="{padding:'10px'}">-->
+          <!--                  <el-image :src="u" :preview-src-list="screenUrls" hide-on-click-modal></el-image>-->
+          <!--                  <div style="text-align: center;margin-top: 5px">-->
+          <!--                    <el-button type="primary" plain size="mini" @click="downloadImg(u)">-->
+          <!--                      <el-icon :size="12" style="vertical-align: middle;">-->
+          <!--                        <Download/>-->
+          <!--                      </el-icon>-->
+          <!--                      保存图片-->
+          <!--                    </el-button>-->
+          <!--                  </div>-->
+          <!--                </el-card>-->
+          <!--              </el-col>-->
+          <!--            </el-row>-->
+          <!--          </el-tab-pane>-->
           <el-tab-pane label="Terminal" name="terminal">
             <el-tabs stretch type="border-card">
               <el-tab-pane label="Process">
@@ -2042,7 +2052,7 @@ onMounted(() => {
                             size="small"
                             type="primary"
                             round
-                            @click="dialogElement = true"
+                            @click="toAddElement('','')"
                         >添加控件
                         </el-button
                         >
@@ -2083,16 +2093,27 @@ onMounted(() => {
                               label="accessibilityId"
                               style="cursor: pointer"
                               v-if="elementDetail['name']"
-                              @click="copy(elementDetail['name'])"
                           >
-                            <span>{{ elementDetail['name'] }}</span>
+                             <span @click="copy(elementDetail['name'])">{{
+                                 elementDetail['name']
+                               }}</span>
+                            <el-icon color="green" size="16" v-if="project && project['id']"
+                                     style="vertical-align: middle;margin-left: 10px"
+                                     @click="toAddElement('accessibilityId', elementDetail['name'])">
+                              <Pointer/>
+                            </el-icon>
                           </el-form-item>
                           <el-form-item label="Predicate推荐">
                             <el-table stripe empty-text="暂无推荐语法" border :data="findBestNS(elementDetail)"
                                       :show-header="false">
                               <el-table-column>
                                 <template #default="scope">
-                                  <div style="cursor: pointer" @click="copy(scope.row)">{{ scope.row }}</div>
+                                  <span style="cursor: pointer" @click="copy(scope.row)">{{ scope.row }}</span>
+                                  <el-icon color="green" size="16" v-if="project && project['id']"
+                                           style="vertical-align: middle;margin-left: 10px"
+                                           @click="toAddElement('nsPredicate', scope.row)">
+                                    <Pointer/>
+                                  </el-icon>
                                 </template>
                               </el-table-column>
                             </el-table>
@@ -2102,14 +2123,23 @@ onMounted(() => {
                                       :show-header="false">
                               <el-table-column>
                                 <template #default="scope">
-                                  <div style="cursor: pointer" @click="copy(scope.row)">{{ scope.row }}</div>
+                                  <span style="cursor: pointer" @click="copy(scope.row)">{{ scope.row }}</span>
+                                  <el-icon color="green" size="16" v-if="project && project['id']"
+                                           style="vertical-align: middle;margin-left: 10px"
+                                           @click="toAddElement('xpath', scope.row)">
+                                    <Pointer/>
+                                  </el-icon>
                                 </template>
                               </el-table-column>
                             </el-table>
                           </el-form-item>
-                          <el-form-item label="绝对路径" style="cursor: pointer"
-                                        @click="copy(elementDetail['xpath'])">
-                            <span>{{ elementDetail['xpath'] }}</span>
+                          <el-form-item label="绝对路径" style="cursor: pointer">
+                            <span @click="copy(elementDetail['xpath'])">{{ elementDetail['xpath'] }}</span>
+                            <el-icon color="green" size="16" v-if="project && project['id']"
+                                     style="vertical-align: middle;margin-left: 10px"
+                                     @click="toAddElement('xpath', elementDetail['xpath'])">
+                              <Pointer/>
+                            </el-icon>
                           </el-form-item>
                           <el-form-item
                               label="name"
@@ -2126,11 +2156,16 @@ onMounted(() => {
                           >
                             <span>{{ elementDetail['label'] }}</span>
                           </el-form-item>
-                          <el-form-item label="中心坐标" style="cursor: pointer"
-                                        @click="copy(computedCenter(elementDetail['x'],elementDetail['y'],elementDetail['width'],elementDetail['height']))">
-                            <span>{{
-                                computedCenter(elementDetail['x'], elementDetail['y'], elementDetail['width'], elementDetail['height'])
-                              }}</span>
+                          <el-form-item label="中心坐标" style="cursor: pointer">
+                             <span
+                                 @click="copy(computedCenter(elementDetail['x'],elementDetail['y'],elementDetail['width'],elementDetail['height']))">{{
+                                 computedCenter(elementDetail['x'], elementDetail['y'], elementDetail['width'], elementDetail['height'])
+                               }}</span>
+                            <el-icon color="green" size="16" v-if="project && project['id']"
+                                     style="vertical-align: middle;margin-left: 10px"
+                                     @click="toAddElement('point',  computedCenter(elementDetail['x'], elementDetail['y'], elementDetail['width'], elementDetail['height']))">
+                              <Pointer/>
+                            </el-icon>
                           </el-form-item>
                           <el-form-item label="index">
                             <span>{{ elementDetail['index'] }}</span>
