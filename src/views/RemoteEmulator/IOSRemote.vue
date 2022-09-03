@@ -1894,7 +1894,9 @@ onMounted(() => {
                         {{ testCase['platform'] === 1 ? '安卓' : 'iOS' }}
                       </div>
                     </el-descriptions-item>
-                    <el-descriptions-item label="模块">{{ testCase['module'] }}</el-descriptions-item>
+                    <el-descriptions-item label="模块">
+                      {{ testCase['modulesDTO'] !== null ? testCase['modulesDTO'].name : "" }}
+                    </el-descriptions-item>
                     <el-descriptions-item label="版本名称">{{ testCase['version'] }}</el-descriptions-item>
                     <el-descriptions-item label="设计人">{{ testCase['designer'] }}</el-descriptions-item>
                     <el-descriptions-item label="最后修改日期">{{ testCase['editTime'] }}</el-descriptions-item>
