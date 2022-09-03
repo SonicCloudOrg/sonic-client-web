@@ -14,6 +14,7 @@ const element = ref({
   eleName: "",
   eleType: "",
   eleValue: "",
+  moduleId: 0,
   projectId: props.projectId,
 })
 const updateEle = ref(null)
@@ -70,6 +71,15 @@ const saveElement = () => {
     }
   })
 }
+const moduleList = ref([])
+const getModuleList = () => {
+  axios.get("/controller/modules/list", {params: {projectId: props.projectId}}).then(resp => {
+    if (resp['code'] === 2000) {
+      moduleList.value = resp.data;
+      moduleList.value.push({id: 0, name: '无'})
+    }
+  })
+}
 onMounted(() => {
   if (props.elementId !== 0) {
     getElementInfo(props.elementId)
@@ -78,10 +88,13 @@ onMounted(() => {
     element.value.eleType = props.elementObj.eleType
     element.value.eleValue = props.elementObj.eleValue
   }
+  getModuleList();
 })
 </script>
 <template>
-  <el-alert style="margin-bottom: 10px" title="TIPS: 如选择坐标类型，xy之间用英文逗号隔开，例：111,222。如选择cssSelectorAndText类型，vaule之间用逗号隔开，例：.van-button--default,购物车。需要临时变量或全局变量时，可以添加{{变量名}}的形式" type="info" show-icon close-text="Get!"/>
+  <el-alert style="margin-bottom: 10px"
+            title="TIPS: 如选择坐标类型，xy之间用英文逗号隔开，例：111,222。如选择cssSelectorAndText类型，vaule之间用逗号隔开，例：.van-button--default,购物车。需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+            type="info" show-icon close-text="Get!"/>
   <el-form ref="updateEle" :model="element" size="small" class="demo-table-expand" label-width="90px"
            label-position="left">
     <el-form-item
@@ -152,6 +165,23 @@ onMounted(() => {
           v-model="element.eleValue"
           placeholder="请输入控件元素值"
       ></el-input>
+    </el-form-item>
+    <el-form-item
+        label="所属模块"
+    >
+      <el-select
+          style="width: 100%;"
+          v-model="element.moduleId"
+          placeholder="请选择模块"
+      >
+        <el-option
+            v-for="item in moduleList"
+            :key="item.name"
+            :value="item.id"
+            :label="item.name"
+        >
+        </el-option>
+      </el-select>
     </el-form-item>
     <div style="text-align: center">
       <el-button size="small" type="primary" @click="saveElement">确 定</el-button>

@@ -40,11 +40,13 @@ const flush = () => {
   dialogElement.value = false
   getElementList();
 }
+const moduleIds = ref([])
 const getElementList = (pageNum, pSize) => {
   axios.get("/controller/elements/list", {
     params: {
       projectId: route.params.projectId,
       eleTypes: types.value.length > 0 ? types.value : undefined,
+      moduleIds: moduleIds.value.length > 0 ? moduleIds.value : undefined,
       name: name.value,
       value: value.value,
       page: pageNum || 1,
@@ -72,9 +74,9 @@ const deleteEle = (id) => {
   })
 }
 //复制元素，复制以后重新拉去列表
-const copyElement = (id) =>{
+const copyElement = (id) => {
   axios.get("/controller/elements/copyEle", {
-    params:{
+    params: {
       id
     }
   }).then(resp => {
@@ -101,12 +103,29 @@ const deleteReal = (id) => {
     }
   })
 }
+const moduleList = ref([])
+const getModuleList = () => {
+  axios.get("/controller/modules/list", {params: {projectId: route.params.projectId}}).then(resp => {
+    if (resp['code'] === 2000) {
+      resp.data.map(item => {
+        moduleList.value.push({text: item.name, value: item.id})
+      })
+      moduleList.value.push({text: '无', value: 0})
+    }
+  })
+}
 const filter = (e) => {
-  types.value = e.eleType
+  if (e.eleType) {
+    types.value = e.eleType
+  }
+  if (e.moduleId) {
+    moduleIds.value = e.moduleId
+  }
   getElementList()
 }
 onMounted(() => {
   getElementList();
+  getModuleList();
 })
 </script>
 <template>
@@ -157,6 +176,14 @@ onMounted(() => {
       </template>
     </el-table-column>
 
+    <el-table-column width="120" label="模块名称" prop="moduleId" column-key="moduleId" align="center"
+                     :filters="moduleList">
+      <template #default="scope">
+        <el-tag size="small" v-if="scope.row.modulesDTO!==null">{{ scope.row.modulesDTO.name }}</el-tag>
+        <span v-else>无</span>
+      </template>
+    </el-table-column>
+
     <el-table-column column-key="eleType" label="定位类型" width="130" align="center" :filters="[
         { text: 'id（resource-id）', value: 'id' },
         { text: 'xpath', value: 'xpath' },
@@ -204,14 +231,14 @@ onMounted(() => {
             :preview-src-list="[scope.row.eleValue]"
         ></el-image>
         <span v-else-if="scope.row.eleValue">{{ scope.row.eleValue }}</span>
-        <span v-else>未填写</span>
+        <span v-else>无</span>
       </template>
     </el-table-column>
 
     <el-table-column label="操作" width="210" align="center">
       <template #default="scope">
-        <el-button type="primary"  size="mini"
-        @click="copyElement(scope.row.id)">
+        <el-button type="primary" size="mini"
+                   @click="copyElement(scope.row.id)">
           复制
         </el-button>
         <el-button
