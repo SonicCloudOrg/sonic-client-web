@@ -206,6 +206,7 @@ const logcatFilter = ref({
 let oldBlob = undefined;
 const element = ref({
   id: null,
+  moduleId: 0,
   eleName: '',
   eleType: 'image',
   eleValue: '',
@@ -270,6 +271,7 @@ const tabWebView = (port, id, transTitle) => {
 const saveEle = () => {
   updateImgEle['value'].validate((valid) => {
     if (valid) {
+      element.value.eleType = 'image';
       element.value.eleValue = imgElementUrl.value;
       element.value.projectId = project.value['id'];
       axios.put('/controller/elements', element.value)
@@ -416,6 +418,14 @@ const copy = (value) => {
     });
   }
 };
+const toAddElement = (eleType, eleValue) => {
+  if (project) {
+    element.value.eleType = eleType
+    element.value.eleValue = eleValue
+    dialogElement.value = true
+  }
+
+}
 const removeScreen = () => {
   screenUrls.value = [];
 };
@@ -1725,7 +1735,7 @@ onMounted(() => {
   </el-dialog>
   <el-dialog v-model="dialogElement" title="控件元素信息" width="600px">
     <element-update v-if="dialogElement" :project-id="project['id']"
-                    :element-id="0" @flush="dialogElement = false"/>
+                    :element-id="0" :element-obj="element" @flush="dialogElement = false"/>
   </el-dialog>
   <el-page-header
       @back="router.go(-1)"
@@ -2812,7 +2822,9 @@ onMounted(() => {
                         {{ testCase['platform'] === 1 ? '安卓' : 'iOS' }}
                       </div>
                     </el-descriptions-item>
-                    <el-descriptions-item label="模块">{{ testCase['module'] }}</el-descriptions-item>
+                    <el-descriptions-item label="模块">
+                      {{ testCase['modulesDTO'] !== null ? testCase['modulesDTO'].name : "" }}
+                    </el-descriptions-item>
                     <el-descriptions-item label="版本名称">{{ testCase['version'] }}</el-descriptions-item>
                     <el-descriptions-item label="设计人">{{ testCase['designer'] }}</el-descriptions-item>
                     <el-descriptions-item label="最后修改日期">{{ testCase['editTime'] }}</el-descriptions-item>
@@ -2986,7 +2998,7 @@ onMounted(() => {
                                 size="small"
                                 type="primary"
                                 round
-                                @click="dialogElement = true"
+                                @click="toAddElement('','')"
                             >添加控件
                             </el-button
                             >
@@ -3027,23 +3039,40 @@ onMounted(() => {
                                   label="resource-id"
                                   style="cursor: pointer"
                                   v-if="elementDetail['resource-id']"
-                                  @click="copy(elementDetail['resource-id'])"
                               >
-                                <span>{{ elementDetail['resource-id'] }}</span>
+                                <span @click="copy(elementDetail['resource-id'])">{{
+                                    elementDetail['resource-id']
+                                  }}</span>
+                                <el-icon color="green" size="16" v-if="project && project['id']"
+                                         style="vertical-align: middle;margin-left: 10px"
+                                         @click="toAddElement('id', elementDetail['resource-id'])">
+                                  <Pointer/>
+                                </el-icon>
+
                               </el-form-item>
                               <el-form-item label="xpath推荐">
                                 <el-table stripe empty-text="暂无xpath推荐语法" border :data="findBestXpath(elementDetail)"
                                           :show-header="false">
                                   <el-table-column>
                                     <template #default="scope">
-                                      <div style="cursor: pointer" @click="copy(scope.row)">{{ scope.row }}</div>
+                                      <span style="cursor: pointer" @click="copy(scope.row)">{{ scope.row }}</span>
+                                      <el-icon color="green" size="16" v-if="project && project['id']"
+                                               style="vertical-align: middle;margin-left: 10px"
+                                               @click="toAddElement('xpath', scope.row)">
+                                        <Pointer/>
+                                      </el-icon>
                                     </template>
                                   </el-table-column>
                                 </el-table>
                               </el-form-item>
-                              <el-form-item label="绝对路径" style="cursor: pointer"
-                                            @click="copy(elementDetail['xpath'])">
-                                <span>{{ elementDetail['xpath'] }}</span>
+                              <el-form-item label="绝对路径" style="cursor: pointer">
+                                <span @click="copy(elementDetail['xpath'])">{{ elementDetail['xpath'] }}</span>
+                                <el-icon color="green" size="16" v-if="project && project['id']"
+                                         style="vertical-align: middle;margin-left: 10px"
+                                         @click="toAddElement('xpath', elementDetail['xpath'])">
+                                  <Pointer/>
+                                </el-icon>
+
                               </el-form-item>
                               <el-form-item
                                   label="text"
@@ -3067,9 +3096,16 @@ onMounted(() => {
                               >
                                 <span>{{ elementDetail['package'] }}</span>
                               </el-form-item>
-                              <el-form-item label="中心坐标" style="cursor: pointer"
-                                            @click="copy(computedCenter(elementDetail['bStart'], elementDetail['bEnd']))">
-                                <span>{{ computedCenter(elementDetail['bStart'], elementDetail['bEnd']) }}</span>
+                              <el-form-item label="中心坐标" style="cursor: pointer">
+                                <span @click="copy(computedCenter(elementDetail['bStart'], elementDetail['bEnd']))">{{
+                                    computedCenter(elementDetail['bStart'], elementDetail['bEnd'])
+                                  }}</span>
+                                <el-icon color="green" size="16" v-if="project && project['id']"
+                                         style="vertical-align: middle;margin-left: 10px"
+                                         @click="toAddElement('point', computedCenter(elementDetail['bStart'], elementDetail['bEnd']))">
+                                  <Pointer/>
+                                </el-icon>
+
                               </el-form-item>
                               <el-form-item label="index">
                                 <span>{{ elementDetail['index'] }}</span>

@@ -13,6 +13,7 @@ const props = defineProps({
 const pageData = ref({
   content: []
 });
+const moduleId = ref(0)
 const name = ref("")
 const pageSize = ref(10);
 const currentPage = ref(0)
@@ -28,6 +29,7 @@ const findByProjectIdAndEleType = (event, pageNum, pSize) => {
       params: {
         name: name.value,
         projectId: props.projectId,
+        moduleIds: [moduleId.value],
         type: props.type,
         page: pageNum || 1,
         pageSize: pSize || pageSize.value,
@@ -38,10 +40,24 @@ const findByProjectIdAndEleType = (event, pageNum, pSize) => {
     })
   }
 }
+const moduleList = ref([])
+const getModuleList = () => {
+  axios.get("/controller/modules/list", {params: {projectId: props.projectId}}).then(resp => {
+    if (resp['code'] === 2000) {
+      moduleList.value = resp.data;
+      moduleList.value.push({id: 0, name: '无'})
+    }
+  })
+}
+const findByModule = (n) => {
+  props.step.elements[props.index] = null
+  findByProjectIdAndEleType(true)
+}
 onMounted(() => {
   if (props.step.elements[props.index]) {
     pageData.value['content'].push(props.step.elements[props.index])
   }
+  getModuleList()
 })
 </script>
 <template>
@@ -52,32 +68,47 @@ onMounted(() => {
           ]"
       :prop="'elements['+index+']'"
   >
-    <el-select
-        filterable
-        remote
-        :remote-method="findByName"
-        value-key="id"
-        v-model="step.elements[index]"
-        :placeholder="place"
-        placeholder="请输入控件名称筛选"
-        @visible-change="findByProjectIdAndEleType"
-    >
-      <el-option
-          v-if="pageData['content']!==null"
-          v-for="item in pageData['content']"
-          :key="item.id"
-          :label="item['eleName']"
-          :value="item"
-      ></el-option>
-      <div style="text-align: center;margin-top: 5px">
-        <el-pagination small layout="prev, pager, next"
-                       hide-on-single-page
-                       v-model:current-page="currentPage"
-                       :total="pageData['totalElements']"
-                       :page-size="pageSize"
-                       @current-change="findByProjectIdAndEleType(true,$event)">
-        </el-pagination>
+    <el-card>
+      <span style="font-size: 14px;color: #99a9bf;margin-right:10px">模块筛选</span>
+      <el-select size="small" v-model="moduleId" @change="findByModule">
+        <el-option
+            v-for="item in moduleList"
+            :key="item.name"
+            :value="item.id"
+            :label="item.name"
+        >
+        </el-option>
+      </el-select>
+
+      <div style="margin-top: 10px">
+        <span style="font-size: 14px;color: #99a9bf;margin-right:10px">名称筛选</span>
+        <el-select
+            filterable
+            remote
+            :remote-method="findByName"
+            value-key="id"
+            v-model="step.elements[index]"
+            placeholder="请输入控件名称筛选"
+            @visible-change="findByProjectIdAndEleType"
+        >
+          <el-option
+              v-if="pageData['content']!==null"
+              v-for="item in pageData['content']"
+              :key="item.id"
+              :label="item['eleName']"
+              :value="item"
+          ></el-option>
+          <div style="text-align:center;margin-top: 5px;">
+            <el-pagination small layout="prev, pager, next"
+                           hide-on-single-page
+                           v-model:current-page="currentPage"
+                           :total="pageData['totalElements']"
+                           :page-size="pageSize"
+                           @current-change="findByProjectIdAndEleType(true,$event)">
+            </el-pagination>
+          </div>
+        </el-select>
       </div>
-    </el-select>
+    </el-card>
   </el-form-item>
 </template>

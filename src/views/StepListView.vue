@@ -49,47 +49,47 @@ onMounted(() => {
     <el-col :span="6">
       <el-card>
         <template #header><strong>用例详情</strong></template>
-      <el-form
-          label-position="left"
-          class="demo-table-expand"
-          label-width="100px"
-          style="margin-left: 10px; word-break: break-all"
-          v-if="testCase['id']"
-      >
-        <el-form-item label="用例Id">
-          <span>{{ testCase['id'] }}</span>
-        </el-form-item>
-        <el-form-item label="用例名称">
-          <span>{{ testCase.name }}</span>
-        </el-form-item>
-        <el-form-item label="所属平台">
-          <div style=" display: flex;align-items: center;">
-            <el-avatar
-                style="margin-right: 10px"
-                :size="27"
-                :src="getImg(testCase['platform']===1?'ANDROID':'IOS')"
-                shape="square"
-            ></el-avatar
-            >
-            {{ testCase['platform'] === 1 ? '安卓' : 'iOS' }}
-          </div>
-        </el-form-item>
-        <el-form-item label="模块">
-          <span>{{ testCase['module'] }}</span>
-        </el-form-item>
-        <el-form-item label="版本名称">
-          <span>{{ testCase['version'] }}</span>
-        </el-form-item>
-        <el-form-item label="设计人">
-          <span>{{ testCase['designer'] }}</span>
-        </el-form-item>
-        <el-form-item label="最后修改日期">
-          <span>{{ testCase['editTime'] }}</span>
-        </el-form-item>
-        <el-form-item label="用例描述">
-          <span>{{ testCase['des'] }}</span>
-        </el-form-item>
-      </el-form>
+        <el-form
+            label-position="left"
+            class="demo-table-expand"
+            label-width="100px"
+            style="margin-left: 10px; word-break: break-all"
+            v-if="testCase['id']"
+        >
+          <el-form-item label="用例Id">
+            <span>{{ testCase['id'] }}</span>
+          </el-form-item>
+          <el-form-item label="用例名称">
+            <span>{{ testCase.name }}</span>
+          </el-form-item>
+          <el-form-item label="所属平台">
+            <div style=" display: flex;align-items: center;">
+              <el-avatar
+                  style="margin-right: 10px"
+                  :size="27"
+                  :src="getImg(testCase['platform']===1?'ANDROID':'IOS')"
+                  shape="square"
+              ></el-avatar
+              >
+              {{ testCase['platform'] === 1 ? '安卓' : 'iOS' }}
+            </div>
+          </el-form-item>
+          <el-form-item label="模块">
+            <span>{{ testCase['modulesDTO'] !== null ? testCase['modulesDTO'].name : "" }}</span>
+          </el-form-item>
+          <el-form-item label="版本名称">
+            <span>{{ testCase['version'] }}</span>
+          </el-form-item>
+          <el-form-item label="设计人">
+            <span>{{ testCase['designer'] }}</span>
+          </el-form-item>
+          <el-form-item label="最后修改日期">
+            <span>{{ testCase['editTime'] }}</span>
+          </el-form-item>
+          <el-form-item label="用例描述">
+            <span>{{ testCase['des'] }}</span>
+          </el-form-item>
+        </el-form>
       </el-card>
     </el-col>
     <el-col :span="18">
