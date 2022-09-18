@@ -51,17 +51,14 @@ defineProps({
   <span v-if="step.stepType === 'keyCode'||step.stepType === 'keyCodeSelf'">
       <el-tag size="small">按下系统{{ step.content }}键</el-tag>
   </span>
-  <span v-if="step.stepType === 'hideKey'">
-      <el-tag size="small">隐藏键盘</el-tag>
-    </span>
   <span v-if="step.stepType === 'airPlaneMode'">
-      <el-tag size="small">切换飞行模式</el-tag>
+      <el-tag size="small" style="margin-right: 10px">切换飞行模式</el-tag>{{ step.content === 'true' ? '开启' : '关闭' }}
     </span>
   <span v-if="step.stepType === 'wifiMode'">
-      <el-tag size="small">切换WIFI模式</el-tag>
+      <el-tag size="small" style="margin-right: 10px">切换WIFI模式</el-tag>{{ step.content === 'true' ? '开启' : '关闭' }}
     </span>
   <span v-if="step.stepType === 'locationMode'">
-      <el-tag size="small">切换位置服务</el-tag>
+      <el-tag size="small" style="margin-right: 10px">切换位置服务</el-tag>{{ step.content === 'true' ? '开启' : '关闭' }}
     </span>
   <span v-if="step.stepType === 'tap'">
       <el-tag size="small">点击坐标</el-tag>
@@ -85,32 +82,6 @@ defineProps({
       >滑动拖拽到</el-tag
       >
       <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
-    </span>
-  <span v-if="step.stepType === 'zoom'">
-      <el-tag size="small">多点触控</el-tag>
-      <el-tag
-          type="info"
-          size="small"
-          style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[0]['eleName'] }}</el-tag
-      >
-      <el-tag size="small">移动到</el-tag>
-      <el-tag
-          type="info"
-          size="small"
-          style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[1]['eleName'] }}</el-tag
-      >同时
-      <el-tag
-          type="info"
-          size="small"
-          style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[2]['eleName'] }}</el-tag
-      >
-      <el-tag size="small">移动到</el-tag>
-      <el-tag type="info" size="small" style="margin-left: 10px">{{
-          step.elements[3]['eleName']
-        }}</el-tag>
     </span>
   <span v-if="step.stepType === 'openApp'">
       <el-tag size="small" style="margin-right: 10px">打开应用</el-tag>

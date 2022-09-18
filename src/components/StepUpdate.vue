@@ -89,10 +89,6 @@ const monkey = ref({
       value: 40,
     },
     {
-      name: "zoomEvent",
-      value: 10,
-    },
-    {
       name: "systemEvent",
       value: 5,
     },
@@ -134,10 +130,6 @@ const monkeyOptions = {
   swipeEvent: {
     label: "滑动事件权重",
     des: "随机两个坐标滑动",
-  },
-  zoomEvent: {
-    label: "多点触控事件权重",
-    des: "随机双指放大或缩小",
   },
   systemEvent: {
     label: "物理按键事件权重",
@@ -292,10 +284,6 @@ const androidOptions = ref([
             value: "keyCodeSelf",
             label: "系统按键（自定义）",
           },
-          {
-            value: "hideKey",
-            label: "隐藏键盘",
-          },
         ],
       },
       {
@@ -334,10 +322,6 @@ const androidOptions = ref([
         value: "swipe",
         label: "滑动拖拽",
       },
-      {
-        label: "多点触控",
-        value: "zoom"
-      },
     ],
   },
   {
@@ -359,10 +343,6 @@ const androidOptions = ref([
       {
         value: "uninstall",
         label: "卸载应用",
-      },
-      {
-        value: "runBack",
-        label: "后台运行应用",
       },
       {
         value: "appReset",
@@ -850,19 +830,6 @@ onMounted(() => {
                       :index="1" :project-id="projectId" type="point" :step="step"/>
     </div>
 
-    <div v-if="step.stepType === 'zoom'">
-      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
-                title="TIPS: 合理设置好坐标位置，可以实现双指放大或缩小操作"/>
-      <element-select label="从控件" place="请选择坐标控件元素"
-                      :index="0" :project-id="projectId" type="point" :step="step"/>
-      <element-select label="移动到" place="请选择坐标控件元素"
-                      :index="1" :project-id="projectId" type="point" :step="step"/>
-      <element-select label="同时控件" place="请选择坐标控件元素"
-                      :index="2" :project-id="projectId" type="point" :step="step"/>
-      <element-select label="移动到" place="请选择坐标控件元素"
-                      :index="3" :project-id="projectId" type="point" :step="step"/>
-    </div>
-
     <div v-if="step.stepType === 'openApp'">
       <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
                 title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
@@ -1027,6 +994,19 @@ onMounted(() => {
         <el-select v-model="step.content">
           <el-option label="存在" value="true"></el-option>
           <el-option label="不存在" value="false"></el-option>
+        </el-select>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'airPlaneMode' || step.stepType === 'wifiMode' || step.stepType === 'locationMode'">
+      <el-form-item label="开启与否" prop="content" :rules="{
+            required: true,
+            message: '状态不能为空',
+            trigger: 'change',
+          }">
+        <el-select v-model="step.content">
+          <el-option label="开启" value="true"></el-option>
+          <el-option label="关闭" value="false"></el-option>
         </el-select>
       </el-form-item>
     </div>
