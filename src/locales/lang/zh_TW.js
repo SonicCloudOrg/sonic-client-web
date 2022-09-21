@@ -90,7 +90,9 @@ const devices = {
         button: '高級篩選'
     },
     refresh: '自動刷新',
-    avgTem: '當前平均電池溫度：'
+    avgTem: '當前平均電池溫度：',
+    hint: '設置演示'
+
 }
 
 // 佈局相關
@@ -178,6 +180,14 @@ const setting = {
     title: "Manage Center"
 }
 
+const androidTestCase = {
+    addCase: "添加用例",
+}
+
+const elements = {
+    eleInfo: "控件元素信息"
+}
+
 export default {
     message: {
         robot,
@@ -188,6 +198,8 @@ export default {
         form,
         dialog,
         routes,
-        setting
+        setting,
+        androidTestCase,
+        elements
     }
 }

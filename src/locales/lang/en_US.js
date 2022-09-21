@@ -90,7 +90,9 @@ const devices = {
         button: 'Filter'
     },
     refresh: 'Auto refresh',
-    avgTem: 'Current average battery temperature: '
+    avgTem: 'Current average battery temperature: ',
+    hint: 'Set Prompt'
+
 }
 
 // 布局相关
@@ -177,6 +179,13 @@ const routes = {
 const setting = {
     title: "Manage Center"
 }
+const androidTestCase = {
+    addCase: "Add Test Case",
+}
+
+const elements = {
+    eleInfo: "控件元素信息"
+}
 
 export default {
     message: {
@@ -188,6 +197,8 @@ export default {
         form,
         dialog,
         routes,
-        setting
+        setting,
+        androidTestCase,
+        elements
     }
 }

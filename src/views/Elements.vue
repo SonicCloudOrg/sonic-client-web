@@ -129,7 +129,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogElement" title="控件元素信息" width="600px">
+  <el-dialog v-model="dialogElement" :title="$t(elements.eleInfo)" width="600px">
     <element-update v-if="dialogElement" :project-id="route.params.projectId"
                     :element-id="elementId" @flush="flush"/>
   </el-dialog>

@@ -90,7 +90,9 @@ const devices = {
         button: 'フィルター'
     },
     refresh: '自動リフレッシュ',
-    avgTem: '現在平均バッテリー温度:'
+    avgTem: '現在平均バッテリー温度:',
+    hint: 'リマインダーを設定する'
+
 }
 
 // 布局相关
@@ -173,9 +175,15 @@ const routes = {
     resource: "",
     role: ""
 }
-
 const setting = {
     title: "Manage Center"
+}
+const androidTestCase = {
+    addCase: "ユースケースを追加",
+}
+
+const elements = {
+    eleInfo: "控件元素信息"
 }
 
 export default {
@@ -188,6 +196,8 @@ export default {
         form,
         dialog,
         routes,
-        setting
+        setting,
+        androidTestCase,
+        elements
     }
 }
