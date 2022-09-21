@@ -32,7 +32,7 @@ const agent = {
 }
 
 const devices = {
-    title: 'Sonic雲真機測試平臺',
+    title: 'Sonic雲真機平臺',
     list: '設備清單',
     form: {
         model: '設備型號',

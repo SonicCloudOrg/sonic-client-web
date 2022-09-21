@@ -32,7 +32,7 @@ const agent = {
 }
 
 const devices = {
-    title: 'Sonicクラウドデバイステストプラットフォーム',
+    title: 'Sonicクラウドデバイスプラットフォーム',
     list: 'デバイスリスト',
     form: {
         model: 'モデル',

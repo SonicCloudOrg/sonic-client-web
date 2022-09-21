@@ -1,7 +1,7 @@
 <p align="center">
   <img width="80px" src="https://raw.githubusercontent.com/SonicCloudOrg/sonic-server/main/logo.png">
 </p>
-<p align="center">🎉Front end of Sonic cloud real machine testing platform</p>
+<p align="center">🎉Front end of Sonic cloud real machine platform</p>
 <p align="center">
   <span>English |</span>
   <a href="https://github.com/SonicCloudOrg/sonic-client-web/blob/main/README_CN.md">  
