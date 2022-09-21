@@ -91,12 +91,7 @@ const devices = {
     },
     refresh: '自动刷新',
     avgTem: '当前平均电池温度：',
-    hint: '设置提示',
-    warn: {
-        one: '当设备温度',
-        two: '高温值',
-        three: '时（仅安卓),会通知机器人告警',
-    }
+    hint: '设置提示'
 
 }
 
