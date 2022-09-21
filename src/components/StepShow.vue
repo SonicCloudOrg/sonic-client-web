@@ -115,19 +115,19 @@ defineProps({
       <el-tag size="small" style="margin-right: 10px">切换Handle</el-tag>
       Handle页面标题：{{ step.content }}
     </span>
-  <span v-if="step.stepType === 'isExistEle'">
+  <span v-if="step.stepType === 'isExistEle' || step.stepType === 'isExistWebViewEle'">
       <el-tag size="small" style="margin-right: 10px">判断控件元素是否存在</el-tag>断言：
       <el-tag type="info" size="small" style="margin-right: 10px">{{
           step.elements[0]['eleName']
         }}</el-tag> {{ step.content === 'true' ? '存在' : '不存在' }}
     </span>
-  <span v-if="step.stepType === 'click'">
+  <span v-if="step.stepType === 'click'||step.stepType === 'webViewClick'">
       <el-tag size="small">点击控件元素</el-tag>
       <el-tag type="info" size="small" style="margin-left: 10px">{{
           step.elements[0]['eleName']
         }}</el-tag>
     </span>
-  <span v-if="step.stepType === 'sendKeys'">
+  <span v-if="step.stepType === 'sendKeys'||step.stepType === 'webViewSendKeys'">
       <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
       <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
       >输入文本</el-tag
@@ -164,13 +164,13 @@ defineProps({
       >
       {{ step.content }} ms
     </span>
-  <span v-if="step.stepType === 'clear'">
+  <span v-if="step.stepType === 'clear'||step.stepType === 'webViewClear'">
       <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
       <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
       >清空输入框</el-tag
       >
     </span>
-  <span v-if="step.stepType === 'getTextValue'">
+  <span v-if="step.stepType === 'getTextValue'||step.stepType === 'getWebViewTextValue'">
       <el-tag size="small">获取文本</el-tag>
       <el-tag
           type="info"
@@ -180,7 +180,7 @@ defineProps({
       >
       获取到变量：{{ step.content }}
     </span>
-  <span v-if="step.stepType === 'getText'">
+  <span v-if="step.stepType === 'getText'||step.stepType === 'getWebViewText'">
       <el-tag size="small">验证文本</el-tag>
       <el-tag
           type="info"
