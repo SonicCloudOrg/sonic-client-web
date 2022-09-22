@@ -3,6 +3,9 @@ import TestCaseList from '../components/TestCaseList.vue'
 import {ref} from "vue";
 import {useRoute} from "vue-router";
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const route = useRoute()
 const caseList = ref(null)
 const projectId = ref(parseInt(route.params.projectId))

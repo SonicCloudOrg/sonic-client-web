@@ -149,7 +149,9 @@ const dialog = {
 const common = {
     null: '無',
     delete: '刪除',
-    edit: '編輯'
+    edit: '編輯',
+    operate: "操作",
+    copy: "复制",
 }
 
 // 路由
@@ -185,7 +187,29 @@ const androidTestCase = {
 }
 
 const elements = {
-    eleInfo: "控件元素信息"
+    eleInfo: "控件元素信息",
+    stepInfo: "步骤信息",
+    warn: "警告！",
+    warnInfo: "该控件已存在于以下步骤中,删除该控件将连同以下步骤一并删除！请前往对应步骤修改控件或确认对应步骤已废弃！",
+    stepList: {
+        stepId: "步骤Id",
+        useCaseId: "所属用例Id",
+        userCaseName:"所属用例名称",
+        noCase: "无所属用例"
+    },
+    sureDelete: "确认删除",
+    addElement: "添加控件元素",
+    controlId: "控件id",
+    inputNameSearch: "输入元素控件名称搜索",
+    moduleName: "模块名称",
+    targetingType: "定位类型",
+    coordinate: "坐标",
+    picture: "图片",
+    notSpecified: "未指定",
+    cEleValue: "控件元素值",
+    inputKeySearch: "输入控件元素值搜索",
+    sureDelInfo: "确定删除该控件元素吗?",
+
 }
 
 export default {
