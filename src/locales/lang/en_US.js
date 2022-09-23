@@ -231,6 +231,30 @@ const globalParamsTs = {
     },
     delMessage: "确定删除该全局参数吗?"
 }
+
+const homeTS = {
+    projectOverview: "项目概况",
+    testCaseManagement: "测试用例管理",
+    testCase: {
+        case: "测试用例",
+        adCase: "安卓端测试用例",
+        iosCase: "iOS端测试用例"
+    },
+    testSuite: "测试套件",
+    testDataManagement: "测试数据管理",
+    testResults: "测试结果分析",
+    setting: "持续集成设置",
+    package: {
+        mange: "安装包管理",
+        bulk: "批量装包",
+    },
+    crashReport: "崩溃上报",
+    projectSetting: {
+        setting: "项目相关设置",
+        mange: "模块管理",
+        update: "版本迭代",
+    }
+}
 export default {
     message: {
         robot,
@@ -244,6 +268,7 @@ export default {
         setting,
         androidTestCase,
         elements,
-        globalParamsTs
+        globalParamsTs,
+        homeTS
     }
 }
