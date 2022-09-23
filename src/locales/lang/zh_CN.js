@@ -255,6 +255,51 @@ const homeTS = {
         update: "版本迭代",
     }
 }
+
+const jobsTS = {
+    dialogVisible: {
+        message: "定时任务信息",
+        name: "任务名称",
+        nameIsNull: "任务名称不能为空",
+        inputName: "请输入任务名称",
+        testSuiteIsNull: "测试套件不能为空",
+        chooseTestSuite: "请选择测试套件",
+        cron: "Cron表达式",
+        cronIsNull: "Cron表达式不能为空",
+        inputCron: "请输入Cron表达式"
+    },
+    addCron: "添加定时任务",
+    whatCron: "什么是Cron表达式？",
+    cronInfo: {
+        one: "* 第一位，表示秒，取值 0-59",
+        two: "* 第二位，表示分，取值 0-59",
+        three: "* 第三位，表示小时，取值 0-23",
+        four: "* 第四位，日期，取值 1-31",
+        five: "* 第五位，月份，取值 1-12",
+        six: "* 第六位，星期几，取值 1-7",
+        seven: "* 第七位，年份，可以留空，取值 1970-2099",
+        asterisk: "(*) 星号：可以理解为“每”的意思，每秒、每分",
+        questionMark: "(?) 问号：只能出现在日期和星期这两个位置，表示这个位置的值不确定",
+        bar: "(-) 表达一个范围，如在小时字段中使用 10-12 ，表示从10点到12点",
+        comma: "(,) 逗号，表达一个列表值，如在星期字段中使用 1,2,4\n" +
+               "，则表示星期一、星期二、星期四",
+        slash: "(/) 斜杠，如 x/y ，x是开始值，y是步长，如在第一位(秒)使用\n" +
+               "0/15，表示从0秒开始，每15秒",
+        official: "官方解释：",
+        demoOne: "0 0 3 * * ? 每天 3 点执行",
+        demoTwo: "0 5 3 * * ? 每天 3 点 5 分执行",
+        demoThree: "0 5 3 ? * * 每天 3 点 5 分执行",
+        demoFour: "0 5/10 3 * * ? 每天 3 点 5 分，15 分，25 分，35 分，45 分，55\n" +
+                  "分这几个点执行",
+        demoFive: "0 10 3 ? * 1 每周星期天的 3 点10 分执行，注：1 表示星期天",
+        demoSix: "0 10 3 ? * 1#3 每个月的第三个星期的星期天 执行，#号只能出现在星期的位置",
+        hint: "注：第六位(星期几)中的数字可能表达不太正确，可以使用英文缩写来表示，如：Sun"
+    },
+    taskId: "任务id",
+    run: "立即运行",
+    del: "确定删除该定时任务吗？"
+}
+
 export default {
     message: {
         robot,
@@ -269,6 +314,7 @@ export default {
         androidTestCase,
         elements,
         globalParamsTs,
-        homeTS
+        homeTS,
+        jobsTS
     }
 }
