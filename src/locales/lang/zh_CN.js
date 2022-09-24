@@ -315,6 +315,17 @@ const loginTS = {
     }
 }
 
+const modulesTS = {
+    info: "模块信息",
+    name: "模块名称",
+    isNotNull: "模块名称不能为空",
+    inputName: "请输入模块名称",
+    sure: "确 定",
+    add: "添加模块",
+    del: "确定删除该模块吗?",
+}
+
+
 export default {
     message: {
         robot,
@@ -331,6 +342,7 @@ export default {
         globalParamsTs,
         homeTS,
         jobsTS,
-        loginTS
+        loginTS,
+        modulesTS
     }
 }
