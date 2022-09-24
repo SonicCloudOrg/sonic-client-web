@@ -337,6 +337,37 @@ const packagesTS = {
 
 }
 
+const projectIndexTS = {
+    code: {
+        lastWeek: "最近一周",
+        lastMonth: "最近一个月",
+        lastThreeMonth: "最近三个月",
+        day: "天",
+        hour: "小时",
+        minute: "分",
+        second: "秒",
+        runInfo: "运行情况总览",
+        unit: "单位(%)",
+        passRate: "当天通过率",
+        stateDis: "状态分布",
+        other: "其他",
+        pass: "通过",
+        fail: "失败",
+    },
+    page: {
+        to: "至",
+        startTime: "开始日期",
+        endTime: "结束日期",
+        caseTop5: "用例运行时长排行榜（Top 5）",
+        caseId: "用例id",
+        caseName: "用例名称",
+        timeLong: "时长",
+        equipmentTop5: "设备运行时长排行榜（Top 5）",
+        eqId: "设备型号",
+        serialNumber: "序列号",
+    }
+}
+
 export default {
     message: {
         robot,
@@ -355,6 +386,8 @@ export default {
         jobsTS,
         loginTS,
         modulesTS,
-        packagesTS
+        packagesTS,
+        projectIndexTS
     }
 }
+
