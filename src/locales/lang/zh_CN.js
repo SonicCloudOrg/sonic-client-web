@@ -325,6 +325,19 @@ const modulesTS = {
     del: "确定删除该模块吗?",
 }
 
+const packagesTS = {
+    accessGuide: "接入指南",
+    buildLink: "构建链接",
+    platform: "平台",
+    no: "未指定",
+    packageName: "安装包名称",
+    branch: "分支",
+    inputName: "输入分支名称",
+    downloadLink: "下载地址",
+    copyUrl: "复制url",
+    creatTime: "创建时间",
+
+}
 
 export default {
     message: {
@@ -343,6 +356,7 @@ export default {
         homeTS,
         jobsTS,
         loginTS,
-        modulesTS
+        modulesTS,
+        packagesTS
     }
 }
