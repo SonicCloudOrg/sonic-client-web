@@ -300,6 +300,21 @@ const jobsTS = {
     del: "确定删除该定时任务吗？"
 }
 
+const loginTS = {
+    testPlatform: "一站式云真机测试平台",
+    login: {
+        message: "注册账号/LDAP域账号登录",
+        register: "注册账号登录",
+        LDAPLogin: "LDAP域账号登录",
+    },
+    user: {
+        inputUserName: "请输入账户名",
+        inputPassword: "请输入密码",
+        longin: "登 入",
+        register: "注 册",
+    }
+}
+
 export default {
     message: {
         robot,
@@ -315,6 +330,7 @@ export default {
         elements,
         globalParamsTs,
         homeTS,
-        jobsTS
+        jobsTS,
+        loginTS
     }
 }
