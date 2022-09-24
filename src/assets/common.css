@@ -285,7 +285,7 @@ body,
 }
 
 .el-cascader-menu__wrap.el-scrollbar__wrap {
-    height: 280px !important;
+    height: 350px !important;
 }
 
 .el-select-dropdown__wrap {
