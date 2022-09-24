@@ -4,6 +4,9 @@ import {useRoute} from "vue-router";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const route = useRoute()
 const dialogVisible = ref(false)
 const pageData = ref([])
@@ -79,61 +82,61 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="全局参数信息" width="600px">
-    <el-alert style="margin-bottom: 10px" title="特殊使用"
-              description="如有多个参数值可以用 | 号隔开，分配设备时会随机分配，单次任务内参数值只会取同一个。【random】和【timestamp】参数已内置，可用作构造随机数据"
+  <el-dialog v-model="dialogVisible" :title="$t(globalParamsTs.dialogVisible.info)" width="600px">
+    <el-alert style="margin-bottom: 10px" :title="$t(globalParamsTs.dialogVisible.specialUse)"
+              :description="$t(globalParamsTs.dialogVisible.message)"
               type="info" show-icon close-text="Get!"/>
     <el-form ref="updateGlobal" :model="globalParams" size="small" class="demo-table-expand" label-width="90px"
              label-position="left">
       <el-form-item
           prop="paramsKey"
-          label="参数名"
+          :label="$t(globalParamsTs.dialogVisible.keyName)"
           :rules="{
           required: true,
-          message: '参数名不能为空，建议使用英文',
+          message: $t(globalParamsTs.dialogVisible.keyNameMessage),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="globalParams.paramsKey"
-            placeholder="请输入参数名"
+            :placeholder="$t(globalParamsTs.dialogVisible.inputName)"
         ></el-input>
       </el-form-item>
       <el-form-item
           prop="paramsValue"
-          label="参数值"
+          :label="$t(globalParamsTs.dialogVisible.valueName)"
           :rules="{
           required: true,
-          message: '参数值不能为空，多个可以用 | 号隔开',
+          message: $t(globalParamsTs.dialogVisible.valueNameMessage),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="globalParams.paramsValue"
-            placeholder="请输入参数值，多个可以用 | 号隔开"
+            :placeholder="$t(globalParamsTs.dialogVisible.inputValue)"
         ></el-input>
       </el-form-item>
     </el-form>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="summit">确 定</el-button>
+      <el-button size="small" type="primary" @click="summit">{{$t(form.confirm)}}</el-button>
     </div>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">添加全局参数</el-button>
+  <el-button size="mini" round type="primary" @click="open">{{$t(globalParamsTs.addGlobalParams)}}</el-button>
   <el-table
       :data="pageData"
       style="width: 100%; margin-top: 20px"
       border
   >
-    <el-table-column label="参数id" width="90" align="center" prop="id"></el-table-column>
-    <el-table-column label="参数名" width="240" align="center" prop="paramsKey"></el-table-column>
-    <el-table-column label="参数值" header-align="center" prop="paramsValue"></el-table-column>
-    <el-table-column label="操作" width="170" align="center">
+    <el-table-column :label="$t(globalParamsTs.paramsList.id)" width="90" align="center" prop="id"></el-table-column>
+    <el-table-column :label="$t(globalParamsTs.paramsList.name)" width="240" align="center" prop="paramsKey"></el-table-column>
+    <el-table-column :label="$t(globalParamsTs.paramsList.value)" header-align="center" prop="paramsValue"></el-table-column>
+    <el-table-column :label="$t(common.operate)" width="170" align="center">
       <template #default="scope">
         <el-button
             type="primary"
             size="mini"
             @click="editGlobalParams(scope.row.id)"
-        >编辑
+        >{{$t(common.edit)}}
         </el-button
         >
         <el-popconfirm
@@ -143,13 +146,13 @@ onMounted(() => {
             @confirm="deleteGlobal(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"
-            title="确定删除该全局参数吗？"
+            :title="$t(globalParamsTs.delMessage)"
         >
           <template #reference>
             <el-button
                 type="danger"
                 size="mini"
-            >删除
+            >{{$t(common.delete)}}
             </el-button
             >
           </template>

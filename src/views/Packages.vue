@@ -7,7 +7,6 @@ import {ElMessage} from "element-plus";
 import useClipboard from "vue-clipboard3";
 import jenkins from "../assets/img/jenkins.png"
 import {useI18n} from 'vue-i18n'
-
 const {t: $t} = useI18n()
 
 const {toClipboard} = useClipboard();
@@ -64,10 +63,10 @@ onMounted(() => {
 </script>
 <template>
   <a style="float: right;margin-bottom: 20px" href="https://sonic-cloud.gitee.io/#/SCH" target="_blank">
-    <el-button size="mini" plain type="primary">接入指南</el-button></a>
+    <el-button size="mini" plain type="primary">{{$t(packagesTS.accessGuide)}}</el-button></a>
   <el-table :data="pageData['content']" @filter-change="filter" border>
     <el-table-column width="80" label="Id" prop="id" align="center" show-overflow-tooltip/>
-    <el-table-column width="110" label="构建链接" prop="buildUrl" align="center">
+    <el-table-column width="110" :label="$t(packagesTS.buildLink)" prop="buildUrl" align="center">
       <template #default="scope">
         <div style="display: flex;
     align-items: center;
@@ -79,37 +78,37 @@ onMounted(() => {
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="平台" width="120" prop="platform" align="center"
+    <el-table-column :label="$t(packagesTS.platform)" width="120" prop="platform" align="center"
                      :filter-multiple="false" column-key="platform" :filters="[
         { text: 'Android', value: 'Android' },
         { text: 'iOS', value: 'iOS' },
       ]">
       <template #default="scope">
-        <span v-if="scope.row.platform.length === 0">未指定</span>
+        <span v-if="scope.row.platform.length === 0">{{ $t(packagesTS.no) }}</span>
         <span v-else>
               <el-tag size="small">{{ scope.row.platform.toUpperCase() }}</el-tag>
             </span>
       </template>
     </el-table-column>
-    <el-table-column label="安装包名称" prop="pkgName" header-align="center" show-overflow-tooltip>
+    <el-table-column :label="$t(packagesTS.packageName)" prop="pkgName" header-align="center" show-overflow-tooltip>
     </el-table-column>
-    <el-table-column label="分支" width="280" prop="branch" align="center">
+    <el-table-column :label="$t(packagesTS.branch)" width="280" prop="branch" align="center">
       <template #header>
-        <el-input v-model="branch" size="mini" @input="getPackageList()" placeholder="输入分支名称"/>
+        <el-input v-model="branch" size="mini" @input="getPackageList()" :placeholder="$t(packagesTS.inputName)"/>
       </template>
     </el-table-column>
-    <el-table-column label="下载地址" width="180" prop="url" align="center">
+    <el-table-column :label="$t(packagesTS.downloadLink)" width="180" prop="url" align="center">
       <template #default="scope">
         <el-button
             type="primary"
             size="mini"
             @click="copy(scope.row.url)"
-        >复制url
+        >{{ $t(packagesTS.copyUrl) }}
         </el-button>
       </template>
     </el-table-column>
     <el-table-column
-        label="创建时间"
+        :label="$t(packagesTS.creatTime)"
         width="200"
         prop="createTime"
         align="center"

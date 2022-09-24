@@ -5,6 +5,9 @@ import {useRoute} from "vue-router";
 import Header from "../components/Header.vue"
 import defaultLogo from '../assets/logo.png'
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const store = useStore();
 const route = useRoute();
 onMounted(() => {
@@ -41,86 +44,86 @@ onMounted(() => {
         </div>
         <el-menu-item :index="'/Home/' + route.params.projectId + '/ProjectIndex'">
           <i class="el-icon-data-analysis"></i>
-          <template #title>项目概况</template>
+          <template #title>{{$t(homeTS.projectOverview)}}</template>
         </el-menu-item>
 
         <el-sub-menu index="2">
           <template #title>
             <i class="el-icon-folder-opened"></i>
-            <span>测试用例管理</span>
+            <span>{{$t(homeTS.testCaseManagement)}}</span>
           </template>
           <el-sub-menu index="1-4">
-            <template #title><i class="el-icon-tickets"></i>测试用例</template>
+            <template #title><i class="el-icon-tickets"></i>{{$t(homeTS.testCase.case)}}</template>
             <el-menu-item :index="'/Home/' + route.params.projectId + '/AndroidTestCase'">
-              <i class="el-icon-d-arrow-right"></i>安卓端测试用例
+              <i class="el-icon-d-arrow-right"></i>{{$t(homeTS.testCase.adCase)}}
             </el-menu-item>
             <el-menu-item :index="'/Home/' + route.params.projectId + '/IOSTestCase'">
-              <i class="el-icon-d-arrow-right"></i>iOS端测试用例
+              <i class="el-icon-d-arrow-right"></i>{{$t(homeTS.testCase.iosCase)}}
             </el-menu-item>
           </el-sub-menu>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/TestSuites'">
-            <i class="el-icon-document-copy"></i>测试套件
+            <i class="el-icon-document-copy"></i>{{$t(homeTS.testSuite)}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Jobs'">
-            <i class="el-icon-timer"></i>定时任务
+            <i class="el-icon-timer"></i>{{$t(routes.timedTask)}}
           </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="5">
           <template #title>
             <i class="el-icon-lock"></i>
-            <span>测试数据管理</span>
+            <span>{{$t(homeTS.testDataManagement)}}</span>
           </template>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Elements'">
-            <i class="el-icon-thumb"></i>控件元素
+            <i class="el-icon-thumb"></i>{{$t(routes.controlElement)}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/PublicStep'">
-            <i class="el-icon-star-off"></i>公共步骤
+            <i class="el-icon-star-off"></i>{{$t(routes.publicSteps)}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/GlobalParams'">
-            <i class="el-icon-user"></i>全局参数
+            <i class="el-icon-user"></i>{{$t(routes.globalParameter)}}
           </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="4">
           <template #title>
             <i class="el-icon-paperclip"></i>
-            <span>测试结果分析</span>
+            <span>{{$t(homeTS.testResults)}}</span>
           </template>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Results'">
-            <i class="el-icon-s-data"></i>测试结果
+            <i class="el-icon-s-data"></i>{{$t(routes.testResult)}}
           </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="7">
           <template #title>
             <i class="el-icon-connection"></i>
-            <span>持续集成设置</span>
+            <span>{{$t(homeTS.setting)}}</span>
           </template>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Packages'" >
-            <i class="el-icon-suitcase"></i>安装包管理
+            <i class="el-icon-suitcase"></i>{{$t(homeTS.package.mange)}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/InstallPackage'" disabled>
-            <i class="el-icon-sold-out"></i>批量装包
+            <i class="el-icon-sold-out"></i>{{$t(homeTS.package.bulk)}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Crash'" disabled>
-            <i class="el-icon-position"></i>崩溃上报
+            <i class="el-icon-position"></i>{{$t(homeTS.crashReport)}}
           </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="6">
           <template #title>
             <i class="el-icon-setting"></i>
-            <span>项目相关设置</span>
+            <span>{{$t(homeTS.projectSetting.setting)}}</span>
           </template>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Modules'">
-            <i class="el-icon-price-tag"></i>模块管理
+            <i class="el-icon-price-tag"></i>{{$t(homeTS.projectSetting.mange)}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Versions'">
-            <i class="el-icon-coin"></i>版本迭代
+            <i class="el-icon-coin"></i>{{$t(homeTS.projectSetting.update)}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/ProjectOption'">
-            <i class="el-icon-key"></i>项目设置
+            <i class="el-icon-key"></i>{{$t(routes.projectSetting)}}
           </el-menu-item>
         </el-sub-menu>
       </el-menu>

@@ -8,6 +8,9 @@ import {ElMessage} from "element-plus";
 import {useRoute, useRouter} from "vue-router";
 import {useStore} from "vuex";
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const router = useRouter()
 const route = useRoute()
 const store = useStore()
@@ -99,10 +102,10 @@ onMounted(() => {
         body-style="background-color:#FFFFFF;text-align:center;position:relative"
     >
       <img :src="logo" width="270"/>
-      <el-divider class="device-card-divider">一站式云真机测试平台</el-divider>
+      <el-divider class="device-card-divider">{{$t(loginTS.testPlatform)}}</el-divider>
       <el-tabs type="border-card" stretch style="margin-top: 30px" v-loading="configLoading">
-        <el-tab-pane :label="(config.normalEnable&&config.ldapEnable)?'注册账号/LDAP域账号登录':
-(config.normalEnable?'注册账号登录':(config.ldapEnable?'LDAP域账号登录':''))">
+        <el-tab-pane :label="(config.normalEnable&&config.ldapEnable)?$t(loginTS.login.message):
+(config.normalEnable?$t(loginTS.login.register):(config.ldapEnable?$t(loginTS.login.LDAPLogin):''))">
           <el-form
               style="margin-top: 10px"
               ref="loginForm"
@@ -114,7 +117,7 @@ onMounted(() => {
               <el-input
                   prefix-icon="el-icon-user"
                   v-model="user.userName"
-                  placeholder="请输入账户名"
+                  :placeholder="$t(longinTS.user.inputUserName)"
               ></el-input>
             </el-form-item>
             <el-form-item prop="password">
@@ -123,7 +126,7 @@ onMounted(() => {
                   type="password"
                   show-password
                   v-model="user.password"
-                  placeholder="请输入密码"
+                  :placeholder="$t(longinTS.user.inputPassword)"
               ></el-input>
             </el-form-item>
             <el-button
@@ -132,12 +135,12 @@ onMounted(() => {
                 style="width: 100%"
                 @click="login"
                 :loading="loading"
-            >登 入
+            >{{$t(longinTS.user.longin)}}
             </el-button
             >
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="注 册" v-if="config.registerEnable">
+        <el-tab-pane :label="$t(longinTS.user.register)" v-if="config.registerEnable">
           <el-form
               style="margin-top: 10px"
               ref="registerForm"
@@ -148,7 +151,7 @@ onMounted(() => {
               <el-input
                   prefix-icon="el-icon-user"
                   v-model="register.userName"
-                  placeholder="请输入账户名"
+                  :placeholder="$t(longinTS.user.inputUserName)"
               ></el-input>
             </el-form-item>
             <el-form-item prop="password">
@@ -156,8 +159,8 @@ onMounted(() => {
                   prefix-icon="el-icon-lock"
                   type="password"
                   show-password
-                  v-model="register.password"
-                  placeholder="请输入密码"
+        ·            v-model="register.password"
+                  :placeholder="$t(longinTS.user.inputPassword)"
               ></el-input>
             </el-form-item>
             <!-- <el-form-item prop="password">
@@ -172,7 +175,7 @@ onMounted(() => {
                 style="width: 100%"
                 @click="registerIn"
                 :loading="loading"
-            >注 册
+            >{{$t(longinTS.user.register)}}
             </el-button
             >
           </el-form>
