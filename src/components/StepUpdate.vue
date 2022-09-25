@@ -997,10 +997,16 @@ onMounted(() => {
     </div>
 
     <div v-if="step.stepType === 'toWebView'">
-      <el-form-item label="WebView">
+      <el-form-item label="包名">
         <el-input
             v-model="step.content"
-            placeholder="请输入WebView名称"
+            placeholder="请输入WebView所在包名"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="进程名">
+        <el-input
+            v-model="step.text"
+            placeholder="（可选）请输入WebView所在进程名，不输入默认为包名"
         ></el-input>
       </el-form-item>
     </div>
