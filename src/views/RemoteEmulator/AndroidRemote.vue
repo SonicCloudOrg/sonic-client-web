@@ -3423,7 +3423,7 @@ onMounted(() => {
                       <div>
                         <div style="display: flex;align-items: center;">
                           <img :src="w.favicon" v-if="w.favicon" width="15" style="margin-right: 5px"/>
-                          <strong>{{ w.title.length > 0 ? w.title : '无标题' }}</strong>
+                          <strong>{{ w.title.length > 0 ? (w.title.length > 80 ? w.title.substring(0, 80) + '...' : w.title): '无标题' }}</strong>
                         </div>
                         <div style="color: #909399">{{
                             w.url.length > 50 ? w.url.substring(0, 50) + '...' : w.url
