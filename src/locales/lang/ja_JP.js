@@ -421,6 +421,16 @@ const ResultsTS = {
     interrupt: "中断",
     del: "确定删除该测试报告吗?",
 }
+
+const stepListViewTS = {
+    caseInfo: "用例详情",
+    platformToBe: "所属平台",
+    module: "模块",
+    versionName: "版本名称",
+    designer: "设计人",
+    last: "最后修改日期",
+    testMessage: "用例描述",
+}
 export default {
     message: {
         robot,
@@ -443,7 +453,8 @@ export default {
         projectIndexTS,
         publicStepTS,
         resultDetailTS,
-        ResultsTS
+        ResultsTS,
+        stepListViewTS
     }
 }
 
