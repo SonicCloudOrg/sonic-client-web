@@ -414,6 +414,15 @@ const resultDetailTS = {
         onRecording: "暂无录像"
     }
 }
+
+const ResultsTS = {
+    name: "测试套件名称",
+    testReport: "测试报告",
+    lookReport: "查看报告",
+    interruptTest: "确定中断本次测试吗?",
+    interrupt: "中断",
+    del: "确定删除该测试报告吗?",
+}
 export default {
     message: {
         robot,
@@ -435,7 +444,9 @@ export default {
         packagesTS,
         projectIndexTS,
         publicStepTS,
-        resultDetailTS
+        resultDetailTS,
+        ResultsTS
     }
 }
+
 
