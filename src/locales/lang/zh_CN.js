@@ -385,6 +385,35 @@ const publicStepTS = {
     sureDel: "确定删除该公共步骤吗?",
     }
 
+const resultDetailTS = {
+    memoryInfo: "内存详情",
+    unit: "单位(KB)",
+    battery: "电量详情",
+    memoryShort: "内存数据不足",
+    batteryShort: "电量数据不足",
+    performance: "性能数据不足",
+    caseRun: "用例运行状态分布",
+    noStart: "未开始",
+    runIng: "运行中",
+    caseStatus: "用例状态",
+    page: {
+        reportInfo: "报告信息",
+        resultId: "结果Id",
+        executeUser: "执行用户",
+        runStatus: "运行状态",
+        testPass: "测试通过",
+        testFail: "测试失败",
+        testAlert: "测试告警",
+        endTime: "结束时间",
+        totalTime: "总耗时",
+        runInfo: "运行信息",
+        total: "耗时",
+        runLog: "运行日志",
+        performanceInfo: "性能信息",
+        runRecording: "运行录像",
+        onRecording: "暂无录像"
+    }
+}
 export default {
     message: {
         robot,
@@ -405,7 +434,8 @@ export default {
         modulesTS,
         packagesTS,
         projectIndexTS,
-        publicStepTS
+        publicStepTS,
+        resultDetailTS
     }
 }
 
