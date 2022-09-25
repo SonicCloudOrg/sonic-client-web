@@ -431,6 +431,25 @@ const stepListViewTS = {
     last: "最后修改日期",
     testMessage: "用例描述",
 }
+const testSuitesTS = {
+    testStart: "测试已开始...",
+    info: "测试套件信息",
+    add: "添加测试套件",
+    id: "套件Id",
+    searchMessage: "输入测试套件名称搜索",
+    kitPlatform: "套件平台",
+    coverType: "覆盖类型",
+    testCover: "用例覆盖",
+    deviceCover: "设备覆盖",
+    associated: "关联设备",
+    device: {
+        id: "设备id",
+    },
+    viewList: "查看列表",
+    associatedCase: "关联用例",
+    run: "运行",
+    delMessage: "确定删除该测试套件吗？套件下的用例将移出该套件"
+}
 export default {
     message: {
         robot,
@@ -454,7 +473,7 @@ export default {
         publicStepTS,
         resultDetailTS,
         ResultsTS,
-        stepListViewTS
+        stepListViewTS,
+        testSuitesTS
     }
 }
-
