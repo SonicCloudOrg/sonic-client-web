@@ -3,7 +3,8 @@ import {onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
-
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
 const route = useRoute()
 const dialogVisible = ref(false)
 const pageData = ref([])
@@ -79,26 +80,26 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="版本迭代信息" width="400px">
+  <el-dialog v-model="dialogVisible" :title="$t('versionsTS.iteration')" width="400px">
     <el-form ref="updateVersion" :model="versions" size="small" class="demo-table-expand" label-width="90px"
              label-position="left">
       <el-form-item
           prop="versionName"
-          label="版本名称"
+          :label="$t('stepListViewTS.versionName')"
           :rules="{
           required: true,
-          message: '版本名称不能为空',
+          message: $t('versionsTS.noNull'),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="versions.versionName"
-            placeholder="请输入版本名称"
+            :placeholder="$t('versionsTS.inputName')"
         ></el-input>
       </el-form-item>
-      <el-form-item label="时间" prop="createTime" :rules="{
+      <el-form-item :label="$t('versions.time')" prop="createTime" :rules="{
           required: true,
-          message: '时间不能为空',
+          message: $t('versionsTS.timeNoNull'),
           trigger: 'change',
         }">
         <el-date-picker
@@ -106,15 +107,15 @@ onMounted(() => {
             style="width: 100%"
             v-model="versions.createTime"
             type="datetime"
-            placeholder="选择日期时间"
+            :placeholder="$t('versionsTS.selectTime')"
         ></el-date-picker>
       </el-form-item>
     </el-form>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="summit">确 定</el-button>
+      <el-button size="small" type="primary" @click="summit">{{ $t('modulesTS.sure')}}</el-button>
     </div>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">添加版本迭代</el-button>
+  <el-button size="mini" round type="primary" @click="open">{{ $t(versionsTS.addVersions) }}</el-button>
   <el-timeline style="margin-top: 20px">
     <el-timeline-item :hollow="true" :type="index===0?'success':'info'" v-for="(v,index) in pageData"
                       :timestamp="v.createTime" placement="top">
@@ -125,7 +126,7 @@ onMounted(() => {
               type="primary"
               size="mini"
               @click="editVersion(v.id)"
-          >编辑
+          >{{$t('common.edit')}}
           </el-button
           >
           <el-popconfirm
@@ -135,13 +136,13 @@ onMounted(() => {
               @confirm="deleteVersion(v.id)"
               icon="el-icon-warning"
               iconColor="red"
-              title="确定删除该版本吗？"
+              :title="$t('versionsTS.delMessage')"
           >
             <template #reference>
               <el-button
                   type="danger"
                   size="mini"
-              >删除
+              >{{$t('common.delete')}}
               </el-button
               >
             </template>

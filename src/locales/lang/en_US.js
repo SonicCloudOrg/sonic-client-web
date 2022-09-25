@@ -452,6 +452,18 @@ const testSuitesTS = {
     run: "运行",
     delMessage: "确定删除该测试套件吗？套件下的用例将移出该套件"
 }
+
+const versionsTS = {
+    iteration: "版本迭代信息",
+    noNull: "版本名称不能为空",
+    inputName: "请输入版本名称",
+    time: "时间",
+    timeNoNull: "时间不能为空",
+    selectTime: "选择日期时间",
+    addVersions: "添加版本迭代",
+    delMessage: "确定删除该版本吗？",
+
+}
 export default {
     message: {
         robot,
@@ -476,7 +488,10 @@ export default {
         resultDetailTS,
         ResultsTS,
         stepListViewTS,
-        testSuitesTS
+        testSuitesTS,
+        versionsTS
     }
 }
+
+
 
