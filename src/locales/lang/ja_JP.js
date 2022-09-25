@@ -368,6 +368,21 @@ const projectIndexTS = {
     }
 }
 
+const publicStepTS = {
+    info: "公共步骤信息",
+    add: "添加公共步骤",
+    id: "公共步骤Id",
+    name: "公共步骤名称",
+    platform: "平台",
+    android: "安卓",
+    list: "步骤列表",
+    stepId: "步骤Id",
+    useCase: "所属用例",
+    stepInfo: "步骤详情",
+    viewSteps: "查看步骤",
+    sureDel: "确定删除该公共步骤吗?",
+}
+
 export default {
     message: {
         robot,
@@ -387,7 +402,7 @@ export default {
         loginTS,
         modulesTS,
         packagesTS,
-        projectIndexTS
+        projectIndexTS,
+        publicStepTS
     }
 }
-

@@ -123,36 +123,36 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" :title="$t(jobsTS.dialogVisible.message)" width="600px">
+  <el-dialog v-model="dialogVisible" :title="$t('jobsTS.dialogVisible.message')" width="600px">
     <el-form ref="updateJob" :model="jobs" size="small" class="demo-table-expand" label-width="100px"
              label-position="left">
       <el-form-item
           prop="name"
-          :label="$t(jobsTS.dialogVisible.name)"
+          :label="$t('jobsTS.dialogVisible.name')"
           :rules="{
           required: true,
-          message: $t(jobsTS.dialogVisible.nameIsNull),
+          message: $t('jobsTS.dialogVisible.nameIsNull'),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="jobs.name"
-            :placeholder="$t(jobsTS.dialogVisible.inputName)"
+            :placeholder="$t('jobsTS.dialogVisible.inputName')"
         ></el-input>
       </el-form-item>
       <el-form-item
           prop="suiteId"
-          :label="$t(routes.testSuite)"
+          :label="$t('routes.testSuite')"
           :rules="{
           required: true,
-          message: $t(jobsTS.dialogVisible.testSuiteIsNull),
+          message: $t('jobsTS.dialogVisible.testSuiteIsNull'),
           trigger: 'change',
         }"
       >
         <el-select
             style="width: 100%"
             v-model="jobs.suiteId"
-            :placeholder="$t(jobsTS.dialogVisible.chooseTestSuite)"
+            :placeholder="$t('jobsTS.dialogVisible.chooseTestSuite')"
         >
           <el-option
               v-for="item in testSuiteList"
@@ -164,64 +164,64 @@ onMounted(() => {
       </el-form-item>
       <el-form-item
           prop="cronExpression"
-          :label="$t(jobsTS.dialogVisible.cron)"
+          :label="$t('jobsTS.dialogVisible.cron')"
           :rules="{
           required: true,
-          message: $t(jobsTS.dialogVisible.cronIsNull),
+          message: $t('jobsTS.dialogVisible.cronIsNull'),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="jobs.cronExpression"
-            :placeholder="$t(jobsTS.dialogVisible.inputCron)"
+            :placeholder="$t('jobsTS.dialogVisible.inputCron')"
         ></el-input>
       </el-form-item>
     </el-form>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="summit">{{$t(form.confirm)}}</el-button>
+      <el-button size="small" type="primary" @click="summit">{{$t('form.confirm')}}</el-button>
     </div>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">{{$t(jobsTS.addCron)}}</el-button>
+  <el-button size="mini" round type="primary" @click="open">{{$t('jobsTS.addCron')}}</el-button>
   <el-button size="small" type="text" @click="dialogCron = true"
-  >{{$t(jobsTS.whatCron)}}
+  >{{$t('jobsTS.whatCron')}}
   </el-button
   >
   <el-dialog
-      :title="$t(jobsTS.whatCron)"
+      :title="$t('jobsTS.whatCron')"
       v-model="dialogCron"
       width="720px"
       center
   >
-    <p>{{$t(jobsTS.cronInfo.one)}}</p>
-    <p>{{$t(jobsTS.cronInfo.two)}}</p>
-    <p>{{$t(jobsTS.cronInfo.three)}}</p>
-    <p>{{$t(jobsTS.cronInfo.four)}}</p>
-    <p>{{$t(jobsTS.cronInfo.five)}}</p>
-    <p>{{$t(jobsTS.cronInfo.six)}}</p>
-    <p>{{$t(jobsTS.cronInfo.seven)}}</p>
-    <p>{{$t(jobsTS.cronInfo.asterisk)}}</p>
-    <p>{{$t(jobsTS.cronInfo.questionMark)}}</p>
-    <p>{{$t(jobsTS.cronInfo.bar)}}</p>
+    <p>{{$t('jobsTS.cronInfo.one')}}</p>
+    <p>{{$t('jobsTS.cronInfo.two')}}</p>
+    <p>{{$t('jobsTS.cronInfo.three')}}</p>
+    <p>{{$t('jobsTS.cronInfo.four')}}</p>
+    <p>{{$t('jobsTS.cronInfo.five')}}</p>
+    <p>{{$t('jobsTS.cronInfo.six')}}</p>
+    <p>{{$t('jobsTS.cronInfo.seven')}}</p>
+    <p>{{$t('jobsTS.cronInfo.asterisk')}}</p>
+    <p>{{$t('jobsTS.cronInfo.questionMark')}}</p>
+    <p>{{$t('jobsTS.cronInfo.bar')}}</p>
     <p>
-      {{$t(jobsTS.cronInfo.comma)}}
+      {{$t('jobsTS.cronInfo.comma')}}
     </p>
     <p>
-      {{$t(jobsTS.cronInfo.slash)}}
+      {{$t('jobsTS.cronInfo.slash')}}
     </p>
-    <p>{{$t(jobsTS.cronInfo.official)}}</p>
-    <p>{{$t(jobsTS.cronInfo.demoOne)}}</p>
-    <p>{{$t(jobsTS.cronInfo.demoTwo)}}</p>
-    <p>{{$t(jobsTS.cronInfo.demoThree)}}</p>
+    <p>{{$t('jobsTS.cronInfo.official')}}</p>
+    <p>{{$t('jobsTS.cronInfo.demoOne')}}</p>
+    <p>{{$t('jobsTS.cronInfo.demoTwo')}}</p>
+    <p>{{$t('jobsTS.cronInfo.demoThree')}}</p>
     <p>
-      {{$t(jobsTS.cronInfo.demoFour)}}
+      {{$t('jobsTS.cronInfo.demoFour')}}
     </p>
-    <p>{{$t(jobsTS.cronInfo.demoFive)}}</p>
+    <p>{{$t('jobsTS.cronInfo.demoFive')}}</p>
     <p>
-      {{$t(jobsTS.cronInfo.demoSix)}}
+      {{$t('jobsTS.cronInfo.demoSix')}}
     </p>
     <p></p>
     <p>
-      {{$t(jobsTS.cronInfo.hint)}}
+      {{$t('jobsTS.cronInfo.hint')}}
     </p>
   </el-dialog>
   <el-table
@@ -229,15 +229,15 @@ onMounted(() => {
       style="width: 100%; margin-top: 20px"
       border
   >
-    <el-table-column :label="$t(jobsTS.taskId)" width="90" align="center" prop="id"></el-table-column>
-    <el-table-column :label="$t(jobsTS.dialogVisible.name)" width="240" align="center" prop="name"></el-table-column>
-    <el-table-column :label="$t(routes.testSuite)" width="240" align="center" prop="suiteId">
+    <el-table-column :label="$t('jobsTS.taskId')" width="90" align="center" prop="id"></el-table-column>
+    <el-table-column :label="$t('jobsTS.dialogVisible.name')" width="240" align="center" prop="name"></el-table-column>
+    <el-table-column :label="$t('routes.testSuite')" width="240" align="center" prop="suiteId">
       <template #default="scope">
         {{ getSuiteName(scope.row.suiteId) }}
       </template>
     </el-table-column>
-    <el-table-column :label="$t(jobsTS.dialogVisible.cron)" header-align="center" prop="cronExpression"></el-table-column>
-    <el-table-column :label="$t(agent.status.name)" width="90" align="center">
+    <el-table-column :label="$t('jobsTS.dialogVisible.cron')" header-align="center" prop="cronExpression"></el-table-column>
+    <el-table-column :label="$t('agent.status.name')" width="90" align="center">
       <template #default="scope">
         <el-switch
             v-model="scope.row.status"
@@ -254,7 +254,7 @@ onMounted(() => {
         </el-switch>
       </template>
     </el-table-column>
-    <el-table-column :label="$t(common.operate)" width="250" align="center">
+    <el-table-column :label="$t('common.operate')" width="250" align="center">
       <template #default="scope">
         <el-button
             type="success"
@@ -262,14 +262,14 @@ onMounted(() => {
             @click="updateStatus(
                 scope.row.id,3
               )"
-        >{{$t(jobsTS.run)}}
+        >{{$t('jobsTS.run')}}
         </el-button
         >
         <el-button
             type="primary"
             size="mini"
             @click="editJobs(scope.row.id)"
-        >{{ $t(common.edit) }}
+        >{{ $t('common.edit') }}
         </el-button
         >
         <el-popconfirm
@@ -279,13 +279,13 @@ onMounted(() => {
             @confirm="deleteJob(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"
-            :title="$t(jobsTS.del)"
+            :title="$t('jobsTS.del')"
         >
           <template #reference>
             <el-button
                 type="danger"
                 size="mini"
-            >{{ $t(common.delete) }}
+            >{{ $t('common.delete') }}
             </el-button
             >
           </template>
