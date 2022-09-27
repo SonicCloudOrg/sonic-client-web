@@ -4,6 +4,9 @@ import {useRoute} from "vue-router";
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const route = useRoute()
 const dialogVisible = ref(false)
 const pageData = ref([])
@@ -77,29 +80,29 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="模块信息" width="400px">
+  <el-dialog v-model="dialogVisible" :title="$t(modulesTS.info)" width="400px">
     <el-form ref="updateModule" :model="modules" size="small" class="demo-table-expand" label-width="90px"
              label-position="left">
       <el-form-item
           prop="name"
-          label="模块名称"
+          :label="$t(modulesTS.name)"
           :rules="{
           required: true,
-          message: '模块名称不能为空',
+          message: $t(modulesTS.isNotNull),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="modules.name"
-            placeholder="请输入模块名称"
+            :placeholder="$t(modulesTS.inputName)"
         ></el-input>
       </el-form-item>
     </el-form>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="summit">确 定</el-button>
+      <el-button size="small" type="primary" @click="summit">{{$t(modulesTS.sure)}}</el-button>
     </div>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">添加模块</el-button>
+  <el-button size="mini" round type="primary" @click="open">{{$t(modulesTS.add)}}</el-button>
   <el-row :gutter="20">
     <el-col :span="6" v-for="m in pageData" style="margin-top: 20px">
       <el-card>
@@ -110,7 +113,7 @@ onMounted(() => {
               type="primary"
               size="mini"
               @click="editModule(m.id)"
-          >编辑
+          >{{$t(common.edit)}}
           </el-button
           >
           <el-popconfirm
@@ -120,13 +123,13 @@ onMounted(() => {
               @confirm="deleteModule(m.id)"
               icon="el-icon-warning"
               iconColor="red"
-              title="确定删除该模块吗？"
+              :title="$t(modulesTS.del)"
           >
             <template #reference>
               <el-button
                   type="danger"
                   size="mini"
-              >删除
+              >{{$t(common.delete)}}
               </el-button
               >
             </template>

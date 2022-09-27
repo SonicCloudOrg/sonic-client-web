@@ -79,7 +79,6 @@ let imgHeight = 0;
 const loading = ref(false);
 const appList = ref([])
 const filterAppText = ref("")
-const remoteAppiumPort = ref(0)
 // 旋转状态 // 0 90 180 270
 let directionStatus = {
   value: 0,
@@ -587,10 +586,6 @@ const websocketOnmessage = (message) => {
       nextTick(() => {
         iFrameHeight.value = document.body.clientHeight - 280;
       });
-      break;
-    }
-    case 'appiumPort': {
-      remoteAppiumPort.value = JSON.parse(message.data).port
       break;
     }
     case 'tree': {
@@ -1567,27 +1562,6 @@ onMounted(() => {
                            style="margin-top: 18px;margin-bottom: 18px">
                         <el-card>
                           <strong>driver未初始化成功</strong>
-                        </el-card>
-                      </div>
-                    </div>
-                  </el-tab-pane>
-                  <el-tab-pane label="远程Appium">
-                    <div style="padding: 13px 0">
-                      <div v-if="remoteAppiumPort!==0" style="margin-top: 20px;margin-bottom: 20px">
-                        <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
-                                 @click="copy('http://'+agent['host']+':'+remoteAppiumPort+'/wd/hub')">
-                          <strong style="color: #F2F6FC">http://{{ agent['host'] }}:{{
-                              remoteAppiumPort
-                            }}/wd/hub</strong>
-                        </el-card>
-                      </div>
-                      <div v-else v-loading="remoteAppiumPort===0"
-                           element-loading-spinner="el-icon-lock"
-                           element-loading-background="rgba(255, 255, 255, 1)"
-                           element-loading-text="AppiumDriver未初始化！"
-                           style="margin-top: 18px;margin-bottom: 18px">
-                        <el-card>
-                          <strong>AppiumDriver未初始化！</strong>
                         </el-card>
                       </div>
                     </div>

@@ -5,6 +5,9 @@ import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import Pageable from '../components/Pageable.vue'
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const route = useRoute()
 const dialogVisible = ref(false)
 const pageData = ref({})
@@ -120,36 +123,36 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="定时任务信息" width="600px">
+  <el-dialog v-model="dialogVisible" :title="$t(jobsTS.dialogVisible.message)" width="600px">
     <el-form ref="updateJob" :model="jobs" size="small" class="demo-table-expand" label-width="100px"
              label-position="left">
       <el-form-item
           prop="name"
-          label="任务名称"
+          :label="$t(jobsTS.dialogVisible.name)"
           :rules="{
           required: true,
-          message: '任务名称不能为空',
+          message: $t(jobsTS.dialogVisible.nameIsNull),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="jobs.name"
-            placeholder="请输入任务名称"
+            :placeholder="$t(jobsTS.dialogVisible.inputName)"
         ></el-input>
       </el-form-item>
       <el-form-item
           prop="suiteId"
-          label="测试套件"
+          :label="$t(routes.testSuite)"
           :rules="{
           required: true,
-          message: '测试套件不能为空',
+          message: $t(jobsTS.dialogVisible.testSuiteIsNull),
           trigger: 'change',
         }"
       >
         <el-select
             style="width: 100%"
             v-model="jobs.suiteId"
-            placeholder="请选择测试套件"
+            :placeholder="$t(jobsTS.dialogVisible.chooseTestSuite)"
         >
           <el-option
               v-for="item in testSuiteList"
@@ -161,67 +164,64 @@ onMounted(() => {
       </el-form-item>
       <el-form-item
           prop="cronExpression"
-          label="Cron表达式"
+          :label="$t(jobsTS.dialogVisible.cron)"
           :rules="{
           required: true,
-          message: 'Cron表达式不能为空',
+          message: $t(jobsTS.dialogVisible.cronIsNull),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="jobs.cronExpression"
-            placeholder="请输入Cron表达式"
+            :placeholder="$t(jobsTS.dialogVisible.inputCron)"
         ></el-input>
       </el-form-item>
     </el-form>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="summit">确 定</el-button>
+      <el-button size="small" type="primary" @click="summit">{{$t(form.confirm)}}</el-button>
     </div>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">添加定时任务</el-button>
+  <el-button size="mini" round type="primary" @click="open">{{$t(jobsTS.addCron)}}</el-button>
   <el-button size="small" type="text" @click="dialogCron = true"
-  >什么是Cron表达式？
+  >{{$t(jobsTS.whatCron)}}
   </el-button
   >
   <el-dialog
-      title="什么是Cron表达式？"
+      :title="$t(jobsTS.whatCron)"
       v-model="dialogCron"
       width="720px"
       center
   >
-    <p>* 第一位，表示秒，取值 0-59</p>
-    <p>* 第二位，表示分，取值 0-59</p>
-    <p>* 第三位，表示小时，取值 0-23</p>
-    <p>* 第四位，日期，取值 1-31</p>
-    <p>* 第五位，月份，取值 1-12</p>
-    <p>* 第六位，星期几，取值 1-7</p>
-    <p>* 第七位，年份，可以留空，取值 1970-2099</p>
-    <p>(*) 星号：可以理解为“每”的意思，每秒、每分</p>
-    <p>(?) 问号：只能出现在日期和星期这两个位置，表示这个位置的值不确定</p>
-    <p>(-) 表达一个范围，如在小时字段中使用 10-12 ，表示从10点到12点</p>
+    <p>{{$t(jobsTS.cronInfo.one)}}</p>
+    <p>{{$t(jobsTS.cronInfo.two)}}</p>
+    <p>{{$t(jobsTS.cronInfo.three)}}</p>
+    <p>{{$t(jobsTS.cronInfo.four)}}</p>
+    <p>{{$t(jobsTS.cronInfo.five)}}</p>
+    <p>{{$t(jobsTS.cronInfo.six)}}</p>
+    <p>{{$t(jobsTS.cronInfo.seven)}}</p>
+    <p>{{$t(jobsTS.cronInfo.asterisk)}}</p>
+    <p>{{$t(jobsTS.cronInfo.questionMark)}}</p>
+    <p>{{$t(jobsTS.cronInfo.bar)}}</p>
     <p>
-      (,) 逗号，表达一个列表值，如在星期字段中使用 1,2,4
-      ，则表示星期一、星期二、星期四
+      {{$t(jobsTS.cronInfo.comma)}}
     </p>
     <p>
-      (/) 斜杠，如 x/y ，x是开始值，y是步长，如在第一位(秒)使用
-      0/15，表示从0秒开始，每15秒
+      {{$t(jobsTS.cronInfo.slash)}}
     </p>
-    <p>官方解释：</p>
-    <p>0 0 3 * * ? 每天 3 点执行</p>
-    <p>0 5 3 * * ? 每天 3 点 5 分执行</p>
-    <p>0 5 3 ? * * 每天 3 点 5 分执行</p>
+    <p>{{$t(jobsTS.cronInfo.official)}}</p>
+    <p>{{$t(jobsTS.cronInfo.demoOne)}}</p>
+    <p>{{$t(jobsTS.cronInfo.demoTwo)}}</p>
+    <p>{{$t(jobsTS.cronInfo.demoThree)}}</p>
     <p>
-      0 5/10 3 * * ? 每天 3 点 5 分，15 分，25 分，35 分，45 分，55
-      分这几个点执行
+      {{$t(jobsTS.cronInfo.demoFour)}}
     </p>
-    <p>0 10 3 ? * 1 每周星期天的 3 点10 分执行，注：1 表示星期天</p>
+    <p>{{$t(jobsTS.cronInfo.demoFive)}}</p>
     <p>
-      0 10 3 ? * 1#3 每个月的第三个星期的星期天 执行，#号只能出现在星期的位置
+      {{$t(jobsTS.cronInfo.demoSix)}}
     </p>
     <p></p>
     <p>
-      注：第六位(星期几)中的数字可能表达不太正确，可以使用英文缩写来表示，如：Sun
+      {{$t(jobsTS.cronInfo.hint)}}
     </p>
   </el-dialog>
   <el-table
@@ -229,15 +229,15 @@ onMounted(() => {
       style="width: 100%; margin-top: 20px"
       border
   >
-    <el-table-column label="任务id" width="90" align="center" prop="id"></el-table-column>
-    <el-table-column label="任务名称" width="240" align="center" prop="name"></el-table-column>
-    <el-table-column label="测试套件" width="240" align="center" prop="suiteId">
+    <el-table-column :label="$t(jobsTS.taskId)" width="90" align="center" prop="id"></el-table-column>
+    <el-table-column :label="$t(jobsTS.dialogVisible.name)" width="240" align="center" prop="name"></el-table-column>
+    <el-table-column :label="$t(routes.testSuite)" width="240" align="center" prop="suiteId">
       <template #default="scope">
         {{ getSuiteName(scope.row.suiteId) }}
       </template>
     </el-table-column>
-    <el-table-column label="Cron表达式" header-align="center" prop="cronExpression"></el-table-column>
-    <el-table-column label="状态" width="90" align="center">
+    <el-table-column :label="$t(jobsTS.dialogVisible.cron)" header-align="center" prop="cronExpression"></el-table-column>
+    <el-table-column :label="$t(agent.status.name)" width="90" align="center">
       <template #default="scope">
         <el-switch
             v-model="scope.row.status"
@@ -254,7 +254,7 @@ onMounted(() => {
         </el-switch>
       </template>
     </el-table-column>
-    <el-table-column label="操作" width="250" align="center">
+    <el-table-column :label="$t(common.operate)" width="250" align="center">
       <template #default="scope">
         <el-button
             type="success"
@@ -262,14 +262,14 @@ onMounted(() => {
             @click="updateStatus(
                 scope.row.id,3
               )"
-        >立即运行
+        >{{$t(jobsTS.run)}}
         </el-button
         >
         <el-button
             type="primary"
             size="mini"
             @click="editJobs(scope.row.id)"
-        >编辑
+        >{{ $t(common.edit) }}
         </el-button
         >
         <el-popconfirm
@@ -279,13 +279,13 @@ onMounted(() => {
             @confirm="deleteJob(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"
-            title="确定删除该定时任务吗？"
+            :title="$t(jobsTS.del)"
         >
           <template #reference>
             <el-button
                 type="danger"
                 size="mini"
-            >删除
+            >{{ $t(common.delete) }}
             </el-button
             >
           </template>

@@ -6,6 +6,9 @@ import TestCaseUpdate from './TestCaseUpdate.vue'
 import {ElMessage} from "element-plus";
 import {useRouter} from "vue-router";
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const props = defineProps({
   projectId: Number,
   platform: Number,

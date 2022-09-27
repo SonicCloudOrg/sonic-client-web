@@ -51,17 +51,14 @@ defineProps({
   <span v-if="step.stepType === 'keyCode'||step.stepType === 'keyCodeSelf'">
       <el-tag size="small">按下系统{{ step.content }}键</el-tag>
   </span>
-  <span v-if="step.stepType === 'hideKey'">
-      <el-tag size="small">隐藏键盘</el-tag>
-    </span>
   <span v-if="step.stepType === 'airPlaneMode'">
-      <el-tag size="small">切换飞行模式</el-tag>
+      <el-tag size="small" style="margin-right: 10px">切换飞行模式</el-tag>{{ step.content === 'true' ? '开启' : '关闭' }}
     </span>
   <span v-if="step.stepType === 'wifiMode'">
-      <el-tag size="small">切换WIFI模式</el-tag>
+      <el-tag size="small" style="margin-right: 10px">切换WIFI模式</el-tag>{{ step.content === 'true' ? '开启' : '关闭' }}
     </span>
   <span v-if="step.stepType === 'locationMode'">
-      <el-tag size="small">切换位置服务</el-tag>
+      <el-tag size="small" style="margin-right: 10px">切换位置服务</el-tag>{{ step.content === 'true' ? '开启' : '关闭' }}
     </span>
   <span v-if="step.stepType === 'tap'">
       <el-tag size="small">点击坐标</el-tag>
@@ -85,32 +82,6 @@ defineProps({
       >滑动拖拽到</el-tag
       >
       <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
-    </span>
-  <span v-if="step.stepType === 'zoom'">
-      <el-tag size="small">多点触控</el-tag>
-      <el-tag
-          type="info"
-          size="small"
-          style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[0]['eleName'] }}</el-tag
-      >
-      <el-tag size="small">移动到</el-tag>
-      <el-tag
-          type="info"
-          size="small"
-          style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[1]['eleName'] }}</el-tag
-      >同时
-      <el-tag
-          type="info"
-          size="small"
-          style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[2]['eleName'] }}</el-tag
-      >
-      <el-tag size="small">移动到</el-tag>
-      <el-tag type="info" size="small" style="margin-left: 10px">{{
-          step.elements[3]['eleName']
-        }}</el-tag>
     </span>
   <span v-if="step.stepType === 'openApp'">
       <el-tag size="small" style="margin-right: 10px">打开应用</el-tag>
@@ -144,19 +115,19 @@ defineProps({
       <el-tag size="small" style="margin-right: 10px">切换Handle</el-tag>
       Handle页面标题：{{ step.content }}
     </span>
-  <span v-if="step.stepType === 'isExistEle'">
+  <span v-if="step.stepType === 'isExistEle' || step.stepType === 'isExistWebViewEle'">
       <el-tag size="small" style="margin-right: 10px">判断控件元素是否存在</el-tag>断言：
       <el-tag type="info" size="small" style="margin-right: 10px">{{
           step.elements[0]['eleName']
         }}</el-tag> {{ step.content === 'true' ? '存在' : '不存在' }}
     </span>
-  <span v-if="step.stepType === 'click'">
+  <span v-if="step.stepType === 'click'||step.stepType === 'webViewClick'">
       <el-tag size="small">点击控件元素</el-tag>
       <el-tag type="info" size="small" style="margin-left: 10px">{{
           step.elements[0]['eleName']
         }}</el-tag>
     </span>
-  <span v-if="step.stepType === 'sendKeys'">
+  <span v-if="step.stepType === 'sendKeys'||step.stepType === 'webViewSendKeys'">
       <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
       <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
       >输入文本</el-tag
@@ -193,13 +164,13 @@ defineProps({
       >
       {{ step.content }} ms
     </span>
-  <span v-if="step.stepType === 'clear'">
+  <span v-if="step.stepType === 'clear'||step.stepType === 'webViewClear'">
       <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
       <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
       >清空输入框</el-tag
       >
     </span>
-  <span v-if="step.stepType === 'getTextValue'">
+  <span v-if="step.stepType === 'getTextValue'||step.stepType === 'getWebViewTextValue'">
       <el-tag size="small">获取文本</el-tag>
       <el-tag
           type="info"
@@ -209,7 +180,7 @@ defineProps({
       >
       获取到变量：{{ step.content }}
     </span>
-  <span v-if="step.stepType === 'getText'">
+  <span v-if="step.stepType === 'getText'||step.stepType === 'getWebViewText'">
       <el-tag size="small">验证文本</el-tag>
       <el-tag
           type="info"

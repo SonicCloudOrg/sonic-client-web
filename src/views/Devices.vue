@@ -758,7 +758,7 @@ onUnmounted(() => {
       <el-divider></el-divider>
       <el-alert
           style="margin-bottom: 10px"
-          title="设置提示"
+          :title="$t('devices.hint')"
           type="info"
           show-icon
           :closable="false"

@@ -5,6 +5,9 @@ import {ElMessage} from "element-plus";
 import {useStore} from "vuex";
 import defaultLogo from '../assets/logo.png'
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const img = import.meta.globEager("./../assets/img/*")
 const props = defineProps({
   projectId: Number,

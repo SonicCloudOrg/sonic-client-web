@@ -84,7 +84,6 @@ const isShowPocoImg = ref(false);
 const wifiList = ref([]);
 const currentWifi = ref('');
 const isConnectWifi = ref(false);
-const remoteAppiumPort = ref(0);
 const selectPocoType = ref("");
 const pocoLoading = ref(false)
 const pocoData = ref([])
@@ -139,7 +138,7 @@ const pocoTypeList = ref([
     img: 'Cocos2dx'
   },
 ])
-const isAudoInit = ref('0')
+const isAudoInit = ref('1')
 let imgWidth = 0;
 let imgHeight = 0;
 // 旋转状态 // 0 90 180 270
@@ -763,10 +762,6 @@ const websocketOnmessage = (message) => {
           message: '上传文件失败！上传目录需要补齐文件名',
         });
       }
-      break;
-    }
-    case 'appiumPort': {
-      remoteAppiumPort.value = JSON.parse(message.data).port;
       break;
     }
     case 'adbkit': {
@@ -1679,7 +1674,7 @@ const resetAudioPlayer = () => {
   });
 };
 onBeforeMount(() => {
-  isAudoInit.value = localStorage.getItem('SonicAndroidIsAutoInit') ? localStorage.getItem('SonicAndroidIsAutoInit') : '0'
+  isAudoInit.value = localStorage.getItem('SonicAndroidIsAutoInit') ? localStorage.getItem('SonicAndroidIsAutoInit') : '1'
 })
 onMounted(() => {
   if (store.state.project.id) {
@@ -2431,23 +2426,6 @@ onMounted(() => {
                       </el-card>
                     </div>
                   </el-tab-pane>
-                  <el-tab-pane label="远程Appium">
-                    <div v-if="remoteAppiumPort!==0" style="margin-top: 20px;margin-bottom: 20px">
-                      <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
-                               @click="copy('http://'+agent['host']+':'+remoteAppiumPort+'/wd/hub')">
-                        <strong style="color: #F2F6FC">http://{{ agent['host'] }}:{{ remoteAppiumPort }}/wd/hub</strong>
-                      </el-card>
-                    </div>
-                    <div v-else v-loading="remoteAppiumPort===0"
-                         element-loading-spinner="el-icon-lock"
-                         element-loading-background="rgba(255, 255, 255, 1)"
-                         element-loading-text="AppiumDriver未初始化！"
-                         style="margin-top: 18px;margin-bottom: 18px">
-                      <el-card>
-                        <strong>AppiumDriver未初始化！</strong>
-                      </el-card>
-                    </div>
-                  </el-tab-pane>
                 </el-tabs>
               </el-col>
               <el-col :span="8">
@@ -2458,7 +2436,7 @@ onMounted(() => {
                   <div style="text-align: center">
                     <div style="margin: 8px 0px">
                       <el-button size="mini" type="primary" :disabled="isDriverFinish" :loading="driverLoading"
-                                 @click="openDriver">初始化AppiumDriver
+                                 @click="openDriver">初始化UIAutomator2Server
                       </el-button>
                       <div style="margin-top: 10px">
                         <el-switch class="refresh" active-value="1"
@@ -3194,7 +3172,7 @@ onMounted(() => {
                   <el-result icon="info" title="提示" subTitle="请先获取控件元素，该功能需要初始化Driver">
                     <template #extra>
                       <el-button size="mini" type="primary" :disabled="isDriverFinish" :loading="driverLoading"
-                                 @click="openDriver">初始化AppiumDriver
+                                 @click="openDriver">初始化UIAutomator2Server
                       </el-button>
                       <el-button
                           type="primary"
@@ -3423,7 +3401,7 @@ onMounted(() => {
                       <div>
                         <div style="display: flex;align-items: center;">
                           <img :src="w.favicon" v-if="w.favicon" width="15" style="margin-right: 5px"/>
-                          <strong>{{ w.title.length > 0 ? w.title : '无标题' }}</strong>
+                          <strong>{{ w.title.length > 0 ? (w.title.length > 80 ? w.title.substring(0, 80) + '...' : w.title): '无标题' }}</strong>
                         </div>
                         <div style="color: #909399">{{
                             w.url.length > 50 ? w.url.substring(0, 50) + '...' : w.url
