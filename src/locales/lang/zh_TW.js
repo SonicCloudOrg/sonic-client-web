@@ -721,6 +721,20 @@ const sysJobsTS = {
     }
 }
 
+const usersTS = {
+    dialogVisible: {
+        editUser: "编辑用户角色",
+        userName: "用户名",
+        chooseUserName: "请选择用户角色"
+    },
+    pageData: {
+        userId: "用户id",
+        userName: "用户名",
+        inputName: "输入用户名",
+        roleConfiguration: "角色配置"
+    }
+}
+
 export default {
     message: {
         robot,
@@ -752,6 +766,7 @@ export default {
         settingIndexTS,
         resourceTS,
         roleTS,
-        sysJobsTS
+        sysJobsTS,
+        usersTS
     }
 }

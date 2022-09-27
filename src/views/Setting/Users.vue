@@ -4,6 +4,8 @@ import {useRoute} from "vue-router";
 import axios from "@/http/axios";
 import {ElMessage} from "element-plus";
 import Pageable from '@/components/Pageable.vue'
+import {useI18n} from "vue-i18n";
+const {t: $t} = useI18n()
 
 const route = useRoute()
 
@@ -83,25 +85,25 @@ onMounted(() => {
 })
 </script>
 <template>
-  
-  <el-dialog v-model="dialogVisible" title="编辑用户角色" width="600px">
+
+  <el-dialog v-model="dialogVisible" :title="$t('usersTS.dialogVisible.editUser')" width="600px">
     <el-form ref="updateRoles" :model="userRole" size="small" class="demo-table-expand" label-width="90px"
              label-position="left">
       <el-form-item
-          label="用户名"
+          :label="$t('usersTS.dialogVisible.userName')"
       >
         <el-input
             v-model="userRole.userName"
             disabled
         ></el-input>
       </el-form-item>
-      <el-form-item label="角色">
+      <el-form-item :label="$t('form.role')">
         <el-autocomplete
           v-model="state"
           value-key="roleName"
           :fetch-suggestions="getRolesList"
           style="width: 100%"
-          placeholder="请选择用户角色"
+          :placeholder="$t('usersTS.dialogVisible.chooseUserName')"
           @select="handleSelect"
         >
           <template #default="{ item }">
@@ -112,7 +114,7 @@ onMounted(() => {
       </el-form-item>
     </el-form>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="summit">确 定</el-button>
+      <el-button size="small" type="primary" @click="summit">{{ $t('modulesTS.sure') }}</el-button>
     </div>
   </el-dialog>
   <el-table
@@ -120,27 +122,27 @@ onMounted(() => {
       style="width: 100%;"
       border
   >
-    <el-table-column label="用户id" width="90" align="center" prop="id"></el-table-column>
-    <el-table-column label="用户名"  align="center" prop="userName">
+    <el-table-column :label="$t('usersTS.pageData.userId')" width="90" align="center" prop="id"></el-table-column>
+    <el-table-column :label="$t('usersTS.pageData.userName')"  align="center" prop="userName">
       <template #header>
-        <el-input v-model="name" size="mini" @input="getUserList(1)" placeholder="输入用户名"/>
+        <el-input v-model="name" size="mini" @input="getUserList(1)" :placeholder="$t('usersTS.pageData.inputName')"/>
       </template>
     </el-table-column>
-    <el-table-column label="角色"  align="center" prop="roleName">
-      
+    <el-table-column :label="$t('form.role')"  align="center" prop="roleName">
+
     </el-table-column>
-    <el-table-column fixed="right" label="操作" align="center">
+    <el-table-column fixed="right" :label="$t('common.operate')" align="center">
       <template #default="scope">
         <el-button
                 type="primary"
                 size="mini"
                 @click="open(scope.row)"
-            >角色配置
+            >{{$t('usersTS.pageData.roleConfiguration')}}
             </el-button>
       </template>
     </el-table-column>
-    
-    
+
+
   </el-table>
   <pageable :is-page-set="true" :total="pageData['totalElements']"
             :current-page="pageData['number']+1"
