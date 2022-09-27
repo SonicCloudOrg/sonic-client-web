@@ -698,6 +698,26 @@ const roleTS = {
 
     }
 }
+
+
+const sysJobsTS = {
+    code: {
+        cleanFile : "清理系统文件",
+        cleanFileText: "清理测试过程产生的图片、录像或远控期间临时apk包等等文件，保留天数为 [前两次定时任务到本次定时任务间隔] 天数。",
+        cleanResult: "清理测试报告",
+        cleanResultText: "清理测试报告，保留天数为 [前两次定时任务到本次定时任务间隔] 天数。",
+        sendDayReport: "发送日报",
+        sendDayReportText: "发送测试日报到群机器人.",
+        sendWeekReport: "发送周报",
+        sendWeekReportText: "发送测试周报到群机器人."
+    },
+    page: {
+        type: "类型",
+        nextTriggerDate: "下次触发日期",
+        editTime: "编辑系统定时任务",
+    }
+}
+
 export default {
     message: {
         robot,
@@ -728,6 +748,7 @@ export default {
         indexIOSTS,
         settingIndexTS,
         resourceTS,
-        roleTS
+        roleTS,
+        sysJobsTS
     }
 }
