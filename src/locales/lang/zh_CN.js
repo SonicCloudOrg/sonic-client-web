@@ -650,6 +650,9 @@ const androidRemoteTS = {
         }
     }
 }
+const indexIOSTS = {
+    contentText: "切换布局",
+}
 export default {
     message: {
         robot,
@@ -676,7 +679,8 @@ export default {
         stepListViewTS,
         testSuitesTS,
         versionsTS,
-        androidRemoteTS
+        androidRemoteTS,
+        indexIOSTS
     }
 }
 

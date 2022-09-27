@@ -71,6 +71,10 @@ import {
   VideoCamera,
   Postcard
 } from '@element-plus/icons';
+
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 import RenderDeviceName from '../../components/RenderDeviceName.vue';
 import AudioProcessor from '@/lib/audio-processor';
 import wifiLogo from '@/assets/img/wifi.png';
