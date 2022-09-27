@@ -4,7 +4,9 @@ import {useRoute} from "vue-router";
 import axios from "@/http/axios";
 import {ElMessage} from "element-plus";
 import Pageable from '@/components/Pageable.vue'
+import {useI18n} from 'vue-i18n'
 
+const {t: $t} = useI18n()
 const route = useRoute()
 
 const pageData = ref({})
@@ -30,7 +32,7 @@ const refresh = (id, needAuth) => {
     if (resp['code'] === 2000) {
       pageData.value = resp.data
       ElMessage.success({
-        message: "同步成功！",
+        message: $t('resourceTS.syncSucceed'),
       });
     }
   })
@@ -54,9 +56,9 @@ onMounted(() => {
 </script>
 <template>
 
-  <el-button size="mini" style="margin-bottom: 10px" round type="primary" @click="refresh">同步资源</el-button>
-  <el-alert style="margin-bottom: 10px" title="同步资源说明"
-            description="重新全量更新应用内所有请求资源信息，一般版本更新需要同步"
+  <el-button size="mini" style="margin-bottom: 10px" round type="primary" @click="refresh">{{ $t('resourceTS.syncResource') }}</el-button>
+  <el-alert style="margin-bottom: 10px" :title="$t('resourceTS.syncResourceInfo')"
+            :description="$t('resourceTS.syncResourceInfoMessage')"
             type="info" show-icon close-text="Get!"/>
 
   <el-table
@@ -64,15 +66,15 @@ onMounted(() => {
       style="width: 100%; margin-top: 20px"
       border
   >
-    <el-table-column label="资源id" width="90" align="center" prop="id"></el-table-column>
-    <el-table-column label="描述" align="center" prop="desc"></el-table-column>
-    <el-table-column label="路径" align="center" prop="path">
+    <el-table-column :label="$t('resourceTS.pageData.idText')" width="90" align="center" prop="id"></el-table-column>
+    <el-table-column :label="$t('resourceTS.pageData.message')" align="center" prop="desc"></el-table-column>
+    <el-table-column :label="$t('resourceTS.pageData.path')" align="center" prop="path">
       <template #header>
-        <el-input v-model="path" size="mini" @input="getResourceList(1)" placeholder="输入路径名称"/>
+        <el-input v-model="path" size="mini" @input="getResourceList(1)" :placeholder="$t('resourceTS.pageData.inputPathName')"/>
       </template>
     </el-table-column>
-    <el-table-column label="调用方法" width="80" header-align="center" prop="method"></el-table-column>
-    <el-table-column label="是否需要鉴权" width="120" align="center">
+    <el-table-column :label="$t('resourceTS.pageData.callMethod')" width="80" header-align="center" prop="method"></el-table-column>
+    <el-table-column :label="$t('resourceTS.pageData.requiredText')" width="120" align="center">
       <template #default="scope">
         <el-switch
             v-model="scope.row.needAuth"

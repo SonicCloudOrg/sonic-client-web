@@ -663,6 +663,24 @@ const settingIndexTS = {
         scheduled: "系统定时任务"
     }
 }
+
+
+const resourceTS = {
+    syncSucceed: "同步成功!",
+    syncResource: "同步资源",
+    syncResourceInfo: "同步资源说明",
+    syncResourceInfoMessage: "重新全量更新应用内所有请求资源信息，一般版本更新需要同步",
+    pageData: {
+        idText: "资源id",
+        message: "描述",
+        path : "路径",
+        inputPathName: "输入路径名称",
+        callMethod: "调用方法",
+        requiredText: "是否需要鉴权"
+    }
+}
+
+
 export default {
     message: {
         robot,
@@ -691,6 +709,7 @@ export default {
         versionsTS,
         androidRemoteTS,
         indexIOSTS,
-        settingIndexTS
+        settingIndexTS,
+        resourceTS
     }
 }
