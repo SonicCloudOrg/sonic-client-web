@@ -655,6 +655,17 @@ const indexIOSTS = {
     successText: "切换成功",
 
 }
+const settingIndexTS = {
+    center: {
+        background: "后台管理中心",
+        rights: "权限配置",
+        resource: "资源管理",
+        roleText: "角色管理",
+        userCon: "用户配置",
+        systemCon: "系统配置",
+        scheduled: "系统定时任务"
+    }
+}
 export default {
     message: {
         robot,
@@ -682,7 +693,7 @@ export default {
         testSuitesTS,
         versionsTS,
         androidRemoteTS,
-        indexIOSTS
+        indexIOSTS,
+        settingIndexTS
     }
 }
-
