@@ -682,6 +682,24 @@ const resourceTS = {
         requiredText: "是否需要鉴权"
     }
 }
+
+const roleTS = {
+    dialogVisible : {
+        addOrEdit : "添加/编辑角色",
+        roleName: "角色名称",
+        roleNoNull: "角色名称不能为空",
+        inputParam: "请输入参数名",
+        paramNoNull: "参数值不能为空",
+        roleInfo: "请输入角色描述",
+        addRole: "添加角色"
+    },
+    pageData: {
+        role : "角色",
+        nameL: "名称",
+        delMessage: "确定删除该角色吗?"
+
+    }
+}
 export default {
     message: {
         robot,
@@ -711,6 +729,7 @@ export default {
         androidRemoteTS,
         indexIOSTS,
         settingIndexTS,
-        resourceTS
+        resourceTS,
+        roleTS
     }
 }

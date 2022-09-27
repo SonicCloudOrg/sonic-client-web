@@ -4,7 +4,10 @@ import {useRoute} from "vue-router";
 import axios from "@/http/axios";
 import {ElMessage} from "element-plus";
 import Pageable from '@/components/Pageable.vue'
+import {useI18n} from "vue-i18n";
+const {t: $t} = useI18n()
 
+const route = useRoute()
 const route = useRoute()
 
 const pageData = ref({})
@@ -69,7 +72,7 @@ const deleteRole = (roleId) => {
 
 const change = async (checked, child) => {
   await updateRoleResource(child)
-  
+
 }
 
 const updateRoleResource = (row) => {
@@ -83,7 +86,7 @@ const updateRoleResource = (row) => {
             message: resp['message'],
           });
     }
-        
+
   })
 }
 
@@ -104,7 +107,7 @@ const getRoleResourceList = (roleId)=> {
             message: resp['message'],
           });
         }
-    
+
   })
 }
 
@@ -124,78 +127,78 @@ onMounted(() => {
 })
 </script>
 <template>
-  
-  <el-dialog v-model="dialogVisible" title="添加/编辑角色" width="600px">
+
+  <el-dialog v-model="dialogVisible" :title="$t('roleTS.dialogVisible.addOrEdit')" width="600px">
     <el-form ref="updateRoles" :model="roleParams" size="small" class="demo-table-expand" label-width="90px"
              label-position="left">
       <el-form-item
           prop="roleName"
-          label="角色名称"
+          :label="$t('roleTS.dialogVisible.roleName')"
           :rules="{
           required: true,
-          message: '角色名称不能为空',
+          message: $t('roleTS.dialogVisible.roleNoNull'),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="roleParams.roleName"
-            placeholder="请输入参数名"
+            :placeholder="$t('roleTS.dialogVisible.inputParam')"
         ></el-input>
       </el-form-item>
       <el-form-item
           prop="comment"
-          label="描述"
+          :label="$t('resourceTS.pageData.message')"
           :rules="{
           required: true,
-          message: '参数值不能为空',
+          message: $t('roleTS.dialogVisible.paramNoNull'),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="roleParams.comment"
-            placeholder="请输入角色描述"
+            :placeholder="$t('roleTS.dialogVisible.roleInfo')"
         ></el-input>
       </el-form-item>
     </el-form>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="summit">确 定</el-button>
+      <el-button size="small" type="primary" @click="summit">{{ $t('modulesTS.sure') }}</el-button>
     </div>
   </el-dialog>
-  <el-dialog v-model="roleResourcesDialogVisible" title="权限配置" width="70%">
-    
+  <el-dialog v-model="roleResourcesDialogVisible" :title="$t('settingIndexTS.rights')" width="70%">
+
     <div v-for="parent in roleResourcesList" :key="parent.id">
         {{parent.desc}}
         <el-form-item style="margin-left: 20px">
           <el-checkbox v-for="child in parent.child" :key="child.id" v-model="child.hasAuth" @change="change(child.hasAuth, child)">{{child.desc}}</el-checkbox>
         </el-form-item>
     </div>
-    
+
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">添加角色</el-button>
-  
-  
+  <el-button size="mini" round type="primary" @click="open">{{ $t('roleTS.dialogVisible.addRole') }}</el-button>
+
+
   <el-table
       :data="pageData['content']"
       style="width: 100%; margin-top: 20px"
       border
   >
-    <el-table-column label="角色" width="90" align="center" prop="id"></el-table-column>
-    <el-table-column label="名称"  align="center" prop="roleName"></el-table-column>
-    <el-table-column label="描述"  align="center" prop="comment">
+    <el-table-column :label="$t('roleTS.pageData.role')" width="90" align="center" prop="id"></el-table-column>
+    <el-table-column :label="$t('roleTS.pageData.nameL')"  align="center" prop="roleName"></el-table-column>
+    <el-table-column :label="$t('resourceTS.pageData.message')"  align="center" prop="comment">
     </el-table-column>
-    <el-table-column fixed="right" label="操作" align="center">
+    <el-table-column fixed="right" :label="$t('common.operate')" align="center">
       <template #default="scope">
         <el-button
                 type="primary"
                 size="mini"
                 @click="getRoleResourceList(scope.row.id)"
-            >权限配置
+            >{{$t('settingIndexTS.center.rights')}}
             </el-button>
         <el-button
                 type="primary"
                 size="mini"
                 @click="edit(scope.row)"
-            >编辑
+            >{{$t('common.edit')}}
             </el-button>
             <el-popconfirm
             style="margin-left: 10px"
@@ -204,20 +207,20 @@ onMounted(() => {
             @confirm="deleteRole(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"
-            title="确定删除该角色吗？"
+            :title="$t('roleTS.pageData.delMessage')"
         >
           <template #reference>
             <el-button
                 type="danger"
                 size="mini"
             >
-              删除
+              {{ $t('common.delete') }}
             </el-button>
           </template>
         </el-popconfirm>
       </template>
     </el-table-column>
-    
+
   </el-table>
   <pageable :is-page-set="true" :total="pageData['totalElements']"
             :current-page="pageData['number']+1"
