@@ -649,6 +649,8 @@ const androidRemoteTS = {
 }
 const indexIOSTS = {
     contentText: "切换布局",
+    successText: "切换成功",
+
 }
 export default {
     message: {
