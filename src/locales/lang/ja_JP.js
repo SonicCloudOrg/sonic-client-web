@@ -213,13 +213,13 @@ const globalParamsTs = {
     dialogVisible: {
         info: "全局参数信息",
         specialUse: "特殊使用",
-        messageInfo: "如有多个参数值可以用 | 号隔开，分配设备时会随机分配，单次任务内参数值只会取同一个。【random】和【timestamp】参数已内置，可用作构造随机数据",
+        messageInfo: "如有多个参数值可以用 '{'|'}' 号隔开，分配设备时会随机分配，单次任务内参数值只会取同一个。【random】和【timestamp】参数已内置，可用作构造随机数据",
         keyName: "参数名",
         keyNameMessage: "参数名不能为空，建议使用英文",
         inputName: "请输入参数名",
         valueName: "参数值",
-        valueNameMessage: "参数值不能为空，多个可以用 | 号隔开",
-        inputValue: "请输入参数值，多个可以用 | 号隔开"
+        valueNameMessage: "参数值不能为空，多个可以用 '{'|'}' 号隔开",
+        inputValue: "请输入参数值，多个可以用 '{'|'}' 号隔开"
     },
     addGlobalParams: "添加全局参数",
     paramsList: {
