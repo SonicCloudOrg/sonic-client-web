@@ -88,7 +88,6 @@ const isShowPocoImg = ref(false);
 const wifiList = ref([]);
 const currentWifi = ref('');
 const isConnectWifi = ref(false);
-const remoteAppiumPort = ref(0);
 const selectPocoType = ref("");
 const pocoLoading = ref(false)
 const pocoData = ref([])
@@ -143,7 +142,7 @@ const pocoTypeList = ref([
     img: 'Cocos2dx'
   },
 ])
-const isAudoInit = ref('0')
+const isAudoInit = ref('1')
 let imgWidth = 0;
 let imgHeight = 0;
 // 旋转状态 // 0 90 180 270
@@ -767,10 +766,6 @@ const websocketOnmessage = (message) => {
           message: $t('androidRemoteTS.pushFile.fail'),
         });
       }
-      break;
-    }
-    case 'appiumPort': {
-      remoteAppiumPort.value = JSON.parse(message.data).port;
       break;
     }
     case 'adbkit': {
@@ -1683,7 +1678,7 @@ const resetAudioPlayer = () => {
   });
 };
 onBeforeMount(() => {
-  isAudoInit.value = localStorage.getItem('SonicAndroidIsAutoInit') ? localStorage.getItem('SonicAndroidIsAutoInit') : '0'
+  isAudoInit.value = localStorage.getItem('SonicAndroidIsAutoInit') ? localStorage.getItem('SonicAndroidIsAutoInit') : '1'
 })
 onMounted(() => {
   if (store.state.project.id) {
@@ -2432,23 +2427,6 @@ onMounted(() => {
                          style="margin-top: 18px;margin-bottom: 18px">
                       <el-card>
                         <strong>{{$t('androidRemoteTS.code.noAgent')}}</strong>
-                      </el-card>
-                    </div>
-                  </el-tab-pane>
-                  <el-tab-pane :label="$t('androidRemoteTS.code.remoteAppium')">
-                    <div v-if="remoteAppiumPort!==0" style="margin-top: 20px;margin-bottom: 20px">
-                      <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
-                               @click="copy('http://'+agent['host']+':'+remoteAppiumPort+'/wd/hub')">
-                        <strong style="color: #F2F6FC">http://{{ agent['host'] }}:{{ remoteAppiumPort }}/wd/hub</strong>
-                      </el-card>
-                    </div>
-                    <div v-else v-loading="remoteAppiumPort===0"
-                         element-loading-spinner="el-icon-lock"
-                         element-loading-background="rgba(255, 255, 255, 1)"
-                         :element-loading-text="$t('androidRemoteTS.code.inttialized')"
-                         style="margin-top: 18px;margin-bottom: 18px">
-                      <el-card>
-                        <strong>{{ $t('androidRemoteTS.code.inttialized') }}！</strong>
                       </el-card>
                     </div>
                   </el-tab-pane>

@@ -80,7 +80,6 @@ let imgHeight = 0;
 const loading = ref(false);
 const appList = ref([])
 const filterAppText = ref("")
-const remoteAppiumPort = ref(0)
 // 旋转状态 // 0 90 180 270
 let directionStatus = {
   value: 0,
@@ -588,10 +587,6 @@ const websocketOnmessage = (message) => {
       nextTick(() => {
         iFrameHeight.value = document.body.clientHeight - 280;
       });
-      break;
-    }
-    case 'appiumPort': {
-      remoteAppiumPort.value = JSON.parse(message.data).port
       break;
     }
     case 'tree': {
