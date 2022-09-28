@@ -2440,7 +2440,7 @@ onMounted(() => {
                   <div style="text-align: center">
                     <div style="margin: 8px 0px">
                       <el-button size="mini" type="primary" :disabled="isDriverFinish" :loading="driverLoading"
-                                 @click="openDriver">{{ $t('androidRemoteTS.code.UIAutomator2appiumInt') }}
+                                 @click="openDriver">{{ $t('androidRemoteTS.code.UIAutomator2ServerInit') }}
                       </el-button>
                       <div style="margin-top: 10px">
                         <el-switch class="refresh" active-value="1"
@@ -3179,7 +3179,7 @@ onMounted(() => {
                   <el-result icon="info" :title="$t('androidRemoteTS.code.hintText')" :subTitle="$t('androidRemoteTS.code.subTitleText')">
                     <template #extra>
                       <el-button size="mini" type="primary" :disabled="isDriverFinish" :loading="driverLoading"
-                                 @click="openDriver">{{ $t('androidRemoteTS.code.UIAutomator2appiumInt') }}
+                                 @click="openDriver">{{ $t('androidRemoteTS.code.UIAutomator2ServerInit') }}
                       </el-button>
                       <el-button
                           type="primary"
