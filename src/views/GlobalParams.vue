@@ -84,7 +84,7 @@ onMounted(() => {
 <template>
   <el-dialog v-model="dialogVisible" :title="$t('globalParamsTs.dialogVisible.info')" width="600px">
     <el-alert style="margin-bottom: 10px" :title="$t('globalParamsTs.dialogVisible.specialUse')"
-              :description="$t('globalParamsTs.dialogVisible.message')"
+              :description="$t('globalParamsTs.dialogVisible.messageInfo')"
               type="info" show-icon close-text="Get!"/>
     <el-form ref="updateGlobal" :model="globalParams" size="small" class="demo-table-expand" label-width="90px"
              label-position="left">
