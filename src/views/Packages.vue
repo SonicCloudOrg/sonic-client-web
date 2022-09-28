@@ -63,10 +63,10 @@ onMounted(() => {
 </script>
 <template>
   <a style="float: right;margin-bottom: 20px" href="https://sonic-cloud.gitee.io/#/SCH" target="_blank">
-    <el-button size="mini" plain type="primary">{{$t(packagesTS.accessGuide)}}</el-button></a>
+    <el-button size="mini" plain type="primary">{{$t('packagesTS.accessGuide')}}</el-button></a>
   <el-table :data="pageData['content']" @filter-change="filter" border>
     <el-table-column width="80" label="Id" prop="id" align="center" show-overflow-tooltip/>
-    <el-table-column width="110" :label="$t(packagesTS.buildLink)" prop="buildUrl" align="center">
+    <el-table-column width="110" :label="$t('packagesTS.buildLink')" prop="buildUrl" align="center">
       <template #default="scope">
         <div style="display: flex;
     align-items: center;
@@ -78,37 +78,37 @@ onMounted(() => {
         </div>
       </template>
     </el-table-column>
-    <el-table-column :label="$t(packagesTS.platform)" width="120" prop="platform" align="center"
+    <el-table-column :label="$t('packagesTS.platform')" width="120" prop="platform" align="center"
                      :filter-multiple="false" column-key="platform" :filters="[
         { text: 'Android', value: 'Android' },
         { text: 'iOS', value: 'iOS' },
       ]">
       <template #default="scope">
-        <span v-if="scope.row.platform.length === 0">{{ $t(packagesTS.no) }}</span>
+        <span v-if="scope.row.platform.length === 0">{{ $t('packagesTS.no') }}</span>
         <span v-else>
               <el-tag size="small">{{ scope.row.platform.toUpperCase() }}</el-tag>
             </span>
       </template>
     </el-table-column>
-    <el-table-column :label="$t(packagesTS.packageName)" prop="pkgName" header-align="center" show-overflow-tooltip>
+    <el-table-column :label="$t('packagesTS.packageName')" prop="pkgName" header-align="center" show-overflow-tooltip>
     </el-table-column>
-    <el-table-column :label="$t(packagesTS.branch)" width="280" prop="branch" align="center">
+    <el-table-column :label="$t('packagesTS.branch')" width="280" prop="branch" align="center">
       <template #header>
-        <el-input v-model="branch" size="mini" @input="getPackageList()" :placeholder="$t(packagesTS.inputName)"/>
+        <el-input v-model="branch" size="mini" @input="getPackageList()" :placeholder="$t('packagesTS.inputName')"/>
       </template>
     </el-table-column>
-    <el-table-column :label="$t(packagesTS.downloadLink)" width="180" prop="url" align="center">
+    <el-table-column :label="$t('packagesTS.downloadLink')" width="180" prop="url" align="center">
       <template #default="scope">
         <el-button
             type="primary"
             size="mini"
             @click="copy(scope.row.url)"
-        >{{ $t(packagesTS.copyUrl) }}
+        >{{ $t('packagesTS.copyUrl') }}
         </el-button>
       </template>
     </el-table-column>
     <el-table-column
-        :label="$t(packagesTS.creatTime)"
+        :label="$t('packagesTS.creatTime')"
         width="200"
         prop="createTime"
         align="center"

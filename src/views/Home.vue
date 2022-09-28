@@ -44,86 +44,86 @@ onMounted(() => {
         </div>
         <el-menu-item :index="'/Home/' + route.params.projectId + '/ProjectIndex'">
           <i class="el-icon-data-analysis"></i>
-          <template #title>{{$t(homeTS.projectOverview)}}</template>
+          <template #title>{{$t('homeTS.projectOverview')}}</template>
         </el-menu-item>
 
         <el-sub-menu index="2">
           <template #title>
             <i class="el-icon-folder-opened"></i>
-            <span>{{$t(homeTS.testCaseManagement)}}</span>
+            <span>{{$t('homeTS.testCaseManagement')}}</span>
           </template>
           <el-sub-menu index="1-4">
-            <template #title><i class="el-icon-tickets"></i>{{$t(homeTS.testCase.case)}}</template>
+            <template #title><i class="el-icon-tickets"></i>{{$t('homeTS.testCase.case')}}</template>
             <el-menu-item :index="'/Home/' + route.params.projectId + '/AndroidTestCase'">
-              <i class="el-icon-d-arrow-right"></i>{{$t(homeTS.testCase.adCase)}}
+              <i class="el-icon-d-arrow-right"></i>{{$t('homeTS.testCase.adCase')}}
             </el-menu-item>
             <el-menu-item :index="'/Home/' + route.params.projectId + '/IOSTestCase'">
-              <i class="el-icon-d-arrow-right"></i>{{$t(homeTS.testCase.iosCase)}}
+              <i class="el-icon-d-arrow-right"></i>{{$t('homeTS.testCase.iosCase')}}
             </el-menu-item>
           </el-sub-menu>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/TestSuites'">
-            <i class="el-icon-document-copy"></i>{{$t(homeTS.testSuite)}}
+            <i class="el-icon-document-copy"></i>{{$t('homeTS.testSuite')}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Jobs'">
-            <i class="el-icon-timer"></i>{{$t(routes.timedTask)}}
+            <i class="el-icon-timer"></i>{{$t('routes.timedTask')}}
           </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="5">
           <template #title>
             <i class="el-icon-lock"></i>
-            <span>{{$t(homeTS.testDataManagement)}}</span>
+            <span>{{$t('homeTS.testDataManagement')}}</span>
           </template>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Elements'">
-            <i class="el-icon-thumb"></i>{{$t(routes.controlElement)}}
+            <i class="el-icon-thumb"></i>{{$t('routes.controlElement')}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/PublicStep'">
-            <i class="el-icon-star-off"></i>{{$t(routes.publicSteps)}}
+            <i class="el-icon-star-off"></i>{{$t('routes.publicSteps')}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/GlobalParams'">
-            <i class="el-icon-user"></i>{{$t(routes.globalParameter)}}
+            <i class="el-icon-user"></i>{{$t('routes.globalParameter')}}
           </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="4">
           <template #title>
             <i class="el-icon-paperclip"></i>
-            <span>{{$t(homeTS.testResults)}}</span>
+            <span>{{$t('homeTS.testResults')}}</span>
           </template>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Results'">
-            <i class="el-icon-s-data"></i>{{$t(routes.testResult)}}
+            <i class="el-icon-s-data"></i>{{$t('routes.testResult')}}
           </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="7">
           <template #title>
             <i class="el-icon-connection"></i>
-            <span>{{$t(homeTS.setting)}}</span>
+            <span>{{$t('homeTS.setting')}}</span>
           </template>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Packages'" >
-            <i class="el-icon-suitcase"></i>{{$t(homeTS.package.mange)}}
+            <i class="el-icon-suitcase"></i>{{$t('homeTS.package.mange')}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/InstallPackage'" disabled>
-            <i class="el-icon-sold-out"></i>{{$t(homeTS.package.bulk)}}
+            <i class="el-icon-sold-out"></i>{{$t('homeTS.package.bulk')}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Crash'" disabled>
-            <i class="el-icon-position"></i>{{$t(homeTS.crashReport)}}
+            <i class="el-icon-position"></i>{{$t('homeTS.crashReport')}}
           </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="6">
           <template #title>
             <i class="el-icon-setting"></i>
-            <span>{{$t(homeTS.projectSetting.setting)}}</span>
+            <span>{{$t('homeTS.projectSetting.setting')}}</span>
           </template>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Modules'">
-            <i class="el-icon-price-tag"></i>{{$t(homeTS.projectSetting.mange)}}
+            <i class="el-icon-price-tag"></i>{{$t('homeTS.projectSetting.mange')}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Versions'">
-            <i class="el-icon-coin"></i>{{$t(homeTS.projectSetting.update)}}
+            <i class="el-icon-coin"></i>{{$t('homeTS.projectSetting.update')}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/ProjectOption'">
-            <i class="el-icon-key"></i>{{$t(routes.projectSetting)}}
+            <i class="el-icon-key"></i>{{$t('routes.projectSetting')}}
           </el-menu-item>
         </el-sub-menu>
       </el-menu>

@@ -21,7 +21,8 @@ import {
   CanvasRenderer
 } from 'echarts/renderers';
 import {ElMessage} from "element-plus";
-
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
 echarts.use(
     [PieChart, ToolboxComponent, GridComponent, LegendComponent, LineChart, CanvasRenderer, TitleComponent, TooltipComponent]
 );
@@ -61,9 +62,11 @@ const subTime = (date1, date2) => {
   const minutes = parseInt(data / 60);
   data = data % 60;
   if (0 < days) {
-    time = days + "天" + hours + "小时" + minutes + "分" + data + "秒";
+    time = days + $t('projectIndexTS.code.day') + hours + $t('projectIndexTS.code.hour')
+        + minutes + $t('projectIndexTS.code.minute')+ data + $t('projectIndexTS.code.second');
   } else {
-    time = hours + "小时" + minutes + "分" + data + "秒";
+    time = hours + $t('projectIndexTS.code.hour') + minutes + $t('projectIndexTS.code.minute') +
+        data + $t('projectIndexTS.code.second');
   }
   return time;
 }
@@ -175,7 +178,7 @@ const getPerform = (cid, did) => {
     },
     toolbox: {
       feature: {
-        saveAsImage: {show: true, title: "保存"},
+        saveAsImage: {show: true, title: $t('form.save')},
       },
     },
     xAxis: [
@@ -251,7 +254,7 @@ const getPerform = (cid, did) => {
       let memLegend = getLegend(memList);
       let memData = getSeries(memList, memLegend)
       mem.setOption({
-        title: {text: "内存详情"},
+        title: {text: $t('resultDetailTS.memoryInfo')},
         series: memData,
         legend: {
           data: memLegend,
@@ -261,13 +264,13 @@ const getPerform = (cid, did) => {
             data: getTimes(memList),
           },
         ],
-        yAxis: [{name: "单位(KB)"}],
+        yAxis: [{name: $t('resultDetailTS.unit')}],
       });
       mem.setOption(option);
       let batLegend = getLegend(batList);
       let batData = getSeries(batList, batLegend)
       bat.setOption({
-        title: {text: "电量详情"},
+        title: {text: "$t('resultDetailTS.battery')"},
         series: batData,
         legend: {
           data: batLegend,
@@ -277,7 +280,7 @@ const getPerform = (cid, did) => {
             data: getTimes(batList),
           },
         ],
-        yAxis: [{name: "单位(%)", max: 100, min: 0}],
+        yAxis: [{name: $t('projectIndexTS.unit'), max: 100, min: 0}],
       });
       bat.setOption(option);
       if (resizeFun !== undefined) {
@@ -290,19 +293,19 @@ const getPerform = (cid, did) => {
       window.addEventListener("resize", resizeFun);
     } else {
       mem.showLoading({
-        text: '内存数据不足',
+        text: $t('projectIndexTS.memoryShort'),
         fontSize: 20,
         textColor: '#606266',
         showSpinner: false,
       })
       bat.showLoading({
-        text: '电量数据不足',
+        text: $t('projectIndexTS.batteryShort'),
         fontSize: 20,
         textColor: '#606266',
         showSpinner: false,
       })
       ElMessage.info({
-        message: "性能数据不足！",
+        message: $t('projectIndexTS.performance'),
       });
     }
   })
@@ -380,7 +383,7 @@ const findCaseStatus = (id) => {
   }
   let option = {
     title: {
-      text: '用例运行状态分布',
+      text: $t('resultDetailTS.caseRun'),
       left: 'center'
     },
     tooltip: {
@@ -394,18 +397,18 @@ const findCaseStatus = (id) => {
   axios.get("/controller/results/findCaseStatus", {params: {id}}).then(resp => {
     if (resp['code'] === 2000) {
       testCaseList.value = resp.data
-      let legend = [{value: 0, name: '未开始'},
-        {value: 0, name: '通过'},
-        {value: 0, name: '警告'},
-        {value: 0, name: '失败'},
-        {value: 0, name: '运行中'},]
+      let legend = [{value: 0, name: $t('resultDetailTS.noStart')},
+        {value: 0, name: $t('projectIndexTS.code.pass')},
+        {value: 0, name: $t('elements.warn')},
+        {value: 0, name: $t('projectIndexTS.code.fail')},
+        {value: 0, name: $t('resultDetailTS.runIng')},]
       for (let i in testCaseList.value) {
         legend[testCaseList.value[i].status].value++
       }
       chart.setOption({
         series: [
           {
-            name: '用例状态',
+            name: $t('resultDetailTS.caseStatus'),
             type: 'pie',
             radius: '50%',
             data: legend
@@ -449,14 +452,14 @@ onUnmounted(() => {
 <template>
   <el-page-header
       @back="router.go(-1)"
-      content="报告详情"
+      :content="$t('routes.reportDetails')"
       style="margin-bottom: 20px"
   >
   </el-page-header>
   <el-row :gutter="20">
     <el-col :span="12">
       <el-card shadow="hover">
-        <template #header><strong>报告信息</strong></template>
+        <template #header><strong>{{$t('resultDetailTS.page.reportInfo')}}</strong></template>
         <el-form
             label-position="left"
             class="demo-table-expand"
@@ -464,47 +467,47 @@ onUnmounted(() => {
             style="margin-left: 10px; word-break: break-all"
             v-if="results['id']"
         >
-          <el-form-item label="结果Id">
+          <el-form-item :label="$t('resultDetailTS.page.resultId')">
             <span>{{ results['id'] }}</span>
           </el-form-item>
-          <el-form-item label="测试套件">
+          <el-form-item :label="$t('routes.testSuite')">
             <span>{{ results['suiteName'] }}</span>
           </el-form-item>
-          <el-form-item label="执行用户">
+          <el-form-item :label="$t('resultDetailTS.page.executeUser')">
             <el-tag size="small" v-if="results['strike'] === 'SYSTEM'"
-            >定时任务
+            >{{$t('routes.timedTask')}}
             </el-tag
             >
             <span v-else>{{ results['strike'] }}</span>
           </el-form-item>
-          <el-form-item label="运行状态">
+          <el-form-item :label="$t('resultDetailTS.page.runStatus')">
             <el-tag type="success" size="small" v-if="results['status'] === 1"
-            >测试通过
+            >{{$t('resultDetailTS.page.testPass')}}
             </el-tag
             >
             <el-tag type="info" size="small" v-if="results['status'] === 0"
-            ><i class="el-icon-loading"></i> 运行中
+            ><i class="el-icon-loading"></i> {{$t('resultDetailTS.runIng')}}
             </el-tag
             >
             <el-tag type="danger" size="small" v-if="results['status'] === 3"
-            >测试失败
+            > {{$t('resultDetailTS.page.testFail')}}
             </el-tag
             >
             <el-tag type="warning" size="small" v-if="results['status']=== 2"
-            >测试告警
+            >{{$t('resultDetailTS.page.testAlert')}}
             </el-tag
             >
           </el-form-item>
-          <el-form-item label="创建时间">
+          <el-form-item :label="$t('packagesTS.creatTime')">
             <span>{{ results['createTime'] }}</span>
           </el-form-item>
-          <el-form-item label="结束时间">
+          <el-form-item :label="$t('resultDetailTS.page.endTime')">
             <span v-if="results['endTime']">{{ results['endTime'] }}</span>
-            <span v-else>未知</span>
+            <span v-else>{{$t('form.unknown')}}</span>
           </el-form-item>
-          <el-form-item label="总耗时">
+          <el-form-item :label="$t('resultDetailTS.page.totalTime')">
             <span v-if="results['endTime']">{{ subTime(results['createTime'], results['endTime']) }}</span>
-            <span v-else>未知</span>
+            <span v-else>{{$t('form.unknown')}}</span>
           </el-form-item>
         </el-form>
       </el-card>
@@ -515,20 +518,20 @@ onUnmounted(() => {
       </el-card>
     </el-col>
   </el-row>
-  <el-divider><span style="color: #909399;">运行信息</span></el-divider>
+  <el-divider><span style="color: #909399;">{{$t('resultDetailTS.page.runInfo')}}</span></el-divider>
   <el-card shadow="hover">
     <el-collapse v-model="caseId" accordion @change="changeCase">
       <el-collapse-item v-for="c in testCaseList" :key="c" :name="c['case'].id" style="position: relative">
         <template #title>
-          测试用例：<strong style="color: #606266">{{ c['case'].name }}</strong>
+          {{$t('homeTS.testCase.case')}}：<strong style="color: #606266">{{ c['case'].name }}</strong>
           <el-tag style="margin-left: 10px" size="small" :type="c.status===1?'success':
             c.status===2?'warning':
              c.status === 3 ? 'danger' : 'info'">
             <i class="el-icon-loading" style="margin-right: 5px;" v-if="c.status === 4"/>{{
-              c.status === 0 ? '未开始' :
-                  c.status === 1 ? '通过' :
-                      c.status === 2 ? '警告' :
-                          c.status === 3 ? '失败' : '运行中'
+              c.status === 0 ? $t('resultDetailTS.noStart') :
+                  c.status === 1 ? $t('projectIndexTS.code.pass') :
+                      c.status === 2 ? $t('elements.warn') :
+                          c.status === 3 ? $t('projectIndexTS.code.fail') : $t('resultDetailTS.runIng')
             }}
           </el-tag>
           <div style="position:absolute;right: 30px;color: #606266">
@@ -540,7 +543,7 @@ onUnmounted(() => {
             To
             <el-tag size="small">{{ c.endTime }}</el-tag>
             </span>
-            <span v-if="c.startTime&&c.endTime" style="margin-left: 10px">耗时：{{
+            <span v-if="c.startTime&&c.endTime" style="margin-left: 10px">{{$t('resultDetailTS.page.total')}}：{{
                 subTime(c.startTime, c.endTime)
               }}</span>
           </div>
@@ -554,19 +557,19 @@ onUnmounted(() => {
             d.status===2?'warning':
              d.status === 3 ? 'danger' : 'info'">
                   <i class="el-icon-loading" style="margin-right: 5px;" v-if="d.status === 4"/>{{
-                    d.status === 1 ? '通过' :
-                        d.status === 2 ? '警告' :
-                            d.status === 3 ? '失败' : '运行中'
+                    d.status === 1 ? $t('projectIndexTS.code.pass') :
+                        d.status === 2 ? $t('elements.warn') :
+                            d.status === 3 ? $t('projectIndexTS.code.fail') : $t('resultDetailTS.runIng')
                   }}
                 </el-tag>
               </div>
             </template>
             <el-tabs v-model="type" type="border-card" @tab-click="switchType">
-              <el-tab-pane label="运行日志" name="log" lazy>
+              <el-tab-pane :label="$t('resultDetailTS.page.runLog')" name="log" lazy>
                 <step-log @loadMore="loadMore" :is-done="done" :is-read-only="true" :debug-loading="stepLoading"
                           :step-log="stepList"/>
               </el-tab-pane>
-              <el-tab-pane label="性能信息" name="perform">
+              <el-tab-pane :label="$t('resultDetailTS.page.performanceInfo')" name="perform">
                 <el-card>
                   <div
                       :id="'mem'+c['case'].id+d.id"
@@ -580,11 +583,11 @@ onUnmounted(() => {
                   ></div>
                 </el-card>
               </el-tab-pane>
-              <el-tab-pane label="运行录像" name="record">
+              <el-tab-pane :label="$t('resultDetailTS.page.runRecording')" name="record">
                 <div v-if="recordUrl.length>0" class="flex-center">
                   <video-play v-bind="videoOptions" :src="recordUrl"/>
                 </div>
-                <el-empty v-else description="暂无录像"></el-empty>
+                <el-empty v-else :description="$t('resultDetailTS.page.onRecording')"></el-empty>
               </el-tab-pane>
             </el-tabs>
           </el-tab-pane>

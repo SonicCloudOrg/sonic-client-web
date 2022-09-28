@@ -7,6 +7,9 @@ import axios from "../http/axios";
 import StepShow from '../components/StepShow.vue'
 import {ElMessage} from "element-plus";
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const route = useRoute()
 const dialogVisible = ref(false)
 const pageData = ref({});
@@ -75,20 +78,20 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="公共步骤信息" width="750px">
+  <el-dialog v-model="dialogVisible" :title="$t('publicStepTS.info')" width="750px">
     <public-step-update v-if="dialogVisible" @flush="flush" :public-step-id="publicStepId"
                         :project-id="route.params.projectId"/>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">添加公共步骤</el-button>
+  <el-button size="mini" round type="primary" @click="open">{{ $t('publicStepTS.add') }}</el-button>
   <el-table :data="pageData['content']" border style="margin-top: 10px">
-    <el-table-column width="100" label="公共步骤Id" prop="id" align="center"/>
-    <el-table-column label="公共步骤名称" prop="name" header-align="center"/>
-    <el-table-column label="平台" width="110" align="center">
+    <el-table-column width="100" :label="$t('publicStepTS.id')" prop="id" align="center"/>
+    <el-table-column :label="$t('publicStepTS.name')" prop="name" header-align="center"/>
+    <el-table-column :label="$t('publicStepTS.platform')" width="110" align="center">
       <template #default="scope">
-        {{ scope.row.platform === 1 ? '安卓' : 'iOS' }}
+        {{ scope.row.platform === 1 ? $t('publicStepTS.android') : 'iOS' }}
       </template>
     </el-table-column>
-    <el-table-column label="步骤列表" width="110" align="center">
+    <el-table-column :label="$t('publicStepTS.list')" width="110" align="center">
       <template #default="scope">
         <el-popover
             placement="left"
@@ -96,26 +99,26 @@ onMounted(() => {
             trigger="click"
         >
           <el-table :data="scope.row.steps" border max-height="350">
-            <el-table-column width="80" label="步骤Id" prop="id" align="center" show-overflow-tooltip/>
-            <el-table-column width="90" label="所属用例" align="center">
+            <el-table-column width="80" :label="$t('publicStepTS.stepId')" prop="id" align="center" show-overflow-tooltip/>
+            <el-table-column width="90" :label="$t('publicStepTS.useCase')" align="center">
               <template #default="scope">
-                <el-tag size="mini" v-if="scope.row.caseId=== 0">无</el-tag>
+                <el-tag size="mini" v-if="scope.row.caseId=== 0">{{$t('common.null')}}</el-tag>
                 <span v-else>{{ scope.row.caseId }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="步骤详情" header-align="center">
+            <el-table-column :label="$t('publicStepTS.stepInfo')" header-align="center">
               <template #default="scope">
                 <step-show :step="scope.row"/>
               </template>
             </el-table-column>
           </el-table>
           <template #reference>
-            <el-button size="mini">查看步骤</el-button>
+            <el-button size="mini">{{ $t('publicStepTS.viewSteps')}}</el-button>
           </template>
         </el-popover>
       </template>
     </el-table-column>
-    <el-table-column label="操作" width="250" align="center">
+    <el-table-column :label="$t('common.operate')" width="250" align="center">
 
       <template #default="scope">
 <!--        <el-button type="primary"-->
@@ -130,7 +133,7 @@ onMounted(() => {
             size="mini"
             @click="editPublicStep(scope.row.id)"
         >
-          编辑
+          {{$t('common.edit')}}
         </el-button>
 
         <el-popconfirm
@@ -140,14 +143,14 @@ onMounted(() => {
             @confirm="deletePublicStep(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"
-            title="确定删除该公共步骤吗？"
+            :title="$t('publicStepTS.sureDel')"
         >
           <template #reference>
             <el-button
                 type="danger"
                 size="mini"
             >
-              删除
+              {{$t('common.delete')}}
             </el-button>
           </template>
         </el-popconfirm>

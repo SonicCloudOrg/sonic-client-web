@@ -80,29 +80,29 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" :title="$t(modulesTS.info)" width="400px">
+  <el-dialog v-model="dialogVisible" :title="$t('modulesTS.info')" width="400px">
     <el-form ref="updateModule" :model="modules" size="small" class="demo-table-expand" label-width="90px"
              label-position="left">
       <el-form-item
           prop="name"
-          :label="$t(modulesTS.name)"
+          :label="$t('modulesTS.name')"
           :rules="{
           required: true,
-          message: $t(modulesTS.isNotNull),
+          message: $t('modulesTS.isNotNull'),
           trigger: 'blur',
         }"
       >
         <el-input
             v-model="modules.name"
-            :placeholder="$t(modulesTS.inputName)"
+            :placeholder="$t('modulesTS.inputName')"
         ></el-input>
       </el-form-item>
     </el-form>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="summit">{{$t(modulesTS.sure)}}</el-button>
+      <el-button size="small" type="primary" @click="summit">{{$t('modulesTS.sure')}}</el-button>
     </div>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">{{$t(modulesTS.add)}}</el-button>
+  <el-button size="mini" round type="primary" @click="open">{{$t('modulesTS.add')}}</el-button>
   <el-row :gutter="20">
     <el-col :span="6" v-for="m in pageData" style="margin-top: 20px">
       <el-card>
@@ -113,7 +113,7 @@ onMounted(() => {
               type="primary"
               size="mini"
               @click="editModule(m.id)"
-          >{{$t(common.edit)}}
+          >{{$t('common.edit')}}
           </el-button
           >
           <el-popconfirm
@@ -123,13 +123,13 @@ onMounted(() => {
               @confirm="deleteModule(m.id)"
               icon="el-icon-warning"
               iconColor="red"
-              :title="$t(modulesTS.del)"
+              :title="$t('modulesTS.del')"
           >
             <template #reference>
               <el-button
                   type="danger"
                   size="mini"
-              >{{$t(common.delete)}}
+              >{{$t('common.delete')}}
               </el-button
               >
             </template>

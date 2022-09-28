@@ -132,39 +132,39 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogElement" :title="$t(elements.eleInfo)" width="600px">
+  <el-dialog v-model="dialogElement" :title="$t('elements.eleInfo')" width="600px">
     <element-update v-if="dialogElement" :project-id="route.params.projectId"
                     :element-id="elementId" @flush="flush"/>
   </el-dialog>
-  <el-dialog v-model="checkDialog" :title="$t(elements.stepInfo)" width="600px">
-    <el-alert :title="$t(elements.warn)" type="warning" show-icon :closable="false" :description="$t(elements.warnInfo)"/>
+  <el-dialog v-model="checkDialog" :title="$t('elements.stepInfo')" width="600px">
+    <el-alert :title="$t('elements.warn')" type="warning" show-icon :closable="false" :description="$t('elements.warnInfo')"/>
     <el-table :data="stepList" border style="margin-top: 20px">
-      <el-table-column prop="id" width="90" :label="$t(elements.stepList.stepId)" align="center"></el-table-column>
-      <el-table-column :label="$t(elements.stepList.useCaseId)" width="90" align="center">
+      <el-table-column prop="id" width="90" :label="$t('elements.stepList.stepId')" align="center"></el-table-column>
+      <el-table-column :label="$t('elements.stepList.useCaseId')" width="90" align="center">
         <template #default="scope">
-          <el-tag size="mini" v-if="scope.row.caseId=== 0">{{$t(common.null)}}</el-tag>
+          <el-tag size="mini" v-if="scope.row.caseId=== 0">{{$t('common.null')}}</el-tag>
           <span v-else>{{ scope.row.caseId }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t(elements.stepList.userCaseName)" header-align="center">
+      <el-table-column :label="$t('elements.stepList.userCaseName')" header-align="center">
         <template #default="scope">
-          <span v-if="scope.row.caseId=== 0">{{$t(elements.stepList.noCase)}}</span>
+          <span v-if="scope.row.caseId=== 0">{{$t('elements.stepList.noCase')}}</span>
           <span v-else>{{ scope.row.testCasesDTO.name }}</span>
         </template>
       </el-table-column>
     </el-table>
     <div style="text-align: center;margin-top: 20px">
-      <el-button size="small" type="danger" @click="deleteReal(deleteId)">{{$t(elements.sureDelete)}})</el-button>
+      <el-button size="small" type="danger" @click="deleteReal(deleteId)">{{$t('elements.sureDelete')}})</el-button>
     </div>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">{{$t(elements.addElement)}}</el-button>
+  <el-button size="mini" round type="primary" @click="open">{{$t('elements.addElement')}}</el-button>
   <el-table
       @filter-change="filter"
       :data="pageData['content']"
       style="width: 100%; margin-top: 20px"
       border
   >
-    <el-table-column :label="$t(elements.controlId)" width="90" align="center" prop="id">
+    <el-table-column :label="$t('elements.controlId')" width="90" align="center" prop="id">
     </el-table-column>
 
     <el-table-column
@@ -174,11 +174,11 @@ onMounted(() => {
         prop="eleName"
     >
       <template #header>
-        <el-input v-model="name" size="mini" @input="getElementList()" :placeholder="$t(elements.inputNameSearch)"/>
+        <el-input v-model="name" size="mini" @input="getElementList()" :placeholder="$t('elements.inputNameSearch')"/>
       </template>
     </el-table-column>
 
-    <el-table-column width="120" :label="$t(elements.moduleName)" prop="moduleId" column-key="moduleId" align="center"
+    <el-table-column width="120" :label="$t('elements.moduleName')" prop="moduleId" column-key="moduleId" align="center"
                      :filters="moduleList">
       <template #default="scope">
         <el-tag size="small" v-if="scope.row.modulesDTO!==null">{{ scope.row.modulesDTO.name }}</el-tag>
@@ -186,13 +186,13 @@ onMounted(() => {
       </template>
     </el-table-column>
 
-    <el-table-column column-key="eleType" :label="$t(elements.targetingType)" width="130" align="center" :filters="[
+    <el-table-column column-key="eleType" :label="$t('elements.targetingType')" width="130" align="center" :filters="[
         { text: 'id（resource-id）', value: 'id' },
         { text: 'xpath', value: 'xpath' },
         { text: 'name', value: 'name' },
         { text: 'cssSelector', value: 'cssSelector' },
-        { text: $t(elements.coordinate), value: 'point' },
-        { text: $t(elements.picture), value: 'image' },
+        { text: $t('elements.coordinate'), value: 'point' },
+        { text: $t('elements.picture'), value: 'image' },
         { text: 'nsPredicate', value: 'nsPredicate' },
         { text: 'androidUIAutomator', value: 'androidUIAutomator' },
         { text: 'linkText', value: 'linkText' },
@@ -202,13 +202,13 @@ onMounted(() => {
         { text: 'cssSelectorAndText', value: 'cssSelectorAndText' },
       ]">
       <template #default="scope">
-        <span v-if="scope.row.eleType.length === 0">{{$t(elements.notSpecified)}}</span>
+        <span v-if="scope.row.eleType.length === 0">{{$t('elements.notSpecified')}}</span>
         <span v-else>
               <el-tag size="medium" v-if="scope.row.eleType === 'image'"
-              >{{$t(elements.picture)}}</el-tag
+              >{{$t('elements.picture')}}</el-tag
               >
               <el-tag size="medium" v-else-if="scope.row.eleType === 'point'"
-              >{{$t(elements.coordinate)}}</el-tag
+              >{{$t('elements.coordinate')}}</el-tag
               >
               <el-tag size="medium" v-else>{{ scope.row.eleType }}</el-tag>
             </span>
@@ -217,11 +217,11 @@ onMounted(() => {
 
     <el-table-column
         :show-overflow-tooltip="true"
-        :label="$t(elements.cEleValue)"
+        :label="$t('elements.cEleValue')"
         header-align="center"
     >
       <template #header>
-        <el-input v-model="value" size="mini" @input="getElementList()" :placeholder="$t(elements.inputKeySearch)"/>
+        <el-input v-model="value" size="mini" @input="getElementList()" :placeholder="$t('elements.inputKeySearch')"/>
       </template>
       <template #default="scope">
         <el-image
@@ -237,17 +237,17 @@ onMounted(() => {
       </template>
     </el-table-column>
 
-    <el-table-column :label="$t(common.operate)" width="210" align="center">
+    <el-table-column :label="$t('common.operate')" width="210" align="center">
       <template #default="scope">
         <el-button type="primary" size="mini"
                    @click="copyElement(scope.row.id)">
-          {{$t(common.copy)}}
+          {{$t('common.copy')}}
         </el-button>
         <el-button
             type="primary"
             size="mini"
             @click="editElement(scope.row.id)"
-        >{{$t(common.edit)}}
+        >{{$t('common.edit')}}
         </el-button
         >
         <el-popconfirm
@@ -257,13 +257,13 @@ onMounted(() => {
             @confirm="deleteEle(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"
-            :title="$t(elements.sureDelInfo)"
+            :title="$t('elements.sureDelInfo')"
         >
           <template #reference>
             <el-button
                 type="danger"
                 size="mini"
-            >{{$t(common.delete)}}
+            >{{$t('common.delete')}}
             </el-button
             >
           </template>

@@ -5,6 +5,9 @@ import {useRoute} from "vue-router";
 import Header from "@/components/Header.vue"
 import defaultLogo from '@/assets/logo.png'
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const store = useStore();
 const route = useRoute();
 onMounted(() => {
@@ -33,30 +36,30 @@ onMounted(() => {
               :src="defaultLogo"
               shape="square"
           ></el-avatar>
-          <span class="project-name" v-if="!store.state.isCollapse">后台管理中心</span>
+          <span class="project-name" v-if="!store.state.isCollapse">{{ $t('settingIndexTS.center.background') }}</span>
         </div>
         <el-sub-menu index="5">
           <template #title>
             <i class="el-icon-lock"></i>
-            <span>权限配置</span>
+            <span>{{ $t('settingIndexTS.center.rights') }}</span>
           </template>
         <el-menu-item :index="'/Setting/Resources'">
-          <i class="el-icon-notebook-1"></i>资源管理
+          <i class="el-icon-notebook-1"></i>{{ $t('settingIndexTS.center.resource') }}
         </el-menu-item>
         <el-menu-item :index="'/Setting/Roles'">
-          <i class="el-icon-place"></i>角色管理
+          <i class="el-icon-place"></i>{{ $t('settingIndexTS.center.roleText') }}
         </el-menu-item>
         <el-menu-item :index="'/Setting/Users'">
-          <i class="el-icon-user"></i>用户配置
+          <i class="el-icon-user"></i>{{ $t('settingIndexTS.center.userCon') }}
         </el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="4">
           <template #title>
             <i class="el-icon-setting"></i>
-            <span>系统配置</span>
+            <span>{{ $t('settingIndexTS.center.systemCon') }}</span>
           </template>
           <el-menu-item :index="'/Setting/SysJobs'">
-            <i class="el-icon-time"></i>系统定时任务
+            <i class="el-icon-time"></i>{{ $t('settingIndexTS.center.scheduled') }}
           </el-menu-item>
         </el-sub-menu>
       </el-menu>
