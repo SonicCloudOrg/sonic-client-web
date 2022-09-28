@@ -5,6 +5,10 @@ import {ElMessage} from "element-plus";
 import TestSuiteUpdate from '../components/TestSuiteUpdate.vue'
 import Pageable from '../components/Pageable.vue'
 import {useRoute} from "vue-router";
+
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const route = useRoute()
 const pageData = ref({})
 const pageSize = ref(15)
@@ -52,7 +56,7 @@ const runSuite = (id) => {
     loading.value = false
     if (resp['code'] === 2000) {
       ElMessage.success({
-        message: resp['message']+"测试已开始...",
+        message: resp['message']+$t('testSuitesTS.testStart'),
       });
     }
   })
@@ -75,28 +79,28 @@ onMounted(() => {
 })
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="测试套件信息" width="950px">
+  <el-dialog v-model="dialogVisible" :title="$t('testSuitesTS.info')" width="950px">
     <test-suite-update v-if="dialogVisible" :suite-id="suiteId" @flush="flush"/>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">添加测试套件</el-button>
+  <el-button size="mini" round type="primary" @click="open">{{ $t('testSuitesTS.add') }}</el-button>
   <el-table v-loading="loading" :data="pageData['content']" border style="margin-top: 15px">
-    <el-table-column width="80" label="套件Id" prop="id" align="center" show-overflow-tooltip/>
+    <el-table-column width="80" :label="$t('testSuitesTS.id')" prop="id" align="center" show-overflow-tooltip/>
     <el-table-column min-width="280" prop="name" header-align="center" show-overflow-tooltip>
       <template #header>
-        <el-input v-model="name" size="mini" @input="getTestSuiteList()" placeholder="输入测试套件名称搜索"/>
+        <el-input v-model="name" size="mini" @input="getTestSuiteList()" :placeholder=" $t('testSuitesTS.searchMessage') "/>
       </template>
     </el-table-column>
-    <el-table-column label="套件平台" min-width="110" align="center">
+    <el-table-column :label="$t('testSuitesTS.kitPlatform')" min-width="110" align="center">
       <template #default="scope">
-        {{ scope.row.platform === 1 ? '安卓' : 'iOS' }}
+        {{ scope.row.platform === 1 ? $t('publicStepTS.android') : 'iOS' }}
       </template>
     </el-table-column>
-    <el-table-column label="覆盖类型" min-width="110" align="center">
+    <el-table-column :label="$t('testSuitesTS.coverType')" min-width="110" align="center">
       <template #default="scope">
-        <el-tag size="small">{{ scope.row.cover === 1 ? '用例覆盖' : '设备覆盖' }}</el-tag>
+        <el-tag size="small">{{ scope.row.cover === 1 ? $t('testSuitesTS.testCover') : $t('testSuitesTS.deviceCover') }}</el-tag>
       </template>
     </el-table-column>
-    <el-table-column label="关联设备" width="130" align="center">
+    <el-table-column :label="$t('testSuitesTS.associated')" width="130" align="center">
       <template #default="scope">
         <el-popover placement="left-start" width="400px">
           <el-table
@@ -106,20 +110,20 @@ onMounted(() => {
               border
           >
             <el-table-column
-                label="设备id"
+                :label="$t('testSuitesTS.device.id')"
                 width="90"
                 prop="id"
                 align="center"
             >
             </el-table-column>
             <el-table-column
-                label="设备型号"
+                :label="$t('devices.from.model')"
                 prop="model"
                 align="center"
             >
             </el-table-column>
             <el-table-column
-                label="设备序列号"
+                :label="$t('devices.detail.udId')"
                 prop="udId"
                 header-align="center"
                 show-overflow-tooltip
@@ -128,14 +132,14 @@ onMounted(() => {
           </el-table>
           <template #reference>
             <el-button size="mini"
-            >查看列表
+            >{{ $t('testSuitesTS.viewList') }}
             </el-button
             >
           </template>
         </el-popover>
       </template>
     </el-table-column>
-    <el-table-column label="关联用例" width="130" align="center">
+    <el-table-column :label="$t('testSuitesTS.associatedCase')" width="130" align="center">
       <template #default="scope">
         <el-popover placement="left-start" width="450px">
           <el-table
@@ -145,14 +149,14 @@ onMounted(() => {
               border
           >
             <el-table-column
-                label="用例id"
+                :label="$t('projectIndexTS.page.caseId')"
                 width="90"
                 prop="id"
                 align="center"
             >
             </el-table-column>
             <el-table-column
-                label="用例名称"
+                :label="$t('projectIndexTS.page.caseName')"
                 prop="name"
                 header-align="center"
                 show-overflow-tooltip
@@ -160,7 +164,7 @@ onMounted(() => {
             </el-table-column>
             <el-table-column
                 width="110"
-                label="设计人"
+                :label="$t('stepListViewTS.designer')"
                 prop="designer"
                 align="center"
                 show-overflow-tooltip
@@ -169,17 +173,17 @@ onMounted(() => {
           </el-table>
           <template #reference>
             <el-button size="mini"
-            >查看列表
+            >{{ $t('testSuitesTS.viewList') }}
             </el-button
             >
           </template>
         </el-popover>
       </template>
     </el-table-column>
-    <el-table-column width="250" fixed="right" label="操作" align="center">
+    <el-table-column width="250" fixed="right" :label="$t('common.operate')" align="center">
       <template #default="scope">
-        <el-button size="mini" type="success" @click="runSuite(scope.row.id)">运行</el-button>
-        <el-button size="mini" type="primary" @click="editSuite(scope.row.id)">编辑</el-button>
+        <el-button size="mini" type="success" @click="runSuite(scope.row.id)">{{ $t('testSuitesTS.run') }}</el-button>
+        <el-button size="mini" type="primary" @click="editSuite(scope.row.id)">{{ $t('common.edit') }}</el-button>
         <el-popconfirm
             style="margin-left: 10px"
             :confirmButtonText="$t('form.confirm')"
@@ -187,10 +191,10 @@ onMounted(() => {
             @confirm="deleteSuite(scope.row.id)"
             icon="el-icon-warning"
             iconColor="red"
-            title="确定删除该测试套件吗？套件下的用例将移出该套件"
+            :title="$t('testSuitesTS.delMessage')"
         >
           <template #reference>
-            <el-button type="danger" size="mini">删除</el-button>
+            <el-button type="danger" size="mini">{{ $t('common.delete') }}</el-button>
           </template>
         </el-popconfirm>
       </template>

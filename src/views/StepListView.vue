@@ -4,6 +4,9 @@ import {onMounted, ref} from "vue";
 import axios from "../http/axios";
 import StepList from '../components/StepList.vue'
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 const img = import.meta.globEager("./../assets/img/*")
 const route = useRoute()
 const router = useRouter()
@@ -41,14 +44,14 @@ onMounted(() => {
 <template>
   <el-page-header
       @back="router.go(-1)"
-      content="步骤详情"
+      :content="$t('publicStepTS.stepInfo')"
       style="margin-bottom: 20px"
   >
   </el-page-header>
   <el-row :gutter="20">
     <el-col :span="6">
       <el-card>
-        <template #header><strong>用例详情</strong></template>
+        <template #header><strong>{{$t('stepListViewTS.caseInfo')}}</strong></template>
         <el-form
             label-position="left"
             class="demo-table-expand"
@@ -56,13 +59,13 @@ onMounted(() => {
             style="margin-left: 10px; word-break: break-all"
             v-if="testCase['id']"
         >
-          <el-form-item label="用例Id">
+          <el-form-item :label="$t('projectIndexTS.page.caseId')">
             <span>{{ testCase['id'] }}</span>
           </el-form-item>
-          <el-form-item label="用例名称">
+          <el-form-item :label="$t('projectIndexTS.page.caseName')">
             <span>{{ testCase.name }}</span>
           </el-form-item>
-          <el-form-item label="所属平台">
+          <el-form-item :label="$t('stepListViewTS.platformToBe')">
             <div style=" display: flex;align-items: center;">
               <el-avatar
                   style="margin-right: 10px"
@@ -71,22 +74,22 @@ onMounted(() => {
                   shape="square"
               ></el-avatar
               >
-              {{ testCase['platform'] === 1 ? '安卓' : 'iOS' }}
+              {{ testCase['platform'] === 1 ? $t('publicStepTS.android') : 'iOS' }}
             </div>
           </el-form-item>
-          <el-form-item label="模块">
+          <el-form-item :label= "$t('stepListViewTS.module')">
             <span>{{ testCase['modulesDTO'] !== null ? testCase['modulesDTO'].name : "" }}</span>
           </el-form-item>
-          <el-form-item label="版本名称">
+          <el-form-item :label="$t('stepListViewTS.versionName')">
             <span>{{ testCase['version'] }}</span>
           </el-form-item>
-          <el-form-item label="设计人">
+          <el-form-item :label="$t('stepListViewTS.designer')">
             <span>{{ testCase['designer'] }}</span>
           </el-form-item>
-          <el-form-item label="最后修改日期">
+          <el-form-item :label="$t('stepListViewTS.last')">
             <span>{{ testCase['editTime'] }}</span>
           </el-form-item>
-          <el-form-item label="用例描述">
+          <el-form-item :label="$t('stepListViewTS.testMessage')">
             <span>{{ testCase['des'] }}</span>
           </el-form-item>
         </el-form>

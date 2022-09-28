@@ -18,6 +18,8 @@
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import IOSRemote from './IOSRemote.vue'
 import { ElMessage } from 'element-plus';
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
 
 // let isPress = false;
 let mouseMoveTime = 0;
@@ -158,7 +160,7 @@ const saveLastSplitObj = () => {
     <el-tooltip
         :enterable="false"
         effect="dark"
-        content="切换布局"
+        :content="$t('indexIOSTS.contentText')"
         placement="left"
         :offset="15"
     >

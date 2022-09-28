@@ -20,6 +20,9 @@ import {
 } from 'echarts/renderers';
 import {useStore} from "vuex";
 
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
+
 echarts.use(
     [PieChart, ToolboxComponent, GridComponent, LegendComponent, LineChart, CanvasRenderer, TitleComponent, TooltipComponent]
 );
@@ -60,7 +63,7 @@ const getIndexImg = (index) => {
 }
 const shortcuts = ref([
   {
-    text: '最近一周',
+    text: $t('projectIndexTS.code.lastWeek'),
     value: () => {
       const end = new Date()
       const start = new Date()
@@ -69,7 +72,7 @@ const shortcuts = ref([
     },
   },
   {
-    text: '最近一个月',
+    text: $t('projectIndexTS.code.lastMonth'),
     value: () => {
       const end = new Date()
       const start = new Date()
@@ -78,7 +81,7 @@ const shortcuts = ref([
     },
   },
   {
-    text: '最近三个月',
+    text: $t('projectIndexTS.code.lastThreeMonth'),
     value: () => {
       const end = new Date()
       const start = new Date()
@@ -98,9 +101,11 @@ const formatTime = (data) => {
   const minutes = parseInt(data / 60);
   data = data % 60;
   if (0 < days) {
-    time = days + "天" + hours + "小时" + minutes + "分" + data + "秒";
+    time = days + $t('projectIndexTS.code.day')+ hours + $t('projectIndexTS.code.hour')
+    + minutes + $t('projectIndexTS.code.minute') + data + $t('projectIndexTS.code.second');
   } else {
-    time = hours + "小时" + minutes + "分" + data + "秒";
+    time = hours + $t('projectIndexTS.code.hour') + minutes + $t('projectIndexTS.code.minute')
+        + data + $t('projectIndexTS.code.second');
   }
   return time;
 }
@@ -192,7 +197,7 @@ const getData = () => {
       let option = {
         animationDuration: 3000,
         title: {
-          text: store.state.project.projectName + "运行情况总览",
+          text: store.state.project.projectName + $t('projectIndexTS.code.runInfo'),
           subtext: times.value[0] + " ~ " + times.value[1],
           textStyle: {
             color: "#606266",
@@ -206,7 +211,7 @@ const getData = () => {
         grid: {top: '55%'},
         toolbox: {
           feature: {
-            saveAsImage: {show: true, title: "保存"},
+            saveAsImage: {show: true, title: $t('form.save')},
           },
         },
         xAxis: {
@@ -215,11 +220,11 @@ const getData = () => {
             return obj['date'];
           })
         },
-        yAxis: [{name: "单位(%)", max: 100, min: 0}],
+        yAxis: [{name: $t('projectIndexTS.code.unit'), max: 100, min: 0}],
         series: [
           {
             smooth: true,
-            name: '当天通过率',
+            name: $t('projectIndexTS.code.passRate'),
             type: 'line',
             data: result.value['pass'].map(obj => {
               return obj['rate'];
@@ -229,7 +234,7 @@ const getData = () => {
             },
           },
           {
-            name: '状态分布',
+            name: $t('projectIndexTS.code.stateDis'),
             type: 'pie',
             radius: [0, '30%'],
             center: ['50%', '30%'],
@@ -237,16 +242,16 @@ const getData = () => {
               let name = "";
               switch (obj['name']) {
                 case 0:
-                  name = "其他";
+                  name = $t('projectIndexTS.code.other');
                   break
                 case 1:
-                  name = "通过";
+                  name = $t('projectIndexTS.code.pass');
                   break
                 case 2:
-                  name = "警告";
+                  name = $t('elements.warn');
                   break
                 case 3:
-                  name = "失败";
+                  name = $t('projectIndexTS.code.fail');
                   break
               }
               return {name: name, value: obj['value']}
@@ -291,9 +296,9 @@ onUnmounted(() => {
         v-model="times"
         type="datetimerange"
         :shortcuts="shortcuts"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
+        :range-separator="$t('projectIndexTS.page.to')"
+        :start-placeholder="$t('projectIndexTS.page.startTime')"
+        :end-placeholder="$t('projectIndexTS.page.endTime')"
         :clearable="false"
         @change="getData"
         value-format="YYYY-MM-DD HH:mm:ss"
@@ -306,20 +311,20 @@ onUnmounted(() => {
   <el-row :gutter="20" style="margin-top: 20px">
     <el-col :span="8">
       <el-table :data="result['case']" style="width: 100%" border>
-        <el-table-column header-align="center" label="用例运行时长排行榜（Top 5）">
-          <el-table-column align="center" prop="case_id" label="用例id" width="90">
+        <el-table-column header-align="center" :label="$t('projectIndexTS.page.caseTop5')">
+          <el-table-column align="center" prop="case_id" :label="$t('projectIndexTS.page.caseId')" width="90">
             <template #default="scope">
               <img v-if="scope.$index<=3" width="30" :src="getIndexImg(scope.$index)"
                    style="position: absolute;left: 0px;top:0px">
               {{ scope.row['case_id'] }}
             </template>
           </el-table-column>
-          <el-table-column header-align="center" label="用例名称" show-overflow-tooltip>
+          <el-table-column header-align="center" :label="$t('projectIndexTS.page.caseName')" show-overflow-tooltip>
             <template #default="scope">
               {{ getCaseName(scope.row['case_id']) }}
             </template>
           </el-table-column>
-          <el-table-column prop="total" align="center" label="时长" width="130">
+          <el-table-column prop="total" align="center" :label="$t('projectIndexTS.page.timeLong')" width="130">
             <template #default="scope">
               {{ formatTime(scope.row.total) }}
             </template>
@@ -328,8 +333,8 @@ onUnmounted(() => {
       </el-table>
 
       <el-table :data="result['device']" style="width: 100%;margin-top: 20px" border>
-        <el-table-column header-align="center" label="设备运行时长排行榜（Top 5）">
-          <el-table-column align="center" prop="device_id" label="图片" width="60">
+        <el-table-column header-align="center" :label="$t('projectIndexTS.page.equipmentTop5')">
+          <el-table-column align="center" prop="device_id" :label="$t('elements.picture')" width="60">
             <template #default="scope">
               <img v-if="scope.$index<=3" width="30" :src="getIndexImg(scope.$index)"
                    style="position: absolute;left: 0px;top:0px;z-index: 1000">
@@ -344,17 +349,17 @@ onUnmounted(() => {
               </div>
             </template>
           </el-table-column>
-          <el-table-column align="center" width="100" label="设备型号" show-overflow-tooltip>
+          <el-table-column align="center" width="100" :label="$t('projectIndexTS.page.eqId')" show-overflow-tooltip>
             <template #default="scope">
               {{ getDeviceInfo(scope.row['device_id']).model }}
             </template>
           </el-table-column>
-          <el-table-column header-align="center" label="序列号" show-overflow-tooltip>
+          <el-table-column header-align="center" :label="$t('projectIndexTS.page.serialNumber')" show-overflow-tooltip>
             <template #default="scope">
               {{ getDeviceInfo(scope.row['device_id'])['udId'] }}
             </template>
           </el-table-column>
-          <el-table-column prop="total" align="center" label="时长" width="130">
+          <el-table-column prop="total" align="center" :label="$t('projectIndexTS.page.timeLong')" width="130">
             <template #default="scope">
               {{ formatTime(scope.row.total) }}
             </template>

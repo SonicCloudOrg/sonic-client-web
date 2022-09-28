@@ -13,6 +13,6 @@ const platform = 2
 
 </script>
 <template>
-  <el-button size="mini" round @click="caseList.open()" type="primary">${{androidTestCase.addCase}}</el-button>
+  <el-button size="mini" round @click="caseList.open()" type="primary">${{$t('androidTestCase.addCase')}}</el-button>
   <test-case-list ref="caseList" :project-id="projectId" :platform="platform" :is-read-only="false"/>
 </template>
