@@ -18,6 +18,8 @@
 import { ref } from 'vue';
 import AndroidRemote from './AndroidRemote.vue';
 import { ElMessage } from 'element-plus';
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
 
 let mouseMoveTime = 0;
 let startPosition = { x: 0, y: 0 };
@@ -59,7 +61,7 @@ const swithLayout = () => {
   }
   window.localStorage.setItem('tabPosition', tabPosition.value);
   ElMessage.success({
-    message: '切换成功！',
+    message: $t('indexIOSTS.successText'),
   });
 };
 const lineMouseup = (event) => {
@@ -159,7 +161,7 @@ const saveLastSplitObj = () => {
     <el-tooltip
         :enterable="false"
         effect="dark"
-        content="切换布局"
+        :content="$t('indexIOSTS.contentText')"
         placement="left"
         :offset="15"
     >

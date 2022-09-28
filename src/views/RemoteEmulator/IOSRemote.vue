@@ -61,7 +61,8 @@ import {
   InfoFilled,
 } from '@element-plus/icons';
 import RenderDeviceName from "../../components/RenderDeviceName.vue";
-
+import {useI18n} from 'vue-i18n'
+const {t: $t} = useI18n()
 const {toClipboard} = useClipboard();
 const route = useRoute();
 const store = useStore();
@@ -79,6 +80,7 @@ let imgHeight = 0;
 const loading = ref(false);
 const appList = ref([])
 const filterAppText = ref("")
+const remoteAppiumPort = ref(0)
 // 旋转状态 // 0 90 180 270
 let directionStatus = {
   value: 0,
@@ -200,7 +202,7 @@ const locationSet = () => {
       }),
   );
   ElMessage.success({
-    message: '开始模拟定位...',
+    message: $t('IOSRemote.startSimulating'),
   });
 }
 const locationUnset = () => {
@@ -211,7 +213,7 @@ const locationUnset = () => {
       }),
   );
   ElMessage.success({
-    message: '已恢复定位',
+    message: $t('IOSRemote.positioningRestored'),
   });
 }
 const switchScreen = () => {
@@ -233,7 +235,7 @@ const openApp = (pkg) => {
 const refreshAppList = () => {
   appList.value = [];
   ElMessage.success({
-    message: '加载应用列表中，请稍后...',
+    message: $t('IOSRemote.loadingAppList'),
   });
   terminalWebsocket.send(
       JSON.stringify({
@@ -243,7 +245,7 @@ const refreshAppList = () => {
 };
 const uninstallApp = (pkg) => {
   ElMessage.success({
-    message: '开始卸载！请稍后...',
+    message: $t('androidRemoteTS.startUninstall'),
   });
   websocket.send(
       JSON.stringify({
@@ -294,12 +296,12 @@ const switchTabs = (e) => {
 const switchLocation = () => {
   location.value = !location.value;
   ElMessage.success({
-    message: '校准完毕！',
+    message: $t('IOSRemote.calibration'),
   });
 };
 const selectCase = (val) => {
   ElMessage.success({
-    message: '关联成功！',
+    message: $t('androidRemoteTS.associationSuccess'),
   });
   testCase.value = val;
 };
@@ -367,11 +369,11 @@ const copy = (value) => {
   try {
     toClipboard(value);
     ElMessage.success({
-      message: '复制成功！',
+      message: $t('dialog.copy.success'),
     });
   } catch (e) {
     ElMessage.error({
-      message: '复制失败！',
+      message: $t('dialog.copy.fail'),
     });
   }
 };
@@ -400,7 +402,7 @@ const openSocket = (host, port, key, udId) => {
         'ws://' + host + ':' + port + '/websockets/ios/terminal/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
     );
   } else {
-    console.error('不支持WebSocket');
+    console.error($t('androidRemoteTS.noWebSocket'));
   }
   websocket.onmessage = websocketOnmessage;
   websocket.onclose = (e) => {
@@ -537,7 +539,7 @@ const terminalWebsocketOnmessage = (message) => {
       break
     }
     case 'terminal':
-      logOutPut.value.push('连接成功！');
+      logOutPut.value.push($t('androidRemoteTS.connection'));
       break;
     case 'logDetail':
       logOutPut.value.push(
@@ -556,14 +558,14 @@ const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
     case 'setPaste': {
       ElMessage.success({
-        message: '发送剪切板成功！',
+        message: $t('IOSRemote.clipboard.SentSuccessfully'),
       });
       break
     }
     case 'paste': {
       paste.value = JSON.parse(message.data).detail
       ElMessage.success({
-        message: '获取剪切板文本成功！',
+        message: $t('IOSRemote.clipboard.text'),
       });
       break
     }
@@ -572,7 +574,7 @@ const websocketOnmessage = (message) => {
       if (directionStatus.value !== d) {
         if (d !== -1) {
           ElMessage.success({
-            message: '检测到屏幕旋转！请稍后...',
+            message: $t('androidRemoteTS.messageOne'),
           });
         }
         directionStatus.value = JSON.parse(message.data).value;
@@ -588,9 +590,13 @@ const websocketOnmessage = (message) => {
       });
       break;
     }
+    case 'appiumPort': {
+      remoteAppiumPort.value = JSON.parse(message.data).port
+      break;
+    }
     case 'tree': {
       ElMessage.success({
-        message: '获取原生控件元素成功！',
+        message: $t('androidRemoteTS.getEle.success'),
       });
       let result = JSON.parse(message.data);
       currentId.value = [1];
@@ -604,7 +610,7 @@ const websocketOnmessage = (message) => {
     }
     case 'treeFail': {
       ElMessage.error({
-        message: '获取控件元素失败！请重新获取',
+        message: $t('androidRemoteTS.getEle.fail'),
       });
       elementLoading.value = false;
       break;
@@ -612,11 +618,11 @@ const websocketOnmessage = (message) => {
     case 'installFinish': {
       if (JSON.parse(message.data).status === 'success') {
         ElMessage.success({
-          message: '安装成功！',
+          message: $t('androidRemoteTS.install.success'),
         });
       } else {
         ElMessage.error({
-          message: '安装失败！',
+          message: $t('androidRemoteTS.install.fail'),
         });
       }
       break;
@@ -646,14 +652,14 @@ const websocketOnmessage = (message) => {
     case 'status': {
       debugLoading.value = false;
       ElMessage.info({
-        message: '运行完毕！',
+        message: $t('androidRemoteTS.runOver'),
       });
       break;
     }
     case 'eleScreen': {
       if (JSON.parse(message.data).img) {
         ElMessage.success({
-          message: '获取快照成功！',
+          message: $t('androidRemoteTS.getPsSuccess'),
         });
         imgElementUrl.value = JSON.parse(message.data)['img'];
         dialogImgElement.value = true;
@@ -665,7 +671,7 @@ const websocketOnmessage = (message) => {
     }
     case 'error': {
       ElMessage.error({
-        message: '系统出现异常！已断开远程控制！',
+        message: $t('androidRemoteTS.systemException'),
       });
       close();
       router.go(-1);
@@ -947,7 +953,7 @@ const beforeAvatarUpload = (file) => {
     return true;
   } else {
     ElMessage.error({
-      message: '文件格式有误！',
+      message: $t('androidRemoteTS.failErr'),
     });
     return false;
   }
@@ -957,14 +963,14 @@ const beforeAvatarUpload2 = (file) => {
     return true;
   } else {
     ElMessage.error({
-      message: '文件格式有误！',
+      message: $t('androidRemoteTS.failErr'),
     });
     return false;
   }
 };
 const limitOut = () => {
   ElMessage.error({
-    message: '只能添加一个文件！请先移除旧文件',
+    message: $t('androidRemoteTS.addOne'),
   });
 };
 const uploadPackage = (content) => {
@@ -1014,7 +1020,7 @@ const install = (ipa) => {
         }),
     );
     ElMessage.success({
-      message: '开始安装！请稍后...',
+      message: $t('androidRemoteTS.startInstall'),
     });
   }
 };
@@ -1057,7 +1063,7 @@ const getDeviceById = (id) => {
       device.value = resp.data;
       if (device.value['status'] !== 'ONLINE') {
         ElMessage.error({
-          message: '该设备暂时不可使用！',
+          message: $t('androidRemoteTS.deviceFail'),
         });
         router.replace('/Index/Devices');
         return;
@@ -1085,7 +1091,7 @@ onMounted(() => {
 
 <template>
   <el-dialog
-      title="控件元素快照"
+      :title="$t('androidRemoteTS.code.elementsSnapshot')"
       v-model="dialogImgElement"
       width="28%"
   >
@@ -1106,33 +1112,33 @@ onMounted(() => {
     >
       <el-form-item
           prop="eleName"
-          label="控件元素名称"
+          :label="$t('androidRemoteTS.code.eleName')"
           :rules="{
             required: true,
-            message: '控件元素名称不能为空',
+            message: $t('androidRemoteTS.code.eleNullName'),
             trigger: 'blur',
           }"
       >
         <el-input
             v-model="element.eleName"
-            placeholder="请输入控件元素名称"
+            :placeholder="$t('androidRemoteTS.code.inputName')"
         ></el-input>
       </el-form-item>
       <div style="text-align: center">
         <el-button size="small" type="primary" @click="saveEle"
-        >保存为图片元素
+        >{{ $t('androidRemoteTS.code.saveEle') }}
         </el-button
         >
       </div>
     </el-form>
   </el-dialog>
-  <el-dialog v-model="dialogElement" title="控件元素信息" width="600px">
+  <el-dialog v-model="dialogElement" :title="$t('elements.eleInfo')" width="600px">
     <element-update v-if="dialogElement" :project-id="project['id']"
                     :element-id="0" :element-obj="element" @flush="dialogElement = false"/>
   </el-dialog>
   <el-page-header
       @back="router.go(-1)"
-      content="远程控制"
+      :content="$t('routes.remoteControl')"
       style="margin-bottom: 20px"
   >
   </el-page-header>
@@ -1152,7 +1158,7 @@ onMounted(() => {
           }"
       >
         <el-card v-loading="loading"
-                 element-loading-text="准备图像中..."
+                 :element-loading-text="$t('androidRemoteTS.code.preparingImager')"
                  element-loading-background="rgba(255, 255, 255, 1)"
                  style="font-size: 14px"
                  :body-style="{ padding: '10px', background: '#ccc', position: 'relative',minHeight: '340px' }"
@@ -1170,32 +1176,32 @@ onMounted(() => {
                     label-width="90px"
                     style="margin-left: 10px; word-break: break-all"
                 >
-                  <el-form-item label="设备名称">
+                  <el-form-item :label="$t('devices.detail.name')">
                     <span>{{ device.name }}</span>
                   </el-form-item>
-                  <el-form-item label="设备型号">
+                  <el-form-item :label="$t('devices.detail.model')">
                     <span>{{ device['model'] }}</span>
                   </el-form-item>
-                  <el-form-item label="设备序列号">
+                  <el-form-item :label="$t('devices.detail.udId')">
                     <span>{{ device['udId'] }}</span>
                   </el-form-item>
-                  <el-form-item label="设备系统">
+                  <el-form-item :label="$t('devices.form.system')">
                     <img
                         height="25"
                         style="position: absolute; top: 7px; bottom: 7px; left: 7px"
                         :src="getImg(device['platform']===1?'ANDROID':'IOS')"
                     />
                   </el-form-item>
-                  <el-form-item label="系统版本">
+                  <el-form-item :label=" $t('androidRemoteTS.code.systemVersion')">
                     <span>{{ device['version'] }}</span>
                   </el-form-item>
-                  <el-form-item label="屏幕分辨率">
+                  <el-form-item :label="$t('devices.detail.size')">
                     <span>{{ device['size'] }}</span>
                   </el-form-item>
-                  <el-form-item label="CPU类型">
+                  <el-form-item :label="$t('devices.detail.cpu')">
                     <span>{{ device['cpu'] }}</span>
                   </el-form-item>
-                  <el-form-item label="设备制造商">
+                  <el-form-item :label="$t('devices.filter.manufacturer')">
                     <img
                         height="25"
                         style="position: absolute; top: 7px; bottom: 7px; left: 7px"
@@ -1246,7 +1252,7 @@ onMounted(() => {
             <el-tooltip
                 :enterable="false"
                 effect="dark"
-                content="清晰度与FPS"
+                :content="$t('IOSRemote.clarityAndFps')"
                 :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
@@ -1274,8 +1280,8 @@ onMounted(() => {
                           size="mini"
                           @change="switchScreen"
                       >
-                        <el-radio-button label="low">低</el-radio-button>
-                        <el-radio-button label="high">高</el-radio-button>
+                        <el-radio-button label="low">{{$t('androidRemoteTS.low')}}</el-radio-button>
+                        <el-radio-button label="high">{{$t('androidRemoteTS.high')}}</el-radio-button>
                       </el-radio-group>
                     </el-dropdown-menu>
                   </template>
@@ -1285,7 +1291,7 @@ onMounted(() => {
             <el-tooltip
                 :enterable="false"
                 effect="dark"
-                content="手动修复"
+                :content="$t('androidRemoteTS.code.manualRepair')"
                 :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
@@ -1310,7 +1316,7 @@ onMounted(() => {
                       <el-button-group>
                         <el-tooltip
                             effect="dark"
-                            content="校准坐标"
+                            :content="$t('IOSRemote.calibrationCoordinates')"
                             placement="top"
                         >
                           <el-button
@@ -1333,7 +1339,7 @@ onMounted(() => {
             <el-tooltip
                 :enterable="false"
                 effect="dark"
-                content="音量"
+                :content="$t('IOSRemote.volume')"
                 :placement="tabPosition == 'left' ? 'right' : 'left'"
                 :offset="15"
             >
@@ -1390,7 +1396,7 @@ onMounted(() => {
             </el-tooltip>
             <el-tooltip
                 effect="dark"
-                content="拨号"
+                :content="$t('androidRemoteTS.code.dial')"
                 :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
@@ -1408,7 +1414,7 @@ onMounted(() => {
             </el-tooltip>
             <el-tooltip
                 effect="dark"
-                content="拍照"
+                :content="$t('androidRemoteTS.code.photograph')"
                 :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
@@ -1426,7 +1432,7 @@ onMounted(() => {
             </el-tooltip>
             <el-tooltip
                 effect="dark"
-                content="浏览器"
+                :content="$t('androidRemoteTS.code.browser')"
                 :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
@@ -1444,7 +1450,7 @@ onMounted(() => {
             </el-tooltip>
             <el-tooltip
                 effect="dark"
-                content="锁定/解锁屏幕"
+                :content="$t('androidRemoteTS.code.LUS')"
                 :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
@@ -1483,18 +1489,18 @@ onMounted(() => {
             v-model="activeTab"
             :tab-position="tabPosition"
         >
-          <el-tab-pane label="远控面板" name="main">
+          <el-tab-pane label="$t('androidRemoteTS.code.remoteControlPanel')" name="main">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-tabs type="border-card" stretch>
-                  <el-tab-pane label="Siri指令">
+                  <el-tab-pane :label="$t('IOSRemote.siri.command')">
                     <el-form size="small" :model="text" style="padding: 24px 0">
                       <el-form-item>
                         <el-input
                             clearable
                             v-model="text.content"
                             size="small"
-                            placeholder="请输入siri指令，例：what day is it today?"
+                            :placeholder="$t('IOSRemote.siri.inputCommand')"
                         ></el-input>
                       </el-form-item>
                       <div style="text-align: center;">
@@ -1502,14 +1508,14 @@ onMounted(() => {
                             size="mini"
                             type="primary"
                             @click="sendCommand(text.content)"
-                        >发送
+                        >{{ $t('androidRemoteTS.send') }}
                         </el-button>
                       </div>
                     </el-form>
                   </el-tab-pane>
-                  <el-tab-pane label="模拟定位">
+                  <el-tab-pane :label="$t('IOSRemote.positioning.mock')">
                     <el-form size="small" :model="simLocation">
-                      <el-form-item label="经度">
+                      <el-form-item :label="$t('IOSRemote.positioning.x')">
                         <el-input-number
                             style="width: 100%"
                             :precision="6"
@@ -1518,7 +1524,7 @@ onMounted(() => {
                             controls-position="right"
                         />
                       </el-form-item>
-                      <el-form-item label="纬度">
+                      <el-form-item :label="$t('IOSRemote.positioning.y')">
                         <el-input-number
                             style="width: 100%"
                             :precision="6"
@@ -1533,13 +1539,13 @@ onMounted(() => {
                           size="mini"
                           type="primary"
                           @click="locationSet"
-                      >开始模拟
+                      >{{ $t('IOSRemote.positioning.start') }}
                       </el-button>
                       <el-button
                           size="mini"
                           type="primary"
                           @click="locationUnset"
-                      >恢复定位
+                      >{{ $t('IOSRemote.positioning.end') }}
                       </el-button>
                     </div>
                   </el-tab-pane>
@@ -1547,7 +1553,7 @@ onMounted(() => {
               </el-col>
               <el-col :span="12">
                 <el-tabs type="border-card" stretch>
-                  <el-tab-pane label="远程WDA">
+                  <el-tab-pane :label="$t('IOSRemote.remoteWDA')">
                     <div style="padding: 13px 0">
                       <div v-if="remoteWDAPort!==0" style="margin-top: 20px;margin-bottom: 20px">
                         <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
@@ -1558,10 +1564,10 @@ onMounted(() => {
                       <div v-else v-loading="remoteWDAPort.length===0"
                            element-loading-spinner="el-icon-lock"
                            element-loading-background="rgba(255, 255, 255, 1)"
-                           element-loading-text="driver未初始化成功"
+                           :element-loading-text="$t('IOSRemote.driverNotSuccess')"
                            style="margin-top: 18px;margin-bottom: 18px">
                         <el-card>
-                          <strong>driver未初始化成功</strong>
+                          <strong>{{ $t('IOSRemote.driverNotSuccess') }}</strong>
                         </el-card>
                       </div>
                     </div>
@@ -1586,25 +1592,25 @@ onMounted(() => {
               <el-col :span="12" style="margin-top: 20px">
                 <el-card>
                   <template #header>
-                    <strong>剪切板操作</strong>
+                    <strong>{{ $t('IOSRemote.clipboard.operate') }}</strong>
                   </template>
                   <el-input :rows="7" show-word-limit clearable v-model="paste" type="textarea"
-                            placeholder="请输入你要发送到剪切板的内容"></el-input>
+                            :placeholder=" $t('IOSRemote.clipboard.inputText') "></el-input>
                   <div style="text-align: center;margin-top: 15px">
-                    <el-button size="mini" type="primary" @click="setPasteboard(paste)">发送到剪切板</el-button>
-                    <el-button size="mini" type="primary" @click="getPasteboard">获取剪切板文本</el-button>
+                    <el-button size="mini" type="primary" @click="setPasteboard(paste)">{{ $t('IOSRemote.clipboard.send') }}</el-button>
+                    <el-button size="mini" type="primary" @click="getPasteboard">{{ $t('IOSRemote.clipboard.getText') }}</el-button>
                   </div>
                 </el-card>
               </el-col>
               <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
-                    <strong>文件互传与崩溃日志</strong>
+                    <strong>{{ $t('IOSRemote.errLog') }}</strong>
                   </template>
                   <div style="text-align: center" v-loading="true"
                        element-loading-spinner="el-icon-lock"
                        element-loading-background="rgba(255, 255, 255, 1)"
-                       element-loading-text="该功能即将开放">
+                       :element-loading-text="$t('IOSRemote.waitOpen')">
                     <el-upload
                         v-loading="uploadLoading"
                         drag
@@ -1616,9 +1622,9 @@ onMounted(() => {
                         :http-request="uploadPackage"
                     >
                       <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">将ipa文件拖到此处，或<em>点击上传</em></div>
+                      <div class="el-upload__text">{{ $t('IOSRemote.moveIPA') }}<em>{{$t('devices.detail.uploadImg')}}</em></div>
                       <template #tip>
-                        <div class="el-upload__tip">只能上传ipa文件</div>
+                        <div class="el-upload__tip">{{ $t('IOSRemote.onlyIPAFile') }}</div>
                       </template>
                     </el-upload>
                   </div>
@@ -1626,12 +1632,12 @@ onMounted(() => {
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="应用程序" name="apps">
+          <el-tab-pane :label="$t('androidRemoteTS.code.app')" name="apps">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-card shadow="hover">
                   <template #header>
-                    <strong>安装IPA</strong>
+                    <strong>{{ $t('IOSRemote.installIPA') }}</strong>
                   </template>
                   <div style="text-align: center">
                     <el-upload
@@ -1645,9 +1651,9 @@ onMounted(() => {
                         :http-request="uploadPackage"
                     >
                       <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">将ipa文件拖到此处，或<em>点击上传</em></div>
+                      <div class="el-upload__text">{{ $t('IOSRemote.moveIPA') }}<em>{{$t('devices.detail.uploadImg')}}</em></div>
                       <template #tip>
-                        <div class="el-upload__tip">只能上传ipa文件</div>
+                        <div class="el-upload__tip">{{ $t('IOSRemote.onlyIPAFile') }}</div>
                       </template>
                     </el-upload>
                   </div>
@@ -1663,7 +1669,7 @@ onMounted(() => {
                       clearable
                       v-model="uploadUrl"
                       size="small"
-                      placeholder="请输入ipa下载链接或本地路径"
+                      :placeholder="$t('IOSRemote.pleaseIPAFilePath') "
                   ></el-input>
                   <div style="text-align: center;margin-top: 20px">
                     <el-button
@@ -1671,7 +1677,7 @@ onMounted(() => {
                         type="primary"
                         :disabled="uploadUrl.length===0"
                         @click="install(uploadUrl)"
-                    >发送
+                    >{{ $t('androidRemoteTS.code.send') }}
                     </el-button>
                   </div>
                 </el-card>
@@ -1681,7 +1687,7 @@ onMounted(() => {
               <el-table :data="currAppListPageData" border>
                 <el-table-column width="90" header-align="center">
                   <template #header>
-                    <el-button size="mini" @click="refreshAppList">刷新</el-button>
+                    <el-button size="mini" @click="refreshAppList">{{ $t('androidRemoteTS.code.refresh') }}</el-button>
                   </template>
                   <template #default="scope">
                     <div style="display: flex;align-items: center;justify-content: center;">
@@ -1690,24 +1696,24 @@ onMounted(() => {
                     </div>
                   </template>
                 </el-table-column>
-                <el-table-column width="150" show-overflow-tooltip header-align="center" prop="name" label="应用名">
+                <el-table-column width="150" show-overflow-tooltip header-align="center" prop="name" :label="$t('androidRemoteTS.code.appName')">
                 </el-table-column>
                 <el-table-column header-align="center" show-overflow-tooltip prop="bundleId"
-                                 label="包名">
+                                 :label="$t('androidRemoteTS.code.packagesName')">
                   <template #default="scope">
                     <div style="cursor: pointer" @click="copy(scope.row.bundleId)">{{ scope.row.bundleId }}</div>
                   </template>
                 </el-table-column>
-                <el-table-column header-align="center" show-overflow-tooltip prop="version" label="版本号"
+                <el-table-column header-align="center" show-overflow-tooltip prop="version" :label="$t('androidRemoteTS.code.version')"
                                  width="120"></el-table-column>
                 <el-table-column align="center" width="200">
                   <template #header>
-                    <el-input v-model="filterAppText" size="mini" placeholder="输入应用名或包名搜索"/>
+                    <el-input v-model="filterAppText" size="mini" :placeholder="$t('androidRemoteTS.code.nameSearch')"/>
                   </template>
                   <template #default="scope">
-                    <el-button size="mini" @click="openApp(scope.row.bundleId)" type="primary">打开
+                    <el-button size="mini" @click="openApp(scope.row.bundleId)" type="primary">{{ $t('androidRemoteTS.code.open') }}
                     </el-button>
-                    <el-button size="mini" @click="uninstallApp(scope.row.bundleId)" type="danger">卸载</el-button>
+                    <el-button size="mini" @click="uninstallApp(scope.row.bundleId)" type="danger">{{ $t('androidRemoteTS.code.unInstall') }}</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -1720,33 +1726,34 @@ onMounted(() => {
               ></Pageable>
             </el-card>
           </el-tab-pane>
-          <el-tab-pane label="网络抓包" name="proxy">
-            <el-button size="small" type="success" @click="startProxy">开始抓包</el-button>
-            <el-button size="small" @click="installCert">打开浏览器</el-button>
+          <el-tab-pane :label="$t('androidRemoteTS.code.packet')" name="proxy">
+            <el-button size="small" type="success" @click="startProxy">{{ $t('androidRemoteTS.code.startPacket') }}</el-button>
+            <el-button size="small" @click="installCert">{{ $t('IOSRemote.openWeb')}}</el-button>
             <strong style="color: #545c64;font-size: 14px;margin-left: 6px">
-              打开浏览器后输入网址 <span
+              {{ $t('IOSRemote.web.openInput') }} <span
                 style="color: #409EFF">{{ 'http://' + agent['host'] + ':' + agent['port'] + '/assets/download' }}</span>
-              下载证书</strong>
+              {{ $t('androidRemoteTS.code.downloadCertificate')}}</strong>
             <strong v-if="proxyConnPort!==0"
-                    style="color: #67c23a;float: right;margin-top: 5px">代理连接：{{
+                    style="color: #67c23a;float: right;margin-top: 5px">{{ $t('androidRemoteTS.code.proxyConnection')}}：{{
                 agent['host'] + ':' + proxyConnPort
               }}</strong>
             <iframe v-if="proxyWebPort!==0"
                     :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                     :src="'http://'+agent['host']+':'+proxyWebPort"></iframe>
             <el-card v-else style="margin-top:20px">
-              <template #header><strong>使用教学</strong></template>
+              <template #header><strong>{{ $t('androidRemoteTS.code.useTeaching')}}</strong></template>
               <div style="height: 300px">
                 <el-steps direction="vertical" :active="3">
-                  <el-step title="连接Wifi" status="process"
-                           description="未连接Wifi的话，需前往Wifi列表连接你的Wifi。Wifi需要与Agent的网络互通，连接后点击刷新重新获取Wifi状态"/>
-                  <el-step title="下载证书" status="process"
-                           description="首次抓包需要安装证书，点击打开浏览器按钮后访问链接下载证书并安装。如浏览器无法访问，请确认Agent已关闭防火墙。"/>
-                  <el-step title="安装证书" status="process"
-                           description="进入手机【设置】->【通用】->【VPN与设备管理 / 描述文件与设备管理 / 设备管理 / 描述文件】->找到mitmproxy证书安装"/>
-                  <el-step title="信任证书" status="process"
-                           description="进入手机【设置】->【通用】->【关于本机】最下方->【证书信任设置】信任对应证书"/>
-                  <el-step title="开始抓包" status="process" description="点击开始抓包后，Wifi设置手动代理，连接右上角对应的ip与端口，即可开启抓包"/>
+                  <el-step :title="$t('androidRemoteTS.code.connectWifi')" status="process"
+                           :description="$t('androidRemoteTS.code.connectWifiText')"/>
+                  <el-step :title="$t('androidRemoteTS.code.downloadCertificate')" status="process"
+                           :description="$t('androidRemoteTS.code.installCertificateText')"/>
+                  <el-step :title="$t('androidRemoteTS.code.installCertificate')" status="process"
+                           :description="$t('IOSRemote.messageStep')"/>
+                  <el-step :title="$t('IOSRemote.trustCertificate')" status="process"
+                           :description="$t('IOSRemote.certificateStep')"/>
+                  <el-step :title="$t('androidRemoteTS.code.startPacket')" status="process"
+                           :description="$t('IOSRemote.startPacketMessage')"/>
                 </el-steps>
               </div>
             </el-card>
@@ -1819,7 +1826,7 @@ onMounted(() => {
                     :body-style="{color:'#FFFFFF',backgroundColor:'#303133',lineHeight:'1.5'}">
                   <div style="display: flex;margin-bottom: 10px">
                     <el-input style="margin-left: 5px" size="mini" v-model="logFilter"
-                              placeholder="请输入输入过滤文本">
+                              :placeholder="$t('androidRemoteTS.code.enterInput')">
                       <template #prepend>| grep</template>
                     </el-input>
                     <el-button size="mini" @click="getSyslog"
@@ -1840,21 +1847,21 @@ onMounted(() => {
               </el-tab-pane>
             </el-tabs>
           </el-tab-pane>
-          <el-tab-pane label="UI自动化" name="auto">
+          <el-tab-pane :label="$t('androidRemoteTS.code.UIAutomation.UIAutomationName')" name="auto">
             <div v-if="testCase['id']">
               <el-collapse accordion style="margin-bottom: 20px">
                 <el-collapse-item>
                   <template #title>
                     <div style="display: flex; align-items: center;width: 100%;justify-content: space-between;">
-                      <strong style="font-size: 15px;color: #909399;margin-left: 10px">用例详情</strong>
-                      <el-button style="margin-right: 10px" type="danger" size="mini" @click="removeCase">取消关联
+                      <strong style="font-size: 15px;color: #909399;margin-left: 10px">{{ $t('androidRemoteTS.code.UIAutomation.testInfo') }}</strong>
+                      <el-button style="margin-right: 10px" type="danger" size="mini" @click="removeCase">{{ $t('androidRemoteTS.code.UIAutomation.clean') }}
                       </el-button>
                     </div>
                   </template>
                   <el-descriptions :column="2" size="medium" border>
-                    <el-descriptions-item width="100px" label="用例Id">{{ testCase['id'] }}</el-descriptions-item>
-                    <el-descriptions-item width="100px" label="用例名称">{{ testCase.name }}</el-descriptions-item>
-                    <el-descriptions-item label="所属项目">
+                    <el-descriptions-item width="100px" :label="$t('projectIndexTS.page.caseId')">{{ testCase['id'] }}</el-descriptions-item>
+                    <el-descriptions-item width="100px" :label="$t('projectIndexTS.page.caseName')">{{ testCase.name }}</el-descriptions-item>
+                    <el-descriptions-item :label="$t('androidRemoteTS.code.UIAutomation.fatherPlayed')">
                       <div style=" display: flex;align-items: center;">
                         <el-avatar
                             style="margin-right: 10px"
@@ -1866,7 +1873,7 @@ onMounted(() => {
                         {{ project['projectName'] }}
                       </div>
                     </el-descriptions-item>
-                    <el-descriptions-item label="所属平台">
+                    <el-descriptions-item :label="$t('stepListViewTS.platformToBe')">
                       <div style=" display: flex;align-items: center;">
                         <el-avatar
                             style="margin-right: 10px"
@@ -1875,36 +1882,36 @@ onMounted(() => {
                             shape="square"
                         ></el-avatar
                         >
-                        {{ testCase['platform'] === 1 ? '安卓' : 'iOS' }}
+                        {{ testCase['platform'] === 1 ? $t('publicStepTS.android') : 'iOS' }}
                       </div>
                     </el-descriptions-item>
-                    <el-descriptions-item label="模块">
+                    <el-descriptions-item :label="$t('stepListViewTS.module')">
                       {{ testCase['modulesDTO'] !== null ? testCase['modulesDTO'].name : "" }}
                     </el-descriptions-item>
-                    <el-descriptions-item label="版本名称">{{ testCase['version'] }}</el-descriptions-item>
-                    <el-descriptions-item label="设计人">{{ testCase['designer'] }}</el-descriptions-item>
-                    <el-descriptions-item label="最后修改日期">{{ testCase['editTime'] }}</el-descriptions-item>
-                    <el-descriptions-item label="用例描述">{{ testCase['des'] }}</el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.versionName')">{{ testCase['version'] }}</el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.designer')">{{ testCase['designer'] }}</el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.last')">{{ testCase['editTime'] }}</el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.testMessage')">{{ testCase['des'] }}</el-descriptions-item>
                   </el-descriptions>
                 </el-collapse-item>
               </el-collapse>
               <el-tabs type="border-card" stretch v-model="activeTab2">
-                <el-tab-pane label="步骤列表" name="step">
+                <el-tab-pane :label="$t('publicStepTS.list')" name="step">
                   <step-list :is-show-run="true" :platform="2" :is-driver-finish="isDriverFinish"
                              :case-id="testCase['id']"
                              :project-id="project['id']"
                              :debug-loading="debugLoading"
                              @runStep="runStep"/>
                 </el-tab-pane>
-                <el-tab-pane label="运行日志" name="log">
+                <el-tab-pane :label="$t('resultDetailTS.page.runLog')" name="log">
                   <step-log :is-read-only="false" :debug-loading="debugLoading" :step-log="stepLog"
                             @clearLog="clearLog" @stopStep="stopStep"/>
                 </el-tab-pane>
               </el-tabs>
             </div>
             <div v-else>
-              <span style="color: #909399;margin-right: 10px">关联项目</span>
-              <el-select size="mini" v-model="project" value-key="id" placeholder="请选择关联项目">
+              <span style="color: #909399;margin-right: 10px">{{ $t('androidRemoteTS.code.associatedProject') }}</span>
+              <el-select size="mini" v-model="project" value-key="id" :placeholder="$t('androidRemoteTS.code.chooseProject')">
                 <el-option
                     v-for="item in store.state.projectList"
                     :key="item.id"
@@ -1933,12 +1940,13 @@ onMounted(() => {
                               :is-read-only="true"
                               @select-case="selectCase"></test-case-list>
               <el-card style="height: 100%;margin-top:20px">
-                <el-result icon="info" title="提示" subTitle="该功能需要先从上方关联测试用例">
+                <el-result icon="info" :title="$t('androidRemoteTS.code.hintText')"
+                           :subTitle="$t('androidRemoteTS.code.hintMessage')">
                 </el-result>
               </el-card>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="控件元素" name="ele">
+          <el-tab-pane :label="$t('routes.controlElement')" name="ele">
             <div v-show="isShowImg">
               <div style="margin-bottom: 15px; display: flex;align-items: center;justify-content: space-between;">
                 <el-button
@@ -1951,7 +1959,7 @@ onMounted(() => {
                   <el-icon :size="12" style="vertical-align: middle;">
                     <Search/>
                   </el-icon>
-                  重新获取控件元素
+                  {{ $t('androidRemoteTS.code.retrieveControlEle') }}
                 </el-button
                 >
               </div>
@@ -1979,7 +1987,7 @@ onMounted(() => {
                     <el-input
                         style="margin-bottom: 10px"
                         size="mini"
-                        placeholder="输入class或name进行过滤"
+                        :placeholder="$t('IOSRemote.filterClassOrName')"
                         v-model="filterText"
                     ></el-input>
                     <div style="height: 660px">
@@ -2027,7 +2035,7 @@ onMounted(() => {
                             type="primary"
                             round
                             @click="toAddElement('','')"
-                        >添加控件
+                        >{{ $t('androidRemoteTS.code.addControls') }}
                         </el-button
                         >
                         <el-button
@@ -2040,11 +2048,11 @@ onMounted(() => {
                             size="small"
                             round
                             @click="getEleScreen(elementDetail['xpath'])"
-                        >控件快照
+                        >{{ $t('androidRemoteTS.code.controlSnapshot') }}
                         </el-button
                         >
                       </div>
-                      <el-alert style="margin-bottom: 10px" v-else title="关联项目后即可保存控件" type="info" show-icon
+                      <el-alert style="margin-bottom: 10px" v-else :title="$t('androidRemoteTS.code.titleMessage')" type="info" show-icon
                                 close-text="Get!"/>
                       <el-scrollbar
                           style="height: 100%"
@@ -2077,8 +2085,8 @@ onMounted(() => {
                               <Pointer/>
                             </el-icon>
                           </el-form-item>
-                          <el-form-item label="Predicate推荐">
-                            <el-table stripe empty-text="暂无推荐语法" border :data="findBestNS(elementDetail)"
+                          <el-form-item :label="$t('IOSRemote.predicate')">
+                            <el-table stripe :empty-text="$t('IOSRemote.noRecommend')" border :data="findBestNS(elementDetail)"
                                       :show-header="false">
                               <el-table-column>
                                 <template #default="scope">
@@ -2092,8 +2100,8 @@ onMounted(() => {
                               </el-table-column>
                             </el-table>
                           </el-form-item>
-                          <el-form-item label="xpath推荐">
-                            <el-table stripe empty-text="暂无xpath推荐语法" border :data="findBestXpath(elementDetail)"
+                          <el-form-item :label="$t('androidRemoteTS.code.xpath')">
+                            <el-table stripe :empty-text="$t('androidRemoteTS.code.xpathNull')" border :data="findBestXpath(elementDetail)"
                                       :show-header="false">
                               <el-table-column>
                                 <template #default="scope">
@@ -2107,7 +2115,7 @@ onMounted(() => {
                               </el-table-column>
                             </el-table>
                           </el-form-item>
-                          <el-form-item label="绝对路径" style="cursor: pointer">
+                          <el-form-item :label="$t('androidRemoteTS.code.absolutePath')" style="cursor: pointer">
                             <span @click="copy(elementDetail['xpath'])">{{ elementDetail['xpath'] }}</span>
                             <el-icon color="green" size="16" v-if="project && project['id']"
                                      style="vertical-align: middle;margin-left: 10px"
@@ -2130,7 +2138,7 @@ onMounted(() => {
                           >
                             <span>{{ elementDetail['label'] }}</span>
                           </el-form-item>
-                          <el-form-item label="中心坐标" style="cursor: pointer">
+                          <el-form-item :label="$t('androidRemoteTS.code.centerXY')" style="cursor: pointer">
                              <span
                                  @click="copy(computedCenter(elementDetail['x'],elementDetail['y'],elementDetail['width'],elementDetail['height']))">{{
                                  computedCenter(elementDetail['x'], elementDetail['y'], elementDetail['width'], elementDetail['height'])
@@ -2144,14 +2152,14 @@ onMounted(() => {
                           <el-form-item label="index">
                             <span>{{ elementDetail['index'] }}</span>
                           </el-form-item>
-                          <el-form-item label="是否可用">
+                          <el-form-item :label="$t('androidRemoteTS.code.label.six')">
                             <el-switch
                                 :value="JSON.parse(elementDetail['enabled'])"
                                 disabled
                             >
                             </el-switch>
                           </el-form-item>
-                          <el-form-item label="是否显示">
+                          <el-form-item :label="$t('androidRemoteTS.code.label.five')">
                             <el-switch
                                 :value="JSON.parse(elementDetail['visible'])"
                                 disabled
@@ -2178,7 +2186,8 @@ onMounted(() => {
               </el-row>
             </div>
             <el-card style="height: 100%" v-show="!isShowImg">
-              <el-result icon="info" title="提示" subTitle="请先获取控件元素，该功能需要初始化Driver">
+              <el-result icon="info" :title="$t('androidRemoteTS.code.hintText')"
+                         :subTitle="$t('androidRemoteTS.code.subTitleText')">
                 <template #extra>
                   <el-button
                       type="primary"
@@ -2190,7 +2199,7 @@ onMounted(() => {
                     <el-icon :size="12" style="vertical-align: middle;">
                       <Search/>
                     </el-icon>
-                    获取控件元素
+                    {{ $t('androidRemoteTS.code.getEle') }}
                   </el-button
                   >
                 </template>
