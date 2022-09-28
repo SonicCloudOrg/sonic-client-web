@@ -547,7 +547,7 @@ const androidRemoteTS = {
         noAgent: "所在Agent未开启该功能！",
         remoteAppium: "远程Appium",
         inttialized: "AppiumDriver未初始化!",
-        appiumInt: "初始化AppiumDriver",
+        UIAutomator2appiumInt: "初始化UIAutomator2Server",
         automaticInitialization: "下次进入自动初始化",
         scanQRCode:"扫描二维码",
         errTitle: "OPPO、vivo部分机型上传二维码后不出现在相册，需要重启后生效",

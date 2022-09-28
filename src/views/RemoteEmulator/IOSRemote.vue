@@ -1572,27 +1572,6 @@ onMounted(() => {
                       </div>
                     </div>
                   </el-tab-pane>
-                  <el-tab-pane :label="$t('androidRemoteTS.code.remoteAppium')">
-                    <div style="padding: 13px 0">
-                      <div v-if="remoteAppiumPort!==0" style="margin-top: 20px;margin-bottom: 20px">
-                        <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
-                                 @click="copy('http://'+agent['host']+':'+remoteAppiumPort+'/wd/hub')">
-                          <strong style="color: #F2F6FC">http://{{ agent['host'] }}:{{
-                              remoteAppiumPort
-                            }}/wd/hub</strong>
-                        </el-card>
-                      </div>
-                      <div v-else v-loading="remoteAppiumPort===0"
-                           element-loading-spinner="el-icon-lock"
-                           element-loading-background="rgba(255, 255, 255, 1)"
-                           :element-loading-text="$t('androidRemoteTS.code.inttialized')"
-                           style="margin-top: 18px;margin-bottom: 18px">
-                        <el-card>
-                          <strong>{{ $t('androidRemoteTS.code.inttialized')  }}</strong>
-                        </el-card>
-                      </div>
-                    </div>
-                  </el-tab-pane>
                 </el-tabs>
               </el-col>
               <!--              <el-col :span="8">-->
