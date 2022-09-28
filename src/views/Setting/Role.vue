@@ -8,7 +8,6 @@ import {useI18n} from "vue-i18n";
 const {t: $t} = useI18n()
 
 const route = useRoute()
-const route = useRoute()
 
 const pageData = ref({})
 const pageSize = ref(15);
