@@ -97,7 +97,7 @@ onMounted(() => {
             :placeholder="$t('versionsTS.inputName')"
         ></el-input>
       </el-form-item>
-      <el-form-item :label="$t('versions.time')" prop="createTime" :rules="{
+      <el-form-item :label="$t('versionsTS.time')" prop="createTime" :rules="{
           required: true,
           message: $t('versionsTS.timeNoNull'),
           trigger: 'change',
