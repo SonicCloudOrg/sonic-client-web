@@ -181,6 +181,7 @@ const routes = {
 const setting = {
     title: "后台管理中心"
 }
+
 const androidTestCase = {
     addCase: "添加用例",
 }
@@ -472,7 +473,7 @@ const androidRemoteTS = {
     copySuccess: "复制成功",
     copyFail: "复制失败",
     noWebSocket: "不支持WebSocket",
-    connection: "连接成功",
+    connection: "连接成功！",
     systemException: "系统出现异常！已断开远程控制！",
     messageOne: "检测到屏幕旋转！请稍后...",
     getPocoSuccess: "获取Poco控件成功！",
@@ -545,7 +546,7 @@ const androidRemoteTS = {
         remoteADB: "远程ADB",
         noAgent: "所在Agent未开启该功能！",
         remoteAppium: "远程Appium",
-        inttialized: "AppiumDriver未初始化",
+        inttialized: "AppiumDriver未初始化!",
         appiumInt: "初始化AppiumDriver",
         automaticInitialization: "下次进入自动初始化",
         scanQRCode:"扫描二维码",
@@ -734,6 +735,55 @@ const usersTS = {
     }
 }
 
+
+const IOSRemote = {
+    startSimulating: "开始模拟定位...",
+    positioningRestored: "已恢复定位",
+    loadingAppList: "加载应用列表中，请稍后...",
+    calibration: "校准完毕",
+    clipboard: {
+        SentSuccessfully: "发送剪切板成功!",
+        text: "获取剪切板文本成功!",
+        operate: "剪切板操作",
+        inputText: "请输入你要发送到剪切板的内容",
+        send: "发送到剪切板",
+        getText: "获取剪切板文本",
+    },
+    clarityAndFps: "清晰度与FPS",
+    calibrationCoordinates: "校准坐标",
+    volume: "音量",
+    siri: {
+        command: "Siri指令",
+        inputCommand: "请输入siri指令，例：what day is it today?",
+    },
+    positioning: {
+        mock: "模拟定位",
+        x: "经度",
+        y: "纬度",
+        start: "开始模拟",
+        end: "恢复定位",
+    },
+    remoteWDA: "远程WDA",
+    driverNotSuccess: "driver未初始化成功",
+    errLog: "文件互传与崩溃日志",
+    waitOpen: "该功能即将开放",
+    moveIPA: "将ipa文件拖到此处，或",
+    onlyIPAFile: "只能上传ipa文件",
+    installIPA: "安装IPA",
+    pleaseIPAFilePath: "请输入ipa下载链接或本地路径",
+    openWeb: "打开浏览器",
+    web: {
+        openInput: "打开浏览器后输入网址",
+    },
+    messageStep: "进入手机【设置】->【通用】->【VPN与设备管理 / 描述文件与设备管理 / 设备管理 / 描述文件】->找到mitmproxy证书安装",
+    trustCertificate: "信任证书",
+    certificateStep: "进入手机【设置】->【通用】->【关于本机】最下方->【证书信任设置】信任对应证书",
+    startPacketMessage: "点击开始抓包后，Wifi设置手动代理，连接右上角对应的ip与端口，即可开启抓包",
+    filterClassOrName: "输入class或name进行过滤",
+    predicate: "Predicate推荐",
+    noRecommend: "暂无推荐语法",
+}
+
 export default {
     message: {
         robot,
@@ -766,6 +816,7 @@ export default {
         resourceTS,
         roleTS,
         sysJobsTS,
-        usersTS
+        usersTS,
+        IOSRemote
     }
 }

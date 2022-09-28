@@ -115,7 +115,7 @@ onMounted(() => {
       <el-button size="small" type="primary" @click="summit">{{ $t('modulesTS.sure')}}</el-button>
     </div>
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open">{{ $t(versionsTS.addVersions) }}</el-button>
+  <el-button size="mini" round type="primary" @click="open">{{ $t('versionsTS.addVersions') }}</el-button>
   <el-timeline style="margin-top: 20px">
     <el-timeline-item :hollow="true" :type="index===0?'success':'info'" v-for="(v,index) in pageData"
                       :timestamp="v.createTime" placement="top">
