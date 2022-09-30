@@ -1484,7 +1484,7 @@ onMounted(() => {
             v-model="activeTab"
             :tab-position="tabPosition"
         >
-          <el-tab-pane label="$t('androidRemoteTS.code.remoteControlPanel')" name="main">
+          <el-tab-pane :label="$t('androidRemoteTS.code.remoteControlPanel')" name="main">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-tabs type="border-card" stretch>
