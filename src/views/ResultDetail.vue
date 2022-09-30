@@ -270,7 +270,7 @@ const getPerform = (cid, did) => {
       let batLegend = getLegend(batList);
       let batData = getSeries(batList, batLegend)
       bat.setOption({
-        title: {text: "$t('resultDetailTS.battery')"},
+        title: {text: $t('resultDetailTS.battery')},
         series: batData,
         legend: {
           data: batLegend,
