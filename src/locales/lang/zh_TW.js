@@ -91,18 +91,16 @@ const devices = {
     },
     refresh: '自動刷新',
     avgTem: '當前平均電池溫度：',
-    hint: '設置演示',
+    hint: '設置提示'
     adTemperature: {
-        temperature: "当设备温度≥",
-        height: "高温值",
-        onlyAd: "时（仅安卓），会通知机器人告警。",
-        then: "当",
-        timeout: "高温超时",
-        continuedTime: "时间内温度持续≥",
-        onlyAdNotice: "时（仅安卓），会通知机器人并",
-        shutdown: "关机"
-    }
-
+        temperature: "當設備溫度≥",
+        height: "高溫值",
+        onlyAd: "時（僅安卓），會通知機器人告警。",
+        then: "當",
+        timeout: "高溫超時",
+        continuedTime: "時間內溫度持續≥",
+        onlyAdNotice: "時（僅安卓），會通知機器人並",
+        shutdown: "關機"
 }
 
 // 佈局相關
