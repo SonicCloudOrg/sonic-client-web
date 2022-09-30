@@ -91,7 +91,18 @@ const devices = {
     },
     refresh: '自動リフレッシュ',
     avgTem: '現在平均バッテリー温度:',
-    hint: 'リマインダーを設定する'
+    hint: 'リマインダーを設定する',
+    adTemperature: {
+        temperature: "当设备温度≥",
+        height: "高温值",
+        onlyAd: "时（仅安卓），会通知机器人告警。",
+        then: "当",
+        timeout: "高温超时",
+        continuedTime: "时间内温度持续≥",
+        onlyAdNotice: "时（仅安卓），会通知机器人并",
+        shutdown: "关机"
+    }
+
 
 }
 

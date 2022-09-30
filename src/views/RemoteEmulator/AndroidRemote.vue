@@ -2795,7 +2795,7 @@ onMounted(() => {
                         {{ project['projectName'] }}
                       </div>
                     </el-descriptions-item>
-                    <el-descriptions-item :label="$t(stepListViewTS.platformToBe)">
+                    <el-descriptions-item :label="$t('stepListViewTS.platformToBe')">
                       <div style=" display: flex;align-items: center;">
                         <el-avatar
                             style="margin-right: 10px"

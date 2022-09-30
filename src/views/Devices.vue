@@ -764,10 +764,15 @@ onUnmounted(() => {
           :closable="false"
       >
         <template #default>
-          <div>当设备温度≥<span style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人告警。</div>
-          <div>当<span style="color: #E6A23C">高温超时</span>时间内温度持续≥<span
-              style="color: #409EFF">高温值</span>时（仅安卓），会通知机器人并<span
-              style="color: #F56C6C">关机</span>。
+          <div>{{$t('devices.adTemperature.temperature')}}<span style="color: #409EFF">
+            {{$t('devices.adTemperature.height')}}</span> {{$t('devices.adTemperature.onlyAd')}}</div>
+          <div>{{$t('devices.adTemperature.then')}}<span style="color: #E6A23C">
+            {{$t('devices.adTemperature.timeout')}}</span>
+            {{$t('devices.adTemperature.continuedTime')}}<span
+              style="color: #409EFF">
+              {{$t('devices.adTemperature.height')}}</span>
+            {{$t('devices.adTemperature.onlyAdNotice')}}<span
+              style="color: #F56C6C">{{$t('devices.adTemperature.shutdown')}}</span>。
           </div>
         </template>
       </el-alert>
