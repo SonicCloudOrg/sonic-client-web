@@ -1,20 +1,22 @@
 name: deploy to dockerHub
 
 on:
-  release:
-    types: [ published ]
+  push:
+    tags:
+      - "v*.*.*-*"
 
 jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          generate_release_notes: true
 
   build:
-
+    needs: create
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [ 16.x ]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
       - uses: actions/checkout@v2
         with:
@@ -24,10 +26,10 @@ jobs:
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
       - name: replace version
         run: sed -i "s/SONIC_VERSION/${{ steps.previoustag.outputs.tag }}/g" index.html
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16.x
           cache: 'npm'
       - run: npm cache clear --force && npm install
       - run: npm run build

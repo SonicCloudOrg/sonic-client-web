@@ -91,7 +91,7 @@ const devices = {
     },
     refresh: '自動刷新',
     avgTem: '當前平均電池溫度：',
-    hint: '設置提示'
+    hint: '設置提示',
     adTemperature: {
         temperature: "當設備溫度≥",
         height: "高溫值",
@@ -101,6 +101,7 @@ const devices = {
         continuedTime: "時間內溫度持續≥",
         onlyAdNotice: "時（僅安卓），會通知機器人並",
         shutdown: "關機"
+    }
 }
 
 // 佈局相關
@@ -202,7 +203,7 @@ const elements = {
     stepList: {
         stepId: "步驟Id",
         useCaseId: "所屬案例Id",
-        userCaseName:"所屬案例名稱",
+        userCaseName: "所屬案例名稱",
         noCase: "無所屬案例"
     },
     sureDelete: "確認刪除",
@@ -545,7 +546,7 @@ const androidRemoteTS = {
         dial: "撥號",
         photograph: "拍照",
         browser: "瀏覽器",
-        LUS:"鎖定/解鎖螢幕",
+        LUS: "鎖定/解鎖螢幕",
         remoteControlPanel: "遠控面板",
         inputText: "輸入文本",
         pleaseText: "請輸入要發送的文字，支援繁體中文",
@@ -554,7 +555,7 @@ const androidRemoteTS = {
         noAgent: "所在Agent未開啟該功能！",
         UIAutomator2ServerInit: "初始化UIAutomator2Server",
         automaticInitialization: "下次進入自動初始化",
-        scanQRCode:"掃描二維碼",
+        scanQRCode: "掃描二維碼",
         errTitle: "OPPO、vivo部分機型上傳二維碼後不出現在相冊，需要重啟後生效",
         messageThree: "將二維碼圖片拖到此處，或",
         messageFour: "只能上傳jpg/png檔",
@@ -624,7 +625,7 @@ const androidRemoteTS = {
         absolutePath: "絕對路徑",
         centerXY: "中心座標",
         label: {
-            one : "是否可勾選",
+            one: "是否可勾選",
             two: "是否勾選",
             three: "是否可點擊",
             four: "是否被選",
@@ -682,7 +683,7 @@ const resourceTS = {
     pageData: {
         idText: "資源id",
         message: "描述",
-        path : "路徑",
+        path: "路徑",
         inputPathName: "輸入路徑名稱",
         callMethod: "調用方法",
         requiredText: "是否需要鑒權"
@@ -691,8 +692,8 @@ const resourceTS = {
 
 
 const roleTS = {
-    dialogVisible : {
-        addOrEdit : "新增/編輯角色",
+    dialogVisible: {
+        addOrEdit: "新增/編輯角色",
         roleName: "角色名稱",
         roleNoNull: "角色名稱不能空白",
         inputParam: "請輸入參數名",
@@ -701,7 +702,7 @@ const roleTS = {
         addRole: "新增角色"
     },
     pageData: {
-        role : "角色",
+        role: "角色",
         nameL: "名稱",
         delMessage: "確定刪除該角色嗎?"
 
@@ -711,7 +712,7 @@ const roleTS = {
 
 const sysJobsTS = {
     code: {
-        cleanFile : "清理系統檔",
+        cleanFile: "清理系統檔",
         cleanFileText: "清理測試過程產生的圖片、錄影或遠控期間臨時apk包等等檔，保留天數為 [前兩次排程任務到本次定時任務間隔] 天數。",
         cleanResult: "清理測試報告",
         cleanResultText: "清理測試報告，保留天數為 [前兩次排程任務到本次定時任務間隔] 天數。",
