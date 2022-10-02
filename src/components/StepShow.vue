@@ -83,6 +83,18 @@ defineProps({
       >
       <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
     </span>
+  <span v-if="step.stepType === 'setPasteboard'">
+      <el-tag size="small" style="margin-right: 10px">设置剪切板文本</el-tag>
+      文本：{{ step.content }}
+    </span>
+  <span v-if="step.stepType === 'getPasteboard'">
+      <el-tag size="small" style="margin-right: 10px">获取剪切板文本</el-tag>
+      提取到变量：{{ step.content }}
+    </span>
+  <span v-if="step.stepType === 'findElementInterval'">
+      <el-tag size="small" style="margin-right: 10px">设置查找控件策略</el-tag>
+      重试次数：{{ step.content }} 重试间隔：{{ step.text }} ms
+    </span>
   <span v-if="step.stepType === 'openApp'">
       <el-tag size="small" style="margin-right: 10px">打开应用</el-tag>
       应用包名：{{ step.text }}

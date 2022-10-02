@@ -221,10 +221,13 @@ const getStepInfo = (id) => {
     if (step.value.stepType === 'pause'
         || step.value.stepType === 'stepHold'
         || step.value.stepType === 'longPressPoint'
-        || step.value.stepType === 'runBack'
+        || step.value.stepType === 'findElementInterval'
         || step.value.stepType === 'longPress'
         || step.value.stepType === 'checkImage') {
       step.value.content = parseInt(step.value.content);
+    }
+    if (step.value.stepType === 'findElementInterval') {
+      step.value.text = parseInt(step.value.text);
     }
     if (step.value.stepType === 'install') {
       if (step.value.content === "") {
@@ -365,6 +368,10 @@ const androidOptions = ref([
       label: "安卓原生控件",
       value: "uiEle",
       children: [
+        {
+          value: "findElementInterval",
+          label: "设置查找控件策略"
+        },
         {
           value: "isExistEle",
           label: "判断控件元素是否存在",
@@ -563,6 +570,20 @@ const iOSOptions = ref([
           },
         ],
       },
+      {
+        value: "pasteboard",
+        label: "剪切板管理",
+        children: [
+          {
+            value: "setPasteboard",
+            label: "设置文本",
+          },
+          {
+            value: "getPasteboard",
+            label: "获取文本",
+          },
+        ],
+      },
     ],
   },
   {
@@ -613,6 +634,10 @@ const iOSOptions = ref([
     label: "控件元素操作",
     value: "element",
     children: [
+      {
+        value: "findElementInterval",
+        label: "设置查找控件策略"
+      },
       {
         value: "isExistEle",
         label: "判断控件元素是否存在",
@@ -1134,6 +1159,26 @@ onMounted(() => {
       </el-form-item>
     </div>
 
+    <div v-if="step.stepType === 'setPasteboard'">
+      <el-form-item label="文本信息">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入设置的文本信息"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'getPasteboard'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 获取的文本可放入临时变量中"/>
+      <el-form-item label="变量名">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入变量名"
+        ></el-input>
+      </el-form-item>
+    </div>
+
     <div v-if="step.stepType === 'getText' || step.stepType === 'getWebViewText'">
       <element-select label="控件元素" place="请选择控件元素"
                       :index="0" :project-id="projectId" type="normal" :step="step"/>
@@ -1322,6 +1367,24 @@ onMounted(() => {
             v-model="step.content"
             :min="1000"
             :step="1000"
+        ></el-input-number>
+        ms
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'findElementInterval'">
+      <el-form-item label="重试次数">
+        <el-input-number
+            v-model="step.content"
+            :min="0"
+            :step="1"
+        ></el-input-number>
+      </el-form-item>
+      <el-form-item label="重试间隔">
+        <el-input-number
+            v-model="step.text"
+            :min="0"
+            :step="500"
         ></el-input-number>
         ms
       </el-form-item>

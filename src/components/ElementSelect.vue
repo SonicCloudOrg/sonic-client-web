@@ -46,6 +46,9 @@ const getModuleList = () => {
     if (resp['code'] === 2000) {
       moduleList.value = resp.data;
       moduleList.value.push({id: 0, name: '无'})
+      if(props.step.elements[props.index] != null){
+        moduleId.value = props.step.elements[props.index].moduleId;
+      }
     }
   })
 }
