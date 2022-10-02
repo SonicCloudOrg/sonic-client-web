@@ -2646,7 +2646,7 @@ onMounted(() => {
                               (currentWifi.length > 0 && isConnectWifi) ? currentWifi.replaceAll('"', '') : ' '
                             }}</span>
                         </span>
-            <iframe v-if="proxyWebPort!==0"
+            <iframe v-if="proxyWebPort!==0" allow="clipboard-read;clipboard-write"
                     :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                     :src="'http://'+agent['host']+':'+proxyWebPort"></iframe>
             <el-card v-else style="margin-top:20px">
@@ -3447,7 +3447,7 @@ onMounted(() => {
                   </div>
                 </template>
               </el-alert>
-              <iframe v-if="!isWebView"
+              <iframe v-if="!isWebView" allow="clipboard-read;clipboard-write"
                       :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                       :src="iframeUrl">
               </iframe>
