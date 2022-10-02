@@ -117,7 +117,7 @@ onMounted(() => {
               <el-input
                   prefix-icon="el-icon-user"
                   v-model="user.userName"
-                  :placeholder="$t('longinTS.user.inputUserName')"
+                  :placeholder="$t('loginTS.user.inputUserName')"
               ></el-input>
             </el-form-item>
             <el-form-item prop="password">
@@ -126,7 +126,7 @@ onMounted(() => {
                   type="password"
                   show-password
                   v-model="user.password"
-                  :placeholder="$t('longinTS.user.inputPassword')"
+                  :placeholder="$t('loginTS.user.inputPassword')"
               ></el-input>
             </el-form-item>
             <el-button
@@ -135,12 +135,12 @@ onMounted(() => {
                 style="width: 100%"
                 @click="login"
                 :loading="loading"
-            >{{$t('longinTS.user.longin')}}
+            >{{$t('loginTS.user.longin')}}
             </el-button
             >
           </el-form>
         </el-tab-pane>
-        <el-tab-pane :label="$t('longinTS.user.register')" v-if="config.registerEnable">
+        <el-tab-pane :label="$t('loginTS.user.register')" v-if="config.registerEnable">
           <el-form
               style="margin-top: 10px"
               ref="registerForm"
@@ -151,7 +151,7 @@ onMounted(() => {
               <el-input
                   prefix-icon="el-icon-user"
                   v-model="register.userName"
-                  :placeholder="$t('longinTS.user.inputUserName')"
+                  :placeholder="$t('loginTS.user.inputUserName')"
               ></el-input>
             </el-form-item>
             <el-form-item prop="password">
@@ -159,8 +159,8 @@ onMounted(() => {
                   prefix-icon="el-icon-lock"
                   type="password"
                   show-password
-        ·            v-model="register.password"
-                  :placeholder="$t('longinTS.user.inputPassword')"
+                    v-model="register.password"
+                  :placeholder="$t('loginTS.user.inputPassword')"
               ></el-input>
             </el-form-item>
             <!-- <el-form-item prop="password">
@@ -175,7 +175,7 @@ onMounted(() => {
                 style="width: 100%"
                 @click="registerIn"
                 :loading="loading"
-            >{{$t('longinTS.user.register')}}
+            >{{$t('loginTS.user.register')}}
             </el-button
             >
           </el-form>
