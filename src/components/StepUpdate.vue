@@ -442,7 +442,12 @@ const androidOptions = ref([
           label: "验证标题",
         },
       ]
-    }]
+    },
+      {
+        label: "POCO控件(即将开放)",
+        value: "pocoEle",
+        disabled: true
+      }]
   },
   {
     label: "验证操作",
@@ -506,6 +511,10 @@ const androidOptions = ref([
       {
         value: "publicStep",
         label: "公共步骤",
+      },
+      {
+        value: "runScript",
+        label: "自定义脚本"
       },
       {
         value: "monkey",
@@ -726,6 +735,10 @@ const iOSOptions = ref([
       {
         value: "publicStep",
         label: "公共步骤",
+      },
+      {
+        value: "runScript",
+        label: "自定义脚本"
       },
       {
         value: "monkey",
@@ -1493,6 +1506,21 @@ onMounted(() => {
           </el-tabs>
         </el-form-item>
       </el-form>
+    </div>
+
+    <div v-if="step.stepType === 'runScript'">
+      <el-form-item label="脚本语言">
+        <el-input
+            v-model="step.text"
+            placeholder="请输入期望值"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="脚本内容">
+        <el-input
+            v-model="step.content"
+            placeholder="请输入期望值"
+        ></el-input>
+      </el-form-item>
     </div>
 
     <el-form-item
