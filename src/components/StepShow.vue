@@ -16,12 +16,18 @@
  *
  */
 
+import CodeEditor from './CodeEditor.vue'
+
 defineProps({
   step: Object,
 })
 </script>
 <template>
-     <span v-if="step.conditionType === 1">
+   <span v-if="step.stepType === 'runScript'">
+     <el-tag size="small" type="warning" style="margin-right: 10px">运行自定义脚本</el-tag>
+     <CodeEditor :code="step.content"></CodeEditor>
+   </span>
+  <span v-if="step.conditionType === 1">
       <el-tag size="small" type="warning" style="margin-right: 10px">if</el-tag>
     </span>
   <span v-if="step.conditionType === 2">

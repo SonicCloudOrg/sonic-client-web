@@ -1,6 +1,6 @@
 {
     "name": "sonic-client-web",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "author": "SonicCloudOrg",
     "scripts": {
         "dev": "vite",
@@ -8,8 +8,12 @@
         "serve": "vite preview"
     },
     "dependencies": {
+        "@codemirror/lang-java": "^6.0.0",
+        "@codemirror/lang-python": "^6.0.2",
+        "@codemirror/theme-one-dark": "^6.1.0",
         "@element-plus/icons": "0.0.11",
         "axios": "0.21.4",
+        "codemirror": "^6.0.1",
         "echarts": "5.2.1",
         "element-plus": "1.1.0-beta.24",
         "jmuxer": "^2.0.3",
@@ -19,6 +23,7 @@
         "rollup-plugin-copy": "3.4.0",
         "vue": "3.2.14",
         "vue-clipboard3": "1.0.1",
+        "vue-codemirror": "^6.1.1",
         "vue-draggable-next": "2.0.1",
         "vue-i18n": "^9.2.0-beta.34",
         "vue-router": "4.0.10",
