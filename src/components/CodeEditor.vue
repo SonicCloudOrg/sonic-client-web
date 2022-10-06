@@ -48,7 +48,7 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(["ready", "change", "focus", "blur", "languageChange", "themeChange", "tabSizeChange", "save"])
+const emit = defineEmits(["ready", "change", "save", "update:code", "update:language", "update:theme", "update:tabSize"])
 
 const themes = {oneDark}
 const languages = {
@@ -120,21 +120,21 @@ const handleStateUpdate = (viewUpdate) => {
   <div class="toolbar" v-if="showToolBar">
     <div class="item">
       <label for="language">Language:</label>
-      <el-select v-model="config.language" size="mini" placeholder="请选择" @change="emit('languageChange', $event)">
+      <el-select v-model="config.language" size="mini" placeholder="请选择" @change="emit('update:language', $event)">
         <el-option v-for="item in Object.keys(languages)" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
     </div>
     <div class="item">
       <label for="theme">Theme:</label>
-      <el-select v-model="config.theme" size="mini" placeholder="请选择" @change="emit('themeChange', $event)">
+      <el-select v-model="config.theme" size="mini" placeholder="请选择" @change="emit('update:theme', $event)">
         <el-option v-for="item in ['default', ...Object.keys(themes)]" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
     </div>
     <div class="item">
       <label for="tabSize">TabSize:</label>
-      <el-select v-model="config.tabSize" size="mini" placeholder="请选择" @change="emit('tabSizeChange', $event)">
+      <el-select v-model="config.tabSize" size="mini" placeholder="请选择" @change="emit('update:tabSize', $event)">
         <el-option v-for="item in [2, 4, 6, 8]" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
@@ -156,7 +156,7 @@ const handleStateUpdate = (viewUpdate) => {
       :extensions="extensions"
       @update="handleStateUpdate"
       @ready="emit('ready', $event)"
-      @change="emit('change', $event)"
+      @change="emit('update:code', $event)"
       @focus="emit('focus', $event)"
       @blur="emit('blur', $event)"
   />
