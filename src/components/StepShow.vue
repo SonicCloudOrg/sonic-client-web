@@ -35,10 +35,10 @@ const summitStep = () => {
 }
 </script>
 <template>
-  <span v-if="step.stepType === 'runScript'" style="display: inline-block;;">
+  <span v-if="step.stepType === 'runScript'" style="display: inline-block; margin-right: 10px;flex: 1;width: 70%;">
     <el-tag size="small" type="warning" style="margin-right: 10px">运行自定义脚本</el-tag>
-    <div style="margin: 4px 0; width: 100%;">
-      <CodeEditor :code="step.content" :language="step.text" :show-footer="true" :show-tool-bar="true"
+    <div style="margin: 4px 0;">
+      <CodeEditor v-model:code="step.content" v-model:language="step.text" :show-footer="true" :show-tool-bar="true"
                   height="auto" @save="summitStep"></CodeEditor>
     </div>
   </span>
