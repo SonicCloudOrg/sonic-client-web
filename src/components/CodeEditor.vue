@@ -56,6 +56,17 @@ const languages = {
   Python: python()
   // ... 支持语言高亮扩展
 }
+const languageOptions = [
+  {
+    label: 'Groovy(java)',
+    value: 'Groovy' // 与 languages key 对应
+  },
+  {
+    label: 'Python',
+    value: 'Python'
+  }
+  // ... 支持语言高亮选项
+]
 
 const view = shallowRef()
 const config = reactive({
@@ -121,7 +132,7 @@ const handleStateUpdate = (viewUpdate) => {
     <div class="item">
       <label for="language">Language:</label>
       <el-select v-model="config.language" size="mini" placeholder="请选择" @change="emit('update:language', $event)">
-        <el-option v-for="item in Object.keys(languages)" :key="item" :label="item" :value="item">
+        <el-option v-for="item in languageOptions" :key="item.label" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
     </div>
