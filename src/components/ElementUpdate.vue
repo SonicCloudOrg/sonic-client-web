@@ -93,8 +93,9 @@ onMounted(() => {
 </script>
 <template>
   <el-alert style="margin-bottom: 10px"
-            title="TIPS: 如选择坐标类型，xy之间用英文逗号隔开，例：111,222。如选择cssSelectorAndText类型，vaule之间用逗号隔开，例：.van-button--default,购物车。需要临时变量或全局变量时，可以添加{{变量名}}的形式"
-            type="info" show-icon close-text="Get!"/>
+            title="需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+            type="info" show-icon close-text="Get!">
+  </el-alert>
   <el-form ref="updateEle" :model="element" size="small" class="demo-table-expand" label-width="90px"
            label-position="left">
     <el-form-item
@@ -126,7 +127,7 @@ onMounted(() => {
           <el-option value="classChain"></el-option>
         </el-option-group>
         <el-option-group label="特殊定位方式">
-          <el-option label="坐标" value="point"></el-option>
+          <el-option label="坐标（支持相对坐标）" value="point"></el-option>
           <el-option label="图片" value="image"></el-option>
         </el-option-group>
         <el-option-group label="WebView常用定位方式">
