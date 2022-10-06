@@ -16,17 +16,15 @@
  *
  */
 
-import {shallowRef, reactive, computed, defineEmits, defineExpose} from "vue";
+import {shallowRef, reactive, computed, defineEmits} from "vue";
 import {Codemirror} from 'vue-codemirror'
 import {oneDark} from '@codemirror/theme-one-dark'
 import {java} from '@codemirror/lang-java'
 import {python} from '@codemirror/lang-python'
-import axios from "../http/axios";
-import {ElMessage} from "element-plus";
 
 const props = defineProps({
   /** 代码内容 */
-  step: Object,
+  code: String,
   /** 代码高亮语言类型 */
   language: String,
   /** 代码主题 */
@@ -50,22 +48,12 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(["ready", "change", "focus", "blur", "languageChange", "themeChange", "tabSizeChange"])
-
-const summitStep = () => {
-  axios.put("/controller/steps", props.step).then(resp => {
-    if (resp['code'] === 2000) {
-      ElMessage.success({
-        message: resp['message'],
-      });
-    }
-  })
-}
+const emit = defineEmits(["ready", "change", "focus", "blur", "languageChange", "themeChange", "tabSizeChange", "save"])
 
 const themes = {oneDark}
 const languages = {
-  java: java(),
-  python: python()
+  Groovy: java(),
+  Python: python()
   // ... 支持语言高亮扩展
 }
 
@@ -76,7 +64,7 @@ const config = reactive({
   tabSize: props?.tabSize || 2,
   autofocus: false,
   placeholder: props?.placeholder || 'Code goes here...',
-  language: props?.language || 'java',
+  language: props?.language || 'Groovy',
   theme: props?.theme || 'oneDark',
   phrases: 'en-us'
 })
@@ -152,13 +140,13 @@ const handleStateUpdate = (viewUpdate) => {
       </el-select>
     </div>
     <div class="item">
-      <el-button size="mini" type="primary" @click="summitStep">保存</el-button>
+      <el-button size="mini" type="primary" @change="emit('save')">保存</el-button>
     </div>
   </div>
   <Codemirror
       class="codemirror"
       ref="cm"
-      v-model="step.content"
+      v-model="code"
       :autofocus="config.autofocus"
       :placeholder="config.placeholder"
       :indentWithTab="config.indentWithTab"

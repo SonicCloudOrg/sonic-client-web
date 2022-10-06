@@ -198,7 +198,13 @@ const summitStep = () => {
           step.value.content = 'println androidDriver.getSessionId()\n' +
               'println iDevice.getSerialNumber()\n' +
               'println globalParams.toJSONString()\n' +
-              'println logUtil.sendStepLog(1,"My Steps","My Detail")';
+              'logUtil.sendStepLog(1,"My Steps","My Detail")\n' +
+              '\n' +
+              'def test(){\n' +
+              '      println "Hello world"\n' +
+              '}\n' +
+              '\n' +
+              'test()\n';
         }
       }
       axios.put("/controller/steps", step.value).then(resp => {
