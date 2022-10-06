@@ -162,6 +162,7 @@ const handleStateUpdate = (viewUpdate) => {
   />
   <div class="footer" v-if="showFooter">
     <div class="infos">
+      <span class="item">TIPS: 编辑后记得保存哦</span>
       <span class="item">Spaces: {{ config.tabSize }}</span>
       <span class="item">Length: {{ state.length }}</span>
       <span class="item">Lines: {{ state.lines }}</span>
