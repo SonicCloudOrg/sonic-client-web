@@ -140,7 +140,7 @@ const handleStateUpdate = (viewUpdate) => {
       </el-select>
     </div>
     <div class="item">
-      <el-button size="mini" type="primary" @change="emit('save')">保存</el-button>
+      <el-button size="mini" type="primary" @click="emit('save')">保存</el-button>
     </div>
   </div>
   <Codemirror

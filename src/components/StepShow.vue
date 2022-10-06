@@ -20,7 +20,7 @@ import CodeEditor from './CodeEditor.vue'
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 
-defineProps({
+const props = defineProps({
   step: Object,
 })
 
