@@ -23,10 +23,12 @@ defineProps({
 })
 </script>
 <template>
-   <span v-if="step.stepType === 'runScript'">
-     <el-tag size="small" type="warning" style="margin-right: 10px">运行自定义脚本</el-tag>
-     <CodeEditor :code="step.content"></CodeEditor>
-   </span>
+  <span v-if="step.stepType === 'runScript'" style="display: inline-block;;">
+    <el-tag size="small" type="warning" style="margin-right: 10px">运行自定义脚本</el-tag>
+    <div style="margin: 4px 0; width: 650px;">
+      <CodeEditor :code="step.content" disabled :show-footer="true" height="auto"></CodeEditor>
+    </div>
+  </span>
   <span v-if="step.conditionType === 1">
       <el-tag size="small" type="warning" style="margin-right: 10px">if</el-tag>
     </span>
