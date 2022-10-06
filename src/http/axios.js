@@ -21,7 +21,7 @@ import {i18n, $tc} from '@/locales/setupI18n'
 
 let baseURL = ''
 if (process.env.NODE_ENV === 'development') {
-    baseURL = 'http://119.91.134.208/server/api'
+    baseURL = 'http://localhost:8094/api'
 }
 if (process.env.NODE_ENV === 'production') {
     baseURL = 'http://SONIC_SERVER_HOST:SONIC_SERVER_PORT/server/api'
