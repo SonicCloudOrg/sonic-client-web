@@ -17,16 +17,29 @@
  */
 
 import CodeEditor from './CodeEditor.vue'
+import axios from "../http/axios";
+import {ElMessage} from "element-plus";
 
-defineProps({
+const props = defineProps({
   step: Object,
 })
+
+const summitStep = () => {
+  axios.put("/controller/steps", props.step).then(resp => {
+    if (resp['code'] === 2000) {
+      ElMessage.success({
+        message: resp['message'],
+      });
+    }
+  })
+}
 </script>
 <template>
   <span v-if="step.stepType === 'runScript'" style="display: inline-block; margin-right: 10px;flex: 1;width: 70%;">
     <el-tag size="small" type="warning" style="margin-right: 10px">运行自定义脚本</el-tag>
     <div style="margin: 4px 0;">
-      <CodeEditor :code="step.content" disabled :show-footer="true" height="auto"></CodeEditor>
+      <CodeEditor :code="step.content" :language="step.text" :show-footer="true" :show-tool-bar="true"
+                  height="auto" @save="summitStep"></CodeEditor>
     </div>
   </span>
   <span v-if="step.conditionType === 1">
