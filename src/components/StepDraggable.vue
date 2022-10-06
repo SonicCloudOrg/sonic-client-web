@@ -184,9 +184,9 @@ const copyStep = id => {
           <step-draggable :steps="s['childSteps']" @setParent="setParent" @addStep="addStep" @flush="emit('flush')"
                           @editStep="editStep" @deleteStep="deleteStep" @copyStep = "copyStep"/>
         </el-card>
-        <div v-else>
+        <div style="display: flex; justify-content: space-between;" v-else>
           <step-show :step="s"></step-show>
-          <div style="float: right">
+          <div style="float: right;flex: 0 0 185px;text-align: right;">
             <el-button
                 circle
                 type="primary"

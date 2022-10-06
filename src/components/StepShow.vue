@@ -23,9 +23,9 @@ defineProps({
 })
 </script>
 <template>
-  <span v-if="step.stepType === 'runScript'" style="display: inline-block;;">
+  <span v-if="step.stepType === 'runScript'" style="display: inline-block; margin-right: 10px;flex: 1;width: 70%;">
     <el-tag size="small" type="warning" style="margin-right: 10px">运行自定义脚本</el-tag>
-    <div style="margin: 4px 0; width: 650px;">
+    <div style="margin: 4px 0;">
       <CodeEditor :code="step.content" disabled :show-footer="true" height="auto"></CodeEditor>
     </div>
   </span>
