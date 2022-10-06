@@ -190,6 +190,17 @@ const summitStep = () => {
         step.value.text = JSON.stringify(activityList.value);
         step.value.content = JSON.stringify(monkey.value);
       }
+      if (step.value.stepType === 'runScript') {
+        if (step.value.text.length === 0) {
+          step.value.text = 'Groovy';
+        }
+        if (step.value.content.length === 0) {
+          step.value.content = 'println androidDriver.getSessionId()\n' +
+              'println iDevice.getSerialNumber()\n' +
+              'println globalParams.toJSONString()\n' +
+              'println logUtil.sendStepLog(1,"My Steps","My Detail")';
+        }
+      }
       axios.put("/controller/steps", step.value).then(resp => {
         if (resp['code'] === 2000) {
           ElMessage.success({
@@ -1509,18 +1520,16 @@ onMounted(() => {
     </div>
 
     <div v-if="step.stepType === 'runScript'">
-      <el-form-item label="脚本语言">
-        <el-input
-            v-model="step.text"
-            placeholder="请输入期望值"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="脚本内容">
-        <el-input
-            v-model="step.content"
-            placeholder="请输入期望值"
-        ></el-input>
-      </el-form-item>
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+      >
+        <template #title>
+        <span>TIPS: 保存后直接在步骤列表编辑脚本，关于脚本的使用，可参考
+          <a href="https://sonic-cloud.gitee.io/#/Document?tag=runScript" target="_blank">
+            使用文档
+          </a>
+          </span>
+        </template>
+      </el-alert>
     </div>
 
     <el-form-item

@@ -16,15 +16,17 @@
  *
  */
 
-import { shallowRef, reactive, computed, defineEmits, defineExpose } from "vue";
-import { Codemirror } from 'vue-codemirror'
-import { oneDark } from '@codemirror/theme-one-dark'
-import { java } from '@codemirror/lang-java'
-import { python } from '@codemirror/lang-python'
+import {shallowRef, reactive, computed, defineEmits, defineExpose} from "vue";
+import {Codemirror} from 'vue-codemirror'
+import {oneDark} from '@codemirror/theme-one-dark'
+import {java} from '@codemirror/lang-java'
+import {python} from '@codemirror/lang-python'
+import axios from "../http/axios";
+import {ElMessage} from "element-plus";
 
 const props = defineProps({
   /** 代码内容 */
-  code: String,
+  step: Object,
   /** 代码高亮语言类型 */
   language: String,
   /** 代码主题 */
@@ -48,9 +50,19 @@ const props = defineProps({
     default: false
   }
 })
-const emit =  defineEmits(["ready", "change", "focus", "blur", "languageChange", "themeChange", "tabSizeChange"])
+const emit = defineEmits(["ready", "change", "focus", "blur", "languageChange", "themeChange", "tabSizeChange"])
 
-const themes = { oneDark }
+const summitStep = () => {
+  axios.put("/controller/steps", props.step).then(resp => {
+    if (resp['code'] === 2000) {
+      ElMessage.success({
+        message: resp['message'],
+      });
+    }
+  })
+}
+
+const themes = {oneDark}
 const languages = {
   java: java(),
   python: python()
@@ -86,8 +98,8 @@ const getCodemirrorStates = (view) => {
   const length = state.doc.length
   const lines = state.doc.lines
   return {
-    selected, 
-    cursor, 
+    selected,
+    cursor,
     length,
     lines
   }
@@ -97,7 +109,7 @@ const state = reactive({
   lines: null,
   cursor: null,
   selected: null,
-  length: null 
+  length: null
 })
 
 const handleStateUpdate = (viewUpdate) => {
@@ -119,43 +131,46 @@ const handleStateUpdate = (viewUpdate) => {
 <template>
   <div class="toolbar" v-if="showToolBar">
     <div class="item">
-      <label for="language">language:</label>
+      <label for="language">Language:</label>
       <el-select v-model="config.language" size="mini" placeholder="请选择" @change="emit('languageChange', $event)">
         <el-option v-for="item in Object.keys(languages)" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
     </div>
     <div class="item">
-      <label for="theme">theme:</label>
+      <label for="theme">Theme:</label>
       <el-select v-model="config.theme" size="mini" placeholder="请选择" @change="emit('themeChange', $event)">
         <el-option v-for="item in ['default', ...Object.keys(themes)]" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
     </div>
     <div class="item">
-      <label for="tabSize">tabSize:</label>
+      <label for="tabSize">TabSize:</label>
       <el-select v-model="config.tabSize" size="mini" placeholder="请选择" @change="emit('tabSizeChange', $event)">
         <el-option v-for="item in [2, 4, 6, 8]" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
     </div>
+    <div class="item">
+      <el-button size="mini" type="primary" @click="summitStep">保存</el-button>
+    </div>
   </div>
   <Codemirror
-    class="codemirror"
-    ref="cm"
-    v-model="code"
-    :autofocus="config.autofocus"
-    :placeholder="config.placeholder"
-    :indentWithTab="config.indentWithTab"
-    :tabSize="config.tabSize"
-    :disabled="config.disabled"
-    :style="{ height: height || '300px' }"
-    :extensions="extensions"
-    @update="handleStateUpdate"
-    @ready="emit('ready', $event)"
-    @change="emit('change', $event)"
-    @focus="emit('focus', $event)"
-    @blur="emit('blur', $event)"
+      class="codemirror"
+      ref="cm"
+      v-model="step.content"
+      :autofocus="config.autofocus"
+      :placeholder="config.placeholder"
+      :indentWithTab="config.indentWithTab"
+      :tabSize="config.tabSize"
+      :disabled="config.disabled"
+      :style="{ height: height || '300px' }"
+      :extensions="extensions"
+      @update="handleStateUpdate"
+      @ready="emit('ready', $event)"
+      @change="emit('change', $event)"
+      @focus="emit('focus', $event)"
+      @blur="emit('blur', $event)"
   />
   <div class="footer" v-if="showFooter">
     <div class="infos">
@@ -177,33 +192,40 @@ const handleStateUpdate = (viewUpdate) => {
   padding: 0 10px;
   background: #F9F9F9;
   border: 1px solid #DDDDE1;
+
   .item {
     margin-left: 30px;
     display: inline-flex;
     align-items: center;
+
     label {
       display: inline-block;
       margin-right: 0.4em;
     }
   }
+
   .item:first-child {
     margin: unset;
   }
 }
+
 .v-codemirror .ͼ1 .cm-scroller {
   font-family: 'Menlo, Monaco, Consolas,"Courier New", monospace';
 }
+
 .footer {
-    position: relative;
-    height: 25px;
-    line-height: 25px;
-    font-size: 12px;
-    color: #fff;
-    border-top: none;
-    background: #409eff;
+  position: relative;
+  height: 25px;
+  line-height: 25px;
+  font-size: 12px;
+  color: #fff;
+  border-top: none;
+  background: #409eff;
+
   .infos {
     position: absolute;
     right: 14px;
+
     .item {
       margin-left: 14px;
       display: inline-block;
