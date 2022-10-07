@@ -80,6 +80,9 @@ onMounted(() => {
           <el-menu-item :index="'/Home/' + route.params.projectId + '/PublicStep'">
             <i class="el-icon-star-off"></i>{{$t('routes.publicSteps')}}
           </el-menu-item>
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/Scripts'">
+            <i class="el-icon-document-add"></i>{{$t('routes.scripts')}}
+          </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/GlobalParams'">
             <i class="el-icon-user"></i>{{$t('routes.globalParameter')}}
           </el-menu-item>
@@ -102,9 +105,6 @@ onMounted(() => {
           </template>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Packages'" >
             <i class="el-icon-suitcase"></i>{{$t('homeTS.package.mange')}}
-          </el-menu-item>
-          <el-menu-item :index="'/Home/' + route.params.projectId + '/InstallPackage'" disabled>
-            <i class="el-icon-sold-out"></i>{{$t('homeTS.package.bulk')}}
           </el-menu-item>
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Crash'" disabled>
             <i class="el-icon-position"></i>{{$t('homeTS.crashReport')}}

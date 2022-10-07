@@ -19,7 +19,8 @@
 import CodeEditor from './CodeEditor.vue'
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
-
+import {useRoute} from "vue-router";
+const route = useRoute()
 const props = defineProps({
   step: Object,
 })
@@ -38,7 +39,7 @@ const summitStep = () => {
   <span v-if="step.stepType === 'runScript'" style="display: inline-block; margin-right: 10px;flex: 1;width: 70%;">
     <el-tag size="small" type="warning" style="margin-right: 10px">运行自定义脚本</el-tag>
     <div style="margin: 4px 0;">
-      <CodeEditor v-model:code="step.content" v-model:language="step.text" :show-footer="true" :show-tool-bar="true"
+      <CodeEditor :project-id="route.params.projectId" v-model:code="step.content" v-model:language="step.text" :show-footer="true" :show-tool-bar="true"
                   height="auto" @save="summitStep"></CodeEditor>
     </div>
   </span>
