@@ -185,7 +185,8 @@ const routes = {
     projectSetting: "Project Setting",
     projectPage: "Project Home",
     resource: "",
-    role: ""
+    role: "",
+    scripts:"Scripts Template Management"
 }
 
 const setting = {

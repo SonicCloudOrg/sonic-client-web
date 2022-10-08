@@ -195,11 +195,7 @@ const summitStep = () => {
           step.value.text = 'Groovy';
         }
         if (step.value.content.length === 0) {
-          step.value.content = 'println androidDriver.getSessionId()\n' +
-              'println iDevice.getSerialNumber()\n' +
-              'println globalParams.toJSONString()\n' +
-              'logUtil.sendStepLog(1,"My Steps","My Detail")\n' +
-              '\n' +
+          step.value.content =
               'def test(){\n' +
               '      println "Hello world"\n' +
               '}\n' +

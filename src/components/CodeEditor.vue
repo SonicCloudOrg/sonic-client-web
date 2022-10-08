@@ -16,13 +16,16 @@
  *
  */
 
-import {shallowRef, reactive, computed, defineEmits} from "vue";
+import {shallowRef, reactive, computed, defineEmits, ref, onMounted} from "vue";
 import {Codemirror} from 'vue-codemirror'
 import {oneDark} from '@codemirror/theme-one-dark'
 import {java} from '@codemirror/lang-java'
 import {python} from '@codemirror/lang-python'
+import axios from "../http/axios";
+import Pageable from './Pageable.vue'
 
 const props = defineProps({
+  projectId: Number,
   /** 代码内容 */
   code: String,
   /** 代码高亮语言类型 */
@@ -56,9 +59,19 @@ const languages = {
   Python: python()
   // ... 支持语言高亮扩展
 }
+const themeOptions = [
+  {
+    label: "Light",
+    value: "default"
+  },
+  {
+    label: "Dark",
+    value: "oneDark"
+  }
+]
 const languageOptions = [
   {
-    label: 'Groovy(java)',
+    label: 'Groovy (Java) ',
     value: 'Groovy' // 与 languages key 对应
   },
   {
@@ -121,36 +134,83 @@ const handleStateUpdate = (viewUpdate) => {
   state.lines = lines
 }
 
-// defineExpose({
-//   getCodemirrorStates,
-// });
-
+const pageData = ref([])
+const name = ref("")
+const getScriptList = (pageNum, pSize) => {
+  axios.get("/controller/scripts/list", {
+    params: {
+      projectId: props.projectId,
+      name: name.value,
+      page: pageNum || 1,
+      pageSize: 5,
+    }
+  }).then(resp => {
+    pageData.value = resp.data
+  })
+}
+const importReplaceFrom = (s) => {
+  emit('update:code', s.content)
+  emit('update:language', s.scriptLanguage)
+}
+const importAddFrom = (s) => {
+  emit('update:code', props.code + "\n" + s.content)
+  emit('update:language', s.scriptLanguage)
+}
+onMounted(() => {
+  getScriptList();
+})
 </script>
 
 <template>
   <div class="toolbar" v-if="showToolBar">
     <div class="item">
       <label for="language">Language:</label>
-      <el-select v-model="config.language" size="mini" placeholder="请选择" @change="emit('update:language', $event)">
+      <el-select style="width: 130px" v-model="config.language" size="mini" placeholder="请选择"
+                 @change="emit('update:language', $event)">
         <el-option v-for="item in languageOptions" :key="item.label" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
-    </div>
-    <div class="item">
       <label for="theme">Theme:</label>
-      <el-select v-model="config.theme" size="mini" placeholder="请选择" @change="emit('update:theme', $event)">
-        <el-option v-for="item in ['default', ...Object.keys(themes)]" :key="item" :label="item" :value="item">
+      <el-select style="width: 120px" v-model="config.theme" size="mini" placeholder="请选择"
+                 @change="emit('update:theme', $event)">
+        <el-option v-for="item in themeOptions" :key="item.label" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
-    </div>
-    <div class="item">
       <label for="tabSize">TabSize:</label>
-      <el-select v-model="config.tabSize" size="mini" placeholder="请选择" @change="emit('update:tabSize', $event)">
+      <el-select style="width: 80px" v-model="config.tabSize" size="mini" placeholder="请选择"
+                 @change="emit('update:tabSize', $event)">
         <el-option v-for="item in [2, 4, 6, 8]" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
     </div>
     <div class="item">
+      <el-popover placement="left" :width="450" trigger="click">
+        <template #reference>
+          <el-button size="mini">导入模板</el-button>
+        </template>
+        <el-table border :data="pageData.content">
+          <el-table-column align="center" width="80" property="id" label="脚本id"/>
+          <el-table-column header-align="center" property="name">
+            <template #header>
+              <el-input v-model="name" size="mini" @input="getScriptList()" placeholder="输入名称搜索"/>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" width="100" property="scriptLanguage" label="脚本语言"/>
+          <el-table-column align="center" width="150" label="导入方式">
+            <template #default="scope">
+              <el-button type="primary" size="mini" @click="importAddFrom(scope.row)">追加</el-button>
+              <el-button type="primary" size="mini" @click="importReplaceFrom(scope.row)">替换</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <pageable
+            :isPageSet="false"
+            :total="pageData['totalElements']"
+            :current-page="pageData['number']+1"
+            :page-size="pageData['size']"
+            @change="getScriptList"
+        ></pageable>
+      </el-popover>
       <el-button size="mini" type="primary" @click="emit('save')">保存</el-button>
     </div>
   </div>
@@ -194,12 +254,12 @@ const handleStateUpdate = (viewUpdate) => {
   border: 1px solid #DDDDE1;
 
   .item {
-    margin-left: 30px;
     display: inline-flex;
     align-items: center;
 
     label {
       display: inline-block;
+      margin-left: 0.5em;
       margin-right: 0.4em;
     }
   }

@@ -102,6 +102,12 @@ const getRoutes = () => [
                 meta: {title: $tc('routes.controlElement')},
             },
             {
+                path: 'Scripts',
+                name: 'Scripts',
+                component: () => import('../views/Scripts.vue'),
+                meta: {title: $tc('routes.scripts')},
+            },
+            {
                 path: 'GlobalParams',
                 name: 'GlobalParams',
                 component: () => import('../views/GlobalParams.vue'),

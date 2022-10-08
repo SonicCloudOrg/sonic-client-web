@@ -186,7 +186,8 @@ const routes = {
     projectSetting: "プロジェクトの設定",
     projectPage: "プロジェクトのトップページ",
     resource: "",
-    role: ""
+    role: "",
+    scripts: "脚本模板"
 }
 const setting = {
     title: "Manage Center"
@@ -203,7 +204,7 @@ const elements = {
     stepList: {
         stepId: "步骤Id",
         useCaseId: "所属用例Id",
-        userCaseName:"所属用例名称",
+        userCaseName: "所属用例名称",
         noCase: "无所属用例"
     },
     sureDelete: "确认删除",
@@ -545,7 +546,7 @@ const androidRemoteTS = {
         dial: "拨号",
         photograph: "拍照",
         browser: "浏览器",
-        LUS:"锁定/解锁屏幕",
+        LUS: "锁定/解锁屏幕",
         remoteControlPanel: "远控面板",
         inputText: "输入文本",
         pleaseText: "请输入要发送的文本，支持简体中文",
@@ -554,7 +555,7 @@ const androidRemoteTS = {
         noAgent: "所在Agent未开启该功能！",
         UIAutomator2ServerInit: "初始化UIAutomator2Server",
         automaticInitialization: "下次进入自动初始化",
-        scanQRCode:"扫描二维码",
+        scanQRCode: "扫描二维码",
         errTitle: "OPPO、vivo部分机型上传二维码后不出现在相册，需要重启后生效",
         messageThree: "将二维码图片拖到此处，或",
         messageFour: "只能上传jpg/png文件",
@@ -624,7 +625,7 @@ const androidRemoteTS = {
         absolutePath: "绝对路径",
         centerXY: "中心坐标",
         label: {
-            one : "是否可勾选",
+            one: "是否可勾选",
             two: "是否勾选",
             three: "是否可点击",
             four: "是否被选",
@@ -682,7 +683,7 @@ const resourceTS = {
     pageData: {
         idText: "资源id",
         message: "描述",
-        path : "路径",
+        path: "路径",
         inputPathName: "输入路径名称",
         callMethod: "调用方法",
         requiredText: "是否需要鉴权"
@@ -691,8 +692,8 @@ const resourceTS = {
 
 
 const roleTS = {
-    dialogVisible : {
-        addOrEdit : "添加/编辑角色",
+    dialogVisible: {
+        addOrEdit: "添加/编辑角色",
         roleName: "角色名称",
         roleNoNull: "角色名称不能为空",
         inputParam: "请输入参数名",
@@ -701,7 +702,7 @@ const roleTS = {
         addRole: "添加角色"
     },
     pageData: {
-        role : "角色",
+        role: "角色",
         nameL: "名称",
         delMessage: "确定删除该角色吗?"
 
@@ -711,7 +712,7 @@ const roleTS = {
 
 const sysJobsTS = {
     code: {
-        cleanFile : "清理系统文件",
+        cleanFile: "清理系统文件",
         cleanFileText: "清理测试过程产生的图片、录像或远控期间临时apk包等等文件，保留天数为 [前两次定时任务到本次定时任务间隔] 天数。",
         cleanResult: "清理测试报告",
         cleanResultText: "清理测试报告，保留天数为 [前两次定时任务到本次定时任务间隔] 天数。",

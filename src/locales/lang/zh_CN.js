@@ -184,7 +184,8 @@ const routes = {
     projectSetting: "项目设置",
     projectPage: "项目首页",
     resource: "",
-    role: ""
+    role: "",
+    scripts: "脚本模板"
 }
 
 const setting = {
