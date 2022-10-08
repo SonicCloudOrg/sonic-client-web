@@ -73,6 +73,7 @@ import {
 } from '@element-plus/icons';
 
 import {useI18n} from 'vue-i18n'
+
 const {t: $t} = useI18n()
 
 import RenderDeviceName from '../../components/RenderDeviceName.vue';
@@ -188,7 +189,6 @@ const dialogImgElement = ref(false);
 const imgElementUrl = ref(null);
 const updateImgEle = ref(null);
 const webViewListDetail = ref([]);
-const chromePort = ref(0);
 const isWebView = ref(true);
 const iframeUrl = ref('');
 const title = ref('');
@@ -262,9 +262,7 @@ defineProps({
 const tabWebView = (port, id, transTitle) => {
   title.value = transTitle;
   isWebView.value = false;
-  iframeUrl.value =
-      'http://' + agent.value['host'] + ':' + chromePort.value
-      + '/devtools/inspector.html?ws=' + agent.value['host']
+  iframeUrl.value = '/chrome/devtools/inspector.html?ws=' + agent.value['host']
       + ':' + agent.value['port'] + '/websockets/webView/'
       + agent.value['secretKey'] + '/' + port + '/' + id;
   nextTick(() => {
@@ -846,7 +844,6 @@ const websocketOnmessage = (message) => {
         message: $t('androidRemoteTS.getSuccess'),
       });
       webViewListDetail.value = JSON.parse(message.data)['detail'];
-      chromePort.value = JSON.parse(message.data)['chromePort'];
       break;
     }
     case 'eleScreen': {
@@ -1726,7 +1723,7 @@ onMounted(() => {
       </el-form-item>
       <div style="text-align: center">
         <el-button size="small" type="primary" @click="saveEle"
-        >{{$t('androidRemoteTS.code.saveEle')}}
+        >{{ $t('androidRemoteTS.code.saveEle') }}
         </el-button
         >
       </div>
@@ -2388,7 +2385,7 @@ onMounted(() => {
               <el-col :span="8">
                 <el-card>
                   <template #header>
-                    <strong>{{$t('androidRemoteTS.code.inputText')}}</strong>
+                    <strong>{{ $t('androidRemoteTS.code.inputText') }}</strong>
                   </template>
                   <el-form size="small" :model="text">
                     <el-form-item
@@ -2426,7 +2423,7 @@ onMounted(() => {
                          :element-loading-text="$t('androidRemoteTS.code.noAgent')"
                          style="margin-top: 18px;margin-bottom: 18px">
                       <el-card>
-                        <strong>{{$t('androidRemoteTS.code.noAgent')}}</strong>
+                        <strong>{{ $t('androidRemoteTS.code.noAgent') }}</strong>
                       </el-card>
                     </div>
                   </el-tab-pane>
@@ -2474,9 +2471,9 @@ onMounted(() => {
                     >
                       <i class="el-icon-upload"></i>
                       <div class="el-upload__text">{{ $t('androidRemoteTS.code.messageThree') }}
-                        <em>{{$t('devices.detail.uploadImg')}}</em></div>
+                        <em>{{ $t('devices.detail.uploadImg') }}</em></div>
                       <template #tip>
-                        <div class="el-upload__tip">{{$t('devices.detail.messageFour')}}</div>
+                        <div class="el-upload__tip">{{ $t('devices.detail.messageFour') }}</div>
                       </template>
                     </el-upload>
                   </div>
@@ -2485,7 +2482,7 @@ onMounted(() => {
               <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
-                    <strong>{{$t('devices.detail.fileTransfer')}}</strong>
+                    <strong>{{ $t('devices.detail.fileTransfer') }}</strong>
                   </template>
                   <div style="text-align: center">
                     <el-tabs type="border-card" stretch>
@@ -2500,11 +2497,12 @@ onMounted(() => {
                             :http-request="uploadFile"
                         >
                           <i class="el-icon-upload"></i>
-                          <div class="el-upload__text">{{$t('devices.detail.messageFive')}}
-                            <em>{{$t('devices.detail.uploadImg')}}</em></div>
+                          <div class="el-upload__text">{{ $t('devices.detail.messageFive') }}
+                            <em>{{ $t('devices.detail.uploadImg') }}</em></div>
                         </el-upload>
                         <div style="display: flex;margin-top: 5px">
-                          <el-input size="mini" v-model="pushPath" :placeholder="$t('androidRemoteTS.code.pleaseFilePath')"></el-input>
+                          <el-input size="mini" v-model="pushPath"
+                                    :placeholder="$t('androidRemoteTS.code.pleaseFilePath')"></el-input>
                           <el-button style="margin-left: 5px" size="mini" type="primary" :loading="pushLoading"
                                      :disabled="pushPath.length===0||upLoadFilePath.length===0"
                                      @click="pushFile">Push
@@ -2512,13 +2510,15 @@ onMounted(() => {
                         </div>
                       </el-tab-pane>
                       <el-tab-pane :label="$t('androidRemoteTS.code.filePath')">
-                        <el-input size="mini" :placeholder="$t('androidRemoteTS.code.pullFilePath')" v-model="pullPath"></el-input>
+                        <el-input size="mini" :placeholder="$t('androidRemoteTS.code.pullFilePath')"
+                                  v-model="pullPath"></el-input>
                         <el-button style="margin-top: 5px" size="mini" type="primary" :loading="pullLoading"
                                    :disabled="pullPath.length===0"
                                    @click="pullFile">Pull
                         </el-button>
                         <a :href="pullResult" download target="_blank" v-if="pullResult.length!==0">
-                          <el-button style="margin-top: 5px;margin-left:10px" size="mini" type="success">{{ $t('androidRemoteTS.code.installFile') }}
+                          <el-button style="margin-top: 5px;margin-left:10px" size="mini" type="success">
+                            {{ $t('androidRemoteTS.code.installFile') }}
                           </el-button>
                         </a>
                       </el-tab-pane>
@@ -2574,7 +2574,7 @@ onMounted(() => {
                         type="primary"
                         :disabled="uploadUrl.length===0"
                         @click="install(uploadUrl)"
-                    >{{$t('androidRemoteTS.code.send')}}
+                    >{{ $t('androidRemoteTS.code.send') }}
                     </el-button>
                   </div>
                 </el-card>
@@ -2584,7 +2584,7 @@ onMounted(() => {
               <el-table :data="currAppListPageData" border>
                 <el-table-column width="90" header-align="center">
                   <template #header>
-                    <el-button size="mini" @click="refreshAppList">{{$t('androidRemoteTS.code.refresh')}}</el-button>
+                    <el-button size="mini" @click="refreshAppList">{{ $t('androidRemoteTS.code.refresh') }}</el-button>
                   </template>
                   <template #default="scope">
                     <div style="display: flex;align-items: center;justify-content: center;">
@@ -2593,7 +2593,8 @@ onMounted(() => {
                     </div>
                   </template>
                 </el-table-column>
-                <el-table-column width="150" show-overflow-tooltip header-align="center" prop="appName" :label="$t('androidRemoteTS.code.appName')">
+                <el-table-column width="150" show-overflow-tooltip header-align="center" prop="appName"
+                                 :label="$t('androidRemoteTS.code.appName')">
                 </el-table-column>
                 <el-table-column header-align="center" show-overflow-tooltip prop="packageName"
                                  :label="$t('androidRemoteTS.code.packagesName')">
@@ -2601,18 +2602,23 @@ onMounted(() => {
                     <div style="cursor: pointer" @click="copy(scope.row.packageName)">{{ scope.row.packageName }}</div>
                   </template>
                 </el-table-column>
-                <el-table-column header-align="center" show-overflow-tooltip prop="versionName" :label="$t('androidRemoteTS.code.version')"
+                <el-table-column header-align="center" show-overflow-tooltip prop="versionName"
+                                 :label="$t('androidRemoteTS.code.version')"
                                  width="120"></el-table-column>
-                <el-table-column header-align="center" show-overflow-tooltip prop="versionCode" :label="$t('androidRemoteTS.code.subversion')"
+                <el-table-column header-align="center" show-overflow-tooltip prop="versionCode"
+                                 :label="$t('androidRemoteTS.code.subversion')"
                                  width="120"></el-table-column>
                 <el-table-column align="center" width="200">
                   <template #header>
                     <el-input v-model="filterAppText" size="mini" :placeholder="$t('androidRemoteTS.code.nameSearch')"/>
                   </template>
                   <template #default="scope">
-                    <el-button size="mini" @click="openApp(scope.row.packageName)" type="primary">{{ $t('androidRemoteTS.code.open') }}
+                    <el-button size="mini" @click="openApp(scope.row.packageName)" type="primary">
+                      {{ $t('androidRemoteTS.code.open') }}
                     </el-button>
-                    <el-button size="mini" @click="uninstallApp(scope.row.packageName)" type="danger">{{ $t('androidRemoteTS.code.unInstall') }}</el-button>
+                    <el-button size="mini" @click="uninstallApp(scope.row.packageName)" type="danger">
+                      {{ $t('androidRemoteTS.code.unInstall') }}
+                    </el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -2626,16 +2632,25 @@ onMounted(() => {
             </el-card>
           </el-tab-pane>
           <el-tab-pane :label="$t('androidRemoteTS.code.packet')" name="proxy">
-            <el-button size="small" type="success" @click="startProxy">{{ $t('androidRemoteTS.code.startPacket') }}</el-button>
-            <el-button size="small" @click="installCert">{{ $t('androidRemoteTS.code.downloadCertificate') }}</el-button>
+            <el-button size="small" type="success" @click="startProxy">{{
+                $t('androidRemoteTS.code.startPacket')
+              }}
+            </el-button>
+            <el-button size="small" @click="installCert">{{
+                $t('androidRemoteTS.code.downloadCertificate')
+              }}
+            </el-button>
             <el-button size="small" @click="clearProxy">{{ $t('androidRemoteTS.code.cancelGlobalProxy') }}</el-button>
             <strong v-if="proxyConnPort!==0"
-                    style="color: #67c23a;float: right;margin-top: 5px">{{ $t('androidRemoteTS.code.proxyConnection') }}：{{
+                    style="color: #67c23a;float: right;margin-top: 5px">{{
+                $t('androidRemoteTS.code.proxyConnection')
+              }}：{{
                 agent['host'] + ':' + proxyConnPort
               }}</strong>
             <span style="float: right;display: flex;
             			   align-items: center;">
-                          <el-button size="mini" @click="getWifiList" style="margin-right: 6px">{{ $t('androidRemoteTS.code.refresh') }}</el-button>
+                          <el-button size="mini" @click="getWifiList"
+                                     style="margin-right: 6px">{{ $t('androidRemoteTS.code.refresh') }}</el-button>
                           <ColorImg
                               :src="wifiLogo"
                               :width="18"
@@ -2718,7 +2733,8 @@ onMounted(() => {
                     </div>
                   </el-scrollbar>
                   <div style="display: flex;margin-top: 10px">
-                    <el-input @keyup.enter="sendCmd" size="mini" v-model="cmdInput" :placeholder="$t('androidRemoteTS.code.inputSend')">
+                    <el-input @keyup.enter="sendCmd" size="mini" v-model="cmdInput"
+                              :placeholder="$t('androidRemoteTS.code.inputSend')">
                       <template #prepend>{{ cmdUser + ':/ $' }}</template>
                     </el-input>
                     <el-button size="mini" @click="sendCmd" :disabled="cmdInput.length===0||!cmdIsDone"
@@ -2775,14 +2791,23 @@ onMounted(() => {
                 <el-collapse-item>
                   <template #title>
                     <div style="display: flex; align-items: center;width: 100%;justify-content: space-between;">
-                      <strong style="font-size: 15px;color: #909399;margin-left: 10px">{{ 'androidRemoteTS.code.UIAutomation.testInfo' }}</strong>
-                      <el-button style="margin-right: 10px" type="danger" size="mini" @click="removeCase">{{ 'androidRemoteTS.code.UIAutomation.clean' }}
+                      <strong style="font-size: 15px;color: #909399;margin-left: 10px">{{
+                          'androidRemoteTS.code.UIAutomation.testInfo'
+                        }}</strong>
+                      <el-button style="margin-right: 10px" type="danger" size="mini" @click="removeCase">
+                        {{ 'androidRemoteTS.code.UIAutomation.clean' }}
                       </el-button>
                     </div>
                   </template>
                   <el-descriptions :column="2" size="medium" border>
-                    <el-descriptions-item width="100px" :label="$t('projectIndexTS.page.caseId')">{{ testCase['id'] }}</el-descriptions-item>
-                    <el-descriptions-item width="100px" :label="$t('projectIndexTS.page.caseName')">{{ testCase.name }}</el-descriptions-item>
+                    <el-descriptions-item width="100px" :label="$t('projectIndexTS.page.caseId')">{{
+                        testCase['id']
+                      }}
+                    </el-descriptions-item>
+                    <el-descriptions-item width="100px" :label="$t('projectIndexTS.page.caseName')">{{
+                        testCase.name
+                      }}
+                    </el-descriptions-item>
                     <el-descriptions-item :label="$t('androidRemoteTS.code.UIAutomation.fatherPlayed')">
                       <div style=" display: flex;align-items: center;">
                         <el-avatar
@@ -2810,10 +2835,22 @@ onMounted(() => {
                     <el-descriptions-item :label="$t('stepListViewTS.module')">
                       {{ testCase['modulesDTO'] !== null ? testCase['modulesDTO'].name : "" }}
                     </el-descriptions-item>
-                    <el-descriptions-item :label="$t('stepListViewTS.versionName')">{{ testCase['version'] }}</el-descriptions-item>
-                    <el-descriptions-item :label="$t('stepListViewTS.designer')">{{ testCase['designer'] }}</el-descriptions-item>
-                    <el-descriptions-item :label="$t('stepListViewTS.last')">{{ testCase['editTime'] }}</el-descriptions-item>
-                    <el-descriptions-item :label="$t('stepListViewTS.testMessage')">{{ testCase['des'] }}</el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.versionName')">{{
+                        testCase['version']
+                      }}
+                    </el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.designer')">{{
+                        testCase['designer']
+                      }}
+                    </el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.last')">{{
+                        testCase['editTime']
+                      }}
+                    </el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.testMessage')">{{
+                        testCase['des']
+                      }}
+                    </el-descriptions-item>
                   </el-descriptions>
                 </el-collapse-item>
               </el-collapse>
@@ -2833,7 +2870,8 @@ onMounted(() => {
             </div>
             <div v-else>
               <span style="color: #909399;margin-right: 10px">{{ $t('androidRemoteTS.code.associatedProject') }}</span>
-              <el-select size="mini" v-model="project" value-key="id" :placeholder="$t('androidRemoteTS.code.chooseProject')">
+              <el-select size="mini" v-model="project" value-key="id"
+                         :placeholder="$t('androidRemoteTS.code.chooseProject')">
                 <el-option
                     v-for="item in store.state.projectList"
                     :key="item.id"
@@ -2862,7 +2900,8 @@ onMounted(() => {
                               :is-read-only="true"
                               @select-case="selectCase"></test-case-list>
               <el-card style="height: 100%;margin-top:20px">
-                <el-result icon="info" :title="$t('androidRemoteTS.code.hintText')" :subTitle="$t('androidRemoteTS.code.hintMessage')">
+                <el-result icon="info" :title="$t('androidRemoteTS.code.hintText')"
+                           :subTitle="$t('androidRemoteTS.code.hintMessage')">
                 </el-result>
               </el-card>
             </div>
@@ -3001,7 +3040,8 @@ onMounted(() => {
                             </el-button
                             >
                           </div>
-                          <el-alert style="margin-bottom: 10px" v-else :title="$t('androidRemoteTS.code.titleMessage')" type="info" show-icon
+                          <el-alert style="margin-bottom: 10px" v-else :title="$t('androidRemoteTS.code.titleMessage')"
+                                    type="info" show-icon
                                     close-text="Get!"/>
                           <el-scrollbar
                               style="height: 100%"
@@ -3036,7 +3076,8 @@ onMounted(() => {
 
                               </el-form-item>
                               <el-form-item :label="$t('androidRemoteTS.code.xpath')">
-                                <el-table stripe :empty-text="$t('androidRemoteTS.code.xpathNull')" border :data="findBestXpath(elementDetail)"
+                                <el-table stripe :empty-text="$t('androidRemoteTS.code.xpathNull')" border
+                                          :data="findBestXpath(elementDetail)"
                                           :show-header="false">
                                   <el-table-column>
                                     <template #default="scope">
@@ -3176,7 +3217,8 @@ onMounted(() => {
                   </el-row>
                 </div>
                 <el-card style="height: 100%" v-show="!isShowImg">
-                  <el-result icon="info" :title="$t('androidRemoteTS.code.hintText')" :subTitle="$t('androidRemoteTS.code.subTitleText')">
+                  <el-result icon="info" :title="$t('androidRemoteTS.code.hintText')"
+                             :subTitle="$t('androidRemoteTS.code.subTitleText')">
                     <template #extra>
                       <el-button size="mini" type="primary" :disabled="isDriverFinish" :loading="driverLoading"
                                  @click="openDriver">{{ $t('androidRemoteTS.code.UIAutomator2ServerInit') }}
@@ -3333,7 +3375,8 @@ onMounted(() => {
                         shadow="hover"
                     >
                       <div style="height: 660px">
-                        <el-alert style="margin-bottom: 10px" :title="$t('androidRemoteTS.code.moreFeaturesAdd')" type="info" show-icon
+                        <el-alert style="margin-bottom: 10px" :title="$t('androidRemoteTS.code.moreFeaturesAdd')"
+                                  type="info" show-icon
                                   close-text="Get!"/>
                         <el-scrollbar
                             style="height: 100%"
@@ -3370,7 +3413,8 @@ onMounted(() => {
           <el-tab-pane :label="$t('androidRemoteTS.code.webView.webDebug')" name="webview">
             <div v-if="isWebView">
               <div v-if="webViewListDetail.length==0">
-                <el-result icon="info" :title="$t('androidRemoteTS.code.hintText')" :subTitle="$t('androidRemoteTS.code.webView.err')">
+                <el-result icon="info" :title="$t('androidRemoteTS.code.hintText')"
+                           :subTitle="$t('androidRemoteTS.code.webView.err')">
                   <template #extra>
                     <el-button
                         type="primary"
@@ -3409,7 +3453,9 @@ onMounted(() => {
                       <div>
                         <div style="display: flex;align-items: center;">
                           <img :src="w.favicon" v-if="w.favicon" width="15" style="margin-right: 5px"/>
-                          <strong>{{ w.title.length > 0 ? w.title : $t('androidRemoteTS.code.webView.Untitled') }}</strong>
+                          <strong>{{
+                              w.title.length > 0 ? w.title : $t('androidRemoteTS.code.webView.Untitled')
+                            }}</strong>
                         </div>
                         <div style="color: #909399">{{
                             w.url.length > 50 ? w.url.substring(0, 50) + '...' : w.url
