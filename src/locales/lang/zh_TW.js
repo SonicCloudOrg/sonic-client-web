@@ -30,7 +30,6 @@ const agent = {
         namePlaceholder: '請輸入Agent名稱'
     }
 }
-
 const devices = {
     title: 'Sonic雲真機平台',
     list: '設備清單',
@@ -103,7 +102,6 @@ const devices = {
         shutdown: "關機"
     }
 }
-
 // 佈局相關
 const layout = {
     // header
@@ -153,7 +151,6 @@ const dialog = {
         fail: '複製失敗！'
     }
 }
-
 //一般操作
 const common = {
     null: '無',
@@ -162,7 +159,6 @@ const common = {
     operate: "操作",
     copy: "複製",
 }
-
 // 路由
 const routes = {
     login: "登入",
@@ -187,15 +183,12 @@ const routes = {
     role: "",
     scripts: "脚本模板"
 }
-
 const setting = {
     title: "Manage Center"
 }
-
 const androidTestCase = {
     addCase: "添加案例",
 }
-
 const elements = {
     eleInfo: "控制項元素資訊",
     stepInfo: "步驟資訊",
@@ -219,7 +212,6 @@ const elements = {
     cEleValue: "控制項元素值",
     inputKeySearch: "輸入控制項元素值搜索",
     sureDelInfo: "確定刪除該控制項元素嗎?",
-
 }
 const globalParamsTs = {
     dialogVisible: {
@@ -241,7 +233,6 @@ const globalParamsTs = {
     },
     delMessage: "確定刪除該全域參數嗎?"
 }
-
 const homeTS = {
     projectOverview: "項目概況",
     testCaseManagement: "測試案例管理",
@@ -265,7 +256,6 @@ const homeTS = {
         update: "版本反覆運算",
     }
 }
-
 const jobsTS = {
     dialogVisible: {
         message: "排程任務資訊",
@@ -309,7 +299,6 @@ const jobsTS = {
     run: "立即運行",
     del: "確定刪除該排程任務嗎？"
 }
-
 const loginTS = {
     testPlatform: "一站式雲真機測試平台",
     login: {
@@ -324,7 +313,6 @@ const loginTS = {
         register: "註冊",
     }
 }
-
 const modulesTS = {
     info: "模組資訊",
     name: "模組名稱",
@@ -334,7 +322,6 @@ const modulesTS = {
     add: "添加模組",
     del: "確定刪除該模組嗎?",
 }
-
 const packagesTS = {
     accessGuide: "存取指南",
     buildLink: "建立連結",
@@ -346,9 +333,7 @@ const packagesTS = {
     downloadLink: "下載連結",
     copyUrl: "複製url",
     creatTime: "創立時間",
-
 }
-
 const projectIndexTS = {
     code: {
         lastWeek: "最近一周",
@@ -379,8 +364,6 @@ const projectIndexTS = {
         serialNumber: "序號",
     }
 }
-
-
 const publicStepTS = {
     info: "公共步驟資訊",
     add: "添加公共步驟",
@@ -395,7 +378,6 @@ const publicStepTS = {
     viewSteps: "查看步驟",
     sureDel: "確定刪除該公共步驟嗎?",
 }
-
 const resultDetailTS = {
     memoryInfo: "記憶體詳情",
     unit: "單位(KB)",
@@ -425,7 +407,6 @@ const resultDetailTS = {
         onRecording: "暫無錄影"
     }
 }
-
 const ResultsTS = {
     name: "測試套件名稱",
     testReport: "測試報告",
@@ -434,7 +415,6 @@ const ResultsTS = {
     interrupt: "中斷",
     del: "確定刪除該測試報告嗎?",
 }
-
 const stepListViewTS = {
     caseInfo: "案例詳情",
     platformToBe: "所屬平台",
@@ -463,7 +443,6 @@ const testSuitesTS = {
     run: "運行",
     delMessage: "確定刪除該測試套件嗎？套件下的案例將移出該套件"
 }
-
 const versionsTS = {
     iteration: "版本反覆運算資訊",
     noNull: "版本名稱不能空白",
@@ -473,9 +452,7 @@ const versionsTS = {
     selectTime: "選擇日期時間",
     addVersions: "添加版本反覆運算",
     delMessage: "確定刪除該版本嗎？",
-
 }
-
 const androidRemoteTS = {
     repairedSuccess: "修復成功",
     associationSuccess: "關聯成功",
@@ -661,7 +638,6 @@ const androidRemoteTS = {
 const indexIOSTS = {
     contentText: "切換佈局",
     successText: "切換成功",
-
 }
 const settingIndexTS = {
     center: {
@@ -674,8 +650,6 @@ const settingIndexTS = {
         scheduled: "系統排程任務"
     }
 }
-
-
 const resourceTS = {
     syncSucceed: "同步成功!",
     syncResource: "同步資源",
@@ -690,8 +664,6 @@ const resourceTS = {
         requiredText: "是否需要鑒權"
     }
 }
-
-
 const roleTS = {
     dialogVisible: {
         addOrEdit: "新增/編輯角色",
@@ -706,11 +678,8 @@ const roleTS = {
         role: "角色",
         nameL: "名稱",
         delMessage: "確定刪除該角色嗎?"
-
     }
 }
-
-
 const sysJobsTS = {
     code: {
         cleanFile: "清理系統檔",
@@ -728,7 +697,6 @@ const sysJobsTS = {
         editTime: "編輯系統排程任務",
     }
 }
-
 const usersTS = {
     dialogVisible: {
         editUser: "編輯用戶角色",
@@ -742,7 +710,6 @@ const usersTS = {
         roleConfiguration: "角色配置"
     }
 }
-
 const IOSRemote = {
     startSimulating: "開始模擬定位...",
     positioningRestored: "已恢復定位",
@@ -790,7 +757,6 @@ const IOSRemote = {
     predicate: "Predicate推薦",
     noRecommend: "暫無推薦語法",
 }
-
 export default {
     message: {
         robot,

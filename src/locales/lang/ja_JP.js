@@ -30,7 +30,6 @@ const agent = {
         namePlaceholder: 'エージェント名称を入力してください'
     }
 }
-
 const devices = {
     title: 'Sonicクラウドデバイスプラットフォーム',
     list: 'デバイスリスト',
@@ -102,10 +101,7 @@ const devices = {
         onlyAdNotice: "时（仅安卓），会通知机器人并",
         shutdown: "关机"
     }
-
-
 }
-
 // 布局相关
 const layout = {
     // header
@@ -155,7 +151,6 @@ const dialog = {
         fail: 'コピー失敗!'
     }
 }
-
 //通用操作
 const common = {
     null: 'なし',
@@ -164,7 +159,6 @@ const common = {
     operate: "操作",
     copy: "复制",
 }
-
 // 路由
 const routes = {
     login: "ログイン",
@@ -195,7 +189,6 @@ const setting = {
 const androidTestCase = {
     addCase: "ユースケースを追加",
 }
-
 const elements = {
     eleInfo: "控件元素信息",
     stepInfo: "步骤信息",
@@ -219,7 +212,6 @@ const elements = {
     cEleValue: "控件元素值",
     inputKeySearch: "输入控件元素值搜索",
     sureDelInfo: "确定删除该控件元素吗?",
-
 }
 const globalParamsTs = {
     dialogVisible: {
@@ -241,7 +233,6 @@ const globalParamsTs = {
     },
     delMessage: "确定删除该全局参数吗?"
 }
-
 const homeTS = {
     projectOverview: "项目概况",
     testCaseManagement: "测试用例管理",
@@ -265,7 +256,6 @@ const homeTS = {
         update: "版本迭代",
     }
 }
-
 const jobsTS = {
     dialogVisible: {
         message: "定时任务信息",
@@ -309,7 +299,6 @@ const jobsTS = {
     run: "立即运行",
     del: "确定删除该定时任务吗？"
 }
-
 const loginTS = {
     testPlatform: "一站式云真机测试平台",
     login: {
@@ -324,7 +313,6 @@ const loginTS = {
         register: "注 册",
     }
 }
-
 const modulesTS = {
     info: "模块信息",
     name: "模块名称",
@@ -334,7 +322,6 @@ const modulesTS = {
     add: "添加模块",
     del: "确定删除该模块吗?",
 }
-
 const packagesTS = {
     accessGuide: "接入指南",
     buildLink: "构建链接",
@@ -346,9 +333,7 @@ const packagesTS = {
     downloadLink: "下载地址",
     copyUrl: "复制url",
     creatTime: "创建时间",
-
 }
-
 const projectIndexTS = {
     code: {
         lastWeek: "最近一周",
@@ -379,7 +364,6 @@ const projectIndexTS = {
         serialNumber: "序列号",
     }
 }
-
 const publicStepTS = {
     info: "公共步骤信息",
     add: "添加公共步骤",
@@ -394,7 +378,6 @@ const publicStepTS = {
     viewSteps: "查看步骤",
     sureDel: "确定删除该公共步骤吗?",
 }
-
 const resultDetailTS = {
     memoryInfo: "内存详情",
     unit: "单位(KB)",
@@ -424,7 +407,6 @@ const resultDetailTS = {
         onRecording: "暂无录像"
     }
 }
-
 const ResultsTS = {
     name: "测试套件名称",
     testReport: "测试报告",
@@ -433,7 +415,6 @@ const ResultsTS = {
     interrupt: "中断",
     del: "确定删除该测试报告吗?",
 }
-
 const stepListViewTS = {
     caseInfo: "用例详情",
     platformToBe: "所属平台",
@@ -462,7 +443,6 @@ const testSuitesTS = {
     run: "运行",
     delMessage: "确定删除该测试套件吗？套件下的用例将移出该套件"
 }
-
 const versionsTS = {
     iteration: "版本迭代信息",
     noNull: "版本名称不能为空",
@@ -472,9 +452,7 @@ const versionsTS = {
     selectTime: "选择日期时间",
     addVersions: "添加版本迭代",
     delMessage: "确定删除该版本吗？",
-
 }
-
 const androidRemoteTS = {
     repairedSuccess: "修复成功",
     associationSuccess: "关联成功",
@@ -660,7 +638,6 @@ const androidRemoteTS = {
 const indexIOSTS = {
     contentText: "切换布局",
     successText: "切换成功",
-
 }
 const settingIndexTS = {
     center: {
@@ -673,8 +650,6 @@ const settingIndexTS = {
         scheduled: "系统定时任务"
     }
 }
-
-
 const resourceTS = {
     syncSucceed: "同步成功!",
     syncResource: "同步资源",
@@ -689,8 +664,6 @@ const resourceTS = {
         requiredText: "是否需要鉴权"
     }
 }
-
-
 const roleTS = {
     dialogVisible: {
         addOrEdit: "添加/编辑角色",
@@ -705,11 +678,8 @@ const roleTS = {
         role: "角色",
         nameL: "名称",
         delMessage: "确定删除该角色吗?"
-
     }
 }
-
-
 const sysJobsTS = {
     code: {
         cleanFile: "清理系统文件",
@@ -727,7 +697,6 @@ const sysJobsTS = {
         editTime: "编辑系统定时任务",
     }
 }
-
 const usersTS = {
     dialogVisible: {
         editUser: "编辑用户角色",
@@ -741,7 +710,6 @@ const usersTS = {
         roleConfiguration: "角色配置"
     }
 }
-
 const IOSRemote = {
     startSimulating: "开始模拟定位...",
     positioningRestored: "已恢复定位",
@@ -789,7 +757,6 @@ const IOSRemote = {
     predicate: "Predicate推荐",
     noRecommend: "暂无推荐语法",
 }
-
 export default {
     message: {
         robot,
