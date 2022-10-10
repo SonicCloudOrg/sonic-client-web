@@ -89,6 +89,10 @@ const monkey = ref({
       value: 40,
     },
     {
+      name: "zoomEvent",
+      value: 10,
+    },
+    {
       name: "systemEvent",
       value: 5,
     },
@@ -130,6 +134,10 @@ const monkeyOptions = {
   swipeEvent: {
     label: "滑动事件权重",
     des: "随机两个坐标滑动",
+  },
+  zoomEvent: {
+    label: "多点触控事件权重",
+    des: "随机双指放大或缩小",
   },
   systemEvent: {
     label: "物理按键事件权重",
@@ -190,19 +198,6 @@ const summitStep = () => {
         step.value.text = JSON.stringify(activityList.value);
         step.value.content = JSON.stringify(monkey.value);
       }
-      if (step.value.stepType === 'runScript') {
-        if (step.value.text.length === 0) {
-          step.value.text = 'Groovy';
-        }
-        if (step.value.content.length === 0) {
-          step.value.content =
-              'def test(){\n' +
-              '      println "Hello world"\n' +
-              '}\n' +
-              '\n' +
-              'test()\n';
-        }
-      }
       axios.put("/controller/steps", step.value).then(resp => {
         if (resp['code'] === 2000) {
           ElMessage.success({
@@ -234,13 +229,10 @@ const getStepInfo = (id) => {
     if (step.value.stepType === 'pause'
         || step.value.stepType === 'stepHold'
         || step.value.stepType === 'longPressPoint'
-        || step.value.stepType === 'findElementInterval'
+        || step.value.stepType === 'runBack'
         || step.value.stepType === 'longPress'
         || step.value.stepType === 'checkImage') {
       step.value.content = parseInt(step.value.content);
-    }
-    if (step.value.stepType === 'findElementInterval') {
-      step.value.text = parseInt(step.value.text);
     }
     if (step.value.stepType === 'install') {
       if (step.value.content === "") {
@@ -300,6 +292,10 @@ const androidOptions = ref([
             value: "keyCodeSelf",
             label: "系统按键（自定义）",
           },
+          {
+            value: "hideKey",
+            label: "隐藏键盘",
+          },
         ],
       },
       {
@@ -338,6 +334,10 @@ const androidOptions = ref([
         value: "swipe",
         label: "滑动拖拽",
       },
+      {
+        label: "多点触控",
+        value: "zoom"
+      },
     ],
   },
   {
@@ -361,6 +361,10 @@ const androidOptions = ref([
         label: "卸载应用",
       },
       {
+        value: "runBack",
+        label: "后台运行应用",
+      },
+      {
         value: "appReset",
         label: "清空App内存缓存",
       },
@@ -377,102 +381,60 @@ const androidOptions = ref([
   {
     label: "控件元素操作",
     value: "element",
-    children: [{
-      label: "安卓原生控件",
-      value: "uiEle",
-      children: [
-        {
-          value: "findElementInterval",
-          label: "设置查找控件策略"
-        },
-        {
-          value: "isExistEle",
-          label: "判断控件元素是否存在",
-        },
-        {
-          value: "click",
-          label: "点击控件元素",
-        },
-        {
-          value: "sendKeys",
-          label: "输入文本",
-        },
-        {
-          value: "sendKeysByActions",
-          label: "输入文本(Actions)",
-        },
-        {
-          value: "swipe2",
-          label: "拖拽控件元素",
-        },
-        {
-          value: "longPress",
-          label: "长按控件元素",
-        },
-        {
-          value: "clear",
-          label: "清空输入框",
-        },
-        {
-          value: "getTextValue",
-          label: "获取文本",
-        },
-        {
-          value: "getText",
-          label: "验证文本",
-        },
-      ],
-    }, {
-      label: "WebView控件",
-      value: "webViewEle",
-      children: [
-        {
-          value: "isExistWebViewEle",
-          label: "判断控件元素是否存在",
-        },
-        {
-          value: "webViewClick",
-          label: "点击控件元素",
-        },
-        {
-          value: "webViewSendKeys",
-          label: "输入文本",
-        },
-        {
-          value: "webViewClear",
-          label: "清空输入框",
-        },
-        {
-          value: "getWebViewTextValue",
-          label: "获取文本",
-        },
-        {
-          value: "getWebViewText",
-          label: "验证文本",
-        },
-        {
-          value: "getTitle",
-          label: "验证标题",
-        },
-      ]
-    },
+    children: [
       {
-        label: "POCO控件(即将开放)",
-        value: "pocoEle",
-        disabled: true
-      }]
+        value: "isExistEle",
+        label: "判断控件元素是否存在",
+      },
+      {
+        value: "click",
+        label: "点击控件元素",
+      },
+      {
+        value: "sendKeys",
+        label: "输入文本",
+      },
+      {
+        value: "sendKeysByActions",
+        label: "输入文本(Actions)",
+      },
+      {
+        value: "swipe2",
+        label: "拖拽控件元素",
+      },
+      {
+        value: "longPress",
+        label: "长按控件元素",
+      },
+      {
+        value: "clear",
+        label: "清空输入框",
+      },
+      {
+        value: "getTextValue",
+        label: "获取文本",
+      },
+    ],
   },
   {
     label: "验证操作",
     value: "check",
     children: [
       {
+        value: "getText",
+        label: "验证文本",
+      },
+      {
+        value: "getTitle",
+        label: "验证标题",
+      },
+      {
         value: "getActivity",
         label: "验证Activity",
       },
       {
         value: "getElementAttr",
-        label: "验证原生控件属性",
+        label: "验证元素属性",
       },
       {
         value: "assert",
@@ -526,10 +488,6 @@ const androidOptions = ref([
         label: "公共步骤",
       },
       {
-        value: "runScript",
-        label: "自定义脚本"
-      },
-      {
         value: "monkey",
         label: "随机事件",
       },
@@ -545,6 +503,10 @@ const androidOptions = ref([
       {
         value: "pause",
         label: "强制等待",
+      },
+      {
+        value: "fastbot",
+        label: "Fastbot",
       }
     ],
   },
@@ -589,20 +551,6 @@ const iOSOptions = ref([
           {
             value: "keyCode",
             label: "系统按键",
-          },
-        ],
-      },
-      {
-        value: "pasteboard",
-        label: "剪切板管理",
-        children: [
-          {
-            value: "setPasteboard",
-            label: "设置文本",
-          },
-          {
-            value: "getPasteboard",
-            label: "获取文本",
           },
         ],
       },
@@ -657,10 +605,6 @@ const iOSOptions = ref([
     value: "element",
     children: [
       {
-        value: "findElementInterval",
-        label: "设置查找控件策略"
-      },
-      {
         value: "isExistEle",
         label: "判断控件元素是否存在",
       },
@@ -688,16 +632,16 @@ const iOSOptions = ref([
         value: "getTextValue",
         label: "获取文本",
       },
-      {
-        value: "getText",
-        label: "验证文本",
-      },
     ],
   },
   {
     label: "验证操作",
     value: "check",
     children: [
+      {
+        value: "getText",
+        label: "验证文本",
+      },
       {
         value: "assert",
         label: "自定义断言",
@@ -748,10 +692,6 @@ const iOSOptions = ref([
       {
         value: "publicStep",
         label: "公共步骤",
-      },
-      {
-        value: "runScript",
-        label: "自定义脚本"
       },
       {
         value: "monkey",
@@ -914,6 +854,19 @@ onMounted(() => {
                       :index="1" :project-id="projectId" type="point" :step="step"/>
     </div>
 
+    <div v-if="step.stepType === 'zoom'">
+      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
+                title="TIPS: 合理设置好坐标位置，可以实现双指放大或缩小操作"/>
+      <element-select label="从控件" place="请选择坐标控件元素"
+                      :index="0" :project-id="projectId" type="point" :step="step"/>
+      <element-select label="移动到" place="请选择坐标控件元素"
+                      :index="1" :project-id="projectId" type="point" :step="step"/>
+      <element-select label="同时控件" place="请选择坐标控件元素"
+                      :index="2" :project-id="projectId" type="point" :step="step"/>
+      <element-select label="移动到" place="请选择坐标控件元素"
+                      :index="3" :project-id="projectId" type="point" :step="step"/>
+    </div>
+
     <div v-if="step.stepType === 'openApp'">
       <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
                 title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
@@ -1048,16 +1001,10 @@ onMounted(() => {
     </div>
 
     <div v-if="step.stepType === 'toWebView'">
-      <el-form-item label="包名">
+      <el-form-item label="WebView">
         <el-input
             v-model="step.content"
-            placeholder="请输入WebView所在包名"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="进程名">
-        <el-input
-            v-model="step.text"
-            placeholder="（可选）请输入WebView所在进程名，不输入默认为包名"
+            placeholder="请输入WebView名称"
         ></el-input>
       </el-form-item>
     </div>
@@ -1073,7 +1020,7 @@ onMounted(() => {
       </el-form-item>
     </div>
 
-    <div v-if="step.stepType === 'isExistEle' || step.stepType === 'isExistWebViewEle'">
+    <div v-if="step.stepType === 'isExistEle'">
       <element-select label="控件元素" place="请选择控件元素"
                       :index="0" :project-id="projectId" type="normal" :step="step"/>
       <el-form-item label="存在与否" prop="content" :rules="{
@@ -1088,25 +1035,12 @@ onMounted(() => {
       </el-form-item>
     </div>
 
-    <div v-if="step.stepType === 'airPlaneMode' || step.stepType === 'wifiMode' || step.stepType === 'locationMode'">
-      <el-form-item label="开启与否" prop="content" :rules="{
-            required: true,
-            message: '状态不能为空',
-            trigger: 'change',
-          }">
-        <el-select v-model="step.content">
-          <el-option label="开启" value="true"></el-option>
-          <el-option label="关闭" value="false"></el-option>
-        </el-select>
-      </el-form-item>
-    </div>
-
-    <div v-if="step.stepType === 'click' || step.stepType === 'webViewClick'">
+    <div v-if="step.stepType === 'click'">
       <element-select label="控件元素" place="请选择控件元素"
                       :index="0" :project-id="projectId" type="normal" :step="step"/>
     </div>
 
-    <div v-if="step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys'">
+    <div v-if="step.stepType === 'sendKeys'">
       <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
                 title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"/>
       <element-select label="控件元素" place="请选择控件元素"
@@ -1167,12 +1101,12 @@ onMounted(() => {
       </el-form-item>
     </div>
 
-    <div v-if="step.stepType === 'clear' || step.stepType === 'webViewClear'">
+    <div v-if="step.stepType === 'clear'">
       <element-select label="控件元素" place="请选择控件元素"
                       :index="0" :project-id="projectId" type="normal" :step="step"/>
     </div>
 
-    <div v-if="step.stepType === 'getTextValue' || step.stepType === 'getWebViewTextValue'">
+    <div v-if="step.stepType === 'getTextValue'">
       <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
                 title="TIPS: 可以将获取的文本放入临时变量中"/>
       <element-select label="控件元素" place="请选择控件元素"
@@ -1185,27 +1119,7 @@ onMounted(() => {
       </el-form-item>
     </div>
 
-    <div v-if="step.stepType === 'setPasteboard'">
-      <el-form-item label="文本信息">
-        <el-input
-            v-model="step.content"
-            placeholder="请输入设置的文本信息"
-        ></el-input>
-      </el-form-item>
-    </div>
-
-    <div v-if="step.stepType === 'getPasteboard'">
-      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
-                title="TIPS: 获取的文本可放入临时变量中"/>
-      <el-form-item label="变量名">
-        <el-input
-            v-model="step.content"
-            placeholder="请输入变量名"
-        ></el-input>
-      </el-form-item>
-    </div>
-
-    <div v-if="step.stepType === 'getText' || step.stepType === 'getWebViewText'">
+    <div v-if="step.stepType === 'getText'">
       <element-select label="控件元素" place="请选择控件元素"
                       :index="0" :project-id="projectId" type="normal" :step="step"/>
       <el-form-item label="期望值">
@@ -1398,21 +1312,22 @@ onMounted(() => {
       </el-form-item>
     </div>
 
-    <div v-if="step.stepType === 'findElementInterval'">
-      <el-form-item label="重试次数">
+    <div v-if="step.stepType === 'fastbot'">
+      <el-form-item label="运行时间">
         <el-input-number
             v-model="step.content"
-            :min="0"
+            :min="5"
             :step="1"
         ></el-input-number>
+        min
       </el-form-item>
-      <el-form-item label="重试间隔">
-        <el-input-number
+      <el-form-item label="测试包名">
+        <el-input
+            size="small"
+            type="text"
             v-model="step.text"
-            :min="0"
-            :step="500"
-        ></el-input-number>
-        ms
+            placeholder="请输入测试包名"
+        ></el-input>
       </el-form-item>
     </div>
 
@@ -1519,19 +1434,6 @@ onMounted(() => {
           </el-tabs>
         </el-form-item>
       </el-form>
-    </div>
-
-    <div v-if="step.stepType === 'runScript'">
-      <el-alert show-icon style="margin-bottom:10px" close-text="Get!" type="info"
-      >
-        <template #title>
-        <span>TIPS: 保存后直接在步骤列表编辑脚本，关于脚本的使用，可参考
-          <a href="https://sonic-cloud.gitee.io/#/Document?tag=runScript" target="_blank">
-            使用文档
-          </a>
-          </span>
-        </template>
-      </el-alert>
     </div>
 
     <el-form-item

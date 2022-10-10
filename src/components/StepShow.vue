@@ -16,34 +16,12 @@
  *
  */
 
-import CodeEditor from './CodeEditor.vue'
-import axios from "../http/axios";
-import {ElMessage} from "element-plus";
-import {useRoute} from "vue-router";
-const route = useRoute()
-const props = defineProps({
+defineProps({
   step: Object,
 })
-
-const summitStep = () => {
-  axios.put("/controller/steps", props.step).then(resp => {
-    if (resp['code'] === 2000) {
-      ElMessage.success({
-        message: resp['message'],
-      });
-    }
-  })
-}
 </script>
 <template>
-  <span v-if="step.stepType === 'runScript'" style="display: inline-block; margin-right: 10px;flex: 1;width: 70%;">
-    <el-tag size="small" type="warning" style="margin-right: 10px">运行自定义脚本</el-tag>
-    <div style="margin: 4px 0;">
-      <CodeEditor :project-id="route.params.projectId" v-model:code="step.content" v-model:language="step.text" :show-footer="true" :show-tool-bar="true"
-                  height="auto" @save="summitStep"></CodeEditor>
-    </div>
-  </span>
-  <span v-if="step.conditionType === 1">
+     <span v-if="step.conditionType === 1">
       <el-tag size="small" type="warning" style="margin-right: 10px">if</el-tag>
     </span>
   <span v-if="step.conditionType === 2">
@@ -73,14 +51,17 @@ const summitStep = () => {
   <span v-if="step.stepType === 'keyCode'||step.stepType === 'keyCodeSelf'">
       <el-tag size="small">按下系统{{ step.content }}键</el-tag>
   </span>
+  <span v-if="step.stepType === 'hideKey'">
+      <el-tag size="small">隐藏键盘</el-tag>
+    </span>
   <span v-if="step.stepType === 'airPlaneMode'">
-      <el-tag size="small" style="margin-right: 10px">切换飞行模式</el-tag>{{ step.content === 'true' ? '开启' : '关闭' }}
+      <el-tag size="small">切换飞行模式</el-tag>
     </span>
   <span v-if="step.stepType === 'wifiMode'">
-      <el-tag size="small" style="margin-right: 10px">切换WIFI模式</el-tag>{{ step.content === 'true' ? '开启' : '关闭' }}
+      <el-tag size="small">切换WIFI模式</el-tag>
     </span>
   <span v-if="step.stepType === 'locationMode'">
-      <el-tag size="small" style="margin-right: 10px">切换位置服务</el-tag>{{ step.content === 'true' ? '开启' : '关闭' }}
+      <el-tag size="small">切换位置服务</el-tag>
     </span>
   <span v-if="step.stepType === 'tap'">
       <el-tag size="small">点击坐标</el-tag>
@@ -105,17 +86,31 @@ const summitStep = () => {
       >
       <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
     </span>
-  <span v-if="step.stepType === 'setPasteboard'">
-      <el-tag size="small" style="margin-right: 10px">设置剪切板文本</el-tag>
-      文本：{{ step.content }}
-    </span>
-  <span v-if="step.stepType === 'getPasteboard'">
-      <el-tag size="small" style="margin-right: 10px">获取剪切板文本</el-tag>
-      提取到变量：{{ step.content }}
-    </span>
-  <span v-if="step.stepType === 'findElementInterval'">
-      <el-tag size="small" style="margin-right: 10px">设置查找控件策略</el-tag>
-      重试次数：{{ step.content }} 重试间隔：{{ step.text }} ms
+  <span v-if="step.stepType === 'zoom'">
+      <el-tag size="small">多点触控</el-tag>
+      <el-tag
+          type="info"
+          size="small"
+          style="margin-left: 10px; margin-right: 10px"
+      >{{ step.elements[0]['eleName'] }}</el-tag
+      >
+      <el-tag size="small">移动到</el-tag>
+      <el-tag
+          type="info"
+          size="small"
+          style="margin-left: 10px; margin-right: 10px"
+      >{{ step.elements[1]['eleName'] }}</el-tag
+      >同时
+      <el-tag
+          type="info"
+          size="small"
+          style="margin-left: 10px; margin-right: 10px"
+      >{{ step.elements[2]['eleName'] }}</el-tag
+      >
+      <el-tag size="small">移动到</el-tag>
+      <el-tag type="info" size="small" style="margin-left: 10px">{{
+          step.elements[3]['eleName']
+        }}</el-tag>
     </span>
   <span v-if="step.stepType === 'openApp'">
       <el-tag size="small" style="margin-right: 10px">打开应用</el-tag>
@@ -149,19 +144,19 @@ const summitStep = () => {
       <el-tag size="small" style="margin-right: 10px">切换Handle</el-tag>
       Handle页面标题：{{ step.content }}
     </span>
-  <span v-if="step.stepType === 'isExistEle' || step.stepType === 'isExistWebViewEle'">
+  <span v-if="step.stepType === 'isExistEle'">
       <el-tag size="small" style="margin-right: 10px">判断控件元素是否存在</el-tag>断言：
       <el-tag type="info" size="small" style="margin-right: 10px">{{
           step.elements[0]['eleName']
         }}</el-tag> {{ step.content === 'true' ? '存在' : '不存在' }}
     </span>
-  <span v-if="step.stepType === 'click'||step.stepType === 'webViewClick'">
+  <span v-if="step.stepType === 'click'">
       <el-tag size="small">点击控件元素</el-tag>
       <el-tag type="info" size="small" style="margin-left: 10px">{{
           step.elements[0]['eleName']
         }}</el-tag>
     </span>
-  <span v-if="step.stepType === 'sendKeys'||step.stepType === 'webViewSendKeys'">
+  <span v-if="step.stepType === 'sendKeys'">
       <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
       <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
       >输入文本</el-tag
@@ -198,13 +193,13 @@ const summitStep = () => {
       >
       {{ step.content }} ms
     </span>
-  <span v-if="step.stepType === 'clear'||step.stepType === 'webViewClear'">
+  <span v-if="step.stepType === 'clear'">
       <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
       <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
       >清空输入框</el-tag
       >
     </span>
-  <span v-if="step.stepType === 'getTextValue'||step.stepType === 'getWebViewTextValue'">
+  <span v-if="step.stepType === 'getTextValue'">
       <el-tag size="small">获取文本</el-tag>
       <el-tag
           type="info"
@@ -214,7 +209,7 @@ const summitStep = () => {
       >
       获取到变量：{{ step.content }}
     </span>
-  <span v-if="step.stepType === 'getText'||step.stepType === 'getWebViewText'">
+  <span v-if="step.stepType === 'getText'">
       <el-tag size="small">验证文本</el-tag>
       <el-tag
           type="info"
@@ -298,6 +293,10 @@ const summitStep = () => {
   <span v-if="step.stepType === 'monkey'">
       <el-tag style="margin-right: 10px" type="warning" size="small">随机事件测试</el-tag>
      应用包名：{{ JSON.parse(step.content).packageName }}&nbsp;&nbsp;事件数：{{ JSON.parse(step.content).pctNum }}
+    </span>
+  <span v-if="step.stepType === 'fastbot'">
+      <el-tag style="margin-right: 10px" type="warning" size="small">fastbot测试</el-tag>
+     应用包名：{{step.text }}&nbsp;&nbsp;运行时间：{{ step.content }}
     </span>
   <span v-if="step.stepType === 'stepHold'">
       <el-tag size="small" style="margin-right: 5px">步骤间隔设置</el-tag>
