@@ -290,7 +290,7 @@ const androidOptions = ref([
       },
       {
         value: "interaction",
-        label: "物理交互",
+        label: "特殊交互",
         children: [
           {
             value: "keyCode",
@@ -299,6 +299,10 @@ const androidOptions = ref([
           {
             value: "keyCodeSelf",
             label: "系统按键（自定义）",
+          },
+          {
+            value: "sendKeyForce",
+            label: "键盘输入",
           },
         ],
       },
