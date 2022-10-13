@@ -90,6 +90,7 @@ const wifiList = ref([]);
 const currentWifi = ref('');
 const isConnectWifi = ref(false);
 const selectPocoType = ref("");
+const pocoPort = ref("");
 const pocoLoading = ref(false)
 const pocoData = ref([])
 const proxyWebPort = ref(0);
@@ -100,6 +101,7 @@ const terminalHeight = ref(0);
 const caseList = ref(null);
 const loading = ref(false);
 const driverLoading = ref(false)
+const remoteAdbLoading = ref(true)
 const appList = ref([]);
 const device = ref({});
 const agent = ref({});
@@ -109,12 +111,12 @@ const text = ref({content: ''});
 const pocoTypeList = ref([
   {
     name: 'Unity3d',
-    value: 'Unity3d',
+    value: 'UNITY_3D',
     img: 'Unity'
   },
   {
     name: 'Egret',
-    value: 'Egret',
+    value: 'EGRET',
     img: 'Egret'
   },
   {
@@ -124,22 +126,22 @@ const pocoTypeList = ref([
   },
   {
     name: 'Cocos2dx-js',
-    value: 'Cocos2dx-js',
+    value: 'COCOS_2DX_JS',
     img: 'Cocos2dx'
   },
   {
     name: 'Cocos2dx-lua',
-    value: 'Cocos2dx-lua',
-    img: 'Cocos2dx'
-  },
-  {
-    name: 'cocos-creator',
-    value: 'cocos-creator',
+    value: 'COCOS_2DX_LUA',
     img: 'Cocos2dx'
   },
   {
     name: 'Cocos2dx-c++',
-    value: 'Cocos2dx-c++',
+    value: 'COCOS_2DX_C_PLUS_1',
+    img: 'Cocos2dx'
+  },
+  {
+    name: 'Cocos-creator',
+    value: 'COCOS_CREATOR',
     img: 'Cocos2dx'
   },
 ])
@@ -766,8 +768,9 @@ const websocketOnmessage = (message) => {
       }
       break;
     }
-    case 'adbkit': {
-      if (JSON.parse(message.data).isEnable) {
+    case 'sas': {
+      remoteAdbLoading.value = false
+      if (JSON.parse(message.data).isEnable && JSON.parse(message.data).port > 0) {
         remoteAdbUrl.value = agent.value['host'] + ':' + JSON.parse(message.data).port;
       }
       break;
@@ -1565,13 +1568,33 @@ const getElement = () => {
       }),
   );
 };
-const getPoco = (type) => {
+const switchPocoType = (e) => {
+  switch (e) {
+    case "UNITY_3D":
+    case "UE4":
+      pocoPort.value = "5001";
+      break;
+    case "COCOS_2DX_JS":
+    case "COCOS_CREATOR":
+    case "EGRET":
+      pocoPort.value = "5003";
+    case "COCOS_2DX_LUA":
+      pocoPort.value = "15004";
+      break;
+    case "COCOS_2DX_C_PLUS_1":
+      pocoPort.value = "18888";
+      break;
+  }
+}
+const getPoco = (engine) => {
   pocoLoading.value = true;
   setPocoImgData();
   websocket.send(
       JSON.stringify({
-        type: 'poco',
-        detail: type,
+        type: 'debug',
+        detail: "poco",
+        engine: engine,
+        port: pocoPort.value
       }),
   );
 }
@@ -2411,20 +2434,19 @@ onMounted(() => {
               <el-col :span="8">
                 <el-tabs type="border-card" stretch>
                   <el-tab-pane :label="$t('androidRemoteTS.code.remoteADB')">
-                    <div v-if="remoteAdbUrl.length>0" style="margin-top: 20px;margin-bottom: 20px">
-                      <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
-                               @click="copy('adb connect '+remoteAdbUrl)">
-                        <strong style="color: #F2F6FC">adb connect {{ remoteAdbUrl }}</strong>
-                      </el-card>
-                    </div>
-                    <div v-else v-loading="remoteAdbUrl.length===0"
-                         element-loading-spinner="el-icon-lock"
-                         element-loading-background="rgba(255, 255, 255, 1)"
-                         :element-loading-text="$t('androidRemoteTS.code.noAgent')"
+                    <div v-loading="remoteAdbLoading"
                          style="margin-top: 18px;margin-bottom: 18px">
-                      <el-card>
-                        <strong>{{ $t('androidRemoteTS.code.noAgent') }}</strong>
-                      </el-card>
+                      <div v-if="remoteAdbUrl.length>0" style="margin-top: 20px;margin-bottom: 20px">
+                        <el-card :body-style="{backgroundColor:'#303133',cursor:'pointer'}"
+                                 @click="copy('adb connect '+remoteAdbUrl)">
+                          <strong style="color: #F2F6FC">adb connect {{ remoteAdbUrl }}</strong>
+                        </el-card>
+                      </div>
+                      <div v-else>
+                        <el-card>
+                          <strong>{{ $t('androidRemoteTS.code.noAgent') }}</strong>
+                        </el-card>
+                      </div>
                     </div>
                   </el-tab-pane>
                 </el-tabs>
@@ -3241,8 +3263,8 @@ onMounted(() => {
                 </el-card>
               </el-tab-pane>
               <el-tab-pane :label="$t('androidRemoteTS.code.poco')">
-                <div style="margin-bottom: 10px">
-                  <el-select v-model="selectPocoType" size="mini">
+                <div style="margin-bottom: 10px;display: flex">
+                  <el-select v-model="selectPocoType" size="mini" @change="switchPocoType">
                     <el-option
                         v-for="item in pocoTypeList"
                         :key="item.name"
@@ -3261,6 +3283,8 @@ onMounted(() => {
                       </div>
                     </el-option>
                   </el-select>
+                  <el-input placeholder="Default connect port" style="margin-left: 10px;width: 200px" v-model="pocoPort"
+                            size="mini"></el-input>
                   <el-button style="margin-left: 10px" type="primary" :loading="pocoLoading" size="mini"
                              :disabled="selectPocoType.length===0"
                              @click="getPoco(selectPocoType)">{{ $t('androidRemoteTS.code.getPoco') }}
@@ -3375,7 +3399,19 @@ onMounted(() => {
                         shadow="hover"
                     >
                       <div style="height: 660px">
-                        <el-alert style="margin-bottom: 10px" :title="$t('androidRemoteTS.code.moreFeaturesAdd')"
+                        <div style="text-align: center; margin-bottom: 10px" v-if="project && project['id']">
+                          <el-button
+                              :disabled="pocoDetail === null"
+                              plain
+                              size="small"
+                              type="primary"
+                              round
+                              @click="toAddElement('poco','')"
+                          >{{ $t('androidRemoteTS.code.addControls') }}
+                          </el-button
+                          >
+                        </div>
+                        <el-alert style="margin-bottom: 10px" v-else :title="$t('androidRemoteTS.code.titleMessage')"
                                   type="info" show-icon
                                   close-text="Get!"/>
                         <el-scrollbar

@@ -128,6 +128,7 @@ onMounted(() => {
         </el-option-group>
         <el-option-group label="特殊定位方式">
           <el-option label="坐标（支持相对坐标）" value="point"></el-option>
+          <el-option label="POCO（仅支持游戏控件）" value="poco"></el-option>
           <el-option label="图片" value="image"></el-option>
         </el-option-group>
         <el-option-group label="WebView常用定位方式">
