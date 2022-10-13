@@ -20,6 +20,7 @@ import CodeEditor from './CodeEditor.vue'
 import axios from "../http/axios";
 import {ElMessage} from "element-plus";
 import {useRoute} from "vue-router";
+
 const route = useRoute()
 const props = defineProps({
   step: Object,
@@ -39,7 +40,8 @@ const summitStep = () => {
   <span v-if="step.stepType === 'runScript'" style="display: inline-block; margin-right: 10px;flex: 1;width: 70%;">
     <el-tag size="small" type="warning" style="margin-right: 10px">运行自定义脚本</el-tag>
     <div style="margin: 4px 0;">
-      <CodeEditor :project-id="route.params.projectId" v-model:code="step.content" v-model:language="step.text" :show-footer="true" :show-tool-bar="true"
+      <CodeEditor :project-id="route.params.projectId" v-model:code="step.content" v-model:language="step.text"
+                  :show-footer="true" :show-tool-bar="true"
                   height="auto" @save="summitStep"></CodeEditor>
     </div>
   </span>
@@ -149,13 +151,14 @@ const summitStep = () => {
       <el-tag size="small" style="margin-right: 10px">切换Handle</el-tag>
       Handle页面标题：{{ step.content }}
     </span>
-  <span v-if="step.stepType === 'isExistEle' || step.stepType === 'isExistWebViewEle'">
+  <span
+      v-if="step.stepType === 'isExistEle' || step.stepType === 'isExistWebViewEle' || step.stepType === 'isExistPocoEle'">
       <el-tag size="small" style="margin-right: 10px">判断控件元素是否存在</el-tag>断言：
       <el-tag type="info" size="small" style="margin-right: 10px">{{
           step.elements[0]['eleName']
         }}</el-tag> {{ step.content === 'true' ? '存在' : '不存在' }}
     </span>
-  <span v-if="step.stepType === 'click'||step.stepType === 'webViewClick'">
+  <span v-if="step.stepType === 'click'||step.stepType === 'webViewClick'||step.stepType === 'pocoClick'">
       <el-tag size="small">点击控件元素</el-tag>
       <el-tag type="info" size="small" style="margin-left: 10px">{{
           step.elements[0]['eleName']
@@ -181,14 +184,14 @@ const summitStep = () => {
       >
       {{ step.content }}
     </span>
-  <span v-if="step.stepType === 'swipe2'">
+  <span v-if="step.stepType === 'swipe2' || step.stepType === 'pocoSwipe'">
       <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
       <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
       >滑动拖拽到</el-tag
       >
       <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
     </span>
-  <span v-if="step.stepType === 'longPress'">
+  <span v-if="step.stepType === 'longPress'||step.stepType === 'pocoLongPress'">
       <el-tag size="small">长按控件元素</el-tag>
       <el-tag
           type="info"
@@ -258,6 +261,18 @@ const summitStep = () => {
     </span>
   <span v-if="step.stepType === 'stepScreen'">
       <el-tag size="small">获取截图</el-tag>
+    </span>
+  <span v-if="step.stepType === 'startPocoDriver'">
+      <el-tag size="small">启动PocoDriver</el-tag>
+    </span>
+  <span v-if="step.stepType === 'closePocoDriver'">
+      <el-tag size="small">关闭PocoDriver</el-tag>
+    </span>
+  <span v-if="step.stepType === 'freezeSource'">
+      <el-tag size="small">冻结控件树</el-tag>
+    </span>
+  <span v-if="step.stepType === 'thawSource'">
+      <el-tag size="small">解冻控件树</el-tag>
     </span>
   <span v-if="step.stepType === 'checkImage'">
       <el-tag size="small">检测</el-tag>

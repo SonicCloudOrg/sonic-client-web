@@ -68,6 +68,61 @@ const delObj = (data) => {
     }
   }
 }
+const switchPocoType = (e) => {
+  switch (e) {
+    case "UNITY_3D":
+    case "UE4":
+      step.value.text = "5001";
+      break;
+    case "COCOS_2DX_JS":
+    case "COCOS_CREATOR":
+    case "EGRET":
+      step.value.text = "5003";
+    case "COCOS_2DX_LUA":
+      step.value.text = "15004";
+      break;
+    case "COCOS_2DX_C_PLUS_1":
+      step.value.text = "18888";
+      break;
+  }
+}
+const pocoTypeList = ref([
+  {
+    name: 'Unity3d',
+    value: 'UNITY_3D',
+    img: 'Unity'
+  },
+  {
+    name: 'Egret',
+    value: 'EGRET',
+    img: 'Egret'
+  },
+  {
+    name: 'UE4',
+    value: 'UE4',
+    img: 'UE4'
+  },
+  {
+    name: 'Cocos2dx-js',
+    value: 'COCOS_2DX_JS',
+    img: 'Cocos2dx'
+  },
+  {
+    name: 'Cocos2dx-lua',
+    value: 'COCOS_2DX_LUA',
+    img: 'Cocos2dx'
+  },
+  {
+    name: 'Cocos2dx-c++',
+    value: 'COCOS_2DX_C_PLUS_1',
+    img: 'Cocos2dx'
+  },
+  {
+    name: 'Cocos-creator',
+    value: 'COCOS_CREATOR',
+    img: 'Cocos2dx'
+  },
+])
 const monkey = ref({
   packageName: "",
   pctNum: 10,
@@ -461,9 +516,42 @@ const androidOptions = ref([
       ]
     },
       {
-        label: "POCO控件(即将开放)",
+        label: "POCO控件",
         value: "pocoEle",
-        disabled: true
+        children: [
+          {
+            value: "startPocoDriver",
+            label: "启动PocoDriver",
+          },
+          {
+            value: "isExistPocoEle",
+            label: "判断控件元素是否存在",
+          },
+          {
+            value: "pocoClick",
+            label: "点击控件元素",
+          },
+          {
+            value: "pocoLongPress",
+            label: "长按控件元素",
+          },
+          {
+            value: "pocoSwipe",
+            label: "拖拽控件元素",
+          },
+          {
+            value: "freezeSource",
+            label: "冻结控件树",
+          },
+          {
+            value: "thawSource",
+            label: "解冻控件树",
+          },
+          {
+            value: "closePocoDriver",
+            label: "关闭PocoDriver",
+          },
+        ]
       }]
   },
   {
@@ -916,6 +1004,72 @@ onMounted(() => {
                       :index="0" :project-id="projectId" type="point" :step="step"/>
       <element-select label="拖拽到" place="请选择坐标控件元素"
                       :index="1" :project-id="projectId" type="point" :step="step"/>
+    </div>
+
+    <div v-if="step.stepType === 'pocoClick'">
+      <element-select label="POCO控件" place="请选择POCO控件元素"
+                      :index="0" :project-id="projectId" type="poco" :step="step"/>
+    </div>
+
+    <div v-if="step.stepType === 'pocoLongPress'">
+      <element-select label="POCO控件" place="请选择POCO控件元素"
+                      :index="0" :project-id="projectId" type="poco" :step="step"/>
+      <el-form-item label="长按时间">
+        <el-input-number
+            v-model="step.content"
+            :min="100"
+            :step="100"
+        ></el-input-number>
+        ms
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'pocoSwipe'">
+      <element-select label="从控件" place="请选择坐标控件元素"
+                      :index="0" :project-id="projectId" type="poco" :step="step"/>
+      <element-select label="拖拽到" place="请选择坐标控件元素"
+                      :index="1" :project-id="projectId" type="poco" :step="step"/>
+    </div>
+
+    <div v-if="step.stepType === 'startPocoDriver'">
+      <el-form-item label="游戏引擎" prop="content" :rules="{
+            required: true,
+            message: '引擎不能为空',
+            trigger: 'change',
+          }">
+        <el-select v-model="step.content" @change="switchPocoType">
+          <el-option
+              v-for="item in pocoTypeList"
+              :key="item.name"
+              :value="item.value"
+              :label="item.name"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="通信端口" prop="text" :rules="{
+            required: true,
+            message: '端口不能为空',
+            trigger: 'change',
+          }">
+        <el-input style="width: 200px;" placeholder="Default connect port" v-model="step.text"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'isExistPocoEle'">
+      <element-select label="POCO控件" place="请选择POCO控件元素"
+                      :index="0" :project-id="projectId" type="poco" :step="step"/>
+      <el-form-item label="存在与否" prop="content" :rules="{
+            required: true,
+            message: '断言不能为空',
+            trigger: 'change',
+          }">
+        <el-select v-model="step.content">
+          <el-option label="存在" value="true"></el-option>
+          <el-option label="不存在" value="false"></el-option>
+        </el-select>
+      </el-form-item>
     </div>
 
     <div v-if="step.stepType === 'openApp'">
