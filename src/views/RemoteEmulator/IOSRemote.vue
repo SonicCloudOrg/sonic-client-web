@@ -1503,7 +1503,7 @@ onMounted(() => {
                             size="mini"
                             type="primary"
                             @click="sendCommand(text.content)"
-                        >{{ $t('androidRemoteTS.send') }}
+                        >{{ $t('androidRemoteTS.code.send') }}
                         </el-button>
                       </div>
                     </el-form>

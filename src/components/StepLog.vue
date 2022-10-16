@@ -119,7 +119,7 @@ const getTag = (status) => {
                           ]"
               ></el-image>
             </div>
-            <span v-html="scope.row.log" v-else></span>
+            <span style="white-space: break-spaces;" v-html="scope.row.log" v-else></span>
           </template>
         </el-table-column>
         <template #append>

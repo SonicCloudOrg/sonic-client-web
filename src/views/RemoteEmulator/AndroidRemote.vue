@@ -2495,7 +2495,7 @@ onMounted(() => {
                       <div class="el-upload__text">{{ $t('androidRemoteTS.code.messageThree') }}
                         <em>{{ $t('devices.detail.uploadImg') }}</em></div>
                       <template #tip>
-                        <div class="el-upload__tip">{{ $t('devices.detail.messageFour') }}</div>
+                        <div class="el-upload__tip">{{ $t('androidRemoteTS.code.messageFour') }}</div>
                       </template>
                     </el-upload>
                   </div>
@@ -2504,11 +2504,11 @@ onMounted(() => {
               <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
-                    <strong>{{ $t('devices.detail.fileTransfer') }}</strong>
+                    <strong>{{ $t('androidRemoteTS.code.fileTransfer') }}</strong>
                   </template>
                   <div style="text-align: center">
                     <el-tabs type="border-card" stretch>
-                      <el-tab-pane :label="$t('devices.detail.upFile')">
+                      <el-tab-pane :label="$t('androidRemoteTS.code.upFile')">
                         <el-upload
                             v-loading="fileLoading"
                             drag
@@ -2519,7 +2519,7 @@ onMounted(() => {
                             :http-request="uploadFile"
                         >
                           <i class="el-icon-upload"></i>
-                          <div class="el-upload__text">{{ $t('devices.detail.messageFive') }}
+                          <div class="el-upload__text">{{ $t('androidRemoteTS.code.messageFive') }}
                             <em>{{ $t('devices.detail.uploadImg') }}</em></div>
                         </el-upload>
                         <div style="display: flex;margin-top: 5px">
@@ -2814,10 +2814,10 @@ onMounted(() => {
                   <template #title>
                     <div style="display: flex; align-items: center;width: 100%;justify-content: space-between;">
                       <strong style="font-size: 15px;color: #909399;margin-left: 10px">{{
-                          'androidRemoteTS.code.UIAutomation.testInfo'
+                          $t('androidRemoteTS.code.UIAutomation.testInfo')
                         }}</strong>
                       <el-button style="margin-right: 10px" type="danger" size="mini" @click="removeCase">
-                        {{ 'androidRemoteTS.code.UIAutomation.clean' }}
+                        {{ $t('androidRemoteTS.code.UIAutomation.clean') }}
                       </el-button>
                     </div>
                   </template>
