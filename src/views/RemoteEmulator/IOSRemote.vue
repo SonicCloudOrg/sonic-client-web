@@ -125,7 +125,6 @@ const screenFps = ref("high")
 const isWebView = ref(true);
 const webViewListDetail = ref([]);
 const iframeUrl = ref('');
-const title = ref('');
 const webViewLoading = ref(false);
 const element = ref({
   id: null,
@@ -585,6 +584,14 @@ const terminalWebsocketOnmessage = (message) => {
 }
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
+    case 'forwardView': {
+      webViewLoading.value = false;
+      ElMessage.success({
+        message: $t('androidRemoteTS.getSuccess'),
+      });
+      webViewListDetail.value = JSON.parse(message.data)['detail'];
+      break;
+    }
     case 'setPaste': {
       ElMessage.success({
         message: $t('IOSRemote.clipboard.SentSuccessfully'),
@@ -2306,7 +2313,7 @@ onMounted(() => {
                     <div>
                       <div style="display: flex;align-items: center;">
                         <img :src="getImg('safari')" width="20"/> <strong style="margin-left: 10px">{{
-                          web['pid'] + "  " + web['name'] + "  " + web['bundleId']
+                          web['pid'] + "   " + web['name'] + "   (" + web['bundleId']+")"
                         }}</strong>
                       </div>
                     </div>
@@ -2327,7 +2334,7 @@ onMounted(() => {
                         </div>
                       </div>
                       <el-button type="primary" size="mini"
-                                 @click="tabWebView(web.port,w.id,(w.title.length > 0 ? w.title : $t('androidRemoteTS.code.webView.Untitled')))">
+                                 @click="tabWebView(w.port,w.id,(w.title.length > 0 ? w.title : $t('androidRemoteTS.code.webView.Untitled')))">
                         {{ $t('androidRemoteTS.code.webView.nowDebug') }}
                       </el-button>
                     </div>
