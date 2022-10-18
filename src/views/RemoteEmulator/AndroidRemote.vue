@@ -3518,17 +3518,6 @@ onMounted(() => {
                   </template>
                 </el-page-header>
               </div>
-              <el-alert type="info" show-icon style="margin-top: 15px" close-text="Get!">
-                <template #title>
-                  <div style="display: flex;align-items: center;">
-                    <span>{{ $t('androidRemoteTS.code.webView.messageInfo') }}</span>
-                    <el-link style="font-size: 13px;margin-left: 5px" type="primary" target="_blank"
-                             href="https://github.com/SonicCloudOrg/sonic-agent/issues/47">
-                      {{ $t('androidRemoteTS.code.webView.here') }}
-                    </el-link>
-                  </div>
-                </template>
-              </el-alert>
               <iframe v-if="!isWebView" allow="clipboard-read;clipboard-write"
                       :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                       :src="iframeUrl">

@@ -62,6 +62,7 @@ import {
 } from '@element-plus/icons';
 import RenderDeviceName from "../../components/RenderDeviceName.vue";
 import {useI18n} from 'vue-i18n'
+
 const {t: $t} = useI18n()
 const {toClipboard} = useClipboard();
 const route = useRoute();
@@ -121,6 +122,10 @@ const title = ref('');
 const uploadLoading = ref(false);
 const location = ref(false);
 const screenFps = ref("high")
+const isWebView = ref(true);
+const webViewListDetail = ref([]);
+const iframeUrl = ref('');
+const webViewLoading = ref(false);
 const element = ref({
   id: null,
   moduleId: 0,
@@ -148,6 +153,30 @@ defineProps({
   lineMousedown: Function,
   lineMouseleave: Function,
 });
+
+const tabWebView = (port, id, transTitle) => {
+  title.value = transTitle;
+  isWebView.value = false;
+  iframeUrl.value = '/chrome/devtools/inspector.html?ws=' + agent.value['host']
+      + ':' + agent.value['port'] + '/websockets/webView/'
+      + agent.value['secretKey'] + '/' + port + '/' + id;
+  nextTick(() => {
+    iFrameHeight.value = document.body.clientHeight - 280;
+  });
+};
+
+const switchIsWebView = () => {
+  isWebView.value = true;
+};
+
+const getWebViewForward = () => {
+  webViewLoading.value = true;
+  websocket.send(
+      JSON.stringify({
+        type: 'forwardView',
+      }),
+  );
+};
 
 /**
  * app列表处理
@@ -555,6 +584,14 @@ const terminalWebsocketOnmessage = (message) => {
 }
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
+    case 'forwardView': {
+      webViewLoading.value = false;
+      ElMessage.success({
+        message: $t('androidRemoteTS.getSuccess'),
+      });
+      webViewListDetail.value = JSON.parse(message.data)['detail'];
+      break;
+    }
     case 'setPaste': {
       ElMessage.success({
         message: $t('IOSRemote.clipboard.SentSuccessfully'),
@@ -1275,8 +1312,8 @@ onMounted(() => {
                           size="mini"
                           @change="switchScreen"
                       >
-                        <el-radio-button label="low">{{$t('androidRemoteTS.low')}}</el-radio-button>
-                        <el-radio-button label="high">{{$t('androidRemoteTS.high')}}</el-radio-button>
+                        <el-radio-button label="low">{{ $t('androidRemoteTS.low') }}</el-radio-button>
+                        <el-radio-button label="high">{{ $t('androidRemoteTS.high') }}</el-radio-button>
                       </el-radio-group>
                     </el-dropdown-menu>
                   </template>
@@ -1592,8 +1629,13 @@ onMounted(() => {
                   <el-input :rows="7" show-word-limit clearable v-model="paste" type="textarea"
                             :placeholder=" $t('IOSRemote.clipboard.inputText') "></el-input>
                   <div style="text-align: center;margin-top: 15px">
-                    <el-button size="mini" type="primary" @click="setPasteboard(paste)">{{ $t('IOSRemote.clipboard.send') }}</el-button>
-                    <el-button size="mini" type="primary" @click="getPasteboard">{{ $t('IOSRemote.clipboard.getText') }}</el-button>
+                    <el-button size="mini" type="primary" @click="setPasteboard(paste)">
+                      {{ $t('IOSRemote.clipboard.send') }}
+                    </el-button>
+                    <el-button size="mini" type="primary" @click="getPasteboard">{{
+                        $t('IOSRemote.clipboard.getText')
+                      }}
+                    </el-button>
                   </div>
                 </el-card>
               </el-col>
@@ -1617,7 +1659,9 @@ onMounted(() => {
                         :http-request="uploadPackage"
                     >
                       <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">{{ $t('IOSRemote.moveIPA') }}<em>{{$t('devices.detail.uploadImg')}}</em></div>
+                      <div class="el-upload__text">{{
+                          $t('IOSRemote.moveIPA')
+                        }}<em>{{ $t('devices.detail.uploadImg') }}</em></div>
                       <template #tip>
                         <div class="el-upload__tip">{{ $t('IOSRemote.onlyIPAFile') }}</div>
                       </template>
@@ -1646,7 +1690,9 @@ onMounted(() => {
                         :http-request="uploadPackage"
                     >
                       <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">{{ $t('IOSRemote.moveIPA') }}<em>{{$t('devices.detail.uploadImg')}}</em></div>
+                      <div class="el-upload__text">{{
+                          $t('IOSRemote.moveIPA')
+                        }}<em>{{ $t('devices.detail.uploadImg') }}</em></div>
                       <template #tip>
                         <div class="el-upload__tip">{{ $t('IOSRemote.onlyIPAFile') }}</div>
                       </template>
@@ -1691,7 +1737,8 @@ onMounted(() => {
                     </div>
                   </template>
                 </el-table-column>
-                <el-table-column width="150" show-overflow-tooltip header-align="center" prop="name" :label="$t('androidRemoteTS.code.appName')">
+                <el-table-column width="150" show-overflow-tooltip header-align="center" prop="name"
+                                 :label="$t('androidRemoteTS.code.appName')">
                 </el-table-column>
                 <el-table-column header-align="center" show-overflow-tooltip prop="bundleId"
                                  :label="$t('androidRemoteTS.code.packagesName')">
@@ -1699,16 +1746,20 @@ onMounted(() => {
                     <div style="cursor: pointer" @click="copy(scope.row.bundleId)">{{ scope.row.bundleId }}</div>
                   </template>
                 </el-table-column>
-                <el-table-column header-align="center" show-overflow-tooltip prop="version" :label="$t('androidRemoteTS.code.version')"
+                <el-table-column header-align="center" show-overflow-tooltip prop="version"
+                                 :label="$t('androidRemoteTS.code.version')"
                                  width="120"></el-table-column>
                 <el-table-column align="center" width="200">
                   <template #header>
                     <el-input v-model="filterAppText" size="mini" :placeholder="$t('androidRemoteTS.code.nameSearch')"/>
                   </template>
                   <template #default="scope">
-                    <el-button size="mini" @click="openApp(scope.row.bundleId)" type="primary">{{ $t('androidRemoteTS.code.open') }}
+                    <el-button size="mini" @click="openApp(scope.row.bundleId)" type="primary">
+                      {{ $t('androidRemoteTS.code.open') }}
                     </el-button>
-                    <el-button size="mini" @click="uninstallApp(scope.row.bundleId)" type="danger">{{ $t('androidRemoteTS.code.unInstall') }}</el-button>
+                    <el-button size="mini" @click="uninstallApp(scope.row.bundleId)" type="danger">
+                      {{ $t('androidRemoteTS.code.unInstall') }}
+                    </el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -1722,21 +1773,26 @@ onMounted(() => {
             </el-card>
           </el-tab-pane>
           <el-tab-pane :label="$t('androidRemoteTS.code.packet')" name="proxy">
-            <el-button size="small" type="success" @click="startProxy">{{ $t('androidRemoteTS.code.startPacket') }}</el-button>
-            <el-button size="small" @click="installCert">{{ $t('IOSRemote.openWeb')}}</el-button>
+            <el-button size="small" type="success" @click="startProxy">{{
+                $t('androidRemoteTS.code.startPacket')
+              }}
+            </el-button>
+            <el-button size="small" @click="installCert">{{ $t('IOSRemote.openWeb') }}</el-button>
             <strong style="color: #545c64;font-size: 14px;margin-left: 6px">
               {{ $t('IOSRemote.web.openInput') }} <span
                 style="color: #409EFF">{{ 'http://' + agent['host'] + ':' + agent['port'] + '/assets/download' }}</span>
-              {{ $t('androidRemoteTS.code.downloadCertificate')}}</strong>
+              {{ $t('androidRemoteTS.code.downloadCertificate') }}</strong>
             <strong v-if="proxyConnPort!==0"
-                    style="color: #67c23a;float: right;margin-top: 5px">{{ $t('androidRemoteTS.code.proxyConnection')}}：{{
+                    style="color: #67c23a;float: right;margin-top: 5px">{{
+                $t('androidRemoteTS.code.proxyConnection')
+              }}：{{
                 agent['host'] + ':' + proxyConnPort
               }}</strong>
             <iframe v-if="proxyWebPort!==0" allow="clipboard-read;clipboard-write"
                     :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
                     :src="'http://'+agent['host']+':'+proxyWebPort"></iframe>
             <el-card v-else style="margin-top:20px">
-              <template #header><strong>{{ $t('androidRemoteTS.code.useTeaching')}}</strong></template>
+              <template #header><strong>{{ $t('androidRemoteTS.code.useTeaching') }}</strong></template>
               <div style="height: 300px">
                 <el-steps direction="vertical" :active="3">
                   <el-step :title="$t('androidRemoteTS.code.connectWifi')" status="process"
@@ -1848,14 +1904,23 @@ onMounted(() => {
                 <el-collapse-item>
                   <template #title>
                     <div style="display: flex; align-items: center;width: 100%;justify-content: space-between;">
-                      <strong style="font-size: 15px;color: #909399;margin-left: 10px">{{ $t('androidRemoteTS.code.UIAutomation.testInfo') }}</strong>
-                      <el-button style="margin-right: 10px" type="danger" size="mini" @click="removeCase">{{ $t('androidRemoteTS.code.UIAutomation.clean') }}
+                      <strong style="font-size: 15px;color: #909399;margin-left: 10px">{{
+                          $t('androidRemoteTS.code.UIAutomation.testInfo')
+                        }}</strong>
+                      <el-button style="margin-right: 10px" type="danger" size="mini" @click="removeCase">
+                        {{ $t('androidRemoteTS.code.UIAutomation.clean') }}
                       </el-button>
                     </div>
                   </template>
                   <el-descriptions :column="2" size="medium" border>
-                    <el-descriptions-item width="100px" :label="$t('projectIndexTS.page.caseId')">{{ testCase['id'] }}</el-descriptions-item>
-                    <el-descriptions-item width="100px" :label="$t('projectIndexTS.page.caseName')">{{ testCase.name }}</el-descriptions-item>
+                    <el-descriptions-item width="100px" :label="$t('projectIndexTS.page.caseId')">{{
+                        testCase['id']
+                      }}
+                    </el-descriptions-item>
+                    <el-descriptions-item width="100px" :label="$t('projectIndexTS.page.caseName')">{{
+                        testCase.name
+                      }}
+                    </el-descriptions-item>
                     <el-descriptions-item :label="$t('androidRemoteTS.code.UIAutomation.fatherPlayed')">
                       <div style=" display: flex;align-items: center;">
                         <el-avatar
@@ -1883,10 +1948,22 @@ onMounted(() => {
                     <el-descriptions-item :label="$t('stepListViewTS.module')">
                       {{ testCase['modulesDTO'] !== null ? testCase['modulesDTO'].name : "" }}
                     </el-descriptions-item>
-                    <el-descriptions-item :label="$t('stepListViewTS.versionName')">{{ testCase['version'] }}</el-descriptions-item>
-                    <el-descriptions-item :label="$t('stepListViewTS.designer')">{{ testCase['designer'] }}</el-descriptions-item>
-                    <el-descriptions-item :label="$t('stepListViewTS.last')">{{ testCase['editTime'] }}</el-descriptions-item>
-                    <el-descriptions-item :label="$t('stepListViewTS.testMessage')">{{ testCase['des'] }}</el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.versionName')">{{
+                        testCase['version']
+                      }}
+                    </el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.designer')">{{
+                        testCase['designer']
+                      }}
+                    </el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.last')">{{
+                        testCase['editTime']
+                      }}
+                    </el-descriptions-item>
+                    <el-descriptions-item :label="$t('stepListViewTS.testMessage')">{{
+                        testCase['des']
+                      }}
+                    </el-descriptions-item>
                   </el-descriptions>
                 </el-collapse-item>
               </el-collapse>
@@ -1906,7 +1983,8 @@ onMounted(() => {
             </div>
             <div v-else>
               <span style="color: #909399;margin-right: 10px">{{ $t('androidRemoteTS.code.associatedProject') }}</span>
-              <el-select size="mini" v-model="project" value-key="id" :placeholder="$t('androidRemoteTS.code.chooseProject')">
+              <el-select size="mini" v-model="project" value-key="id"
+                         :placeholder="$t('androidRemoteTS.code.chooseProject')">
                 <el-option
                     v-for="item in store.state.projectList"
                     :key="item.id"
@@ -2047,7 +2125,8 @@ onMounted(() => {
                         </el-button
                         >
                       </div>
-                      <el-alert style="margin-bottom: 10px" v-else :title="$t('androidRemoteTS.code.titleMessage')" type="info" show-icon
+                      <el-alert style="margin-bottom: 10px" v-else :title="$t('androidRemoteTS.code.titleMessage')"
+                                type="info" show-icon
                                 close-text="Get!"/>
                       <el-scrollbar
                           style="height: 100%"
@@ -2081,7 +2160,8 @@ onMounted(() => {
                             </el-icon>
                           </el-form-item>
                           <el-form-item :label="$t('IOSRemote.predicate')">
-                            <el-table stripe :empty-text="$t('IOSRemote.noRecommend')" border :data="findBestNS(elementDetail)"
+                            <el-table stripe :empty-text="$t('IOSRemote.noRecommend')" border
+                                      :data="findBestNS(elementDetail)"
                                       :show-header="false">
                               <el-table-column>
                                 <template #default="scope">
@@ -2096,7 +2176,8 @@ onMounted(() => {
                             </el-table>
                           </el-form-item>
                           <el-form-item :label="$t('androidRemoteTS.code.xpath')">
-                            <el-table stripe :empty-text="$t('androidRemoteTS.code.xpathNull')" border :data="findBestXpath(elementDetail)"
+                            <el-table stripe :empty-text="$t('androidRemoteTS.code.xpathNull')" border
+                                      :data="findBestXpath(elementDetail)"
                                       :show-header="false">
                               <el-table-column>
                                 <template #default="scope">
@@ -2200,6 +2281,83 @@ onMounted(() => {
                 </template>
               </el-result>
             </el-card>
+          </el-tab-pane>
+          <el-tab-pane :label="$t('androidRemoteTS.code.webView.webDebug')" name="webview">
+            <div v-if="isWebView">
+              <div v-if="webViewListDetail.length==0">
+                <el-result icon="info" :title="$t('androidRemoteTS.code.hintText')"
+                           :subTitle="$t('androidRemoteTS.code.webView.err')">
+                  <template #extra>
+                    <el-button
+                        type="primary"
+                        size="mini"
+                        :loading="webViewLoading"
+                        @click="getWebViewForward"
+                    >
+                      <el-icon :size="12" style="vertical-align: middle;">
+                        <Search/>
+                      </el-icon>
+                      {{ $t('androidRemoteTS.code.webView.getWeb') }}
+                    </el-button
+                    >
+                  </template>
+                </el-result>
+              </div>
+              <div v-else>
+                <el-button @click="getWebViewForward" :loading="webViewLoading" type="primary" size="mini">
+                  {{ $t('androidRemoteTS.code.webView.againGetWeb') }}
+                </el-button>
+                <el-card style="margin-top: 15px" v-for="web in webViewListDetail" class="device-card"
+                         :body-style="{ padding: '0px 10px 10px 10px' }">
+                  <template #header>
+                    <div>
+                      <div style="display: flex;align-items: center;">
+                        <img :src="getImg('safari')" width="20"/> <strong style="margin-left: 10px">{{
+                          web['pid'] + "   " + web['name'] + "   (" + web['bundleId']+")"
+                        }}</strong>
+                      </div>
+                    </div>
+                  </template>
+                  <el-card :body-style="{ padding: '15px' }" v-for="w in web['pages']"
+                           style="margin-top: 10px; word-wrap: break-word;overflow: hidden;">
+                    <div style="display: flex;align-items: center;justify-content: space-between">
+                      <div>
+                        <div style="display: flex;align-items: center;">
+                          <img :src="w.favicon" v-if="w.favicon" width="15" style="margin-right: 5px"/>
+                          <strong>{{
+                              w.title.length > 0 ? w.title : $t('androidRemoteTS.code.webView.Untitled')
+                            }}</strong>
+                        </div>
+                        <div style="color: #909399">{{
+                            w.url.length > 50 ? w.url.substring(0, 50) + '...' : w.url
+                          }}
+                        </div>
+                      </div>
+                      <el-button type="primary" size="mini"
+                                 @click="tabWebView(w.port,w.id,(w.title.length > 0 ? w.title : $t('androidRemoteTS.code.webView.Untitled')))">
+                        {{ $t('androidRemoteTS.code.webView.nowDebug') }}
+                      </el-button>
+                    </div>
+                  </el-card>
+                </el-card>
+              </div>
+            </div>
+            <div v-else>
+              <div style="display: flex;align-items: center;">
+                <el-page-header icon="el-icon-arrow-left" @back="switchIsWebView">
+                  <template #title>
+                    <span style="color: #606266">{{ $t('androidRemoteTS.code.webView.return') }}</span>
+                  </template>
+                  <template #content>
+                    {{ $t('androidRemoteTS.code.webView.nowWeb') }}：<strong>{{ title }}</strong>
+                  </template>
+                </el-page-header>
+              </div>
+              <iframe v-if="!isWebView" allow="clipboard-read;clipboard-write"
+                      :style="'border:1px solid #C0C4CC;;width: 100%;height: '+iFrameHeight+'px;margin-top:15px'"
+                      :src="iframeUrl">
+              </iframe>
+            </div>
           </el-tab-pane>
         </el-tabs>
       </el-col>
