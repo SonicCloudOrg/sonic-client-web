@@ -247,6 +247,9 @@ const summitStep = () => {
         step.content
       }}</el-tag>
   </span>
+  <span v-if="step.stepType === 'setTheRealPositionOfTheWindow'">
+      <el-tag type="warning" size="small">设置偏移量</el-tag>
+    </span>
   <span v-if="step.stepType === 'assertEquals'">
       <el-tag type="warning" size="small">断言验证(相等)</el-tag>
       真实值：{{ step.text }} 期望值：{{ step.content }}

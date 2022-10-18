@@ -236,6 +236,12 @@ const removeEmpty = (data) => {
     }
   }
 }
+const offsets = ref({
+  offsetWidth: 0,
+  offsetHeight: 0,
+  windowWidth: 0,
+  windowHeight: 0
+})
 const emit = defineEmits(['flush']);
 const summitStep = () => {
   stepForm['value'].validate((valid) => {
@@ -244,6 +250,9 @@ const summitStep = () => {
         removeEmpty(activityList.value)
         step.value.text = JSON.stringify(activityList.value);
         step.value.content = JSON.stringify(monkey.value);
+      }
+      if (step.value.stepType === 'setTheRealPositionOfTheWindow') {
+        step.value.content = JSON.stringify(offsets.value);
       }
       if (step.value.stepType === 'runScript') {
         if (step.value.text.length === 0) {
@@ -303,6 +312,9 @@ const getStepInfo = (id) => {
       } else {
         step.value.content = parseInt(step.value.content);
       }
+    }
+    if (step.value.stepType === 'setTheRealPositionOfTheWindow') {
+      offsets.value = JSON.parse(step.value.content)
     }
     if (step.value.stepType === 'monkey') {
       monkey.value = JSON.parse(step.value.content);
@@ -522,6 +534,10 @@ const androidOptions = ref([
           {
             value: "startPocoDriver",
             label: "启动PocoDriver",
+          },
+          {
+            value: "setTheRealPositionOfTheWindow",
+            label: "设置偏移量",
           },
           {
             value: "isExistPocoEle",
@@ -1053,6 +1069,49 @@ onMounted(() => {
             trigger: 'change',
           }">
         <el-input style="width: 200px;" placeholder="Default connect port" v-model="step.text"
+        ></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'setTheRealPositionOfTheWindow'">
+      <el-form-item label="offsetWidth" label-width="120" :rules="{
+            required: true,
+            message: 'offsetWidth不能为空',
+            trigger: 'blur',
+          }">
+        <el-input
+            v-model="offsets.offsetWidth"
+            placeholder="请输入offsetWidth"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="offsetHeight" label-width="120" :rules="{
+            required: true,
+            message: 'offsetHeight不能为空',
+            trigger: 'blur',
+          }">
+        <el-input
+            v-model="offsets.offsetHeight"
+            placeholder="请输入offsetHeight"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="windowWidth" label-width="120" :rules="{
+            required: true,
+            message: 'windowWidth不能为空',
+            trigger: 'blur',
+          }">
+        <el-input
+            v-model="offsets.windowWidth"
+            placeholder="请输入windowWidth"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="windowHeight" label-width="120" :rules="{
+            required: true,
+            message: 'windowHeight不能为空',
+            trigger: 'blur',
+          }">
+        <el-input
+            v-model="offsets.windowHeight"
+            placeholder="请输入windowHeight"
         ></el-input>
       </el-form-item>
     </div>
