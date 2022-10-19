@@ -3,11 +3,11 @@
  */
 const robot = {
     robotType: 'Robot Type',
-    robotTypePlaceholder: '请选择机器人类型',
+    robotTypePlaceholder: 'Please select the robot type',
     robotToken: 'WebHook',
-    robotTokenPlaceholder: '请输入群机器人的WebHook',
+    robotTokenPlaceholder: 'Please enter the WebHook of the group robot',
     robotSecret: 'Secret',
-    robotSecretPlaceholder: '（可选）请输入群机器人的密钥'
+    robotSecretPlaceholder: '(Optional) Please enter the key of the group robot'
 }
 const agent = {
     newAgent: "New Agent",
@@ -24,8 +24,8 @@ const agent = {
     shutdown: 'Shutdown',
     edit: {
         name: 'Name',
-        highTemp: "高温值",
-        highTempTime: "高温超时",
+        highTemp: "High temperature value",
+        highTempTime: "High temperature timeout",
         rule: 'Agent name cannot be empty',
         namePlaceholder: 'Please enter the Agent name'
     }
@@ -156,8 +156,8 @@ const common = {
     null: 'Null',
     delete: 'Delete',
     edit: 'Edit',
-    operate: "操作",
-    copy: "复制",
+    operate: "Opertation",
+    copy: "Copy",
 }
 // 路由
 const routes = {
