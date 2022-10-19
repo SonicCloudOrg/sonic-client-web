@@ -199,7 +199,7 @@ const handleStateUpdate = (viewUpdate) => {
 }
 
 .v-codemirror .ͼ1 .cm-scroller {
-  font-family: 'Menlo, Monaco, Consolas,"Courier New", monospace';
+  font-family: Consolas, 'Courier New', monospace;
 }
 
 .footer {
