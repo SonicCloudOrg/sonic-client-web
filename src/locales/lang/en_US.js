@@ -92,14 +92,14 @@ const devices = {
     avgTem: 'Current average battery temperature: ',
     hint: 'Set Prompt',
     adTemperature: {
-        temperature: "当设备温度≥",
-        height: "高温值",
-        onlyAd: "时（仅安卓），会通知机器人告警。",
-        then: "当",
-        timeout: "高温超时",
-        continuedTime: "时间内温度持续≥",
-        onlyAdNotice: "时（仅安卓），会通知机器人并",
-        shutdown: "关机"
+        temperature: "When the device temperature is ≥",
+        height: "High temperature value",
+        onlyAd: "the robot will be notified of the alarm (Android only)." ,
+        then: "then",
+        timeout: "High temperature timeout",
+        continuedTime: "Temperature continues for ≥",
+        onlyAdNotice: "the robot will be notified(Android only) and",
+        shutdown: "shutdown"
     }
 }
 // 布局相关
