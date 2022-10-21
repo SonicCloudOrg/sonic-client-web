@@ -145,7 +145,6 @@ const pocoTypeList = ref([
     img: 'Cocos2dx'
   },
 ])
-const isAudoInit = ref('1')
 let imgWidth = 0;
 let imgHeight = 0;
 // 旋转状态 // 0 90 180 270
@@ -515,7 +514,7 @@ const openSocket = (host, port, key, udId) => {
   if ('WebSocket' in window) {
     //
     websocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/android/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken') + '/' + isAudoInit.value,
+        'ws://' + host + ':' + port + '/websockets/android/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
     );
     //
     __Scrcpy = new Scrcpy({
@@ -539,15 +538,8 @@ const openSocket = (host, port, key, udId) => {
   terminalWebsocket.onmessage = terminalWebsocketOnmessage;
   terminalWebsocket.onclose = (e) => {
   };
-  if (isAudoInit.value === '1') {
-    driverLoading.value = true
-  }
+  driverLoading.value = true
 };
-const changeAutoInit = (t) => {
-  if (t) {
-    localStorage.setItem('SonicAndroidIsAutoInit', t);
-  }
-}
 const sendLogcat = () => {
   terminalWebsocket.send(
       JSON.stringify({
@@ -1697,9 +1689,6 @@ const resetAudioPlayer = () => {
     message: $t('androidRemoteTS.audioSuccess'),
   });
 };
-onBeforeMount(() => {
-  isAudoInit.value = localStorage.getItem('SonicAndroidIsAutoInit') ? localStorage.getItem('SonicAndroidIsAutoInit') : '1'
-})
 onMounted(() => {
   if (store.state.project.id) {
     project.value = store.state.project;
@@ -2457,17 +2446,14 @@ onMounted(() => {
                     <strong>{{ $t('projectIndexTS.code.other') }}</strong>
                   </template>
                   <div style="text-align: center">
-                    <div style="margin: 8px 0px">
+                    <div style="margin: 10px 0px">
                       <el-button size="mini" type="primary" :disabled="isDriverFinish" :loading="driverLoading"
                                  @click="openDriver">{{ $t('androidRemoteTS.code.UIAutomator2ServerInit') }}
                       </el-button>
-                      <div style="margin-top: 10px">
-                        <el-switch class="refresh" active-value="1"
-                                   inactive-value="0" @change="changeAutoInit"
-                                   size="mini"
-                                   :active-text="$t('androidRemoteTS.code.automaticInitialization')"
-                                   active-color="#13ce66"
-                                   v-model="isAudoInit"/>
+                      <div style="margin-top: 8px">Status:
+                        <span :style="isDriverFinish?'color:#67C23A':'color:#606266'">
+                          {{ isDriverFinish ? "Connected" : "Diconnected" }}
+                      </span>
                       </div>
                     </div>
                   </div>
