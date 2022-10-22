@@ -903,7 +903,40 @@ const getCurLocation = () => {
     );
     y = (directionStatus.value == 180) ? imgHeight - _y : _y;
   }
-  // console.log('xy', { x, y });
+  return ({
+    x, y,
+  });
+};
+const getCurLocationForAdb = () => {
+  let x, y;
+  let _x, _y;
+  const canvas = touchWrapper;
+  const rect = canvas.getBoundingClientRect();
+  if (directionStatus.value != 0 && directionStatus.value != 180) { // 左右旋转
+    _x = parseInt(
+        (event.clientY - rect.top) *
+        (imgWidth / canvas.clientHeight),
+    );
+    y = (directionStatus.value == 90) ? _x : imgWidth - _x;
+    //
+    _y = parseInt(
+        (event.clientX - rect.left) *
+        (imgHeight / canvas.clientWidth),
+    );
+    x = (directionStatus.value == 270) ? imgHeight - _y : _y;
+  } else {
+    _x = parseInt(
+        (event.clientX - rect.left) *
+        (imgWidth / canvas.clientWidth),
+    );
+    x = (directionStatus.value == 180) ? imgWidth - _x : _x;
+    //
+    _y = parseInt(
+        (event.clientY - rect.top) *
+        (imgHeight / canvas.clientHeight),
+    );
+    y = (directionStatus.value == 180) ? imgHeight - _y : _y;
+  }
   return ({
     x, y,
   });
@@ -922,18 +955,7 @@ const mouseup = (event) => {
   } else {
     clearInterval(loop);
     time = 0;
-    const canvas = touchWrapper;
-    const rect = canvas.getBoundingClientRect();
-    let x;
-    let y;
-    x = parseInt(
-        (event.clientX - rect.left) *
-        (imgWidth / canvas.clientWidth),
-    );
-    y = parseInt(
-        (event.clientY - rect.top) *
-        (imgHeight / canvas.clientHeight),
-    );
+    const {x, y} = getCurLocationForAdb();
     if (moveX === x && moveY === y) {
       if (!isLongPress) {
         websocket.send(
@@ -974,8 +996,6 @@ const mouseleave = () => {
   }
 };
 const mousedown = (event) => {
-  const canvas = touchWrapper;
-  const rect = canvas.getBoundingClientRect();
   if (!isFixTouch) { // 安卓高版本
     const {x, y} = getCurLocation();
     isPress = true;
@@ -986,14 +1006,9 @@ const mousedown = (event) => {
         }),
     );
   } else {
-    moveX = parseInt(
-        (event.clientX - rect.left) *
-        (imgWidth / canvas.clientWidth),
-    );
-    moveY = parseInt(
-        (event.clientY - rect.top) *
-        (imgHeight / canvas.clientHeight),
-    );
+    const {x, y} = getCurLocationForAdb();
+    moveX = x;
+    moveY = y;
     clearInterval(loop);
     loop = setInterval(() => {
       time += 500;
