@@ -715,7 +715,7 @@ const websocketOnmessage = (message) => {
           message: $t('androidRemoteTS.getPocoSuccess'),
         });
         pocoData.value = []
-        pocoData.value.push(result)
+        pocoData.value.push(JSON.parse(result).result)
         setPocoTreeId(pocoData.value, treeId)
         currentPocoId.value = [1];
       } else {
