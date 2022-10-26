@@ -163,7 +163,7 @@ onMounted(() => {
       <el-button size="small" type="primary" @click="summit">{{ $t('modulesTS.sure') }}</el-button>
     </div>
   </el-dialog>
-  <el-dialog v-model="roleResourcesDialogVisible" :title="$t('settingIndexTS.rights')" width="70%">
+  <el-dialog v-model="roleResourcesDialogVisible" :title="$t('settingIndexTS.center.rights')" width="70%">
 
     <div v-for="parent in roleResourcesList" :key="parent.id">
         {{parent.desc}}
