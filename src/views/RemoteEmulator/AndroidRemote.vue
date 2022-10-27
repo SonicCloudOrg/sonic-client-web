@@ -2551,7 +2551,7 @@ onMounted(() => {
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane :label="$t('androidRemoteTS.code.filePath')" name="apps">
+          <el-tab-pane :label="$t('androidRemoteTS.code.app')" name="apps">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-card shadow="hover">
