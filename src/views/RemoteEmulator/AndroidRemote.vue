@@ -145,7 +145,6 @@ const pocoTypeList = ref([
     img: 'Cocos2dx'
   },
 ])
-const isAudoInit = ref('1')
 let imgWidth = 0;
 let imgHeight = 0;
 // 旋转状态 // 0 90 180 270
@@ -515,7 +514,7 @@ const openSocket = (host, port, key, udId) => {
   if ('WebSocket' in window) {
     //
     websocket = new WebSocket(
-        'ws://' + host + ':' + port + '/websockets/android/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken') + '/' + isAudoInit.value,
+        'ws://' + host + ':' + port + '/websockets/android/' + key + '/' + udId + '/' + localStorage.getItem('SonicToken'),
     );
     //
     __Scrcpy = new Scrcpy({
@@ -539,15 +538,8 @@ const openSocket = (host, port, key, udId) => {
   terminalWebsocket.onmessage = terminalWebsocketOnmessage;
   terminalWebsocket.onclose = (e) => {
   };
-  if (isAudoInit.value === '1') {
-    driverLoading.value = true
-  }
+  driverLoading.value = true
 };
-const changeAutoInit = (t) => {
-  if (t) {
-    localStorage.setItem('SonicAndroidIsAutoInit', t);
-  }
-}
 const sendLogcat = () => {
   terminalWebsocket.send(
       JSON.stringify({
@@ -723,7 +715,7 @@ const websocketOnmessage = (message) => {
           message: $t('androidRemoteTS.getPocoSuccess'),
         });
         pocoData.value = []
-        pocoData.value.push(result)
+        pocoData.value.push(JSON.parse(result).result)
         setPocoTreeId(pocoData.value, treeId)
         currentPocoId.value = [1];
       } else {
@@ -911,7 +903,40 @@ const getCurLocation = () => {
     );
     y = (directionStatus.value == 180) ? imgHeight - _y : _y;
   }
-  // console.log('xy', { x, y });
+  return ({
+    x, y,
+  });
+};
+const getCurLocationForAdb = () => {
+  let x, y;
+  let _x, _y;
+  const canvas = touchWrapper;
+  const rect = canvas.getBoundingClientRect();
+  if (directionStatus.value != 0 && directionStatus.value != 180) { // 左右旋转
+    _x = parseInt(
+        (event.clientY - rect.top) *
+        (imgWidth / canvas.clientHeight),
+    );
+    y = (directionStatus.value == 90) ? _x : imgWidth - _x;
+    //
+    _y = parseInt(
+        (event.clientX - rect.left) *
+        (imgHeight / canvas.clientWidth),
+    );
+    x = (directionStatus.value == 270) ? imgHeight - _y : _y;
+  } else {
+    _x = parseInt(
+        (event.clientX - rect.left) *
+        (imgWidth / canvas.clientWidth),
+    );
+    x = (directionStatus.value == 180) ? imgWidth - _x : _x;
+    //
+    _y = parseInt(
+        (event.clientY - rect.top) *
+        (imgHeight / canvas.clientHeight),
+    );
+    y = (directionStatus.value == 180) ? imgHeight - _y : _y;
+  }
   return ({
     x, y,
   });
@@ -930,18 +955,7 @@ const mouseup = (event) => {
   } else {
     clearInterval(loop);
     time = 0;
-    const canvas = touchWrapper;
-    const rect = canvas.getBoundingClientRect();
-    let x;
-    let y;
-    x = parseInt(
-        (event.clientX - rect.left) *
-        (imgWidth / canvas.clientWidth),
-    );
-    y = parseInt(
-        (event.clientY - rect.top) *
-        (imgHeight / canvas.clientHeight),
-    );
+    const {x, y} = getCurLocationForAdb();
     if (moveX === x && moveY === y) {
       if (!isLongPress) {
         websocket.send(
@@ -982,8 +996,6 @@ const mouseleave = () => {
   }
 };
 const mousedown = (event) => {
-  const canvas = touchWrapper;
-  const rect = canvas.getBoundingClientRect();
   if (!isFixTouch) { // 安卓高版本
     const {x, y} = getCurLocation();
     isPress = true;
@@ -994,14 +1006,9 @@ const mousedown = (event) => {
         }),
     );
   } else {
-    moveX = parseInt(
-        (event.clientX - rect.left) *
-        (imgWidth / canvas.clientWidth),
-    );
-    moveY = parseInt(
-        (event.clientY - rect.top) *
-        (imgHeight / canvas.clientHeight),
-    );
+    const {x, y} = getCurLocationForAdb();
+    moveX = x;
+    moveY = y;
     clearInterval(loop);
     loop = setInterval(() => {
       time += 500;
@@ -1697,9 +1704,6 @@ const resetAudioPlayer = () => {
     message: $t('androidRemoteTS.audioSuccess'),
   });
 };
-onBeforeMount(() => {
-  isAudoInit.value = localStorage.getItem('SonicAndroidIsAutoInit') ? localStorage.getItem('SonicAndroidIsAutoInit') : '1'
-})
 onMounted(() => {
   if (store.state.project.id) {
     project.value = store.state.project;
@@ -2457,17 +2461,14 @@ onMounted(() => {
                     <strong>{{ $t('projectIndexTS.code.other') }}</strong>
                   </template>
                   <div style="text-align: center">
-                    <div style="margin: 8px 0px">
+                    <div style="margin: 10px 0px">
                       <el-button size="mini" type="primary" :disabled="isDriverFinish" :loading="driverLoading"
                                  @click="openDriver">{{ $t('androidRemoteTS.code.UIAutomator2ServerInit') }}
                       </el-button>
-                      <div style="margin-top: 10px">
-                        <el-switch class="refresh" active-value="1"
-                                   inactive-value="0" @change="changeAutoInit"
-                                   size="mini"
-                                   :active-text="$t('androidRemoteTS.code.automaticInitialization')"
-                                   active-color="#13ce66"
-                                   v-model="isAudoInit"/>
+                      <div style="margin-top: 8px">Status:
+                        <span :style="isDriverFinish?'color:#67C23A':'color:#606266'">
+                          {{ isDriverFinish ? "Connected" : "Diconnected" }}
+                      </span>
                       </div>
                     </div>
                   </div>
@@ -2550,7 +2551,7 @@ onMounted(() => {
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane :label="$t('androidRemoteTS.code.filePath')" name="apps">
+          <el-tab-pane :label="$t('androidRemoteTS.code.app')" name="apps">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-card shadow="hover">
