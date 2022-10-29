@@ -235,7 +235,7 @@ const switchTabs = (e) => {
     }
   }
   if (e.props.name === 'terminal') {
-    terminalHeight.value = document.getElementById('pressKey').offsetTop - 200;
+    terminalHeight.value = document.getElementById('pressKey').offsetTop - 150;
   }
   if (e.props.name === 'webview') {
     if (webViewListDetail.value.length === 0) {
@@ -267,7 +267,7 @@ const tabWebView = (port, id, transTitle) => {
       + ':' + agent.value['port'] + '/websockets/webView/'
       + agent.value['secretKey'] + '/' + port + '/' + id;
   nextTick(() => {
-    iFrameHeight.value = document.body.clientHeight - 280;
+    iFrameHeight.value = document.body.clientHeight - 150;
   });
 };
 const saveEle = () => {
@@ -639,7 +639,6 @@ const terminalWebsocketOnmessage = (message) => {
         message: $t('androidRemoteTS.systemException'),
       });
       close();
-      router.go(-1);
       break;
   }
 };
@@ -700,7 +699,6 @@ const screenWebsocketOnmessage = (message) => {
           message: $t('androidRemoteTS.systemException'),
         });
         close();
-        router.go(-1);
         break;
     }
   }
@@ -729,7 +727,7 @@ const websocketOnmessage = (message) => {
       proxyWebPort.value = JSON.parse(message.data).webPort;
       proxyConnPort.value = JSON.parse(message.data).port;
       nextTick(() => {
-        iFrameHeight.value = document.body.clientHeight - 280;
+        iFrameHeight.value = document.body.clientHeight - 150;
       });
       break;
     }
@@ -1631,6 +1629,7 @@ const close = () => {
   if (audioPlayer !== null) {
     destroyAudio();
   }
+  window.close()
 };
 onBeforeUnmount(() => {
   close();
@@ -1704,9 +1703,17 @@ const resetAudioPlayer = () => {
     message: $t('androidRemoteTS.audioSuccess'),
   });
 };
+const getProjectList = () => {
+  axios
+      .get("/controller/projects/list").then((resp) => {
+    store.commit("saveProjectList", resp.data);
+  })
+}
 onMounted(() => {
   if (store.state.project.id) {
     project.value = store.state.project;
+  } else {
+    getProjectList()
   }
   getDeviceById(route.params.deviceId);
   store.commit('autoChangeCollapse');
@@ -1760,6 +1767,10 @@ onMounted(() => {
     <element-update v-if="dialogElement" :project-id="project['id']"
                     :element-id="0" :element-obj="element" @flush="dialogElement = false"/>
   </el-dialog>
+  <el-page-header
+      @back="close"
+      :content="$t('routes.remoteControl')"
+      style="margin-top: 15px;margin-left: 20px"/>
   <div style="padding: 20px">
     <el-row
         :gutter="24"
