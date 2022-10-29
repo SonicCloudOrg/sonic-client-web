@@ -161,7 +161,7 @@ const tabWebView = (port, id, transTitle) => {
       + ':' + agent.value['port'] + '/websockets/webView/'
       + agent.value['secretKey'] + '/' + port + '/' + id;
   nextTick(() => {
-    iFrameHeight.value = document.body.clientHeight - 280;
+    iFrameHeight.value = document.body.clientHeight - 180;
   });
 };
 
@@ -622,7 +622,7 @@ const websocketOnmessage = (message) => {
       proxyWebPort.value = JSON.parse(message.data).webPort
       proxyConnPort.value = JSON.parse(message.data).port
       nextTick(() => {
-        iFrameHeight.value = document.body.clientHeight - 280;
+        iFrameHeight.value = document.body.clientHeight - 180;
       });
       break;
     }
@@ -706,7 +706,6 @@ const websocketOnmessage = (message) => {
         message: $t('androidRemoteTS.systemException'),
       });
       close();
-      router.go(-1);
       break;
     }
   }
@@ -1083,6 +1082,7 @@ const close = () => {
     terminalWebsocket.close();
     terminalWebsocket = null;
   }
+  window.close()
 };
 onBeforeUnmount(() => {
   close();
@@ -1111,10 +1111,17 @@ const getDeviceById = (id) => {
     }
   });
 };
-
+const getProjectList = () => {
+  axios
+      .get("/controller/projects/list").then((resp) => {
+    store.commit("saveProjectList", resp.data);
+  })
+}
 onMounted(() => {
   if (store.state.project.id) {
     project.value = store.state.project;
+  } else {
+    getProjectList()
   }
   getDeviceById(route.params.deviceId);
   store.commit('autoChangeCollapse');
@@ -1169,12 +1176,10 @@ onMounted(() => {
                     :element-id="0" :element-obj="element" @flush="dialogElement = false"/>
   </el-dialog>
   <el-page-header
-      @back="router.go(-1)"
+      @back="close"
       :content="$t('routes.remoteControl')"
-      style="margin-bottom: 20px"
-  >
-  </el-page-header>
-  <el-card shadow="never">
+      style="margin-top: 15px;margin-left: 20px"/>
+  <div style="padding: 20px">
     <el-row
         :gutter="24"
         @mouseup="lineMouseup"
@@ -2313,7 +2318,7 @@ onMounted(() => {
                     <div>
                       <div style="display: flex;align-items: center;">
                         <img :src="getImg('safari')" width="20"/> <strong style="margin-left: 10px">{{
-                          web['pid'] + "   " + web['name'] + "   (" + web['bundleId']+")"
+                          web['pid'] + "   " + web['name'] + "   (" + web['bundleId'] + ")"
                         }}</strong>
                       </div>
                     </div>
@@ -2362,7 +2367,7 @@ onMounted(() => {
         </el-tabs>
       </el-col>
     </el-row>
-  </el-card>
+  </div>
 </template>
 <style scoped lang="less">
 #iOSpressKey {
@@ -2409,7 +2414,7 @@ onMounted(() => {
   text-align: center;
   position: relative;
   cursor: n-resize;
-  margin: 1em calc(var(--el-card-padding) - 4px);
+  margin: 1em calc(16px);
 
   &::after {
     content: '';
