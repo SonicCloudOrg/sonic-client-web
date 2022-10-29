@@ -12,6 +12,16 @@ const getRoutes = () => [
         redirect: '/Index',
     },
     {
+        path: '/AndroidRemote/:deviceId(\\d+)',
+        component: () => import('../views/RemoteEmulator/index.vue'),
+        meta: {title: $tc('routes.remoteControl')},
+    },
+    {
+        path: '/IOSRemote/:deviceId(\\d+)',
+        component: () => import('../views/RemoteEmulator/indexIOS.vue'),
+        meta: {title: $tc('routes.remoteControl')},
+    },
+    {
         path: '/Index',
         component: () => import('../views/Index.vue'),
         meta: {title: $tc('routes.home')},
