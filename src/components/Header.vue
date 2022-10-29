@@ -186,8 +186,8 @@ const changeLocaleHandler = function (val) {
         <el-menu :ellipsis="false" :background-color="store.state.menuBack" :text-color="store.state.menuText"
                  :active-text-color="store.state.menuActiveText" mode="horizontal" class="el-menu-horizontal-demo font"
                  :default-active="route.path">
-          <el-menu-item :index="route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices'"
-                        @click="pushIndex(route.params.projectId? '/Home/' + route.params.projectId + '/Devices':'/Index/Devices')"
+          <el-menu-item index="/Index/Devices"
+                        @click="pushIndex('/Index/Devices')"
           >
             <el-icon :size="18" style="vertical-align: middle;margin-right: 5px">
               <Cellphone/>

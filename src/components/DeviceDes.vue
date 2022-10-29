@@ -79,15 +79,17 @@ const deleteDevice = (id) => {
       });
 }
 const jump = (id, platform) => {
+  let routeData;
   if (platform === 1) {
-    router.push({
-      path: "AndroidRemote/" + id
+    routeData = router.resolve({
+      path: "/AndroidRemote/" + id
     });
   } else {
-    router.push({
-      path: "IOSRemote/" + id
+    routeData = router.resolve({
+      path: "/IOSRemote/" + id
     });
   }
+  window.open(routeData.href, "_blank")
 }
 const reboot = (id) => {
   axios
@@ -185,7 +187,7 @@ const findAgentById = (id) => {
             />
             <img
                 v-else
-                style="width: 70px"
+                style="width: 30px"
                 :src="getImg(device.manufacturer)"
             />
 

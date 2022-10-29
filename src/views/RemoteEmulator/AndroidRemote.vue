@@ -1760,12 +1760,7 @@ onMounted(() => {
     <element-update v-if="dialogElement" :project-id="project['id']"
                     :element-id="0" :element-obj="element" @flush="dialogElement = false"/>
   </el-dialog>
-  <el-page-header
-      @back="router.go(-1)"
-      :content="$t('routes.remoteControl')"
-      style="margin-bottom: 20px"
-  >
-  </el-page-header>
+
   <el-card shadow="never">
     <el-row
         :gutter="24"
