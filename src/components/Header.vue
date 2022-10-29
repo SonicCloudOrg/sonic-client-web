@@ -370,7 +370,8 @@ const changeLocaleHandler = function (val) {
     </el-dialog>
     <el-scrollbar class="demo-tree-scrollbar" style="height: 100%">
       <el-main
-          v-if="route.params.projectId || route.params.deviceId|| route.fullPath==='/Index/Devices' || route.fullPath.indexOf('/Setting') != -1">
+          v-if="route.params.projectId || route.params.deviceId
+          || route.fullPath==='/Index/Devices' || route.fullPath.indexOf('/Setting') != -1">
         <router-view/>
       </el-main>
       <el-main v-else>
