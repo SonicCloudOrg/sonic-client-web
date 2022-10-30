@@ -763,44 +763,89 @@ const iOSOptions = ref([
   {
     label: "控件元素操作",
     value: "element",
-    children: [
-      {
-        value: "findElementInterval",
-        label: "设置查找控件策略"
-      },
-      {
-        value: "isExistEle",
-        label: "判断控件元素是否存在",
-      },
-      {
-        value: "click",
-        label: "点击控件元素",
-      },
-      {
-        value: "sendKeys",
-        label: "输入文本",
-      },
-      {
-        value: "swipe2",
-        label: "拖拽控件元素",
-      },
-      {
-        value: "longPress",
-        label: "长按控件元素",
-      },
-      {
-        value: "clear",
-        label: "清空输入框",
-      },
-      {
-        value: "getTextValue",
-        label: "获取文本",
-      },
-      {
-        value: "getText",
-        label: "验证文本",
-      },
-    ],
+    children: [{
+      label: "iOS原生控件",
+      value: "xcEle",
+      children: [
+        {
+          value: "findElementInterval",
+          label: "设置查找控件策略"
+        },
+        {
+          value: "isExistEle",
+          label: "判断控件元素是否存在",
+        },
+        {
+          value: "click",
+          label: "点击控件元素",
+        },
+        {
+          value: "sendKeys",
+          label: "输入文本",
+        },
+        {
+          value: "swipe2",
+          label: "拖拽控件元素",
+        },
+        {
+          value: "longPress",
+          label: "长按控件元素",
+        },
+        {
+          value: "clear",
+          label: "清空输入框",
+        },
+        {
+          value: "getTextValue",
+          label: "获取文本",
+        },
+        {
+          value: "getText",
+          label: "验证文本",
+        },
+      ],
+    }, {
+      label: "POCO控件",
+      value: "pocoEle",
+      children: [
+        {
+          value: "startPocoDriver",
+          label: "启动PocoDriver",
+        },
+        {
+          value: "setTheRealPositionOfTheWindow",
+          label: "设置偏移量",
+        },
+        {
+          value: "isExistPocoEle",
+          label: "判断控件元素是否存在",
+        },
+        {
+          value: "pocoClick",
+          label: "点击控件元素",
+        },
+        {
+          value: "pocoLongPress",
+          label: "长按控件元素",
+        },
+        {
+          value: "pocoSwipe",
+          label: "拖拽控件元素",
+        },
+        {
+          value: "freezeSource",
+          label: "冻结控件树",
+        },
+        {
+          value: "thawSource",
+          label: "解冻控件树",
+        },
+        {
+          value: "closePocoDriver",
+          label: "关闭PocoDriver",
+        },
+      ]
+    }]
   },
   {
     label: "验证操作",
