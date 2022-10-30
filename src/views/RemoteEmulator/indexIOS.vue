@@ -15,32 +15,37 @@
  *  limitations under the License.
  *
  */
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import {nextTick, onBeforeUnmount, onMounted, ref} from 'vue';
 import IOSRemote from './IOSRemote.vue'
-import { ElMessage } from 'element-plus';
+import {ElMessage} from 'element-plus';
 import {useI18n} from 'vue-i18n'
+
 const {t: $t} = useI18n()
 
 // let isPress = false;
 let mouseMoveTime = 0;
-let startPosition = { x: 0, y: 0 };
+let startPosition = {x: 0, y: 0};
 let parentNode = null;
 
 const isPress = ref(false);
-
 const _layoutSplitInfo = window.localStorage.getItem('layoutSplitInfo');
 const _tabPosition = window.localStorage.getItem('tabPosition');
-
-const tabPosition = ref( _tabPosition || 'left'); // left,top
-const canvasRectInfo = ref({ width: '100%', height: 'auto' });
+const tabPosition = ref(_tabPosition || 'left'); // left,top
 // 分屏默认值
 const layoutSplitInfo = ref(_layoutSplitInfo ?
-  JSON.parse(_layoutSplitInfo) : {
-    left: 33,
-    last_left: 33,
-    top: 316,
-    last_top: 316,
-});
+    JSON.parse(_layoutSplitInfo) : {
+      left: 33,
+      last_left: 33,
+      top: 316,
+      last_top: 316,
+    });
+const canvasRectInfo = ref(tabPosition.value == 'left' ?
+    {width: '100%', height: 'auto'} :
+    {
+      width: 'auto',
+      height: layoutSplitInfo.value.top + 'px',
+    },
+);
 const swithLayout = () => {
   // console.log('swithLayout!!', tabPosition.value);
   if (tabPosition.value == 'left') {
@@ -53,11 +58,11 @@ const swithLayout = () => {
   } else {
     // 变横屏
     tabPosition.value = 'left';
-    canvasRectInfo.value = { width: '100%', height: 'auto' }
+    canvasRectInfo.value = {width: '100%', height: 'auto'}
   }
   window.localStorage.setItem('tabPosition', tabPosition.value)
   ElMessage.success({
-    message: '切换成功！',
+    message: $t('indexIOSTS.successText'),
   });
 }
 const lineMouseup = (event) => {
@@ -65,8 +70,7 @@ const lineMouseup = (event) => {
   isPress.value = false;
   if (tabPosition.value == 'left') {
     layoutSplitInfo.value.last_left = layoutSplitInfo.value.left;
-  }
-  else if (tabPosition.value == 'top') {
+  } else if (tabPosition.value == 'top') {
     layoutSplitInfo.value.last_top = layoutSplitInfo.value.top;
   }
   saveLastSplitObj();
@@ -105,8 +109,7 @@ const lineMousemove = (event) => {
         const deltaX = event.clientX - startPosition.x;
         // console.log('deltaX', deltaX);
         handleSplit(deltaX)
-      }
-      else if (tabPosition.value == 'top') { // 垂直移动
+      } else if (tabPosition.value == 'top') { // 垂直移动
         const deltaY = event.clientY - startPosition.y;
         // console.log('deltaY', deltaY);
         handleSplit(deltaY)
@@ -122,17 +125,17 @@ const handleSplit = (variate) => {
     // 边界处理
     if (
         (percent < 0 && layoutSplitInfo.value.left <= 20) ||
-        (percent >= 0 && layoutSplitInfo.value.left >=70)
+        (percent >= 0 && layoutSplitInfo.value.left >= 70)
     ) {
       return;
     }
 
-    layoutSplitInfo.value.left =  layoutSplitInfo.value.last_left + Number(percent);
+    layoutSplitInfo.value.left = layoutSplitInfo.value.last_left + Number(percent);
     // console.log('variate', percent, layoutSplitInfo.value.left);
-  }
-  else if (tabPosition.value == 'top') {
+  } else if (tabPosition.value == 'top') {
     const rect = parentNode.getBoundingClientRect();
     const percent = variate;
+    const canvas = document.getElementById('iosCap');
     const rectCanvas = canvas.getBoundingClientRect();
 
     // 边界处理
@@ -143,7 +146,7 @@ const handleSplit = (variate) => {
       return;
     }
 
-    layoutSplitInfo.value.top =  layoutSplitInfo.value.last_top + Number(percent);
+    layoutSplitInfo.value.top = layoutSplitInfo.value.last_top + Number(percent);
     // 直接应用
     canvasRectInfo.value.height = layoutSplitInfo.value.top + 'px';
     // console.log('variate', percent, layoutSplitInfo.value.top);
@@ -164,7 +167,7 @@ const saveLastSplitObj = () => {
         placement="left"
         :offset="15"
     >
-      <div :class="['button', tabPosition == 'left' ? 'button_top' : '']" @click="swithLayout" />
+      <div :class="['button', tabPosition == 'left' ? 'button_top' : '']" @click="swithLayout"/>
     </el-tooltip>
     <IOSRemote
         :tabPosition="tabPosition"
@@ -180,10 +183,11 @@ const saveLastSplitObj = () => {
 
 </template>
 <style scoped lang="less">
-.index{
+.index {
   /*background: #999;*/
   position: relative;
-  .button{
+
+  .button {
     position: absolute;
     right: 10px;
     top: 0px;
@@ -192,10 +196,12 @@ const saveLastSplitObj = () => {
     background: url("@/assets/img/left.png") no-repeat center;
     background-size: 70% 70%;
     cursor: pointer;
-    &:focus{
+
+    &:focus {
       outline: 0;
     }
-    &_top{
+
+    &_top {
       background-image: url("@/assets/img/top.png");
     }
   }

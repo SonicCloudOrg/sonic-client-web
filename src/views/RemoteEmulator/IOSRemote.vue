@@ -75,7 +75,6 @@ const device = ref({});
 const agent = ref({});
 const uploadUrl = ref('');
 const text = ref({content: ''});
-const sid = ref(0);
 let imgWidth = 0;
 let imgHeight = 0;
 const loading = ref(false);
@@ -668,13 +667,22 @@ const websocketOnmessage = (message) => {
         imgWidth = JSON.parse(message.data).width;
         imgHeight = JSON.parse(message.data).height;
         isDriverFinish.value = true;
+        remoteWDAPort.value = JSON.parse(message.data).wda
+        const canvas = document.getElementById('iosCap'),
+            g = canvas.getContext('2d');
+        const img = new Image();
+        img.onload = function () {
+          const width = img.width, height = img.height;
+          canvas.width = width;
+          canvas.height = height;
+          g.drawImage(img, 0, 0, width, height);
+        };
+        img.src = "http://" + agent.value['host'] + ":" + JSON.parse(message.data).port;
+        window.setInterval(() => {
+          g.drawImage(img, 0, 0, img.width, img.height);
+        }, 16);
+        loading.value = false;
       }
-      break;
-    }
-    case 'picFinish': {
-      sid.value = JSON.parse(message.data).port
-      remoteWDAPort.value = JSON.parse(message.data).wda
-      loading.value = false;
       break;
     }
     case 'step': {
@@ -759,20 +767,20 @@ const mouseup = (event) => {
   if (location.value) {
     x = parseInt(
         (event.clientX - rect.left) *
-        (imgHeight / iosCap.width),
+        (imgHeight / iosCap.clientWidth),
     );
     y = parseInt(
         (event.clientY - rect.top) *
-        (imgWidth / iosCap.height),
+        (imgWidth / iosCap.clientHeight),
     );
   } else {
     x = parseInt(
         (event.clientX - rect.left) *
-        (imgWidth / iosCap.width),
+        (imgWidth / iosCap.clientWidth),
     );
     y = parseInt(
         (event.clientY - rect.top) *
-        (imgHeight / iosCap.height),
+        (imgHeight / iosCap.clientHeight),
     );
   }
   inputBoxStyle.value = {
@@ -813,20 +821,20 @@ const mousedown = (event) => {
   if (location.value) {
     moveX = parseInt(
         (event.clientX - rect.left) *
-        (imgHeight / iosCap.width),
+        (imgHeight / iosCap.clientWidth),
     );
     moveY = parseInt(
         (event.clientY - rect.top) *
-        (imgWidth / iosCap.height),
+        (imgWidth / iosCap.clientHeight),
     );
   } else {
     moveX = parseInt(
         (event.clientX - rect.left) *
-        (imgWidth / iosCap.width),
+        (imgWidth / iosCap.clientWidth),
     );
     moveY = parseInt(
         (event.clientY - rect.top) *
-        (imgHeight / iosCap.height),
+        (imgHeight / iosCap.clientHeight),
     );
   }
   clearInterval(loop);
@@ -849,11 +857,11 @@ const touchstart = async (event) => {
   const rect = debugPicIOS.getBoundingClientRect();
   const x = parseInt(
       (event.clientX - rect.left) *
-      (imgWidth / debugPicIOS.width),
+      (imgWidth / debugPicIOS.clientWidth),
   );
   const y = parseInt(
       (event.clientY - rect.top) *
-      (imgHeight / debugPicIOS.height),
+      (imgHeight / debugPicIOS.clientHeight),
   );
   await nextTick(() => {
     tree['value'].setCurrentKey(
@@ -1257,17 +1265,14 @@ onMounted(() => {
             </div>
           </template>
           <div style="margin-right: 40px; text-align: center">
-            <img id="iosCap" v-if="sid===0"/>
-            <div v-else>
-              <img id="iosCap"
-                   :src="'http://' + agent['host'] + ':'+  sid"
-                   width="100%"
-                   draggable="false"
-                   @mousedown="mousedown"
-                   @mouseleave="mouseleave"
-                   @mouseup="mouseup"
-                   style="display: inline-block"
-                   :style="canvasRectInfo"
+            <div>
+              <canvas
+                  id="iosCap"
+                  @mouseup="mouseup"
+                  @mousedown="mousedown"
+                  @mouseleave="mouseleave"
+                  :style="canvasRectInfo"
+                  style="display: inline-block"
               />
               <input class="input-box" v-model="inputValue" type="text" ref="inputBox" @input="changeInputHandle"
                      :style="inputBoxStyle" @keyup.delete="deleteInputHandle">
@@ -1814,42 +1819,42 @@ onMounted(() => {
               </div>
             </el-card>
           </el-tab-pane>
-          <!--          <el-tab-pane label="快速截图" name="screenCap">-->
-          <!--            <el-button type="primary" size="small" @click="quickCap">-->
-          <!--              <el-icon :size="12" style="vertical-align: middle;">-->
-          <!--                <Camera/>-->
-          <!--              </el-icon>-->
-          <!--              截图-->
-          <!--            </el-button>-->
-          <!--            <el-button type="danger" size="small" @click="removeScreen">-->
-          <!--              <el-icon :size="12" style="vertical-align: middle;">-->
-          <!--                <Delete/>-->
-          <!--              </el-icon>-->
-          <!--              清空-->
-          <!--            </el-button>-->
-          <!--            <el-card style="height: 100%;margin-top: 10px" v-if="screenUrls.length===0">-->
-          <!--              <el-empty description="暂无截图"></el-empty>-->
-          <!--            </el-card>-->
-          <!--            <el-row :gutter="20" v-else>-->
-          <!--              <el-col :xs="8"-->
-          <!--                      :sm="8"-->
-          <!--                      :md="8"-->
-          <!--                      :lg="4"-->
-          <!--                      :xl="4" v-for="u in screenUrls" style="margin-top: 10px">-->
-          <!--                <el-card shadow="hover" :body-style="{padding:'10px'}">-->
-          <!--                  <el-image :src="u" :preview-src-list="screenUrls" hide-on-click-modal></el-image>-->
-          <!--                  <div style="text-align: center;margin-top: 5px">-->
-          <!--                    <el-button type="primary" plain size="mini" @click="downloadImg(u)">-->
-          <!--                      <el-icon :size="12" style="vertical-align: middle;">-->
-          <!--                        <Download/>-->
-          <!--                      </el-icon>-->
-          <!--                      保存图片-->
-          <!--                    </el-button>-->
-          <!--                  </div>-->
-          <!--                </el-card>-->
-          <!--              </el-col>-->
-          <!--            </el-row>-->
-          <!--          </el-tab-pane>-->
+<!--          <el-tab-pane label="快速截图" name="screenCap">-->
+<!--            <el-button type="primary" size="small" @click="quickCap">-->
+<!--              <el-icon :size="12" style="vertical-align: middle;">-->
+<!--                <Camera/>-->
+<!--              </el-icon>-->
+<!--              截图-->
+<!--            </el-button>-->
+<!--            <el-button type="danger" size="small" @click="removeScreen">-->
+<!--              <el-icon :size="12" style="vertical-align: middle;">-->
+<!--                <Delete/>-->
+<!--              </el-icon>-->
+<!--              清空-->
+<!--            </el-button>-->
+<!--            <el-card style="height: 100%;margin-top: 10px" v-if="screenUrls.length===0">-->
+<!--              <el-empty description="暂无截图"></el-empty>-->
+<!--            </el-card>-->
+<!--            <el-row :gutter="20" v-else>-->
+<!--              <el-col :xs="8"-->
+<!--                      :sm="8"-->
+<!--                      :md="8"-->
+<!--                      :lg="4"-->
+<!--                      :xl="4" v-for="u in screenUrls" style="margin-top: 10px">-->
+<!--                <el-card shadow="hover" :body-style="{padding:'10px'}">-->
+<!--                  <el-image :src="u" :preview-src-list="screenUrls" hide-on-click-modal></el-image>-->
+<!--                  <div style="text-align: center;margin-top: 5px">-->
+<!--                    <el-button type="primary" plain size="mini" @click="downloadImg(u)">-->
+<!--                      <el-icon :size="12" style="vertical-align: middle;">-->
+<!--                        <Download/>-->
+<!--                      </el-icon>-->
+<!--                      保存图片-->
+<!--                    </el-button>-->
+<!--                  </div>-->
+<!--                </el-card>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
+<!--          </el-tab-pane>-->
           <el-tab-pane label="Terminal" name="terminal">
             <el-tabs stretch type="border-card">
               <el-tab-pane label="Process">
@@ -2374,12 +2379,6 @@ onMounted(() => {
   padding: 3px;
   width: 100%;
   margin-top: 10px;
-}
-
-#iosCap {
-  border: 3px solid #303133;
-  border-radius: 15px;
-  cursor: url("@/assets/img/pointer.png") 12 12, crosshair;
 }
 
 .line {
