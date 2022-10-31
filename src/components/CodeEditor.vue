@@ -248,24 +248,22 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 3rem;
-  padding: 0 10px;
+  flex-wrap: wrap;
+  padding: 0 10px 10px 10px;
   background: #F9F9F9;
   border: 1px solid #DDDDE1;
 
   .item {
     display: inline-flex;
     align-items: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
 
     label {
       display: inline-block;
       margin-left: 0.5em;
       margin-right: 0.4em;
     }
-  }
-
-  .item:first-child {
-    margin: unset;
   }
 }
 
