@@ -74,6 +74,7 @@ const caseList = ref(null);
 const device = ref({});
 const agent = ref({});
 const uploadUrl = ref('');
+const screenPort = ref(0)
 const text = ref({content: ''});
 let imgWidth = 0;
 let imgHeight = 0;
@@ -440,21 +441,24 @@ const openSocket = (host, port, key, udId) => {
 };
 const screenUrls = ref([])
 const quickCap = () => {
+  const parent = document.getElementById("screenCap");
   const canvas = document.createElement("canvas");
+  canvas.style = "width:20%"
+  parent.appendChild(canvas);
   const canvasCtx = canvas.getContext("2d");
   const cap = document.getElementById('iosCap');
   let w, h;
   if (directionStatus.value === 0 || directionStatus.value === 180) {
-    w = imgWidth;
-    h = imgHeight;
+    w = cap.clientWidth;
+    h = cap.clientHeight;
   } else {
-    w = imgHeight;
-    h = imgWidth;
+    w = cap.clientHeight;
+    h = cap.clientWidth;
   }
   canvas.width = w;
   canvas.height = h;
-  canvasCtx.drawImage(cap, 0, 0, cap.clientWidth, cap.clientHeight, 0, 0, w, h);
-  screenUrls.value.push(canvas.toDataURL('image/png', 1));
+  canvasCtx.drawImage(cap, 0, 0, w, h);
+  screenUrls.value.push(w);
 };
 const toAddElement = (eleType, eleValue) => {
   if (project) {
@@ -464,9 +468,6 @@ const toAddElement = (eleType, eleValue) => {
   }
 
 }
-const removeScreen = () => {
-  screenUrls.value = [];
-};
 const downloadImg = (url) => {
   let time = new Date().getTime();
   let link = document.createElement('a');
@@ -581,6 +582,22 @@ const terminalWebsocketOnmessage = (message) => {
       break;
   }
 }
+let drawInter = null;
+const startScreen = () => {
+  const canvas = document.getElementById('iosCap'),
+      g = canvas.getContext('2d');
+  const img = new Image();
+  img.onload = () => {
+    const width = img.width, height = img.height;
+    canvas.width = width;
+    canvas.height = height;
+    g.drawImage(img, 0, 0, width, height);
+  };
+  img.src = "http://" + agent.value['host'] + ":" + screenPort.value;
+  drawInter = window.setInterval(() => {
+    g.drawImage(img, 0, 0, img.width, img.height);
+  }, 16);
+}
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data)['msg']) {
     case 'forwardView': {
@@ -606,6 +623,8 @@ const websocketOnmessage = (message) => {
     }
     case 'rotation': {
       const d = JSON.parse(message.data).value;
+      clearInterval(drawInter)
+      startScreen()
       if (directionStatus.value !== d) {
         if (d !== -1) {
           ElMessage.success({
@@ -667,20 +686,9 @@ const websocketOnmessage = (message) => {
         imgWidth = JSON.parse(message.data).width;
         imgHeight = JSON.parse(message.data).height;
         isDriverFinish.value = true;
-        remoteWDAPort.value = JSON.parse(message.data).wda
-        const canvas = document.getElementById('iosCap'),
-            g = canvas.getContext('2d');
-        const img = new Image();
-        img.onload = function () {
-          const width = img.width, height = img.height;
-          canvas.width = width;
-          canvas.height = height;
-          g.drawImage(img, 0, 0, width, height);
-        };
-        img.src = "http://" + agent.value['host'] + ":" + JSON.parse(message.data).port;
-        window.setInterval(() => {
-          g.drawImage(img, 0, 0, img.width, img.height);
-        }, 16);
+        remoteWDAPort.value = JSON.parse(message.data).wda;
+        screenPort.value = JSON.parse(message.data).port;
+        startScreen()
         loading.value = false;
       }
       break;
@@ -1616,21 +1624,6 @@ onMounted(() => {
                   </el-tab-pane>
                 </el-tabs>
               </el-col>
-              <!--              <el-col :span="8">-->
-              <!--                <el-card>-->
-              <!--                  <template #header>-->
-              <!--                    <strong>录制屏幕（即将开放）</strong>-->
-              <!--                  </template>-->
-              <!--                  <div style="text-align: center">-->
-              <!--                    <el-button size="mini" type="success" disabled>开始录制</el-button>-->
-              <!--                    <el-button size="mini" type="info" disabled>暂停录制</el-button>-->
-              <!--                    <el-button size="mini" type="danger" disabled>结束录制</el-button>-->
-              <!--                    <div style="margin-top: 20px">-->
-              <!--                      <el-button size="mini" type="primary" disabled>下载录像</el-button>-->
-              <!--                    </div>-->
-              <!--                  </div>-->
-              <!--                </el-card>-->
-              <!--              </el-col>-->
               <el-col :span="12" style="margin-top: 20px">
                 <el-card>
                   <template #header>
@@ -1819,42 +1812,18 @@ onMounted(() => {
               </div>
             </el-card>
           </el-tab-pane>
-<!--          <el-tab-pane label="快速截图" name="screenCap">-->
-<!--            <el-button type="primary" size="small" @click="quickCap">-->
-<!--              <el-icon :size="12" style="vertical-align: middle;">-->
-<!--                <Camera/>-->
-<!--              </el-icon>-->
-<!--              截图-->
-<!--            </el-button>-->
-<!--            <el-button type="danger" size="small" @click="removeScreen">-->
-<!--              <el-icon :size="12" style="vertical-align: middle;">-->
-<!--                <Delete/>-->
-<!--              </el-icon>-->
-<!--              清空-->
-<!--            </el-button>-->
-<!--            <el-card style="height: 100%;margin-top: 10px" v-if="screenUrls.length===0">-->
-<!--              <el-empty description="暂无截图"></el-empty>-->
-<!--            </el-card>-->
-<!--            <el-row :gutter="20" v-else>-->
-<!--              <el-col :xs="8"-->
-<!--                      :sm="8"-->
-<!--                      :md="8"-->
-<!--                      :lg="4"-->
-<!--                      :xl="4" v-for="u in screenUrls" style="margin-top: 10px">-->
-<!--                <el-card shadow="hover" :body-style="{padding:'10px'}">-->
-<!--                  <el-image :src="u" :preview-src-list="screenUrls" hide-on-click-modal></el-image>-->
-<!--                  <div style="text-align: center;margin-top: 5px">-->
-<!--                    <el-button type="primary" plain size="mini" @click="downloadImg(u)">-->
-<!--                      <el-icon :size="12" style="vertical-align: middle;">-->
-<!--                        <Download/>-->
-<!--                      </el-icon>-->
-<!--                      保存图片-->
-<!--                    </el-button>-->
-<!--                  </div>-->
-<!--                </el-card>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--          </el-tab-pane>-->
+          <el-tab-pane :label="$t('androidRemoteTS.code.screenshotQuick')" name="screenCap">
+            <el-button type="primary" size="small" @click="quickCap">
+              <el-icon :size="12" style="vertical-align: middle;">
+                <Camera/>
+              </el-icon>
+              {{ $t('androidRemoteTS.code.screenshot') }}
+            </el-button>
+            <el-card style="height: 100%;margin-top: 10px" v-if="screenUrls.length===0">
+              <el-empty :description="$t('androidRemoteTS.code.noScreenshots')"></el-empty>
+            </el-card>
+            <el-card v-show="screenUrls.length!==0" id="screenCap"></el-card>
+          </el-tab-pane>
           <el-tab-pane label="Terminal" name="terminal">
             <el-tabs stretch type="border-card">
               <el-tab-pane label="Process">
