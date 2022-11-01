@@ -78,6 +78,7 @@ const switchPocoType = (e) => {
     case "COCOS_CREATOR":
     case "EGRET":
       step.value.text = "5003";
+      break;
     case "COCOS_2DX_LUA":
       step.value.text = "15004";
       break;
