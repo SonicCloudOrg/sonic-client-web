@@ -1583,6 +1583,7 @@ const switchPocoType = (e) => {
     case "COCOS_CREATOR":
     case "EGRET":
       pocoPort.value = "5003";
+      break;
     case "COCOS_2DX_LUA":
       pocoPort.value = "15004";
       break;
