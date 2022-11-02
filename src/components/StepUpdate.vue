@@ -300,11 +300,12 @@ const getStepInfo = (id) => {
         || step.value.stepType === 'stepHold'
         || step.value.stepType === 'longPressPoint'
         || step.value.stepType === 'findElementInterval'
+        || step.value.stepType === 'setDefaultFindPocoElementInterval'
         || step.value.stepType === 'longPress'
         || step.value.stepType === 'checkImage') {
       step.value.content = parseInt(step.value.content);
     }
-    if (step.value.stepType === 'findElementInterval') {
+    if (step.value.stepType === 'findElementInterval' || step.value.stepType === 'setDefaultFindPocoElementInterval') {
       step.value.text = parseInt(step.value.text);
     }
     if (step.value.stepType === 'install') {
@@ -535,6 +536,10 @@ const androidOptions = ref([
           {
             value: "startPocoDriver",
             label: "启动PocoDriver",
+          },
+          {
+            value: "setDefaultFindPocoElementInterval",
+            label: "设置查找控件策略"
           },
           {
             value: "setTheRealPositionOfTheWindow",
@@ -812,6 +817,10 @@ const iOSOptions = ref([
         {
           value: "startPocoDriver",
           label: "启动PocoDriver",
+        },
+        {
+          value: "setDefaultFindPocoElementInterval",
+          label: "设置查找控件策略"
         },
         {
           value: "setTheRealPositionOfTheWindow",
@@ -1661,7 +1670,7 @@ onMounted(() => {
       </el-form-item>
     </div>
 
-    <div v-if="step.stepType === 'findElementInterval'">
+    <div v-if="step.stepType === 'findElementInterval' || step.stepType === 'setDefaultFindPocoElementInterval'">
       <el-form-item label="重试次数">
         <el-input-number
             v-model="step.content"
