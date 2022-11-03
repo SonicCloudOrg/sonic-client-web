@@ -881,13 +881,13 @@ const getCurLocation = () => {
         (event.clientY - rect.top) *
         (imgWidth / canvas.clientHeight),
     );
-    x = (directionStatus.value == 90) ? imgWidth - _x : _x;
     //
     _y = parseInt(
         (event.clientX - rect.left) *
         (imgHeight / canvas.clientWidth),
     );
-    y = (directionStatus.value == 270) ? imgHeight - _y : _y;
+    x = (directionStatus.value == 90) ? imgWidth - _x : _x - imgWidth * 3;
+    y = (directionStatus.value == 90) ? _y : -_y;
   } else {
     _x = parseInt(
         (event.clientX - rect.left) *
@@ -915,13 +915,12 @@ const getCurLocationForAdb = () => {
         (event.clientY - rect.top) *
         (imgWidth / canvas.clientHeight),
     );
-    y = (directionStatus.value == 90) ? _x : imgWidth - _x;
-    //
     _y = parseInt(
         (event.clientX - rect.left) *
         (imgHeight / canvas.clientWidth),
     );
-    x = (directionStatus.value == 270) ? imgHeight - _y : _y;
+    x = (directionStatus.value == 90) ? _y :  _y;
+    y = (directionStatus.value == 90) ? _x :  _x;
   } else {
     _x = parseInt(
         (event.clientX - rect.left) *
