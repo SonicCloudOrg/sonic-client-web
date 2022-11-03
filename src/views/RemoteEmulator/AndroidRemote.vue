@@ -919,8 +919,8 @@ const getCurLocationForAdb = () => {
         (event.clientX - rect.left) *
         (imgHeight / canvas.clientWidth),
     );
-    x = (directionStatus.value == 90) ? _y :  _y;
-    y = (directionStatus.value == 90) ? _x :  _x;
+    x = _y;
+    y = _x;
   } else {
     _x = parseInt(
         (event.clientX - rect.left) *
