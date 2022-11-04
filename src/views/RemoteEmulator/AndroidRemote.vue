@@ -235,7 +235,7 @@ const switchTabs = (e) => {
     }
   }
   if (e.props.name === 'terminal') {
-    terminalHeight.value = document.getElementById('pressKey').offsetTop - 200;
+    terminalHeight.value = document.getElementById('pressKey').offsetTop - 150;
   }
   if (e.props.name === 'webview') {
     if (webViewListDetail.value.length === 0) {
@@ -267,7 +267,7 @@ const tabWebView = (port, id, transTitle) => {
       + ':' + agent.value['port'] + '/websockets/webView/'
       + agent.value['secretKey'] + '/' + port + '/' + id;
   nextTick(() => {
-    iFrameHeight.value = document.body.clientHeight - 280;
+    iFrameHeight.value = document.body.clientHeight - 150;
   });
 };
 const saveEle = () => {
@@ -639,7 +639,6 @@ const terminalWebsocketOnmessage = (message) => {
         message: $t('androidRemoteTS.systemException'),
       });
       close();
-      router.go(-1);
       break;
   }
 };
@@ -700,7 +699,6 @@ const screenWebsocketOnmessage = (message) => {
           message: $t('androidRemoteTS.systemException'),
         });
         close();
-        router.go(-1);
         break;
     }
   }
@@ -729,7 +727,7 @@ const websocketOnmessage = (message) => {
       proxyWebPort.value = JSON.parse(message.data).webPort;
       proxyConnPort.value = JSON.parse(message.data).port;
       nextTick(() => {
-        iFrameHeight.value = document.body.clientHeight - 280;
+        iFrameHeight.value = document.body.clientHeight - 150;
       });
       break;
     }
@@ -883,13 +881,13 @@ const getCurLocation = () => {
         (event.clientY - rect.top) *
         (imgWidth / canvas.clientHeight),
     );
-    x = (directionStatus.value == 90) ? imgWidth - _x : _x;
     //
     _y = parseInt(
         (event.clientX - rect.left) *
         (imgHeight / canvas.clientWidth),
     );
-    y = (directionStatus.value == 270) ? imgHeight - _y : _y;
+    x = (directionStatus.value == 90) ? imgWidth - _x : _x - imgWidth * 3;
+    y = (directionStatus.value == 90) ? _y : -_y;
   } else {
     _x = parseInt(
         (event.clientX - rect.left) *
@@ -917,13 +915,12 @@ const getCurLocationForAdb = () => {
         (event.clientY - rect.top) *
         (imgWidth / canvas.clientHeight),
     );
-    y = (directionStatus.value == 90) ? _x : imgWidth - _x;
-    //
     _y = parseInt(
         (event.clientX - rect.left) *
         (imgHeight / canvas.clientWidth),
     );
-    x = (directionStatus.value == 270) ? imgHeight - _y : _y;
+    x = _y;
+    y = _x;
   } else {
     _x = parseInt(
         (event.clientX - rect.left) *
@@ -1585,6 +1582,7 @@ const switchPocoType = (e) => {
     case "COCOS_CREATOR":
     case "EGRET":
       pocoPort.value = "5003";
+      break;
     case "COCOS_2DX_LUA":
       pocoPort.value = "15004";
       break;
@@ -1631,6 +1629,7 @@ const close = () => {
   if (audioPlayer !== null) {
     destroyAudio();
   }
+  window.close()
 };
 onBeforeUnmount(() => {
   close();
@@ -1704,9 +1703,17 @@ const resetAudioPlayer = () => {
     message: $t('androidRemoteTS.audioSuccess'),
   });
 };
+const getProjectList = () => {
+  axios
+      .get("/controller/projects/list").then((resp) => {
+    store.commit("saveProjectList", resp.data);
+  })
+}
 onMounted(() => {
   if (store.state.project.id) {
     project.value = store.state.project;
+  } else {
+    getProjectList()
   }
   getDeviceById(route.params.deviceId);
   store.commit('autoChangeCollapse');
@@ -1761,12 +1768,10 @@ onMounted(() => {
                     :element-id="0" :element-obj="element" @flush="dialogElement = false"/>
   </el-dialog>
   <el-page-header
-      @back="router.go(-1)"
+      @back="close"
       :content="$t('routes.remoteControl')"
-      style="margin-bottom: 20px"
-  >
-  </el-page-header>
-  <el-card shadow="never">
+      style="margin-top: 15px;margin-left: 20px"/>
+  <div style="padding: 20px">
     <el-row
         :gutter="24"
         @mouseup="lineMouseup"
@@ -2607,7 +2612,10 @@ onMounted(() => {
               <el-table :data="currAppListPageData" border>
                 <el-table-column width="90" header-align="center">
                   <template #header>
-                    <el-button size="mini" @click="refreshAppList">{{ $t('androidRemoteTS.code.refresh') }}</el-button>
+                    <el-button size="mini" @click="refreshAppList">{{
+                        $t('androidRemoteTS.code.refresh')
+                      }}
+                    </el-button>
                   </template>
                   <template #default="scope">
                     <div style="display: flex;align-items: center;justify-content: center;">
@@ -2622,7 +2630,10 @@ onMounted(() => {
                 <el-table-column header-align="center" show-overflow-tooltip prop="packageName"
                                  :label="$t('androidRemoteTS.code.packagesName')">
                   <template #default="scope">
-                    <div style="cursor: pointer" @click="copy(scope.row.packageName)">{{ scope.row.packageName }}</div>
+                    <div style="cursor: pointer" @click="copy(scope.row.packageName)">{{
+                        scope.row.packageName
+                      }}
+                    </div>
                   </template>
                 </el-table-column>
                 <el-table-column header-align="center" show-overflow-tooltip prop="versionName"
@@ -2633,7 +2644,8 @@ onMounted(() => {
                                  width="120"></el-table-column>
                 <el-table-column align="center" width="200">
                   <template #header>
-                    <el-input v-model="filterAppText" size="mini" :placeholder="$t('androidRemoteTS.code.nameSearch')"/>
+                    <el-input v-model="filterAppText" size="mini"
+                              :placeholder="$t('androidRemoteTS.code.nameSearch')"/>
                   </template>
                   <template #default="scope">
                     <el-button size="mini" @click="openApp(scope.row.packageName)" type="primary">
@@ -2892,7 +2904,9 @@ onMounted(() => {
               </el-tabs>
             </div>
             <div v-else>
-              <span style="color: #909399;margin-right: 10px">{{ $t('androidRemoteTS.code.associatedProject') }}</span>
+                <span style="color: #909399;margin-right: 10px">{{
+                    $t('androidRemoteTS.code.associatedProject')
+                  }}</span>
               <el-select size="mini" v-model="project" value-key="id"
                          :placeholder="$t('androidRemoteTS.code.chooseProject')">
                 <el-option
@@ -3063,7 +3077,8 @@ onMounted(() => {
                             </el-button
                             >
                           </div>
-                          <el-alert style="margin-bottom: 10px" v-else :title="$t('androidRemoteTS.code.titleMessage')"
+                          <el-alert style="margin-bottom: 10px" v-else
+                                    :title="$t('androidRemoteTS.code.titleMessage')"
                                     type="info" show-icon
                                     close-text="Get!"/>
                           <el-scrollbar
@@ -3284,7 +3299,8 @@ onMounted(() => {
                       </div>
                     </el-option>
                   </el-select>
-                  <el-input placeholder="Default connect port" style="margin-left: 10px;width: 200px" v-model="pocoPort"
+                  <el-input placeholder="Default connect port" style="margin-left: 10px;width: 200px"
+                            v-model="pocoPort"
                             size="mini"></el-input>
                   <el-button style="margin-left: 10px" type="primary" :loading="pocoLoading" size="mini"
                              :disabled="selectPocoType.length===0"
@@ -3528,7 +3544,7 @@ onMounted(() => {
         </el-tabs>
       </el-col>
     </el-row>
-  </el-card>
+  </div>
 </template>
 <style scoped lang="less">
 .line {
@@ -3563,7 +3579,7 @@ onMounted(() => {
   text-align: center;
   position: relative;
   cursor: n-resize;
-  margin: 1em calc(var(--el-card-padding) - 4px);
+  margin: 1em calc(16px);
 
   &::after {
     content: '';

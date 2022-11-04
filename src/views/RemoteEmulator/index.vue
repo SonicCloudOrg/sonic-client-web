@@ -15,14 +15,15 @@
  *  limitations under the License.
  *
  */
-import { ref } from 'vue';
+import {ref} from 'vue';
 import AndroidRemote from './AndroidRemote.vue';
-import { ElMessage } from 'element-plus';
+import {ElMessage} from 'element-plus';
 import {useI18n} from 'vue-i18n'
+
 const {t: $t} = useI18n()
 
 let mouseMoveTime = 0;
-let startPosition = { x: 0, y: 0 };
+let startPosition = {x: 0, y: 0};
 let parentNode = null;
 
 const isPress = ref(false);
@@ -39,7 +40,7 @@ const layoutSplitInfo = ref(_layoutSplitInfo ?
     });
 // 画布默认值
 const canvasRectInfo = ref(tabPosition.value == 'left' ?
-    { width: '100%', height: 'auto' } :
+    {width: '100%', height: 'auto'} :
     {
       width: 'auto',
       height: layoutSplitInfo.value.top + 'px',
@@ -57,7 +58,7 @@ const swithLayout = () => {
   } else {
     // 变横屏
     tabPosition.value = 'left';
-    canvasRectInfo.value = { width: '100%', height: 'auto' };
+    canvasRectInfo.value = {width: '100%', height: 'auto'};
   }
   window.localStorage.setItem('tabPosition', tabPosition.value);
   ElMessage.success({
@@ -134,6 +135,7 @@ const handleSplit = (variate) => {
   } else if (tabPosition.value == 'top') {
     const rect = parentNode.getBoundingClientRect();
     const percent = variate;
+    const canvas = document.getElementById('canvas');
     const rectCanvas = canvas.getBoundingClientRect();
 
     // 边界处理
@@ -165,7 +167,7 @@ const saveLastSplitObj = () => {
         placement="left"
         :offset="15"
     >
-      <div :class="['button', tabPosition == 'left' ? 'button_top' : '']" @click="swithLayout" />
+      <div :class="['button', tabPosition == 'left' ? 'button_top' : '']" @click="swithLayout"/>
     </el-tooltip>
     <AndroidRemote
         :tabPosition="tabPosition"

@@ -212,7 +212,7 @@ body,
     margin-left: 2px;
 }
 
-#canvas, #scrcpy-video {
+#canvas, #scrcpy-video, #iosCap {
     border: 3px solid #303133;
     background-color: #303133;
     border-radius: 20px;
@@ -305,6 +305,7 @@ body,
 }
 
 .remote-tab {
+    height: 100% !important;
     border: 1px solid #EBEEF5 !important;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }

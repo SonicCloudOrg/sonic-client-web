@@ -164,26 +164,35 @@ onMounted(() => {
 <template>
   <div class="toolbar" v-if="showToolBar">
     <div class="item">
-      <label for="language">Language:</label>
+      <label class="toolbar-label" for="language">Language:</label>
       <el-select style="width: 130px" v-model="config.language" size="mini" placeholder="请选择"
-                 @change="emit('update:language', $event)">
+                @change="emit('update:language', $event)">
         <el-option v-for="item in languageOptions" :key="item.label" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <label for="theme">Theme:</label>
-      <el-select style="width: 120px" v-model="config.theme" size="mini" placeholder="请选择"
-                 @change="emit('update:theme', $event)">
-        <el-option v-for="item in themeOptions" :key="item.label" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <label for="tabSize">TabSize:</label>
-      <el-select style="width: 80px" v-model="config.tabSize" size="mini" placeholder="请选择"
-                 @change="emit('update:tabSize', $event)">
-        <el-option v-for="item in [2, 4, 6, 8]" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
     </div>
     <div class="item">
+      <el-popover placement="top" :width="200" trigger="click">
+        <template #reference>
+          <el-button size="mini" icon="el-icon-setting">设置</el-button>
+        </template>
+        <div class="form-section">
+          <label for="theme">Theme:</label>
+          <el-select style="width: 130px" v-model="config.theme" size="mini" placeholder="请选择"
+                    @change="emit('update:theme', $event)">
+            <el-option v-for="item in themeOptions" :key="item.label" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="form-section">
+          <label for="tabSize">TabSize:</label>
+          <el-select style="width: 130px" v-model="config.tabSize" size="mini" placeholder="请选择"
+                    @change="emit('update:tabSize', $event)">
+            <el-option v-for="item in [2, 4, 6, 8]" :key="item" :label="item" :value="item">
+            </el-option>
+          </el-select>
+        </div>
+      </el-popover>
       <el-popover placement="left" :width="450" trigger="click">
         <template #reference>
           <el-button size="mini">导入模板</el-button>
@@ -248,25 +257,33 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 3rem;
-  padding: 0 10px;
+  flex-wrap: wrap;
+  padding: 0 10px 10px 10px;
   background: #F9F9F9;
   border: 1px solid #DDDDE1;
 
   .item {
     display: inline-flex;
     align-items: center;
-
-    label {
-      display: inline-block;
-      margin-left: 0.5em;
-      margin-right: 0.4em;
-    }
+    flex-wrap: wrap;
+    margin-top: 10px;
   }
+}
 
-  .item:first-child {
-    margin: unset;
-  }
+.form-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.form-section:first-child {
+  margin-top: unset;
+}
+
+.toolbar-label {
+  display: inline-block;
+  margin: 0 0.4em;
 }
 
 .v-codemirror .ͼ1 .cm-scroller {

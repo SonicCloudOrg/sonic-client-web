@@ -22,6 +22,7 @@ import {
 } from 'echarts/renderers';
 import {ElMessage} from "element-plus";
 import {useI18n} from 'vue-i18n'
+
 const {t: $t} = useI18n()
 echarts.use(
     [PieChart, ToolboxComponent, GridComponent, LegendComponent, LineChart, CanvasRenderer, TitleComponent, TooltipComponent]
@@ -63,7 +64,7 @@ const subTime = (date1, date2) => {
   data = data % 60;
   if (0 < days) {
     time = days + $t('projectIndexTS.code.day') + hours + $t('projectIndexTS.code.hour')
-        + minutes + $t('projectIndexTS.code.minute')+ data + $t('projectIndexTS.code.second');
+        + minutes + $t('projectIndexTS.code.minute') + data + $t('projectIndexTS.code.second');
   } else {
     time = hours + $t('projectIndexTS.code.hour') + minutes + $t('projectIndexTS.code.minute') +
         data + $t('projectIndexTS.code.second');
@@ -293,19 +294,19 @@ const getPerform = (cid, did) => {
       window.addEventListener("resize", resizeFun);
     } else {
       mem.showLoading({
-        text: $t('projectIndexTS.memoryShort'),
+        text: $t('resultDetailTS.memoryShort'),
         fontSize: 20,
         textColor: '#606266',
         showSpinner: false,
       })
       bat.showLoading({
-        text: $t('projectIndexTS.batteryShort'),
+        text: $t('resultDetailTS.batteryShort'),
         fontSize: 20,
         textColor: '#606266',
         showSpinner: false,
       })
       ElMessage.info({
-        message: $t('projectIndexTS.performance'),
+        message: $t('resultDetailTS.performance'),
       });
     }
   })
@@ -459,7 +460,7 @@ onUnmounted(() => {
   <el-row :gutter="20">
     <el-col :span="12">
       <el-card shadow="hover">
-        <template #header><strong>{{$t('resultDetailTS.page.reportInfo')}}</strong></template>
+        <template #header><strong>{{ $t('resultDetailTS.page.reportInfo') }}</strong></template>
         <el-form
             label-position="left"
             class="demo-table-expand"
@@ -475,26 +476,26 @@ onUnmounted(() => {
           </el-form-item>
           <el-form-item :label="$t('resultDetailTS.page.executeUser')">
             <el-tag size="small" v-if="results['strike'] === 'SYSTEM'"
-            >{{$t('routes.timedTask')}}
+            >{{ $t('routes.timedTask') }}
             </el-tag
             >
             <span v-else>{{ results['strike'] }}</span>
           </el-form-item>
           <el-form-item :label="$t('resultDetailTS.page.runStatus')">
             <el-tag type="success" size="small" v-if="results['status'] === 1"
-            >{{$t('resultDetailTS.page.testPass')}}
+            >{{ $t('resultDetailTS.page.testPass') }}
             </el-tag
             >
             <el-tag type="info" size="small" v-if="results['status'] === 0"
-            ><i class="el-icon-loading"></i> {{$t('resultDetailTS.runIng')}}
+            ><i class="el-icon-loading"></i> {{ $t('resultDetailTS.runIng') }}
             </el-tag
             >
             <el-tag type="danger" size="small" v-if="results['status'] === 3"
-            > {{$t('resultDetailTS.page.testFail')}}
+            > {{ $t('resultDetailTS.page.testFail') }}
             </el-tag
             >
             <el-tag type="warning" size="small" v-if="results['status']=== 2"
-            >{{$t('resultDetailTS.page.testAlert')}}
+            >{{ $t('resultDetailTS.page.testAlert') }}
             </el-tag
             >
           </el-form-item>
@@ -503,11 +504,11 @@ onUnmounted(() => {
           </el-form-item>
           <el-form-item :label="$t('resultDetailTS.page.endTime')">
             <span v-if="results['endTime']">{{ results['endTime'] }}</span>
-            <span v-else>{{$t('form.unknown')}}</span>
+            <span v-else>{{ $t('form.unknown') }}</span>
           </el-form-item>
           <el-form-item :label="$t('resultDetailTS.page.totalTime')">
             <span v-if="results['endTime']">{{ subTime(results['createTime'], results['endTime']) }}</span>
-            <span v-else>{{$t('form.unknown')}}</span>
+            <span v-else>{{ $t('form.unknown') }}</span>
           </el-form-item>
         </el-form>
       </el-card>
@@ -518,12 +519,12 @@ onUnmounted(() => {
       </el-card>
     </el-col>
   </el-row>
-  <el-divider><span style="color: #909399;">{{$t('resultDetailTS.page.runInfo')}}</span></el-divider>
+  <el-divider><span style="color: #909399;">{{ $t('resultDetailTS.page.runInfo') }}</span></el-divider>
   <el-card shadow="hover">
     <el-collapse v-model="caseId" accordion @change="changeCase">
       <el-collapse-item v-for="c in testCaseList" :key="c" :name="c['case'].id" style="position: relative">
         <template #title>
-          {{$t('homeTS.testCase.case')}}：<strong style="color: #606266">{{ c['case'].name }}</strong>
+          {{ $t('homeTS.testCase.case') }}：<strong style="color: #606266">{{ c['case'].name }}</strong>
           <el-tag style="margin-left: 10px" size="small" :type="c.status===1?'success':
             c.status===2?'warning':
              c.status === 3 ? 'danger' : 'info'">
@@ -543,7 +544,7 @@ onUnmounted(() => {
             To
             <el-tag size="small">{{ c.endTime }}</el-tag>
             </span>
-            <span v-if="c.startTime&&c.endTime" style="margin-left: 10px">{{$t('resultDetailTS.page.total')}}：{{
+            <span v-if="c.startTime&&c.endTime" style="margin-left: 10px">{{ $t('resultDetailTS.page.total') }}：{{
                 subTime(c.startTime, c.endTime)
               }}</span>
           </div>
