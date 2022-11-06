@@ -25,20 +25,21 @@ class Scrcpy {
     this.props = props;
     this.excuteMode = excuteMode;
     // JMuxer初始化
-    this.initial(props)
+    this.initial(props);
     // websocket初始化
     this.websocketInit(props);
     // 监听页面激活状态
-    this.onPageFocus()
+    this.onPageFocus();
   }
 
   cmdFN(cmd) {
     if (cmd.msg == 'size') {
-      console.log('初始化成功: size: ' + cmd.width + ',' + cmd.height);
+      console.log(`初始化成功: size: ${cmd.width},${cmd.height}`);
       this.isInit = true;
     }
   }
-  initial(props){
+
+  initial(props) {
     // 初始化播放器
     if (!this.jmuxer && this.excuteMode == 'Scrcpy') {
       const {
@@ -54,19 +55,20 @@ class Scrcpy {
       });
     }
   }
-  websocketInit(props){
+
+  websocketInit(props) {
     if (!this.websocket) {
-      const {
-        socketURL,
-        onmessage,
-      } = props;
+      const { socketURL, onmessage } = props;
       this.websocket = new WebSocket(socketURL);
       this.websocket.binaryType = 'arraybuffer';
       this.websocket.addEventListener('message', (event) => {
-        if (typeof event.data == 'string') {
+        if (typeof event.data === 'string') {
           this.cmdFN(JSON.parse(event.data));
           onmessage && onmessage(event);
-        } else if (typeof event.data == 'object' && this.excuteMode == 'Scrcpy') {
+        } else if (
+          typeof event.data === 'object' &&
+          this.excuteMode == 'Scrcpy'
+        ) {
           // console.log('feed!', this.excuteMode);
           this.jmuxer.feed({
             video: new Uint8Array(event.data),
@@ -86,11 +88,12 @@ class Scrcpy {
           JSON.stringify({
             type: 'switch',
             detail: this.excuteMode.toLowerCase(),
-          }),
-        )
+          })
+        );
       });
     }
   }
+
   switchMode = (mode) => {
     this.excuteMode = mode;
     this.destroy();
@@ -99,25 +102,27 @@ class Scrcpy {
       JSON.stringify({
         type: 'switch',
         detail: this.excuteMode.toLowerCase(),
-      }),
-    )
+      })
+    );
     if (mode !== 'Scrcpy') {
       // 重置播放器
-      this.jmuxer && this.jmuxer.reset()
+      this.jmuxer && this.jmuxer.reset();
     }
-  }
-  destroy(){
+  };
+
+  destroy() {
     this.jmuxer && this.jmuxer.destroy();
     // 释放内存
-    this.jmuxer = null
-    window.onfocus = null
+    this.jmuxer = null;
+    window.onfocus = null;
   }
+
   onPageFocus() {
-    const videoDom = document.getElementById(this.props?.node || 'player')
-    window.onfocus = function() {
+    const videoDom = document.getElementById(this.props?.node || 'player');
+    window.onfocus = function () {
       // 将当前播放进度更新至当前最新缓冲时间
-      videoDom.currentTime = Math.ceil(videoDom.buffered.end(0))
-    }
+      videoDom.currentTime = Math.ceil(videoDom.buffered.end(0));
+    };
   }
 }
 

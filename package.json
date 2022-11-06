@@ -5,7 +5,10 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "serve": "vite preview"
+        "serve": "vite preview",
+        "eslint": "eslint src/ --ext .js,.vue --fix",
+        "eslint:quiet": "eslint src/ --ext .js,.vue --fix --quiet",
+        "prepare": "husky install"
     },
     "dependencies": {
         "@codemirror/lang-java": "^6.0.0",
@@ -33,6 +36,18 @@
     "devDependencies": {
         "@vitejs/plugin-vue": "1.9.0",
         "@vue/compiler-sfc": "3.2.14",
-        "vite": "2.5.10"
+        "vite": "2.5.10",
+        "vue-eslint-parser": "^9.0.2",
+        "@typescript-eslint/eslint-plugin": "^5.40.0",
+        "@typescript-eslint/parser": "^5.40.0",
+        "eslint": "^8.25.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-import-resolver-typescript": "^3.5.1",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-vue": "^9.6.0",
+        "prettier": "^2.7.1",
+        "husky": "^7.0.4"
     }
 }

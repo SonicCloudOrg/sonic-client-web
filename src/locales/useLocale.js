@@ -19,7 +19,7 @@
  */
 import { unref } from 'vue';
 import { i18n } from './setupI18n';
-import { setHtmlPageLang } from './helper'
+import { setHtmlPageLang } from './helper';
 
 function setI18nLanguage(locale) {
   if (i18n.mode === 'legacy') {
@@ -31,8 +31,8 @@ function setI18nLanguage(locale) {
 }
 
 export default function useLocale(store) {
-  const getLocale = store.getters.getLocale;
-  
+  const { getLocale } = store.getters;
+
   async function changeLocale(locale) {
     const globalI18n = i18n.global;
     const currentLocale = unref(globalI18n.locale);
@@ -46,16 +46,16 @@ export default function useLocale(store) {
 
     const { message } = langModule;
 
-    store.dispatch('changeLocaleInfo', { locale })
+    store.dispatch('changeLocaleInfo', { locale });
     globalI18n.setLocaleMessage(locale, message);
     setI18nLanguage(locale);
     // 强刷当前页面
-    location.reload()
+    location.reload();
     return locale;
   }
 
   return {
     changeLocale,
-    getLocale
+    getLocale,
   };
 }
