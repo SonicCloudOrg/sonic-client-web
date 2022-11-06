@@ -21,8 +21,7 @@ import { router } from '../router/index.js';
 
 let baseURL = '';
 if (process.env.NODE_ENV === 'development') {
-  // baseURL = 'http://localhost:8094/api';
-  baseURL = 'http://10.1.62.62:3000/server/api';
+  baseURL = 'http://localhost:8094/api';
 }
 if (process.env.NODE_ENV === 'production') {
   baseURL = 'http://SONIC_SERVER_HOST:SONIC_SERVER_PORT/server/api';
