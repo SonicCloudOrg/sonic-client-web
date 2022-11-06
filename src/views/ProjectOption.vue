@@ -1,6 +1,7 @@
 <script setup>
-import ProjectUpdate from '../components/ProjectUpdate.vue'
+import ProjectUpdate from '../components/ProjectUpdate.vue';
 </script>
+
 <template>
-  <project-update :is-update="true"/>
+  <project-update :is-update="true" />
 </template>

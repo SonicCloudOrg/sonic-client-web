@@ -1,130 +1,155 @@
 <script setup>
-import {ref, onMounted} from "vue";
-import {ElMessage} from "element-plus";
-import axios from "../http/axios";
+import { ref, onMounted } from 'vue';
+import { ElMessage } from 'element-plus';
+import axios from '../http/axios';
 
 const props = defineProps({
   projectId: Number,
   elementId: Number,
-  elementObj: Object
-})
-const emit = defineEmits(['flush'])
+  elementObj: Object,
+});
+const emit = defineEmits(['flush']);
 const element = ref({
   id: null,
-  eleName: "",
-  eleType: "",
-  eleValue: "",
+  eleName: '',
+  eleType: '',
+  eleValue: '',
   moduleId: 0,
   projectId: props.projectId,
-})
-const updateEle = ref(null)
+});
+const updateEle = ref(null);
 const beforeAvatarUpload = (file) => {
-  if (file.name.endsWith(".jpg") || file.name.endsWith(".png")) {
+  if (file.name.endsWith('.jpg') || file.name.endsWith('.png')) {
     return true;
-  } else {
-    ElMessage.error({
-      message: "文件格式有误！",
-    });
-    return false;
   }
-}
+  ElMessage.error({
+    message: '文件格式有误！',
+  });
+  return false;
+};
 const limitOut = () => {
   ElMessage.error({
-    message: "只能添加一个文件！请先移除旧文件",
+    message: '只能添加一个文件！请先移除旧文件',
   });
-}
+};
 const upload = (content) => {
-  let formData = new FormData();
-  formData.append("file", content.file);
-  formData.append("type", 'keepFiles');
+  const formData = new FormData();
+  formData.append('file', content.file);
+  formData.append('type', 'keepFiles');
   axios
-      .post("/folder/upload", formData, {headers: {"Content-type": "multipart/form-data"}})
-      .then((resp) => {
-        if (resp['code'] === 2000) {
+    .post('/folder/upload', formData, {
+      headers: { 'Content-type': 'multipart/form-data' },
+    })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        ElMessage.success({
+          message: resp.message,
+        });
+        element.value.eleValue = resp.data;
+      }
+    });
+};
+const getElementInfo = (id) => {
+  axios
+    .get('/controller/elements', {
+      params: {
+        id,
+      },
+    })
+    .then((resp) => {
+      element.value = resp.data;
+    });
+};
+const saveElement = () => {
+  updateEle.value.validate((valid) => {
+    if (valid) {
+      axios.put('/controller/elements', element.value).then((resp) => {
+        if (resp.code === 2000) {
           ElMessage.success({
-            message: resp['message'],
+            message: resp.message,
           });
-          element.value.eleValue = resp['data']
+          emit('flush');
         }
       });
-}
-const getElementInfo = (id) => {
-  axios.get("/controller/elements", {
-    params: {
-      id
     }
-  }).then(resp => {
-    element.value = resp.data
-  })
-}
-const saveElement = () => {
-  updateEle['value'].validate((valid) => {
-    if (valid) {
-      axios.put("/controller/elements", element.value).then(resp => {
-        if (resp['code'] === 2000) {
-          ElMessage.success({
-            message: resp['message'],
-          });
-          emit("flush");
-        }
-      })
-    }
-  })
-}
-const moduleList = ref([])
+  });
+};
+const moduleList = ref([]);
 const getModuleList = () => {
-  axios.get("/controller/modules/list", {params: {projectId: props.projectId}}).then(resp => {
-    if (resp['code'] === 2000) {
-      moduleList.value = resp.data;
-      moduleList.value.push({id: 0, name: '无'})
-    }
-  })
-}
+  axios
+    .get('/controller/modules/list', { params: { projectId: props.projectId } })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        moduleList.value = resp.data;
+        moduleList.value.push({ id: 0, name: '无' });
+      }
+    });
+};
 onMounted(() => {
   if (props.elementId !== 0) {
-    getElementInfo(props.elementId)
+    getElementInfo(props.elementId);
   }
   if (props.elementObj) {
-    element.value.eleType = props.elementObj.eleType
-    element.value.eleValue = props.elementObj.eleValue
+    element.value.eleType = props.elementObj.eleType;
+    element.value.eleValue = props.elementObj.eleValue;
   }
   getModuleList();
-})
+});
 </script>
+
 <template>
-  <el-alert style="margin-bottom: 10px"
-            title="需要临时变量或全局变量时，可以添加{{变量名}}的形式"
-            type="info" show-icon close-text="Get!">
+  <el-alert
+    style="margin-bottom: 10px"
+    title="需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+    type="info"
+    show-icon
+    close-text="Get!"
+  >
   </el-alert>
-  <el-form ref="updateEle" :model="element" size="small" class="demo-table-expand" label-width="90px"
-           label-position="left">
+  <el-form
+    ref="updateEle"
+    :model="element"
+    size="small"
+    class="demo-table-expand"
+    label-width="90px"
+    label-position="left"
+  >
     <el-form-item
-        prop="eleName"
-        label="控件名称"
-        :rules="{
-          required: true,
-          message: '控件元素名称不能为空',
-          trigger: 'blur',
-        }"
+      prop="eleName"
+      label="控件名称"
+      :rules="{
+        required: true,
+        message: '控件元素名称不能为空',
+        trigger: 'blur',
+      }"
     >
       <el-input
-          v-model="element.eleName"
-          placeholder="请输入控件元素名称"
+        v-model="element.eleName"
+        placeholder="请输入控件元素名称"
       ></el-input>
     </el-form-item>
     <el-form-item prop="eleType" label="定位类型">
       <el-select
-          style="width: 100%"
-          v-model="element.eleType"
-          placeholder="请选择定位类型"
+        v-model="element.eleType"
+        style="width: 100%"
+        placeholder="请选择定位类型"
       >
         <el-option-group label="移动端常用定位方式">
           <el-option label="id（resource-id）" value="id"></el-option>
           <el-option value="xpath"></el-option>
           <el-option value="accessibilityId"></el-option>
-          <el-option label="nsPredicate（仅支持iOS10或以上）" value="nsPredicate"></el-option>
-          <el-option label="classChain（仅支持iOS）" value="classChain"></el-option>
-          <el-option label="uiautomator（仅支持Android）" value="androidUIAutomator"></el-option>
+          <el-option
+            label="nsPredicate（仅支持iOS10或以上）"
+            value="nsPredicate"
+          ></el-option>
+          <el-option
+            label="classChain（仅支持iOS）"
+            value="classChain"
+          ></el-option>
+          <el-option
+            label="uiautomator（仅支持Android）"
+            value="androidUIAutomator"
+          ></el-option>
         </el-option-group>
         <el-option-group label="特殊定位方式">
           <el-option label="坐标（支持相对坐标）" value="point"></el-option>
@@ -144,15 +169,15 @@ onMounted(() => {
     </el-form-item>
     <el-form-item prop="eleValue" label="控件元素值">
       <el-upload
-          v-if="element.eleType === 'image'"
-          drag
-          action=""
-          :with-credentials="true"
-          :limit="1"
-          :before-upload="beforeAvatarUpload"
-          :on-exceed="limitOut"
-          :http-request="upload"
-          list-type="picture"
+        v-if="element.eleType === 'image'"
+        drag
+        action=""
+        :with-credentials="true"
+        :limit="1"
+        :before-upload="beforeAvatarUpload"
+        :on-exceed="limitOut"
+        :http-request="upload"
+        list-type="picture"
       >
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -161,32 +186,32 @@ onMounted(() => {
         </template>
       </el-upload>
       <el-input
-          type="textarea"
-          autosize
-          v-else
-          v-model="element.eleValue"
-          placeholder="请输入控件元素值"
+        v-else
+        v-model="element.eleValue"
+        type="textarea"
+        autosize
+        placeholder="请输入控件元素值"
       ></el-input>
     </el-form-item>
-    <el-form-item
-        label="所属模块"
-    >
+    <el-form-item label="所属模块">
       <el-select
-          style="width: 100%;"
-          v-model="element.moduleId"
-          placeholder="请选择模块"
+        v-model="element.moduleId"
+        style="width: 100%"
+        placeholder="请选择模块"
       >
         <el-option
-            v-for="item in moduleList"
-            :key="item.name"
-            :value="item.id"
-            :label="item.name"
+          v-for="item in moduleList"
+          :key="item.name"
+          :value="item.id"
+          :label="item.name"
         >
         </el-option>
       </el-select>
     </el-form-item>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="saveElement">确 定</el-button>
+      <el-button size="small" type="primary" @click="saveElement"
+        >确 定</el-button
+      >
     </div>
   </el-form>
 </template>

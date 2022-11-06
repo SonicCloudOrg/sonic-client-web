@@ -16,13 +16,20 @@
  *
  */
 
-import {shallowRef, reactive, computed, defineEmits, ref, onMounted} from "vue";
-import {Codemirror} from 'vue-codemirror'
-import {oneDark} from '@codemirror/theme-one-dark'
-import {java} from '@codemirror/lang-java'
-import {python} from '@codemirror/lang-python'
-import axios from "../http/axios";
-import Pageable from './Pageable.vue'
+import {
+  shallowRef,
+  reactive,
+  computed,
+  defineEmits,
+  ref,
+  onMounted,
+} from 'vue';
+import { Codemirror } from 'vue-codemirror';
+import { oneDark } from '@codemirror/theme-one-dark';
+import { java } from '@codemirror/lang-java';
+import { python } from '@codemirror/lang-python';
+import axios from '../http/axios';
+import Pageable from './Pageable.vue';
 
 const props = defineProps({
   projectId: Number,
@@ -43,45 +50,53 @@ const props = defineProps({
   /** 是否展示底部栏，默认不展示 */
   showFooter: {
     type: Boolean,
-    default: false
+    default: false,
   },
   /** 是否展示顶部工具栏，默认不展示 */
   showToolBar: {
     type: Boolean,
-    default: false
-  }
-})
-const emit = defineEmits(["ready", "change", "save", "update:code", "update:language", "update:theme", "update:tabSize"])
+    default: false,
+  },
+});
+const emit = defineEmits([
+  'ready',
+  'change',
+  'save',
+  'update:code',
+  'update:language',
+  'update:theme',
+  'update:tabSize',
+]);
 
-const themes = {oneDark}
+const themes = { oneDark };
 const languages = {
   Groovy: java(),
-  Python: python()
+  Python: python(),
   // ... 支持语言高亮扩展
-}
+};
 const themeOptions = [
   {
-    label: "Light",
-    value: "default"
+    label: 'Light',
+    value: 'default',
   },
   {
-    label: "Dark",
-    value: "oneDark"
-  }
-]
+    label: 'Dark',
+    value: 'oneDark',
+  },
+];
 const languageOptions = [
   {
     label: 'Groovy (Java) ',
-    value: 'Groovy' // 与 languages key 对应
+    value: 'Groovy', // 与 languages key 对应
   },
   {
     label: 'Python',
-    value: 'Python'
-  }
+    value: 'Python',
+  },
   // ... 支持语言高亮选项
-]
+];
 
-const view = shallowRef()
+const view = shallowRef();
 const config = reactive({
   disabled: props?.disabled || false,
   indentWithTab: true,
@@ -90,84 +105,96 @@ const config = reactive({
   placeholder: props?.placeholder || 'Code goes here...',
   language: props?.language || 'Groovy',
   theme: props?.theme || 'oneDark',
-  phrases: 'en-us'
-})
+  phrases: 'en-us',
+});
 
 const extensions = computed(() => {
-  const result = []
-  result.push(languages[config.language])
+  const result = [];
+  result.push(languages[config.language]);
   if (themes[config.theme]) {
-    result.push(themes[config.theme])
+    result.push(themes[config.theme]);
   }
-  return result
-})
+  return result;
+});
 
 const getCodemirrorStates = (view) => {
-  const state = view.state
-  const ranges = state.selection.ranges
-  const selected = ranges.reduce((r, range) => r + range.to - range.from, 0)
-  const cursor = ranges[0].anchor
-  const length = state.doc.length
-  const lines = state.doc.lines
+  const { state } = view;
+  const { ranges } = state.selection;
+  const selected = ranges.reduce((r, range) => r + range.to - range.from, 0);
+  const cursor = ranges[0].anchor;
+  const { length } = state.doc;
+  const { lines } = state.doc;
   return {
     selected,
     cursor,
     length,
-    lines
-  }
-}
+    lines,
+  };
+};
 
 const state = reactive({
   lines: null,
   cursor: null,
   selected: null,
-  length: null
-})
+  length: null,
+});
 
 const handleStateUpdate = (viewUpdate) => {
-  const {lines, cursor, selected, length} = getCodemirrorStates(viewUpdate)
+  const { lines, cursor, selected, length } = getCodemirrorStates(viewUpdate);
   // selected
-  state.selected = selected
-  state.cursor = cursor
+  state.selected = selected;
+  state.cursor = cursor;
   // length
-  state.length = length
-  state.lines = lines
-}
+  state.length = length;
+  state.lines = lines;
+};
 
-const pageData = ref([])
-const name = ref("")
+const pageData = ref([]);
+const name = ref('');
 const getScriptList = (pageNum, pSize) => {
-  axios.get("/controller/scripts/list", {
-    params: {
-      projectId: props.projectId,
-      name: name.value,
-      page: pageNum || 1,
-      pageSize: 5,
-    }
-  }).then(resp => {
-    pageData.value = resp.data
-  })
-}
+  axios
+    .get('/controller/scripts/list', {
+      params: {
+        projectId: props.projectId,
+        name: name.value,
+        page: pageNum || 1,
+        pageSize: 5,
+      },
+    })
+    .then((resp) => {
+      pageData.value = resp.data;
+    });
+};
 const importReplaceFrom = (s) => {
-  emit('update:code', s.content)
-  emit('update:language', s.scriptLanguage)
-}
+  emit('update:code', s.content);
+  emit('update:language', s.scriptLanguage);
+};
 const importAddFrom = (s) => {
-  emit('update:code', props.code + "\n" + s.content)
-  emit('update:language', s.scriptLanguage)
-}
+  emit('update:code', `${props.code}\n${s.content}`);
+  emit('update:language', s.scriptLanguage);
+};
 onMounted(() => {
   getScriptList();
-})
+});
 </script>
 
 <template>
-  <div class="toolbar" v-if="showToolBar">
+  <div v-if="showToolBar" class="toolbar">
     <div class="item">
       <label class="toolbar-label" for="language">Language:</label>
-      <el-select style="width: 130px" v-model="config.language" size="mini" placeholder="请选择"
-                @change="emit('update:language', $event)">
-        <el-option v-for="item in languageOptions" :key="item.label" :label="item.label" :value="item.value">
+      <el-select
+        v-model="config.language"
+        style="width: 130px"
+        size="mini"
+        placeholder="请选择"
+        @change="emit('update:language', $event)"
+      >
+        <el-option
+          v-for="item in languageOptions"
+          :key="item.label"
+          :label="item.label"
+          :value="item.value"
+        >
         </el-option>
       </el-select>
     </div>
@@ -178,17 +205,37 @@ onMounted(() => {
         </template>
         <div class="form-section">
           <label for="theme">Theme:</label>
-          <el-select style="width: 130px" v-model="config.theme" size="mini" placeholder="请选择"
-                    @change="emit('update:theme', $event)">
-            <el-option v-for="item in themeOptions" :key="item.label" :label="item.label" :value="item.value">
+          <el-select
+            v-model="config.theme"
+            style="width: 130px"
+            size="mini"
+            placeholder="请选择"
+            @change="emit('update:theme', $event)"
+          >
+            <el-option
+              v-for="item in themeOptions"
+              :key="item.label"
+              :label="item.label"
+              :value="item.value"
+            >
             </el-option>
           </el-select>
         </div>
         <div class="form-section">
           <label for="tabSize">TabSize:</label>
-          <el-select style="width: 130px" v-model="config.tabSize" size="mini" placeholder="请选择"
-                    @change="emit('update:tabSize', $event)">
-            <el-option v-for="item in [2, 4, 6, 8]" :key="item" :label="item" :value="item">
+          <el-select
+            v-model="config.tabSize"
+            style="width: 130px"
+            size="mini"
+            placeholder="请选择"
+            @change="emit('update:tabSize', $event)"
+          >
+            <el-option
+              v-for="item in [2, 4, 6, 8]"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
             </el-option>
           </el-select>
         </div>
@@ -198,49 +245,76 @@ onMounted(() => {
           <el-button size="mini">导入模板</el-button>
         </template>
         <el-table border :data="pageData.content">
-          <el-table-column align="center" width="80" property="id" label="脚本id"/>
+          <el-table-column
+            align="center"
+            width="80"
+            property="id"
+            label="脚本id"
+          />
           <el-table-column header-align="center" property="name">
             <template #header>
-              <el-input v-model="name" size="mini" @input="getScriptList()" placeholder="输入名称搜索"/>
+              <el-input
+                v-model="name"
+                size="mini"
+                placeholder="输入名称搜索"
+                @input="getScriptList()"
+              />
             </template>
           </el-table-column>
-          <el-table-column align="center" width="100" property="scriptLanguage" label="脚本语言"/>
+          <el-table-column
+            align="center"
+            width="100"
+            property="scriptLanguage"
+            label="脚本语言"
+          />
           <el-table-column align="center" width="150" label="导入方式">
             <template #default="scope">
-              <el-button type="primary" size="mini" @click="importAddFrom(scope.row)">追加</el-button>
-              <el-button type="primary" size="mini" @click="importReplaceFrom(scope.row)">替换</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                @click="importAddFrom(scope.row)"
+                >追加</el-button
+              >
+              <el-button
+                type="primary"
+                size="mini"
+                @click="importReplaceFrom(scope.row)"
+                >替换</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
         <pageable
-            :isPageSet="false"
-            :total="pageData['totalElements']"
-            :current-page="pageData['number']+1"
-            :page-size="pageData['size']"
-            @change="getScriptList"
+          :is-page-set="false"
+          :total="pageData['totalElements']"
+          :current-page="pageData['number'] + 1"
+          :page-size="pageData['size']"
+          @change="getScriptList"
         ></pageable>
       </el-popover>
-      <el-button size="mini" type="primary" @click="emit('save')">保存</el-button>
+      <el-button size="mini" type="primary" @click="emit('save')"
+        >保存</el-button
+      >
     </div>
   </div>
   <Codemirror
-      class="codemirror"
-      ref="cm"
-      v-model="code"
-      :autofocus="config.autofocus"
-      :placeholder="config.placeholder"
-      :indentWithTab="config.indentWithTab"
-      :tabSize="config.tabSize"
-      :disabled="config.disabled"
-      :style="{ height: height || '300px' }"
-      :extensions="extensions"
-      @update="handleStateUpdate"
-      @ready="emit('ready', $event)"
-      @change="emit('update:code', $event)"
-      @focus="emit('focus', $event)"
-      @blur="emit('blur', $event)"
+    ref="cm"
+    v-model="code"
+    class="codemirror"
+    :autofocus="config.autofocus"
+    :placeholder="config.placeholder"
+    :indent-with-tab="config.indentWithTab"
+    :tab-size="config.tabSize"
+    :disabled="config.disabled"
+    :style="{ height: height || '300px' }"
+    :extensions="extensions"
+    @update="handleStateUpdate"
+    @ready="emit('ready', $event)"
+    @change="emit('update:code', $event)"
+    @focus="emit('focus', $event)"
+    @blur="emit('blur', $event)"
   />
-  <div class="footer" v-if="showFooter">
+  <div v-if="showFooter" class="footer">
     <div class="infos">
       <span class="item">TIPS: 编辑后记得保存哦</span>
       <span class="item">Spaces: {{ config.tabSize }}</span>
@@ -259,8 +333,8 @@ onMounted(() => {
   align-items: center;
   flex-wrap: wrap;
   padding: 0 10px 10px 10px;
-  background: #F9F9F9;
-  border: 1px solid #DDDDE1;
+  background: #f9f9f9;
+  border: 1px solid #dddde1;
 
   .item {
     display: inline-flex;

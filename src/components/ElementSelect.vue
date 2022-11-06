@@ -1,6 +1,6 @@
 <script setup>
-import {ref, onMounted} from "vue";
-import axios from "../http/axios";
+import { ref, onMounted } from 'vue';
+import axios from '../http/axios';
 
 const props = defineProps({
   label: String,
@@ -9,105 +9,115 @@ const props = defineProps({
   type: String,
   projectId: Number,
   step: Object,
-})
-const pageData = ref({
-  content: []
 });
-const moduleId = ref(0)
-const name = ref("")
+const pageData = ref({
+  content: [],
+});
+const moduleId = ref(0);
+const name = ref('');
 const pageSize = ref(10);
-const currentPage = ref(0)
+const currentPage = ref(0);
 const findByName = (n) => {
-  props.step.elements[props.index] = null
-  name.value = n
-  findByProjectIdAndEleType(true)
-}
+  props.step.elements[props.index] = null;
+  name.value = n;
+  findByProjectIdAndEleType(true);
+};
 const findByProjectIdAndEleType = (event, pageNum, pSize) => {
   if (event) {
-    props.step.elements[props.index] = null
-    axios.get("/controller/elements/list", {
-      params: {
-        name: name.value,
-        projectId: props.projectId,
-        moduleIds: [moduleId.value],
-        type: props.type,
-        page: pageNum || 1,
-        pageSize: pSize || pageSize.value,
-      }
-    }).then(resp => {
-      pageData.value = resp.data
-      currentPage.value = pageData.value['number'] + 1
-    })
+    props.step.elements[props.index] = null;
+    axios
+      .get('/controller/elements/list', {
+        params: {
+          name: name.value,
+          projectId: props.projectId,
+          moduleIds: [moduleId.value],
+          type: props.type,
+          page: pageNum || 1,
+          pageSize: pSize || pageSize.value,
+        },
+      })
+      .then((resp) => {
+        pageData.value = resp.data;
+        currentPage.value = pageData.value.number + 1;
+      });
   }
-}
-const moduleList = ref([])
+};
+const moduleList = ref([]);
 const getModuleList = () => {
-  axios.get("/controller/modules/list", {params: {projectId: props.projectId}}).then(resp => {
-    if (resp['code'] === 2000) {
-      moduleList.value = resp.data;
-      moduleList.value.push({id: 0, name: '无'})
-      if(props.step.elements[props.index] != null){
-        moduleId.value = props.step.elements[props.index].moduleId;
+  axios
+    .get('/controller/modules/list', { params: { projectId: props.projectId } })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        moduleList.value = resp.data;
+        moduleList.value.push({ id: 0, name: '无' });
+        if (props.step.elements[props.index] != null) {
+          moduleId.value = props.step.elements[props.index].moduleId;
+        }
       }
-    }
-  })
-}
+    });
+};
 const findByModule = (n) => {
-  props.step.elements[props.index] = null
-  findByProjectIdAndEleType(true)
-}
+  props.step.elements[props.index] = null;
+  findByProjectIdAndEleType(true);
+};
 onMounted(() => {
   if (props.step.elements[props.index]) {
-    pageData.value['content'].push(props.step.elements[props.index])
+    pageData.value.content.push(props.step.elements[props.index]);
   }
-  getModuleList()
-})
+  getModuleList();
+});
 </script>
+
 <template>
   <el-form-item
-      :label="label"
-      :rules="[
-            { required: true, message: place, trigger: 'change' },
-          ]"
-      :prop="'elements['+index+']'"
+    :label="label"
+    :rules="[{ required: true, message: place, trigger: 'change' }]"
+    :prop="'elements[' + index + ']'"
   >
     <el-card>
-      <span style="font-size: 14px;color: #99a9bf;margin-right:10px">模块筛选</span>
-      <el-select size="small" v-model="moduleId" @change="findByModule">
+      <span style="font-size: 14px; color: #99a9bf; margin-right: 10px"
+        >模块筛选</span
+      >
+      <el-select v-model="moduleId" size="small" @change="findByModule">
         <el-option
-            v-for="item in moduleList"
-            :key="item.name"
-            :value="item.id"
-            :label="item.name"
+          v-for="item in moduleList"
+          :key="item.name"
+          :value="item.id"
+          :label="item.name"
         >
         </el-option>
       </el-select>
 
       <div style="margin-top: 10px">
-        <span style="font-size: 14px;color: #99a9bf;margin-right:10px">名称筛选</span>
+        <span style="font-size: 14px; color: #99a9bf; margin-right: 10px"
+          >名称筛选</span
+        >
         <el-select
-            filterable
-            remote
-            :remote-method="findByName"
-            value-key="id"
-            v-model="step.elements[index]"
-            placeholder="请输入控件名称筛选"
-            @visible-change="findByProjectIdAndEleType"
+          v-model="step.elements[index]"
+          filterable
+          remote
+          :remote-method="findByName"
+          value-key="id"
+          placeholder="请输入控件名称筛选"
+          @visible-change="findByProjectIdAndEleType"
         >
           <el-option
-              v-if="pageData['content']!==null"
-              v-for="item in pageData['content']"
-              :key="item.id"
-              :label="item['eleName']"
-              :value="item"
+            v-for="item in pageData['content']"
+            v-if="pageData['content'] !== null"
+            :key="item.id"
+            :label="item['eleName']"
+            :value="item"
           ></el-option>
-          <div style="text-align:center;margin-top: 5px;">
-            <el-pagination small layout="prev, pager, next"
-                           hide-on-single-page
-                           v-model:current-page="currentPage"
-                           :total="pageData['totalElements']"
-                           :page-size="pageSize"
-                           @current-change="findByProjectIdAndEleType(true,$event)">
+          <div style="text-align: center; margin-top: 5px">
+            <el-pagination
+              v-model:current-page="currentPage"
+              small
+              layout="prev, pager, next"
+              hide-on-single-page
+              :total="pageData['totalElements']"
+              :page-size="pageSize"
+              @current-change="findByProjectIdAndEleType(true, $event)"
+            >
             </el-pagination>
           </div>
         </el-select>
