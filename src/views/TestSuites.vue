@@ -117,7 +117,7 @@ onMounted(() => {
             >
             </el-table-column>
             <el-table-column
-                :label="$t('devices.from.model')"
+                :label="$t('devices.form.model')"
                 prop="model"
                 align="center"
             >
