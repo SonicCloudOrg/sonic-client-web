@@ -473,7 +473,7 @@ const androidRemoteTS = {
   getPocoFail: '获取POCO控件失败！请确保已经打开对应游戏引擎并接入Poco-SDK',
   pullFile: {
     success: '拉取文件成功',
-    fail: '拉去文件失败',
+    fail: '拉取文件失败',
   },
   pushFile: {
     success: '上传文件成功！',
