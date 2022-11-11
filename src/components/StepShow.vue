@@ -103,6 +103,10 @@ const summitStep = () => {
     <el-tag size="small" style="margin-right: 10px">切换位置服务</el-tag
     >{{ step.content === 'true' ? '开启' : '关闭' }}
   </span>
+  <span v-if="step.stepType === 'switchWindowMode'">
+    <el-tag size="small" style="margin-right: 10px">切换窗口模式</el-tag
+    >{{ step.content === 'true' ? '多窗口模式' : '单窗口模式' }}
+  </span>
   <span v-if="step.stepType === 'tap'">
     <el-tag size="small">点击坐标</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{

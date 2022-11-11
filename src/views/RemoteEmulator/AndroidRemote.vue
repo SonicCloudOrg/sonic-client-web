@@ -15,7 +15,7 @@
  *  limitations under the License.
  *
  */
-import { useRoute, useRouter } from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 import {
   computed,
   nextTick,
@@ -25,9 +25,9 @@ import {
   ref,
   watch,
 } from 'vue';
-import { useStore } from 'vuex';
+import {useStore} from 'vuex';
 import axios from '@/http/axios';
-import { ElMessage } from 'element-plus';
+import {ElMessage} from 'element-plus';
 import useClipboard from 'vue-clipboard3';
 import ColorImg from '@/components/ColorImg.vue';
 import StepList from '@/components/StepList.vue';
@@ -80,16 +80,16 @@ import {
   Postcard,
 } from '@element-plus/icons';
 
-import { useI18n } from 'vue-i18n';
+import {useI18n} from 'vue-i18n';
 
 import AudioProcessor from '@/lib/audio-processor';
 import wifiLogo from '@/assets/img/wifi.png';
 import RenderDeviceName from '../../components/RenderDeviceName.vue';
 import Scrcpy from './Scrcpy';
 
-const { t: $t } = useI18n();
+const {t: $t} = useI18n();
 
-const { toClipboard } = useClipboard();
+const {toClipboard} = useClipboard();
 const route = useRoute();
 const store = useStore();
 const router = useRouter();
@@ -115,7 +115,8 @@ const device = ref({});
 const agent = ref({});
 const screenUrls = ref([]);
 const uploadUrl = ref('');
-const text = ref({ content: '' });
+const text = ref({content: ''});
+const isMultiWindows = ref(false)
 const pocoTypeList = ref([
   {
     name: 'Unity3d',
@@ -323,10 +324,10 @@ const changeAppListPage = (pageNum) => {
 };
 const filterTableData = computed(() => {
   const list = appList.value.filter(
-    (data) =>
-      !filterAppText.value ||
-      data.appName.toLowerCase().includes(filterAppText.value.toLowerCase()) ||
-      data.packageName.toLowerCase().includes(filterAppText.value.toLowerCase())
+      (data) =>
+          !filterAppText.value ||
+          data.appName.toLowerCase().includes(filterAppText.value.toLowerCase()) ||
+          data.packageName.toLowerCase().includes(filterAppText.value.toLowerCase())
   );
   transformPageable(list);
   return list;
@@ -380,31 +381,31 @@ watch(filterText, (newValue, oldValue) => {
 const filterNode = (value, data) => {
   if (!value) return true;
   return (
-    data.label.indexOf(value) !== -1 ||
-    (data.detail['resource-id']
-      ? data.detail['resource-id'].indexOf(value) !== -1
-      : false)
+      data.label.indexOf(value) !== -1 ||
+      (data.detail['resource-id']
+          ? data.detail['resource-id'].indexOf(value) !== -1
+          : false)
   );
 };
 const findBestXpath = (elementDetail) => {
   const result = [];
   if (elementDetail['resource-id']) {
     result.push(
-      `//${elementDetail.class}[@resource-id='${elementDetail['resource-id']}']`
+        `//${elementDetail.class}[@resource-id='${elementDetail['resource-id']}']`
     );
   }
   if (elementDetail.text) {
     result.push(`//${elementDetail.class}[@text='${elementDetail.text}']`);
     result.push(
-      `//${elementDetail.class}[contains(@text,'${elementDetail.text}')]`
+        `//${elementDetail.class}[contains(@text,'${elementDetail.text}')]`
     );
   }
   if (elementDetail['content-desc']) {
     result.push(
-      `//${elementDetail.class}[@content-desc='${elementDetail['content-desc']}']`
+        `//${elementDetail.class}[@content-desc='${elementDetail['content-desc']}']`
     );
     result.push(
-      `//${elementDetail.class}[contains(@content-desc,'${elementDetail['content-desc']}')]`
+        `//${elementDetail.class}[contains(@content-desc,'${elementDetail['content-desc']}')]`
     );
   }
   return result;
@@ -413,14 +414,14 @@ const downloadImg = (url) => {
   const time = new Date().getTime();
   const link = document.createElement('a');
   fetch(url)
-    .then((res) => res.blob())
-    .then((blob) => {
-      link.href = URL.createObjectURL(blob);
-      link.download = `${time}.jpg`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
+      .then((res) => res.blob())
+      .then((blob) => {
+        link.href = URL.createObjectURL(blob);
+        link.download = `${time}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
 };
 const copy = (value) => {
   try {
@@ -469,22 +470,22 @@ const getVideoScreenshot = () => {
   canvas.width = w;
   canvas.height = h;
   canvasCtx.drawImage(
-    video,
-    0,
-    0,
-    video.videoWidth,
-    video.videoHeight,
-    0,
-    0,
-    w,
-    h
+      video,
+      0,
+      0,
+      video.videoWidth,
+      video.videoHeight,
+      0,
+      0,
+      w,
+      h
   );
   return canvas.toDataURL('image/png', 1);
 };
 const quickCap = () => {
   let imageUrl;
   if (oldBlob) {
-    const blob = new Blob([oldBlob], { type: 'image/jpeg' });
+    const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
     imageUrl = URL.createObjectURL(blob);
   } else {
@@ -497,7 +498,7 @@ const quickCap = () => {
 const setPocoImgData = () => {
   let imageUrl;
   if (oldBlob) {
-    const blob = new Blob([oldBlob], { type: 'image/jpeg' });
+    const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
     imageUrl = URL.createObjectURL(blob);
   } else {
@@ -516,7 +517,7 @@ const setPocoImgData = () => {
 const setImgData = () => {
   let imageUrl;
   if (oldBlob) {
-    const blob = new Blob([oldBlob], { type: 'image/jpeg' });
+    const blob = new Blob([oldBlob], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
     imageUrl = URL.createObjectURL(blob);
   } else {
@@ -536,14 +537,14 @@ const openSocket = (host, port, key, udId) => {
   if ('WebSocket' in window) {
     //
     websocket = new WebSocket(
-      `ws://${host}:${port}/websockets/android/${key}/${udId}/${localStorage.getItem(
-        'SonicToken'
-      )}`
+        `ws://${host}:${port}/websockets/android/${key}/${udId}/${localStorage.getItem(
+            'SonicToken'
+        )}`
     );
     //
     __Scrcpy = new Scrcpy({
       socketURL: `ws://${host}:${port}/websockets/android/screen/${key}/${udId}/${localStorage.getItem(
-        'SonicToken'
+          'SonicToken'
       )}`,
       node: 'scrcpy-video',
       onmessage: screenWebsocketOnmessage,
@@ -553,33 +554,35 @@ const openSocket = (host, port, key, udId) => {
     changeScreenMode(screenMode.value, 1);
     //
     terminalWebsocket = new WebSocket(
-      `ws://${host}:${port}/websockets/android/terminal/${key}/${udId}/${localStorage.getItem(
-        'SonicToken'
-      )}`
+        `ws://${host}:${port}/websockets/android/terminal/${key}/${udId}/${localStorage.getItem(
+            'SonicToken'
+        )}`
     );
   } else {
     console.error($t('androidRemoteTS.noWebSocket'));
   }
   websocket.onmessage = websocketOnmessage;
-  websocket.onclose = (e) => {};
+  websocket.onclose = (e) => {
+  };
   terminalWebsocket.onmessage = terminalWebsocketOnmessage;
-  terminalWebsocket.onclose = (e) => {};
+  terminalWebsocket.onclose = (e) => {
+  };
   driverLoading.value = true;
 };
 const sendLogcat = () => {
   terminalWebsocket.send(
-    JSON.stringify({
-      type: 'logcat',
-      level: logcatFilter.value.level,
-      filter: logcatFilter.value.filter,
-    })
+      JSON.stringify({
+        type: 'logcat',
+        level: logcatFilter.value.level,
+        filter: logcatFilter.value.filter,
+      })
   );
 };
 const getWifiList = () => {
   terminalWebsocket.send(
-    JSON.stringify({
-      type: 'wifiList',
-    })
+      JSON.stringify({
+        type: 'wifiList',
+      })
   );
 };
 const clearLogcat = () => {
@@ -587,26 +590,26 @@ const clearLogcat = () => {
 };
 const stopLogcat = () => {
   terminalWebsocket.send(
-    JSON.stringify({
-      type: 'stopLogcat',
-    })
+      JSON.stringify({
+        type: 'stopLogcat',
+      })
   );
 };
 const sendCmd = () => {
   if (cmdInput.value.length > 0 && cmdIsDone.value === true) {
     cmdIsDone.value = false;
     cmdOutPut.value.push(
-      JSON.parse(
-        JSON.stringify(
-          `<span style='color: #409EFF'>${cmdUser.value}</span>:/ $ ${cmdInput.value}`
+        JSON.parse(
+            JSON.stringify(
+                `<span style='color: #409EFF'>${cmdUser.value}</span>:/ $ ${cmdInput.value}`
+            )
         )
-      )
     );
     terminalWebsocket.send(
-      JSON.stringify({
-        type: 'command',
-        detail: cmdInput.value,
-      })
+        JSON.stringify({
+          type: 'command',
+          detail: cmdInput.value,
+        })
     );
     cmdInput.value = '';
   }
@@ -617,9 +620,9 @@ const clearCmd = () => {
 const stopCmd = () => {
   cmdIsDone.value = true;
   terminalWebsocket.send(
-    JSON.stringify({
-      type: 'stopCmd',
-    })
+      JSON.stringify({
+        type: 'stopCmd',
+      })
   );
 };
 const terminalWebsocketOnmessage = (message) => {
@@ -638,17 +641,17 @@ const terminalWebsocketOnmessage = (message) => {
       break;
     case 'logcatResp':
       logcatOutPut.value.push(
-        JSON.parse(message.data)
-          .detail.replace(/ I /g, "<span style='color: #0d84ff'> I </span>")
-          .replace(/ V /g, "<span style='color: #0d84ff'> I </span>")
-          .replace(/ D /g, "<span style='color: #0d84ff'> D </span>")
-          .replace(/ W /g, "<span style='color: #E6A23C'> W </span>")
-          .replace(/ E /g, "<span style='color: #F56C6C'> E </span>")
-          .replace(/ F /g, "<span style='color: #F56C6C'> F </span>")
+          JSON.parse(message.data)
+              .detail.replace(/ I /g, "<span style='color: #0d84ff'> I </span>")
+              .replace(/ V /g, "<span style='color: #0d84ff'> I </span>")
+              .replace(/ D /g, "<span style='color: #0d84ff'> D </span>")
+              .replace(/ W /g, "<span style='color: #E6A23C'> W </span>")
+              .replace(/ E /g, "<span style='color: #F56C6C'> E </span>")
+              .replace(/ F /g, "<span style='color: #F56C6C'> F </span>")
       );
       nextTick(() => {
         logcatScroll.value.wrap.scrollTop =
-          logcatScroll.value.wrap.scrollHeight;
+            logcatScroll.value.wrap.scrollHeight;
       });
       break;
     case 'terminal':
@@ -676,15 +679,15 @@ const screenWebsocketOnmessage = (message) => {
   // console.log('screenWebsocketOnmessage', message.data);
   if (typeof message.data === 'object') {
     oldBlob = message.data;
-    const blob = new Blob([message.data], { type: 'image/jpeg' });
+    const blob = new Blob([message.data], {type: 'image/jpeg'});
     const URL = window.URL || window.webkitURL;
     const img = new Image();
     const canvas = document.getElementById('canvas');
     const g = canvas.getContext('2d');
     img.onload = function () {
       // 不根据按钮组，使用数据源的分辨率点对点
-      const { width } = img;
-      const { height } = img;
+      const {width} = img;
+      const {height} = img;
       canvas.width = width;
       canvas.height = height;
       g.drawImage(img, 0, 0, width, height);
@@ -738,7 +741,7 @@ const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data).msg) {
     case 'poco': {
       pocoLoading.value = false;
-      const { result } = JSON.parse(message.data);
+      const {result} = JSON.parse(message.data);
       if (result) {
         ElMessage.success({
           message: $t('androidRemoteTS.getPocoSuccess'),
@@ -792,11 +795,11 @@ const websocketOnmessage = (message) => {
     case 'sas': {
       remoteAdbLoading.value = false;
       if (
-        JSON.parse(message.data).isEnable &&
-        JSON.parse(message.data).port > 0
+          JSON.parse(message.data).isEnable &&
+          JSON.parse(message.data).port > 0
       ) {
         remoteAdbUrl.value = `${agent.value.host}:${
-          JSON.parse(message.data).port
+            JSON.parse(message.data).port
         }`;
       }
       break;
@@ -901,10 +904,10 @@ const websocketOnmessage = (message) => {
 const openDriver = () => {
   driverLoading.value = true;
   websocket.send(
-    JSON.stringify({
-      type: 'debug',
-      detail: 'openDriver',
-    })
+      JSON.stringify({
+        type: 'debug',
+        detail: 'openDriver',
+      })
   );
 };
 const getCurLocation = () => {
@@ -917,22 +920,22 @@ const getCurLocation = () => {
   if (directionStatus.value != 0 && directionStatus.value != 180) {
     // 左右旋转
     _x = parseInt(
-      (event.clientY - rect.top) * (imgWidth / canvas.clientHeight)
+        (event.clientY - rect.top) * (imgWidth / canvas.clientHeight)
     );
     //
     _y = parseInt(
-      (event.clientX - rect.left) * (imgHeight / canvas.clientWidth)
+        (event.clientX - rect.left) * (imgHeight / canvas.clientWidth)
     );
     x = directionStatus.value == 90 ? imgWidth - _x : _x - imgWidth * 3;
     y = directionStatus.value == 90 ? _y : -_y;
   } else {
     _x = parseInt(
-      (event.clientX - rect.left) * (imgWidth / canvas.clientWidth)
+        (event.clientX - rect.left) * (imgWidth / canvas.clientWidth)
     );
     x = directionStatus.value == 180 ? imgWidth - _x : _x;
     //
     _y = parseInt(
-      (event.clientY - rect.top) * (imgHeight / canvas.clientHeight)
+        (event.clientY - rect.top) * (imgHeight / canvas.clientHeight)
     );
     y = directionStatus.value == 180 ? imgHeight - _y : _y;
   }
@@ -951,21 +954,21 @@ const getCurLocationForAdb = () => {
   if (directionStatus.value != 0 && directionStatus.value != 180) {
     // 左右旋转
     _x = parseInt(
-      (event.clientY - rect.top) * (imgWidth / canvas.clientHeight)
+        (event.clientY - rect.top) * (imgWidth / canvas.clientHeight)
     );
     _y = parseInt(
-      (event.clientX - rect.left) * (imgHeight / canvas.clientWidth)
+        (event.clientX - rect.left) * (imgHeight / canvas.clientWidth)
     );
     x = _y;
     y = _x;
   } else {
     _x = parseInt(
-      (event.clientX - rect.left) * (imgWidth / canvas.clientWidth)
+        (event.clientX - rect.left) * (imgWidth / canvas.clientWidth)
     );
     x = directionStatus.value == 180 ? imgWidth - _x : _x;
     //
     _y = parseInt(
-      (event.clientY - rect.top) * (imgHeight / canvas.clientHeight)
+        (event.clientY - rect.top) * (imgHeight / canvas.clientHeight)
     );
     y = directionStatus.value == 180 ? imgHeight - _y : _y;
   }
@@ -979,34 +982,34 @@ const mouseup = (event) => {
     if (isPress) {
       isPress = false;
       websocket.send(
-        JSON.stringify({
-          type: 'touch',
-          detail: 'u 0\n',
-        })
+          JSON.stringify({
+            type: 'touch',
+            detail: 'u 0\n',
+          })
       );
     }
   } else {
     clearInterval(loop);
     time = 0;
-    const { x, y } = getCurLocationForAdb();
+    const {x, y} = getCurLocationForAdb();
     if (moveX === x && moveY === y) {
       if (!isLongPress) {
         websocket.send(
-          JSON.stringify({
-            type: 'debug',
-            detail: 'tap',
-            point: `${x},${y}`,
-          })
+            JSON.stringify({
+              type: 'debug',
+              detail: 'tap',
+              point: `${x},${y}`,
+            })
         );
       }
     } else {
       websocket.send(
-        JSON.stringify({
-          type: 'debug',
-          detail: 'swipe',
-          pointA: `${moveX},${moveY}`,
-          pointB: `${x},${y}`,
-        })
+          JSON.stringify({
+            type: 'debug',
+            detail: 'swipe',
+            pointA: `${moveX},${moveY}`,
+            pointB: `${x},${y}`,
+          })
       );
     }
     isLongPress = false;
@@ -1019,26 +1022,26 @@ const mouseleave = () => {
   } else if (isPress) {
     isPress = false;
     websocket.send(
-      JSON.stringify({
-        type: 'touch',
-        detail: 'u 0\n',
-      })
+        JSON.stringify({
+          type: 'touch',
+          detail: 'u 0\n',
+        })
     );
   }
 };
 const mousedown = (event) => {
   if (!isFixTouch) {
     // 安卓高版本
-    const { x, y } = getCurLocation();
+    const {x, y} = getCurLocation();
     isPress = true;
     websocket.send(
-      JSON.stringify({
-        type: 'touch',
-        detail: `d 0 ${x} ${y} 50\n`,
-      })
+        JSON.stringify({
+          type: 'touch',
+          detail: `d 0 ${x} ${y} 50\n`,
+        })
     );
   } else {
-    const { x, y } = getCurLocationForAdb();
+    const {x, y} = getCurLocationForAdb();
     moveX = x;
     moveY = y;
     clearInterval(loop);
@@ -1046,11 +1049,11 @@ const mousedown = (event) => {
       time += 500;
       if (time >= 1000 && isLongPress === false) {
         websocket.send(
-          JSON.stringify({
-            type: 'debug',
-            detail: 'longPress',
-            point: `${moveX},${moveY}`,
-          })
+            JSON.stringify({
+              type: 'debug',
+              detail: 'longPress',
+              point: `${moveX},${moveY}`,
+            })
         );
         isLongPress = true;
       }
@@ -1063,12 +1066,12 @@ const mousemove = (event) => {
       if (mouseMoveTime < 1) {
         mouseMoveTime++;
       } else {
-        const { x, y } = getCurLocation();
+        const {x, y} = getCurLocation();
         websocket.send(
-          JSON.stringify({
-            type: 'touch',
-            detail: `m 0 ${x} ${y} 50\n`,
-          })
+            JSON.stringify({
+              type: 'touch',
+              detail: `m 0 ${x} ${y} 50\n`,
+            })
         );
         mouseMoveTime = 0;
       }
@@ -1082,22 +1085,22 @@ const touchstart = async (event) => {
   let y;
   if (directionStatus.value === 0 || directionStatus.value === 180) {
     x = parseInt(
-      (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth)
+        (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth)
     );
     y = parseInt(
-      (event.clientY - rect.top) * (imgHeight / debugPic.clientHeight)
+        (event.clientY - rect.top) * (imgHeight / debugPic.clientHeight)
     );
   } else {
     x = parseInt(
-      (event.clientX - rect.left) * (imgHeight / debugPic.clientWidth)
+        (event.clientX - rect.left) * (imgHeight / debugPic.clientWidth)
     );
     y = parseInt(
-      (event.clientY - rect.top) * (imgWidth / debugPic.clientHeight)
+        (event.clientY - rect.top) * (imgWidth / debugPic.clientHeight)
     );
   }
   await nextTick(() => {
     tree.value.setCurrentKey(
-      findMinSize(findElementByPoint(elementData.value, x, y))
+        findMinSize(findElementByPoint(elementData.value, x, y))
     );
   });
   await handleNodeClick(tree.value.getCurrentNode());
@@ -1109,22 +1112,22 @@ const touchstartpoco = async (event) => {
   let y;
   if (directionStatus.value === 0 || directionStatus.value === 180) {
     x = parseInt(
-      (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth)
+        (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth)
     );
     y = parseInt(
-      (event.clientY - rect.top) * (imgHeight / debugPic.clientHeight)
+        (event.clientY - rect.top) * (imgHeight / debugPic.clientHeight)
     );
   } else {
     x = parseInt(
-      (event.clientX - rect.left) * (imgHeight / debugPic.clientWidth)
+        (event.clientX - rect.left) * (imgHeight / debugPic.clientWidth)
     );
     y = parseInt(
-      (event.clientY - rect.top) * (imgWidth / debugPic.clientHeight)
+        (event.clientY - rect.top) * (imgWidth / debugPic.clientHeight)
     );
   }
   await nextTick(() => {
     pocoTree.value.setCurrentKey(
-      findPocoMinSize(findPocoByPoint(pocoData.value, x, y))
+        findPocoMinSize(findPocoByPoint(pocoData.value, x, y))
     );
   });
   await handlePocoClick(pocoTree.value.getCurrentNode());
@@ -1172,30 +1175,30 @@ const findPocoByPoint = (ele, x, y) => {
     let eleEndY;
     if (directionStatus.value === 0 || directionStatus.value === 180) {
       eleStartX =
-        ele[i].payload.pos[0] * imgWidth -
-        (ele[i].payload.size[0] * imgWidth) / 2;
+          ele[i].payload.pos[0] * imgWidth -
+          (ele[i].payload.size[0] * imgWidth) / 2;
       eleStartY =
-        ele[i].payload.pos[1] * imgHeight -
-        (ele[i].payload.size[1] * imgHeight) / 2;
+          ele[i].payload.pos[1] * imgHeight -
+          (ele[i].payload.size[1] * imgHeight) / 2;
       eleEndX =
-        ele[i].payload.pos[0] * imgWidth +
-        (ele[i].payload.size[0] * imgWidth) / 2;
+          ele[i].payload.pos[0] * imgWidth +
+          (ele[i].payload.size[0] * imgWidth) / 2;
       eleEndY =
-        ele[i].payload.pos[1] * imgHeight +
-        (ele[i].payload.size[1] * imgHeight) / 2;
+          ele[i].payload.pos[1] * imgHeight +
+          (ele[i].payload.size[1] * imgHeight) / 2;
     } else {
       eleStartX =
-        ele[i].payload.pos[0] * imgHeight -
-        (ele[i].payload.size[0] * imgHeight) / 2;
+          ele[i].payload.pos[0] * imgHeight -
+          (ele[i].payload.size[0] * imgHeight) / 2;
       eleStartY =
-        ele[i].payload.pos[1] * imgWidth -
-        (ele[i].payload.size[1] * imgWidth) / 2;
+          ele[i].payload.pos[1] * imgWidth -
+          (ele[i].payload.size[1] * imgWidth) / 2;
       eleEndX =
-        ele[i].payload.pos[0] * imgHeight +
-        (ele[i].payload.size[0] * imgHeight) / 2;
+          ele[i].payload.pos[0] * imgHeight +
+          (ele[i].payload.size[0] * imgHeight) / 2;
       eleEndY =
-        ele[i].payload.pos[1] * imgWidth +
-        (ele[i].payload.size[1] * imgWidth) / 2;
+          ele[i].payload.pos[1] * imgWidth +
+          (ele[i].payload.size[1] * imgWidth) / 2;
     }
     if (x >= eleStartX && x <= eleEndX && y >= eleStartY && y <= eleEndY) {
       result.push({
@@ -1216,18 +1219,18 @@ const findElementByPoint = (ele, x, y) => {
   const result = [];
   for (const i in ele) {
     const eleStartX = ele[i].detail.bStart.substring(
-      0,
-      ele[i].detail.bStart.indexOf(',')
+        0,
+        ele[i].detail.bStart.indexOf(',')
     );
     const eleStartY = ele[i].detail.bStart.substring(
-      ele[i].detail.bStart.indexOf(',') + 1
+        ele[i].detail.bStart.indexOf(',') + 1
     );
     const eleEndX = ele[i].detail.bEnd.substring(
-      0,
-      ele[i].detail.bEnd.indexOf(',')
+        0,
+        ele[i].detail.bEnd.indexOf(',')
     );
     const eleEndY = ele[i].detail.bEnd.substring(
-      ele[i].detail.bEnd.indexOf(',') + 1
+        ele[i].detail.bEnd.indexOf(',') + 1
     );
     if (x >= eleStartX && x <= eleEndX && y >= eleStartY && y <= eleEndY) {
       result.push({
@@ -1267,10 +1270,10 @@ const printPoco = (data) => {
   const c = Math.round(Math.random() * 255);
   g.fillStyle = `rgba(${a}, ${b}, ${c}, 0.6)`;
   g.fillRect(
-    eleStartX * (canvas.width / imgWidth),
-    eleStartY * (canvas.height / imgHeight),
-    data.size[0] * imgWidth * (canvas.width / imgWidth),
-    data.size[1] * imgHeight * (canvas.height / imgHeight)
+      eleStartX * (canvas.width / imgWidth),
+      eleStartY * (canvas.height / imgHeight),
+      data.size[0] * imgWidth * (canvas.width / imgWidth),
+      data.size[1] * imgHeight * (canvas.height / imgHeight)
   );
 };
 const print = (data) => {
@@ -1278,11 +1281,11 @@ const print = (data) => {
   const g = canvas.getContext('2d');
   g.clearRect(0, 0, canvas.width, canvas.height);
   const eleStartX = data.detail.bStart.substring(
-    0,
-    data.detail.bStart.indexOf(',')
+      0,
+      data.detail.bStart.indexOf(',')
   );
   const eleStartY = data.detail.bStart.substring(
-    data.detail.bStart.indexOf(',') + 1
+      data.detail.bStart.indexOf(',') + 1
   );
   const eleEndX = data.detail.bEnd.substring(0, data.detail.bEnd.indexOf(','));
   const eleEndY = data.detail.bEnd.substring(data.detail.bEnd.indexOf(',') + 1);
@@ -1292,48 +1295,48 @@ const print = (data) => {
   g.fillStyle = `rgba(${a}, ${b}, ${c}, 0.6)`;
   if (directionStatus.value === 0 || directionStatus.value === 180) {
     g.fillRect(
-      eleStartX * (canvas.width / imgWidth),
-      eleStartY * (canvas.height / imgHeight),
-      (eleEndX - eleStartX) * (canvas.width / imgWidth),
-      (eleEndY - eleStartY) * (canvas.height / imgHeight)
+        eleStartX * (canvas.width / imgWidth),
+        eleStartY * (canvas.height / imgHeight),
+        (eleEndX - eleStartX) * (canvas.width / imgWidth),
+        (eleEndY - eleStartY) * (canvas.height / imgHeight)
     );
   } else {
     g.fillRect(
-      eleStartX * (canvas.width / imgHeight),
-      eleStartY * (canvas.height / imgWidth),
-      (eleEndX - eleStartX) * (canvas.width / imgHeight),
-      (eleEndY - eleStartY) * (canvas.height / imgWidth)
+        eleStartX * (canvas.width / imgHeight),
+        eleStartY * (canvas.height / imgWidth),
+        (eleEndX - eleStartX) * (canvas.width / imgHeight),
+        (eleEndY - eleStartY) * (canvas.height / imgWidth)
     );
   }
 };
 const searchDevice = () => {
   websocket.send(
-    JSON.stringify({
-      type: 'find',
-    })
+      JSON.stringify({
+        type: 'find',
+      })
   );
 };
 const startProxy = () => {
   websocket.send(
-    JSON.stringify({
-      type: 'proxy',
-    })
+      JSON.stringify({
+        type: 'proxy',
+      })
   );
 };
 const installCert = () => {
   websocket.send(
-    JSON.stringify({
-      type: 'installCert',
-    })
+      JSON.stringify({
+        type: 'installCert',
+      })
   );
 };
 const openApp = (pkg) => {
   websocket.send(
-    JSON.stringify({
-      type: 'debug',
-      detail: 'openApp',
-      pkg,
-    })
+      JSON.stringify({
+        type: 'debug',
+        detail: 'openApp',
+        pkg,
+      })
   );
 };
 const refreshAppList = () => {
@@ -1342,9 +1345,9 @@ const refreshAppList = () => {
     message: $t('androidRemoteTS.loadIng'),
   });
   terminalWebsocket.send(
-    JSON.stringify({
-      type: 'appList',
-    })
+      JSON.stringify({
+        type: 'appList',
+      })
   );
 };
 const clearProxy = () => {
@@ -1352,9 +1355,9 @@ const clearProxy = () => {
     message: $t('androidRemoteTS.messageTwo'),
   });
   websocket.send(
-    JSON.stringify({
-      type: 'clearProxy',
-    })
+      JSON.stringify({
+        type: 'clearProxy',
+      })
   );
 };
 const uninstallApp = (pkg) => {
@@ -1362,20 +1365,20 @@ const uninstallApp = (pkg) => {
     message: $t('androidRemoteTS.startUninstall'),
   });
   websocket.send(
-    JSON.stringify({
-      type: 'uninstallApp',
-      detail: pkg,
-    })
+      JSON.stringify({
+        type: 'uninstallApp',
+        detail: pkg,
+      })
   );
 };
 const getEleScreen = (xpath) => {
   elementScreenLoading.value = true;
   websocket.send(
-    JSON.stringify({
-      type: 'debug',
-      detail: 'eleScreen',
-      xpath,
-    })
+      JSON.stringify({
+        type: 'debug',
+        detail: 'eleScreen',
+        xpath,
+      })
   );
 };
 const clearLog = () => {
@@ -1388,48 +1391,48 @@ const runStep = () => {
   debugLoading.value = true;
   activeTab2.value = 'log';
   websocket.send(
-    JSON.stringify({
-      type: 'debug',
-      detail: 'runStep',
-      caseId: testCase.value.id,
-      pwd: device.value.password,
-    })
+      JSON.stringify({
+        type: 'debug',
+        detail: 'runStep',
+        caseId: testCase.value.id,
+        pwd: device.value.password,
+      })
   );
 };
 const stopStep = () => {
   debugLoading.value = false;
   websocket.send(
-    JSON.stringify({
-      type: 'debug',
-      detail: 'stopStep',
-      udId: device.value.udId,
-      caseId: testCase.value.id,
-      pf: device.value.platform,
-    })
+      JSON.stringify({
+        type: 'debug',
+        detail: 'stopStep',
+        udId: device.value.udId,
+        caseId: testCase.value.id,
+        pf: device.value.platform,
+      })
   );
 };
 const pressKey = (keyNum) => {
   websocket.send(
-    JSON.stringify({
-      type: 'keyEvent',
-      detail: keyNum,
-    })
+      JSON.stringify({
+        type: 'keyEvent',
+        detail: keyNum,
+      })
   );
 };
 const batteryDisconnect = () => {
   websocket.send(
-    JSON.stringify({
-      type: 'battery',
-      detail: 0,
-    })
+      JSON.stringify({
+        type: 'battery',
+        detail: 0,
+      })
   );
 };
 const batteryReset = () => {
   websocket.send(
-    JSON.stringify({
-      type: 'battery',
-      detail: 1,
-    })
+      JSON.stringify({
+        type: 'battery',
+        detail: 1,
+      })
   );
 };
 const changePic = (type) => {
@@ -1450,10 +1453,10 @@ const changePic = (type) => {
       break;
   }
   screenWebsocket.send(
-    JSON.stringify({
-      type: 'pic',
-      detail: pic,
-    })
+      JSON.stringify({
+        type: 'pic',
+        detail: pic,
+      })
   );
 };
 const changeScreenMode = (type, isInit) => {
@@ -1479,10 +1482,10 @@ const pullFile = () => {
   pullResult.value = '';
   pullLoading.value = true;
   websocket.send(
-    JSON.stringify({
-      type: 'pullFile',
-      path: pullPath.value,
-    })
+      JSON.stringify({
+        type: 'pullFile',
+        path: pullPath.value,
+      })
   );
 };
 const fileLoading = ref(false);
@@ -1492,11 +1495,11 @@ const pushLoading = ref(false);
 const pushFile = () => {
   pushLoading.value = true;
   websocket.send(
-    JSON.stringify({
-      type: 'pushFile',
-      file: upLoadFilePath.value,
-      path: pushPath.value,
-    })
+      JSON.stringify({
+        type: 'pushFile',
+        file: upLoadFilePath.value,
+        path: pushPath.value,
+      })
   );
 };
 const uploadFile = (content) => {
@@ -1505,15 +1508,15 @@ const uploadFile = (content) => {
   formData.append('file', content.file);
   formData.append('type', 'packageFiles');
   axios
-    .post('/folder/upload', formData, {
-      headers: { 'Content-type': 'multipart/form-data' },
-    })
-    .then((resp) => {
-      fileLoading.value = false;
-      if (resp.code === 2000) {
-        upLoadFilePath.value = resp.data;
-      }
-    });
+      .post('/folder/upload', formData, {
+        headers: {'Content-type': 'multipart/form-data'},
+      })
+      .then((resp) => {
+        fileLoading.value = false;
+        if (resp.code === 2000) {
+          upLoadFilePath.value = resp.data;
+        }
+      });
 };
 const beforeAvatarUpload = (file) => {
   if (file.name.endsWith('.jpg') || file.name.endsWith('.png')) {
@@ -1554,57 +1557,57 @@ const uploadPackage = (content) => {
   formData.append('file', content.file);
   formData.append('type', 'packageFiles');
   axios
-    .post('/folder/upload', formData, {
-      headers: { 'Content-type': 'multipart/form-data' },
-    })
-    .then((resp) => {
-      uploadLoading.value = false;
-      if (resp.code === 2000) {
-        install(resp.data);
-      }
-    });
+      .post('/folder/upload', formData, {
+        headers: {'Content-type': 'multipart/form-data'},
+      })
+      .then((resp) => {
+        uploadLoading.value = false;
+        if (resp.code === 2000) {
+          install(resp.data);
+        }
+      });
 };
 const uploadScan = (content) => {
   const formData = new FormData();
   formData.append('file', content.file);
   formData.append('type', 'imageFiles');
   axios
-    .post('/folder/upload', formData, {
-      headers: { 'Content-type': 'multipart/form-data' },
-    })
-    .then((resp) => {
-      if (resp.code === 2000) {
-        ElMessage.success({
-          message: resp.message,
-        });
-        scan(resp.data);
-      }
-    });
+      .post('/folder/upload', formData, {
+        headers: {'Content-type': 'multipart/form-data'},
+      })
+      .then((resp) => {
+        if (resp.code === 2000) {
+          ElMessage.success({
+            message: resp.message,
+          });
+          scan(resp.data);
+        }
+      });
 };
 const scan = (url) => {
   websocket.send(
-    JSON.stringify({
-      type: 'scan',
-      url,
-    })
+      JSON.stringify({
+        type: 'scan',
+        url,
+      })
   );
 };
 const sendText = (text) => {
   websocket.send(
-    JSON.stringify({
-      type: 'text',
-      detail: text,
-    })
+      JSON.stringify({
+        type: 'text',
+        detail: text,
+      })
   );
 };
 const install = (apk) => {
   if (apk.length > 0) {
     websocket.send(
-      JSON.stringify({
-        type: 'debug',
-        detail: 'install',
-        apk,
-      })
+        JSON.stringify({
+          type: 'debug',
+          detail: 'install',
+          apk,
+        })
     );
     ElMessage.success({
       message: $t('androidRemoteTS.startInstall'),
@@ -1615,10 +1618,11 @@ const getElement = () => {
   elementLoading.value = true;
   setImgData();
   websocket.send(
-    JSON.stringify({
-      type: 'debug',
-      detail: 'tree',
-    })
+      JSON.stringify({
+        type: 'debug',
+        detail: 'tree',
+        isMulti: isMultiWindows.value
+      })
   );
 };
 const switchPocoType = (e) => {
@@ -1644,20 +1648,20 @@ const getPoco = (engine) => {
   pocoLoading.value = true;
   setPocoImgData();
   websocket.send(
-    JSON.stringify({
-      type: 'debug',
-      detail: 'poco',
-      engine,
-      port: pocoPort.value,
-    })
+      JSON.stringify({
+        type: 'debug',
+        detail: 'poco',
+        engine,
+        port: pocoPort.value,
+      })
   );
 };
 const getWebViewForward = () => {
   webViewLoading.value = true;
   websocket.send(
-    JSON.stringify({
-      type: 'forwardView',
-    })
+      JSON.stringify({
+        type: 'forwardView',
+      })
   );
 };
 const close = () => {
@@ -1685,7 +1689,7 @@ onBeforeUnmount(() => {
 });
 const getDeviceById = (id) => {
   loading.value = true;
-  axios.get('/controller/devices', { params: { id } }).then((resp) => {
+  axios.get('/controller/devices', {params: {id}}).then((resp) => {
     if (resp.code === 2000) {
       device.value = resp.data;
       if (device.value.status !== 'ONLINE') {
@@ -1696,18 +1700,18 @@ const getDeviceById = (id) => {
         return;
       }
       axios
-        .get('/controller/agents', { params: { id: device.value.agentId } })
-        .then((resp) => {
-          if (resp.code === 2000) {
-            agent.value = resp.data;
-            openSocket(
-              agent.value.host,
-              agent.value.port,
-              agent.value.secretKey,
-              device.value.udId
-            );
-          }
-        });
+          .get('/controller/agents', {params: {id: device.value.agentId}})
+          .then((resp) => {
+            if (resp.code === 2000) {
+              agent.value = resp.data;
+              openSocket(
+                  agent.value.host,
+                  agent.value.port,
+                  agent.value.secretKey,
+                  device.value.udId
+              );
+            }
+          });
     }
   });
 };
@@ -1774,85 +1778,85 @@ onMounted(() => {
 
 <template>
   <el-dialog
-    v-model="dialogImgElement"
-    :title="$t('androidRemoteTS.code.elementsSnapshot')"
-    width="28%"
+      v-model="dialogImgElement"
+      :title="$t('androidRemoteTS.code.elementsSnapshot')"
+      width="28%"
   >
     <el-card>
       <el-image
-        z-index="5000"
-        fit="contain"
-        style="width: 100%; height: 100px"
-        :src="imgElementUrl"
-        :preview-src-list="[imgElementUrl]"
+          z-index="5000"
+          fit="contain"
+          style="width: 100%; height: 100px"
+          :src="imgElementUrl"
+          :preview-src-list="[imgElementUrl]"
       ></el-image>
     </el-card>
     <el-form
-      ref="updateImgEle"
-      :model="element"
-      size="small"
-      style="margin-top: 20px"
+        ref="updateImgEle"
+        :model="element"
+        size="small"
+        style="margin-top: 20px"
     >
       <el-form-item
-        prop="eleName"
-        :label="$t('androidRemoteTS.code.eleName')"
-        :rules="{
+          prop="eleName"
+          :label="$t('androidRemoteTS.code.eleName')"
+          :rules="{
           required: true,
           message: $t('androidRemoteTS.code.eleNullName'),
           trigger: 'blur',
         }"
       >
         <el-input
-          v-model="element.eleName"
-          :placeholder="$t('androidRemoteTS.code.inputName')"
+            v-model="element.eleName"
+            :placeholder="$t('androidRemoteTS.code.inputName')"
         ></el-input>
       </el-form-item>
       <div style="text-align: center">
         <el-button size="small" type="primary" @click="saveEle"
-          >{{ $t('androidRemoteTS.code.saveEle') }}
+        >{{ $t('androidRemoteTS.code.saveEle') }}
         </el-button>
       </div>
     </el-form>
   </el-dialog>
   <el-dialog
-    v-model="dialogElement"
-    :title="$t('elements.eleInfo')"
-    width="600px"
+      v-model="dialogElement"
+      :title="$t('elements.eleInfo')"
+      width="600px"
   >
     <element-update
-      v-if="dialogElement"
-      :project-id="project['id']"
-      :element-id="0"
-      :element-obj="element"
-      @flush="dialogElement = false"
+        v-if="dialogElement"
+        :project-id="project['id']"
+        :element-id="0"
+        :element-obj="element"
+        @flush="dialogElement = false"
     />
   </el-dialog>
   <el-page-header
-    :content="$t('routes.remoteControl')"
-    style="margin-top: 15px; margin-left: 20px"
-    @back="close"
+      :content="$t('routes.remoteControl')"
+      style="margin-top: 15px; margin-left: 20px"
+      @back="close"
   />
   <div style="padding: 20px">
     <el-row
-      :gutter="24"
-      @mouseup="lineMouseup"
-      @mouseleave="lineMouseleave"
-      @mousemove="lineMousemove"
+        :gutter="24"
+        @mouseup="lineMouseup"
+        @mouseleave="lineMouseleave"
+        @mousemove="lineMousemove"
     >
       <el-col
-        :span="tabPosition == 'left' ? 12 : 24"
-        :style="{
+          :span="tabPosition == 'left' ? 12 : 24"
+          :style="{
           flexBasis: tabPosition == 'left' ? layoutSplitInfo.left + '%' : '',
           maxWidth: tabPosition == 'left' ? layoutSplitInfo.left + '%' : '',
           transition: !isSplitPressing ? 'flex-basis 0.3s,max-width 0.3s' : '',
         }"
       >
         <el-card
-          v-loading="loading"
-          :element-loading-text="$t('androidRemoteTS.code.preparingImager')"
-          element-loading-background="rgba(255, 255, 255, 1)"
-          style="font-size: 14px"
-          :body-style="{
+            v-loading="loading"
+            :element-loading-text="$t('androidRemoteTS.code.preparingImager')"
+            element-loading-background="rgba(255, 255, 255, 1)"
+            style="font-size: 14px"
+            :body-style="{
             padding: '10px',
             background: '#ccc',
             position: 'relative',
@@ -1862,18 +1866,18 @@ onMounted(() => {
           <template #header>
             <div style="position: relative; display: flex; align-items: center">
               <el-icon :size="14" style="vertical-align: middle">
-                <Cellphone />
+                <Cellphone/>
               </el-icon>
               <RenderDeviceName
-                style="color: #e6a23c; margin-left: 5px"
-                :device="device"
+                  style="color: #e6a23c; margin-left: 5px"
+                  :device="device"
               />
               <el-popover placement="bottom-end" width="270" trigger="hover">
                 <el-form
-                  label-position="left"
-                  class="demo-table-expand"
-                  label-width="90px"
-                  style="margin-left: 10px; word-break: break-all"
+                    label-position="left"
+                    class="demo-table-expand"
+                    label-width="90px"
+                    style="margin-left: 10px; word-break: break-all"
                 >
                   <el-form-item :label="$t('devices.detail.name')">
                     <span>{{ device.name }}</span>
@@ -1886,20 +1890,20 @@ onMounted(() => {
                   </el-form-item>
                   <el-form-item :label="$t('devices.form.system')">
                     <img
-                      height="25"
-                      style="
+                        height="25"
+                        style="
                         position: absolute;
                         top: 7px;
                         bottom: 7px;
                         left: 7px;
                       "
-                      :src="
+                        :src="
                         getImg(device['isHm'] === 1 ? 'HarmonyOs' : 'ANDROID')
                       "
                     />
                   </el-form-item>
                   <el-form-item
-                    :label="$t('androidRemoteTS.code.systemVersion')"
+                      :label="$t('androidRemoteTS.code.systemVersion')"
                   >
                     <span>{{ device['version'] }}</span>
                   </el-form-item>
@@ -1911,21 +1915,21 @@ onMounted(() => {
                   </el-form-item>
                   <el-form-item :label="$t('devices.filter.manufacturer')">
                     <img
-                      height="25"
-                      style="
+                        height="25"
+                        style="
                         position: absolute;
                         top: 7px;
                         bottom: 7px;
                         left: 7px;
                       "
-                      :src="getImg(device['manufacturer'])"
+                        :src="getImg(device['manufacturer'])"
                     />
                   </el-form-item>
                 </el-form>
                 <template #reference>
                   <div style="position: absolute; right: 0px; color: #909399">
                     <el-icon :size="15" style="vertical-align: middle">
-                      <InfoFilled />
+                      <InfoFilled/>
                     </el-icon>
                   </div>
                 </template>
@@ -1934,98 +1938,98 @@ onMounted(() => {
           </template>
           <div style="margin-right: 40px; text-align: center">
             <video
-              v-show="screenMode == 'Scrcpy'"
-              id="scrcpy-video"
-              style="display: inline-block; min-height: 100%"
-              :style="canvasRectInfo"
-              autoplay
-              muted
-              @mouseup="mouseup"
-              @mousemove="mousemove"
-              @mousedown="mousedown"
-              @mouseleave="mouseleave"
+                v-show="screenMode == 'Scrcpy'"
+                id="scrcpy-video"
+                style="display: inline-block; min-height: 100%"
+                :style="canvasRectInfo"
+                autoplay
+                muted
+                @mouseup="mouseup"
+                @mousemove="mousemove"
+                @mousedown="mousedown"
+                @mouseleave="mouseleave"
             />
             <canvas
-              v-show="screenMode != 'Scrcpy'"
-              id="canvas"
-              style="display: inline-block"
-              :style="canvasRectInfo"
-              @mouseup="mouseup"
-              @mousemove="mousemove"
-              @mousedown="mousedown"
-              @mouseleave="mouseleave"
+                v-show="screenMode != 'Scrcpy'"
+                id="canvas"
+                style="display: inline-block"
+                :style="canvasRectInfo"
+                @mouseup="mouseup"
+                @mousemove="mousemove"
+                @mousedown="mousedown"
+                @mouseleave="mouseleave"
             />
             <audio id="audio-player" hidden></audio>
             <el-button-group id="pressKey">
               <el-button
-                size="small"
-                style="width: 25%"
-                type="info"
-                @click="pressKey(82)"
+                  size="small"
+                  style="width: 25%"
+                  type="info"
+                  @click="pressKey(82)"
               >
                 <el-icon :size="13" style="vertical-align: middle">
-                  <Menu />
+                  <Menu/>
                 </el-icon>
               </el-button>
               <el-button
-                size="small"
-                style="width: 25%"
-                type="info"
-                @click="pressKey(187)"
+                  size="small"
+                  style="width: 25%"
+                  type="info"
+                  @click="pressKey(187)"
               >
                 <el-icon :size="13" style="vertical-align: middle">
-                  <CopyDocument />
+                  <CopyDocument/>
                 </el-icon>
               </el-button>
               <el-button
-                size="small"
-                style="width: 25%"
-                type="info"
-                @click="pressKey(3)"
+                  size="small"
+                  style="width: 25%"
+                  type="info"
+                  @click="pressKey(3)"
               >
                 <el-icon :size="13" style="vertical-align: middle">
-                  <House />
+                  <House/>
                 </el-icon>
               </el-button>
               <el-button
-                size="small"
-                style="width: 25%"
-                type="info"
-                @click="pressKey(4)"
+                  size="small"
+                  style="width: 25%"
+                  type="info"
+                  @click="pressKey(4)"
               >
                 <el-icon :size="13" style="vertical-align: middle">
-                  <Back />
+                  <Back/>
                 </el-icon>
               </el-button>
             </el-button-group>
           </div>
           <div style="position: absolute; right: 5px; top: 10px">
             <el-tooltip
-              :enterable="false"
-              effect="dark"
-              :content="$t('androidRemoteTS.code.projectionMode')"
-              :placement="tabPosition == 'left' ? 'right' : 'left'"
-              :offset="15"
+                :enterable="false"
+                effect="dark"
+                :content="$t('androidRemoteTS.code.projectionMode')"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
             >
               <div>
                 <el-dropdown
-                  :hide-on-click="false"
-                  trigger="click"
-                  placement="right"
-                  style="margin-top: 4px"
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
                 >
                   <el-button size="small" type="info" circle>
                     <el-icon :size="12" style="vertical-align: middle">
-                      <VideoCamera />
+                      <VideoCamera/>
                     </el-icon>
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
                       <el-radio-group
-                        v-model="screenMode"
-                        v-loading="loading"
-                        size="mini"
-                        @change="changeScreenMode"
+                          v-model="screenMode"
+                          v-loading="loading"
+                          size="mini"
+                          @change="changeScreenMode"
                       >
                         <el-radio-button label="Scrcpy"></el-radio-button>
                         <el-radio-button label="Minicap"></el-radio-button>
@@ -2036,40 +2040,40 @@ onMounted(() => {
               </div>
             </el-tooltip>
             <el-tooltip
-              :enterable="false"
-              effect="dark"
-              :content="$t('androidRemoteTS.code.frameNumber')"
-              :placement="tabPosition == 'left' ? 'right' : 'left'"
-              :offset="15"
+                :enterable="false"
+                effect="dark"
+                :content="$t('androidRemoteTS.code.frameNumber')"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
             >
               <div>
                 <el-dropdown
-                  :hide-on-click="false"
-                  trigger="click"
-                  placement="right"
-                  style="margin-top: 4px"
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
                 >
                   <el-button size="small" type="info" circle>
                     <el-icon :size="12" style="vertical-align: middle">
-                      <View />
+                      <View/>
                     </el-icon>
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
                       <el-radio-group
-                        v-model="pic"
-                        v-loading="loading"
-                        size="mini"
-                        @change="changePic"
+                          v-model="pic"
+                          v-loading="loading"
+                          size="mini"
+                          @change="changePic"
                       >
                         <el-radio-button
-                          :label="$t('androidRemoteTS.low')"
+                            :label="$t('androidRemoteTS.low')"
                         ></el-radio-button>
                         <el-radio-button
-                          :label="$t('androidRemoteTS.middle')"
+                            :label="$t('androidRemoteTS.middle')"
                         ></el-radio-button>
                         <el-radio-button
-                          :label="$t('androidRemoteTS.high')"
+                            :label="$t('androidRemoteTS.high')"
                         ></el-radio-button>
                       </el-radio-group>
                     </el-dropdown-menu>
@@ -2078,77 +2082,77 @@ onMounted(() => {
               </div>
             </el-tooltip>
             <el-tooltip
-              :enterable="false"
-              effect="dark"
-              :content="$t('androidRemoteTS.code.manualRepair')"
-              :placement="tabPosition == 'left' ? 'right' : 'left'"
-              :offset="15"
+                :enterable="false"
+                effect="dark"
+                :content="$t('androidRemoteTS.code.manualRepair')"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
             >
               <div>
                 <el-dropdown
-                  :hide-on-click="false"
-                  trigger="click"
-                  placement="right"
-                  style="margin-top: 4px"
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
                 >
                   <el-button size="small" type="info" circle>
                     <el-icon :size="12" style="vertical-align: middle">
-                      <Place />
+                      <Place/>
                     </el-icon>
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu
-                      v-loading="loading"
-                      class="divider"
-                      element-loading-background="rgba(255, 255, 255, 1)"
+                        v-loading="loading"
+                        class="divider"
+                        element-loading-background="rgba(255, 255, 255, 1)"
                     >
                       <el-button-group>
                         <el-tooltip
-                          effect="dark"
-                          :content="$t('androidRemoteTS.code.fixBlackScreen')"
-                          placement="top"
+                            effect="dark"
+                            :content="$t('androidRemoteTS.code.fixBlackScreen')"
+                            placement="top"
                         >
                           <el-button
-                            size="small"
-                            type="info"
-                            circle
-                            :disabled="screenMode !== 'Minicap'"
-                            @click="changePic('fixed')"
+                              size="small"
+                              type="info"
+                              circle
+                              :disabled="screenMode !== 'Minicap'"
+                              @click="changePic('fixed')"
                           >
                             <el-icon :size="14" style="vertical-align: middle">
-                              <Cellphone />
+                              <Cellphone/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
                         <el-tooltip
-                          effect="dark"
-                          :content="$t('androidRemoteTS.code.fixTouch')"
-                          placement="top"
+                            effect="dark"
+                            :content="$t('androidRemoteTS.code.fixTouch')"
+                            placement="top"
                         >
                           <el-button
-                            size="small"
-                            type="info"
-                            circle
-                            @click="fixTouch"
+                              size="small"
+                              type="info"
+                              circle
+                              @click="fixTouch"
                           >
                             <el-icon :size="14" style="vertical-align: middle">
-                              <Pointer />
+                              <Pointer/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
                         <el-tooltip
-                          effect="dark"
-                          :content="$t('androidRemoteTS.code.fixScreen')"
-                          placement="top"
+                            effect="dark"
+                            :content="$t('androidRemoteTS.code.fixScreen')"
+                            placement="top"
                         >
                           <el-button
-                            size="small"
-                            type="info"
-                            circle
-                            @click="fixOri"
+                              size="small"
+                              type="info"
+                              circle
+                              @click="fixOri"
                           >
                             <el-icon :size="14" style="vertical-align: middle">
-                              <Postcard />
+                              <Postcard/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
@@ -2159,47 +2163,47 @@ onMounted(() => {
               </div>
             </el-tooltip>
             <el-tooltip
-              :enterable="false"
-              effect="dark"
-              :content="$t('androidRemoteTS.code.remoteAudioTran')"
-              :placement="tabPosition == 'left' ? 'right' : 'left'"
-              :offset="15"
+                :enterable="false"
+                effect="dark"
+                :content="$t('androidRemoteTS.code.remoteAudioTran')"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
             >
               <div>
                 <el-dropdown
-                  :hide-on-click="false"
-                  trigger="click"
-                  placement="right"
-                  style="margin-top: 4px"
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
                 >
                   <el-button size="small" type="info" circle>
                     <el-icon :size="12" style="vertical-align: middle">
-                      <Service />
+                      <Service/>
                     </el-icon>
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
                       <el-button-group>
                         <el-button
-                          size="small"
-                          type="success"
-                          circle
-                          :disabled="isConnectAudio"
-                          @click="playAudio"
+                            size="small"
+                            type="success"
+                            circle
+                            :disabled="isConnectAudio"
+                            @click="playAudio"
                         >
                           <el-icon :size="14" style="vertical-align: middle">
-                            <Bell />
+                            <Bell/>
                           </el-icon>
                         </el-button>
                         <el-button
-                          size="small"
-                          type="danger"
-                          circle
-                          :disabled="!isConnectAudio"
-                          @click="destroyAudio"
+                            size="small"
+                            type="danger"
+                            circle
+                            :disabled="!isConnectAudio"
+                            @click="destroyAudio"
                         >
                           <el-icon :size="14" style="vertical-align: middle">
-                            <MuteNotification />
+                            <MuteNotification/>
                           </el-icon>
                         </el-button>
                         <!-- <el-button
@@ -2218,58 +2222,58 @@ onMounted(() => {
               </div>
             </el-tooltip>
             <el-tooltip
-              :enterable="false"
-              effect="dark"
-              :content="$t('androidRemoteTS.code.batterySimulation')"
-              :placement="tabPosition == 'left' ? 'right' : 'left'"
-              :offset="15"
+                :enterable="false"
+                effect="dark"
+                :content="$t('androidRemoteTS.code.batterySimulation')"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
             >
               <div>
                 <el-dropdown
-                  :hide-on-click="false"
-                  trigger="click"
-                  placement="right"
-                  style="margin-top: 4px"
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
                 >
                   <el-button size="small" type="info" circle>
                     <el-icon :size="12" style="vertical-align: middle">
-                      <Connection />
+                      <Connection/>
                     </el-icon>
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
                       <el-button-group>
                         <el-tooltip
-                          effect="dark"
-                          :content="
+                            effect="dark"
+                            :content="
                             $t('androidRemoteTS.code.simulatePowerOutage')
                           "
-                          placement="top"
+                            placement="top"
                         >
                           <el-button
-                            size="small"
-                            type="info"
-                            circle
-                            @click="batteryDisconnect"
+                              size="small"
+                              type="info"
+                              circle
+                              @click="batteryDisconnect"
                           >
                             <el-icon :size="14" style="vertical-align: middle">
-                              <VideoPause />
+                              <VideoPause/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
                         <el-tooltip
-                          effect="dark"
-                          :content="$t('androidRemoteTS.code.reset')"
-                          placement="top"
+                            effect="dark"
+                            :content="$t('androidRemoteTS.code.reset')"
+                            placement="top"
                         >
                           <el-button
-                            size="small"
-                            type="info"
-                            circle
-                            @click="batteryReset"
+                              size="small"
+                              type="info"
+                              circle
+                              @click="batteryReset"
                           >
                             <el-icon :size="14" style="vertical-align: middle">
-                              <Refresh />
+                              <Refresh/>
                             </el-icon>
                           </el-button>
                         </el-tooltip>
@@ -2280,112 +2284,112 @@ onMounted(() => {
               </div>
             </el-tooltip>
             <el-tooltip
-              effect="dark"
-              :content="$t('androidRemoteTS.code.physicalLookup')"
-              :placement="tabPosition == 'left' ? 'right' : 'left'"
+                effect="dark"
+                :content="$t('androidRemoteTS.code.physicalLookup')"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
-                  size="small"
-                  type="info"
-                  circle
-                  @click="searchDevice"
+                    size="small"
+                    type="info"
+                    circle
+                    @click="searchDevice"
                 >
                   <el-icon :size="12" style="vertical-align: middle">
-                    <Search />
+                    <Search/>
                   </el-icon>
                 </el-button>
               </div>
             </el-tooltip>
             <el-tooltip
-              :enterable="false"
-              effect="dark"
-              :content="$t('androidRemoteTS.code.BV')"
-              :placement="tabPosition == 'left' ? 'right' : 'left'"
-              :offset="15"
+                :enterable="false"
+                effect="dark"
+                :content="$t('androidRemoteTS.code.BV')"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
+                :offset="15"
             >
               <div>
                 <el-dropdown
-                  :hide-on-click="false"
-                  trigger="click"
-                  placement="right"
-                  style="margin-top: 4px"
+                    :hide-on-click="false"
+                    trigger="click"
+                    placement="right"
+                    style="margin-top: 4px"
                 >
                   <el-button size="small" type="primary" circle>
                     <el-icon :size="12" style="vertical-align: middle">
-                      <Operation />
+                      <Operation/>
                     </el-icon>
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="divider">
                       <div style="text-align: center">
                         <el-icon
-                          :size="14"
-                          style="color: #909399; vertical-align: middle"
+                            :size="14"
+                            style="color: #909399; vertical-align: middle"
                         >
-                          <Sunny />
+                          <Sunny/>
                         </el-icon>
                         <el-divider direction="vertical"></el-divider>
                         <el-button-group>
                           <el-button
-                            size="small"
-                            type="info"
-                            circle
-                            @click="pressKey(220)"
+                              size="small"
+                              type="info"
+                              circle
+                              @click="pressKey(220)"
                           >
                             <el-icon :size="12" style="vertical-align: middle">
-                              <CaretLeft />
+                              <CaretLeft/>
                             </el-icon>
                           </el-button>
                           <el-button
-                            size="small"
-                            type="info"
-                            circle
-                            @click="pressKey(221)"
+                              size="small"
+                              type="info"
+                              circle
+                              @click="pressKey(221)"
                           >
                             <el-icon :size="12" style="vertical-align: middle">
-                              <CaretRight />
+                              <CaretRight/>
                             </el-icon>
                           </el-button>
                         </el-button-group>
                       </div>
                       <el-divider></el-divider>
                       <el-icon
-                        :size="14"
-                        style="color: #909399; vertical-align: middle"
+                          :size="14"
+                          style="color: #909399; vertical-align: middle"
                       >
-                        <Phone />
+                        <Phone/>
                       </el-icon>
                       <el-divider direction="vertical"></el-divider>
                       <el-button-group>
                         <el-button
-                          size="small"
-                          type="info"
-                          circle
-                          @click="pressKey(24)"
+                            size="small"
+                            type="info"
+                            circle
+                            @click="pressKey(24)"
                         >
                           <el-icon :size="12" style="vertical-align: middle">
-                            <Plus />
+                            <Plus/>
                           </el-icon>
                         </el-button>
                         <el-button
-                          size="small"
-                          type="info"
-                          circle
-                          @click="pressKey(164)"
+                            size="small"
+                            type="info"
+                            circle
+                            @click="pressKey(164)"
                         >
                           <el-icon :size="12" style="vertical-align: middle">
-                            <MuteNotification />
+                            <MuteNotification/>
                           </el-icon>
                         </el-button>
                         <el-button
-                          size="small"
-                          type="info"
-                          circle
-                          @click="pressKey(25)"
+                            size="small"
+                            type="info"
+                            circle
+                            @click="pressKey(25)"
                         >
                           <el-icon :size="12" style="vertical-align: middle">
-                            <Minus />
+                            <Minus/>
                           </el-icon>
                         </el-button>
                       </el-button-group>
@@ -2395,73 +2399,73 @@ onMounted(() => {
               </div>
             </el-tooltip>
             <el-tooltip
-              effect="dark"
-              :content="$t('androidRemoteTS.code.dial')"
-              :placement="tabPosition == 'left' ? 'right' : 'left'"
+                effect="dark"
+                :content="$t('androidRemoteTS.code.dial')"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
-                  size="small"
-                  type="primary"
-                  circle
-                  @click="pressKey(5)"
+                    size="small"
+                    type="primary"
+                    circle
+                    @click="pressKey(5)"
                 >
                   <el-icon :size="12" style="vertical-align: middle">
-                    <PhoneFilled />
+                    <PhoneFilled/>
                   </el-icon>
                 </el-button>
               </div>
             </el-tooltip>
             <el-tooltip
-              effect="dark"
-              :content="$t('androidRemoteTS.code.photograph')"
-              :placement="tabPosition == 'left' ? 'right' : 'left'"
+                effect="dark"
+                :content="$t('androidRemoteTS.code.photograph')"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
-                  size="small"
-                  type="primary"
-                  circle
-                  @click="pressKey(27)"
+                    size="small"
+                    type="primary"
+                    circle
+                    @click="pressKey(27)"
                 >
                   <el-icon :size="12" style="vertical-align: middle">
-                    <Camera />
+                    <Camera/>
                   </el-icon>
                 </el-button>
               </div>
             </el-tooltip>
             <el-tooltip
-              effect="dark"
-              :content="$t('androidRemoteTS.code.browser')"
-              :placement="tabPosition == 'left' ? 'right' : 'left'"
+                effect="dark"
+                :content="$t('androidRemoteTS.code.browser')"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
-                  size="small"
-                  type="primary"
-                  circle
-                  @click="pressKey(64)"
+                    size="small"
+                    type="primary"
+                    circle
+                    @click="pressKey(64)"
                 >
                   <el-icon :size="12" style="vertical-align: middle">
-                    <Position />
+                    <Position/>
                   </el-icon>
                 </el-button>
               </div>
             </el-tooltip>
             <el-tooltip
-              effect="dark"
-              :content="$t('androidRemoteTS.code.LUS')"
-              :placement="tabPosition == 'left' ? 'right' : 'left'"
+                effect="dark"
+                :content="$t('androidRemoteTS.code.LUS')"
+                :placement="tabPosition == 'left' ? 'right' : 'left'"
             >
               <div style="margin-top: 4px">
                 <el-button
-                  size="small"
-                  type="primary"
-                  circle
-                  @click="pressKey(26)"
+                    size="small"
+                    type="primary"
+                    circle
+                    @click="pressKey(26)"
                 >
                   <el-icon :size="12" style="vertical-align: middle">
-                    <SwitchButton />
+                    <SwitchButton/>
                   </el-icon>
                 </el-button>
               </div>
@@ -2471,16 +2475,16 @@ onMounted(() => {
       </el-col>
 
       <div
-        :class="{
+          :class="{
           line: tabPosition == 'left',
           lineVertical: tabPosition == 'top',
         }"
-        @mousedown="lineMousedown"
+          @mousedown="lineMousedown"
       />
 
       <el-col
-        :span="tabPosition == 'left' ? 12 : 24"
-        :style="{
+          :span="tabPosition == 'left' ? 12 : 24"
+          :style="{
           flexBasis:
             tabPosition == 'left'
               ? 100 - Number(layoutSplitInfo.left) + '%'
@@ -2492,15 +2496,15 @@ onMounted(() => {
         }"
       >
         <el-tabs
-          v-model="activeTab"
-          stretch
-          class="remote-tab"
-          :tab-position="tabPosition"
-          @tab-click="switchTabs"
+            v-model="activeTab"
+            stretch
+            class="remote-tab"
+            :tab-position="tabPosition"
+            @tab-click="switchTabs"
         >
           <el-tab-pane
-            :label="$t('androidRemoteTS.code.remoteControlPanel')"
-            name="main"
+              :label="$t('androidRemoteTS.code.remoteControlPanel')"
+              name="main"
           >
             <el-row :gutter="20">
               <el-col :span="8">
@@ -2511,19 +2515,19 @@ onMounted(() => {
                   <el-form size="small" :model="text">
                     <el-form-item>
                       <el-input
-                        v-model="text.content"
-                        clearable
-                        size="small"
-                        :placeholder="$t('androidRemoteTS.code.pleaseText')"
+                          v-model="text.content"
+                          clearable
+                          size="small"
+                          :placeholder="$t('androidRemoteTS.code.pleaseText')"
                       ></el-input>
                     </el-form-item>
                   </el-form>
                   <div style="text-align: center">
                     <el-button
-                      size="mini"
-                      type="primary"
-                      @click="sendText(text.content)"
-                      >{{ $t('androidRemoteTS.code.send') }}
+                        size="mini"
+                        type="primary"
+                        @click="sendText(text.content)"
+                    >{{ $t('androidRemoteTS.code.send') }}
                     </el-button>
                   </div>
                 </el-card>
@@ -2532,30 +2536,30 @@ onMounted(() => {
                 <el-tabs type="border-card" stretch>
                   <el-tab-pane :label="$t('androidRemoteTS.code.remoteADB')">
                     <div
-                      v-loading="remoteAdbLoading"
-                      style="margin-top: 18px; margin-bottom: 18px"
+                        v-loading="remoteAdbLoading"
+                        style="margin-top: 18px; margin-bottom: 18px"
                     >
                       <div
-                        v-if="remoteAdbUrl.length > 0"
-                        style="margin-top: 20px; margin-bottom: 20px"
+                          v-if="remoteAdbUrl.length > 0"
+                          style="margin-top: 20px; margin-bottom: 20px"
                       >
                         <el-card
-                          :body-style="{
+                            :body-style="{
                             backgroundColor: '#303133',
                             cursor: 'pointer',
                           }"
-                          @click="copy('adb connect ' + remoteAdbUrl)"
+                            @click="copy('adb connect ' + remoteAdbUrl)"
                         >
                           <strong style="color: #f2f6fc"
-                            >adb connect {{ remoteAdbUrl }}</strong
+                          >adb connect {{ remoteAdbUrl }}</strong
                           >
                         </el-card>
                       </div>
                       <div v-else>
                         <el-card>
                           <strong>{{
-                            $t('androidRemoteTS.code.noAgent')
-                          }}</strong>
+                              $t('androidRemoteTS.code.noAgent')
+                            }}</strong>
                         </el-card>
                       </div>
                     </div>
@@ -2570,17 +2574,17 @@ onMounted(() => {
                   <div style="text-align: center">
                     <div style="margin: 10px 0px">
                       <el-button
-                        size="mini"
-                        type="primary"
-                        :disabled="isDriverFinish"
-                        :loading="driverLoading"
-                        @click="openDriver"
-                        >{{ $t('androidRemoteTS.code.UIAutomator2ServerInit') }}
+                          size="mini"
+                          type="primary"
+                          :disabled="isDriverFinish"
+                          :loading="driverLoading"
+                          @click="openDriver"
+                      >{{ $t('androidRemoteTS.code.UIAutomator2ServerInit') }}
                       </el-button>
                       <div style="margin-top: 8px">
                         Status:
                         <span
-                          :style="
+                            :style="
                             isDriverFinish ? 'color:#67C23A' : 'color:#606266'
                           "
                         >
@@ -2597,22 +2601,22 @@ onMounted(() => {
                     <strong>{{ $t('androidRemoteTS.code.scanQRCode') }}</strong>
                   </template>
                   <el-alert
-                    :title="$t('androidRemoteTS.code.errTitle')"
-                    type="info"
-                    show-icon
-                    :closable="false"
+                      :title="$t('androidRemoteTS.code.errTitle')"
+                      type="info"
+                      show-icon
+                      :closable="false"
                   >
                   </el-alert>
                   <div style="text-align: center; margin-top: 20px">
                     <el-upload
-                      drag
-                      action=""
-                      :with-credentials="true"
-                      :limit="1"
-                      :before-upload="beforeAvatarUpload"
-                      :on-exceed="limitOut"
-                      :http-request="uploadScan"
-                      list-type="picture"
+                        drag
+                        action=""
+                        :with-credentials="true"
+                        :limit="1"
+                        :before-upload="beforeAvatarUpload"
+                        :on-exceed="limitOut"
+                        :http-request="uploadScan"
+                        list-type="picture"
                     >
                       <i class="el-icon-upload"></i>
                       <div class="el-upload__text">
@@ -2632,20 +2636,20 @@ onMounted(() => {
                 <el-card>
                   <template #header>
                     <strong>{{
-                      $t('androidRemoteTS.code.fileTransfer')
-                    }}</strong>
+                        $t('androidRemoteTS.code.fileTransfer')
+                      }}</strong>
                   </template>
                   <div style="text-align: center">
                     <el-tabs type="border-card" stretch>
                       <el-tab-pane :label="$t('androidRemoteTS.code.upFile')">
                         <el-upload
-                          v-loading="fileLoading"
-                          drag
-                          action=""
-                          :with-credentials="true"
-                          :limit="1"
-                          :on-exceed="limitOut"
-                          :http-request="uploadFile"
+                            v-loading="fileLoading"
+                            drag
+                            action=""
+                            :with-credentials="true"
+                            :limit="1"
+                            :on-exceed="limitOut"
+                            :http-request="uploadFile"
                         >
                           <i class="el-icon-upload"></i>
                           <div class="el-upload__text">
@@ -2655,51 +2659,51 @@ onMounted(() => {
                         </el-upload>
                         <div style="display: flex; margin-top: 5px">
                           <el-input
-                            v-model="pushPath"
-                            size="mini"
-                            :placeholder="
+                              v-model="pushPath"
+                              size="mini"
+                              :placeholder="
                               $t('androidRemoteTS.code.pleaseFilePath')
                             "
                           ></el-input>
                           <el-button
-                            style="margin-left: 5px"
-                            size="mini"
-                            type="primary"
-                            :loading="pushLoading"
-                            :disabled="
+                              style="margin-left: 5px"
+                              size="mini"
+                              type="primary"
+                              :loading="pushLoading"
+                              :disabled="
                               pushPath.length === 0 ||
                               upLoadFilePath.length === 0
                             "
-                            @click="pushFile"
-                            >Push
+                              @click="pushFile"
+                          >Push
                           </el-button>
                         </div>
                       </el-tab-pane>
                       <el-tab-pane :label="$t('androidRemoteTS.code.filePath')">
                         <el-input
-                          v-model="pullPath"
-                          size="mini"
-                          :placeholder="$t('androidRemoteTS.code.pullFilePath')"
+                            v-model="pullPath"
+                            size="mini"
+                            :placeholder="$t('androidRemoteTS.code.pullFilePath')"
                         ></el-input>
                         <el-button
-                          style="margin-top: 5px"
-                          size="mini"
-                          type="primary"
-                          :loading="pullLoading"
-                          :disabled="pullPath.length === 0"
-                          @click="pullFile"
-                          >Pull
+                            style="margin-top: 5px"
+                            size="mini"
+                            type="primary"
+                            :loading="pullLoading"
+                            :disabled="pullPath.length === 0"
+                            @click="pullFile"
+                        >Pull
                         </el-button>
                         <a
-                          v-if="pullResult.length !== 0"
-                          :href="pullResult"
-                          download
-                          target="_blank"
+                            v-if="pullResult.length !== 0"
+                            :href="pullResult"
+                            download
+                            target="_blank"
                         >
                           <el-button
-                            style="margin-top: 5px; margin-left: 10px"
-                            size="mini"
-                            type="success"
+                              style="margin-top: 5px; margin-left: 10px"
+                              size="mini"
+                              type="success"
                           >
                             {{ $t('androidRemoteTS.code.installFile') }}
                           </el-button>
@@ -2717,19 +2721,19 @@ onMounted(() => {
                 <el-card shadow="hover">
                   <template #header>
                     <strong>{{
-                      $t('androidRemoteTS.code.pushInstall')
-                    }}</strong>
+                        $t('androidRemoteTS.code.pushInstall')
+                      }}</strong>
                   </template>
                   <div style="text-align: center">
                     <el-upload
-                      v-loading="uploadLoading"
-                      drag
-                      action=""
-                      :with-credentials="true"
-                      :limit="1"
-                      :before-upload="beforeAvatarUpload2"
-                      :on-exceed="limitOut"
-                      :http-request="uploadPackage"
+                        v-loading="uploadLoading"
+                        drag
+                        action=""
+                        :with-credentials="true"
+                        :limit="1"
+                        :before-upload="beforeAvatarUpload2"
+                        :on-exceed="limitOut"
+                        :http-request="uploadPackage"
                     >
                       <i class="el-icon-upload"></i>
                       <div class="el-upload__text">
@@ -2747,9 +2751,9 @@ onMounted(() => {
               </el-col>
               <el-col :span="12">
                 <el-card
-                  shadow="hover"
-                  class="url-install-box"
-                  :body-style="{
+                    shadow="hover"
+                    class="url-install-box"
+                    :body-style="{
                     position: 'absolute',
                     top: '50%',
                     width: '100%',
@@ -2763,18 +2767,18 @@ onMounted(() => {
                     <strong>{{ $t('androidRemoteTS.code.URLInstall') }}</strong>
                   </template>
                   <el-input
-                    v-model="uploadUrl"
-                    clearable
-                    size="small"
-                    :placeholder="$t('androidRemoteTS.code.hint')"
+                      v-model="uploadUrl"
+                      clearable
+                      size="small"
+                      :placeholder="$t('androidRemoteTS.code.hint')"
                   ></el-input>
                   <div style="text-align: center; margin-top: 20px">
                     <el-button
-                      size="mini"
-                      type="primary"
-                      :disabled="uploadUrl.length === 0"
-                      @click="install(uploadUrl)"
-                      >{{ $t('androidRemoteTS.code.send') }}
+                        size="mini"
+                        type="primary"
+                        :disabled="uploadUrl.length === 0"
+                        @click="install(uploadUrl)"
+                    >{{ $t('androidRemoteTS.code.send') }}
                     </el-button>
                   </div>
                 </el-card>
@@ -2785,82 +2789,82 @@ onMounted(() => {
                 <el-table-column width="90" header-align="center">
                   <template #header>
                     <el-button size="mini" @click="refreshAppList"
-                      >{{ $t('androidRemoteTS.code.refresh') }}
+                    >{{ $t('androidRemoteTS.code.refresh') }}
                     </el-button>
                   </template>
                   <template #default="scope">
                     <div
-                      style="
+                        style="
                         display: flex;
                         align-items: center;
                         justify-content: center;
                       "
                     >
                       <el-avatar
-                        shape="square"
-                        :size="40"
-                        :src="'data:image/png;base64,' + scope.row.appIcon"
+                          shape="square"
+                          :size="40"
+                          :src="'data:image/png;base64,' + scope.row.appIcon"
                       ></el-avatar>
                     </div>
                   </template>
                 </el-table-column>
                 <el-table-column
-                  width="150"
-                  show-overflow-tooltip
-                  header-align="center"
-                  prop="appName"
-                  :label="$t('androidRemoteTS.code.appName')"
+                    width="150"
+                    show-overflow-tooltip
+                    header-align="center"
+                    prop="appName"
+                    :label="$t('androidRemoteTS.code.appName')"
                 >
                 </el-table-column>
                 <el-table-column
-                  header-align="center"
-                  show-overflow-tooltip
-                  prop="packageName"
-                  :label="$t('androidRemoteTS.code.packagesName')"
+                    header-align="center"
+                    show-overflow-tooltip
+                    prop="packageName"
+                    :label="$t('androidRemoteTS.code.packagesName')"
                 >
                   <template #default="scope">
                     <div
-                      style="cursor: pointer"
-                      @click="copy(scope.row.packageName)"
+                        style="cursor: pointer"
+                        @click="copy(scope.row.packageName)"
                     >
                       {{ scope.row.packageName }}
                     </div>
                   </template>
                 </el-table-column>
                 <el-table-column
-                  header-align="center"
-                  show-overflow-tooltip
-                  prop="versionName"
-                  :label="$t('androidRemoteTS.code.version')"
-                  width="120"
+                    header-align="center"
+                    show-overflow-tooltip
+                    prop="versionName"
+                    :label="$t('androidRemoteTS.code.version')"
+                    width="120"
                 ></el-table-column>
                 <el-table-column
-                  header-align="center"
-                  show-overflow-tooltip
-                  prop="versionCode"
-                  :label="$t('androidRemoteTS.code.subversion')"
-                  width="120"
+                    header-align="center"
+                    show-overflow-tooltip
+                    prop="versionCode"
+                    :label="$t('androidRemoteTS.code.subversion')"
+                    width="120"
                 ></el-table-column>
                 <el-table-column align="center" width="200">
                   <template #header>
                     <el-input
-                      v-model="filterAppText"
-                      size="mini"
-                      :placeholder="$t('androidRemoteTS.code.nameSearch')"
+                        v-model="filterAppText"
+                        size="mini"
+                        :placeholder="$t('androidRemoteTS.code.nameSearch')"
                     />
                   </template>
                   <template #default="scope">
                     <el-button
-                      size="mini"
-                      type="primary"
-                      @click="openApp(scope.row.packageName)"
+                        size="mini"
+                        type="primary"
+                        @click="openApp(scope.row.packageName)"
                     >
                       {{ $t('androidRemoteTS.code.open') }}
                     </el-button>
                     <el-button
-                      size="mini"
-                      type="danger"
-                      @click="uninstallApp(scope.row.packageName)"
+                        size="mini"
+                        type="danger"
+                        @click="uninstallApp(scope.row.packageName)"
                     >
                       {{ $t('androidRemoteTS.code.unInstall') }}
                     </el-button>
@@ -2868,139 +2872,140 @@ onMounted(() => {
                 </el-table-column>
               </el-table>
               <Pageable
-                :is-page-set="false"
-                :total="filterTableData.length"
-                :current-page="currAppListPageIndex + 1"
-                :page-size="7"
-                @change="changeAppListPage"
+                  :is-page-set="false"
+                  :total="filterTableData.length"
+                  :current-page="currAppListPageIndex + 1"
+                  :page-size="7"
+                  @change="changeAppListPage"
               ></Pageable>
             </el-card>
           </el-tab-pane>
           <el-tab-pane :label="$t('androidRemoteTS.code.packet')" name="proxy">
             <el-button size="small" type="success" @click="startProxy"
-              >{{ $t('androidRemoteTS.code.startPacket') }}
+            >{{ $t('androidRemoteTS.code.startPacket') }}
             </el-button>
             <el-button size="small" @click="installCert"
-              >{{ $t('androidRemoteTS.code.downloadCertificate') }}
+            >{{ $t('androidRemoteTS.code.downloadCertificate') }}
             </el-button>
             <el-button size="small" @click="clearProxy">{{
-              $t('androidRemoteTS.code.cancelGlobalProxy')
-            }}</el-button>
+                $t('androidRemoteTS.code.cancelGlobalProxy')
+              }}
+            </el-button>
             <strong
-              v-if="proxyConnPort !== 0"
-              style="color: #67c23a; float: right; margin-top: 5px"
-              >{{ $t('androidRemoteTS.code.proxyConnection') }}：{{
+                v-if="proxyConnPort !== 0"
+                style="color: #67c23a; float: right; margin-top: 5px"
+            >{{ $t('androidRemoteTS.code.proxyConnection') }}：{{
                 agent['host'] + ':' + proxyConnPort
               }}</strong
             >
             <span style="float: right; display: flex; align-items: center">
               <el-button
-                size="mini"
-                style="margin-right: 6px"
-                @click="getWifiList"
-                >{{ $t('androidRemoteTS.code.refresh') }}</el-button
+                  size="mini"
+                  style="margin-right: 6px"
+                  @click="getWifiList"
+              >{{ $t('androidRemoteTS.code.refresh') }}</el-button
               >
               >
               <ColorImg
-                :src="wifiLogo"
-                :width="18"
-                :height="18"
-                :color="isConnectWifi ? '#67C23A' : '#F56C6C'"
+                  :src="wifiLogo"
+                  :width="18"
+                  :height="18"
+                  :color="isConnectWifi ? '#67C23A' : '#F56C6C'"
               />
               <span style="margin-left: 6px; color: #67c23a; font-size: 16px">{{
-                currentWifi.length > 0 && isConnectWifi
-                  ? currentWifi.replaceAll('"', '')
-                  : ' '
-              }}</span>
+                  currentWifi.length > 0 && isConnectWifi
+                      ? currentWifi.replaceAll('"', '')
+                      : ' '
+                }}</span>
             </span>
             <iframe
-              v-if="proxyWebPort !== 0"
-              allow="clipboard-read;clipboard-write"
-              :style="
+                v-if="proxyWebPort !== 0"
+                allow="clipboard-read;clipboard-write"
+                :style="
                 'border:1px solid #C0C4CC;;width: 100%;height: ' +
                 iFrameHeight +
                 'px;margin-top:15px'
               "
-              :src="'http://' + agent['host'] + ':' + proxyWebPort"
+                :src="'http://' + agent['host'] + ':' + proxyWebPort"
             ></iframe>
             <el-card v-else style="margin-top: 20px">
               <template #header
-                ><strong>{{
+              ><strong>{{
                   $t('androidRemoteTS.code.useTeaching')
                 }}</strong></template
               >
               <div style="height: 300px">
                 <el-steps direction="vertical" :active="3">
                   <el-step
-                    :title="$t('androidRemoteTS.code.connectWifi')"
-                    status="process"
-                    :description="$t('androidRemoteTS.code.connectWifiText')"
+                      :title="$t('androidRemoteTS.code.connectWifi')"
+                      status="process"
+                      :description="$t('androidRemoteTS.code.connectWifiText')"
                   />
                   <el-step
-                    :title="$t('androidRemoteTS.code.installCertificate')"
-                    status="process"
-                    :description="
+                      :title="$t('androidRemoteTS.code.installCertificate')"
+                      status="process"
+                      :description="
                       $t('androidRemoteTS.code.installCertificateText')
                     "
                   />
                   <el-step
-                    :title="$t('androidRemoteTS.code.startCapturing')"
-                    status="process"
-                    :description="$t('androidRemoteTS.code.startCapturingText')"
+                      :title="$t('androidRemoteTS.code.startCapturing')"
+                      status="process"
+                      :description="$t('androidRemoteTS.code.startCapturingText')"
                   />
                 </el-steps>
               </div>
             </el-card>
           </el-tab-pane>
           <el-tab-pane
-            :label="$t('androidRemoteTS.code.screenshotQuick')"
-            name="screenCap"
+              :label="$t('androidRemoteTS.code.screenshotQuick')"
+              name="screenCap"
           >
             <el-button type="primary" size="small" @click="quickCap">
               <el-icon :size="12" style="vertical-align: middle">
-                <Camera />
+                <Camera/>
               </el-icon>
               {{ $t('androidRemoteTS.code.screenshot') }}
             </el-button>
             <el-button type="danger" size="small" @click="removeScreen">
               <el-icon :size="12" style="vertical-align: middle">
-                <Delete />
+                <Delete/>
               </el-icon>
               {{ $t('androidRemoteTS.code.clean') }}
             </el-button>
             <el-card
-              v-if="screenUrls.length === 0"
-              style="height: 100%; margin-top: 10px"
+                v-if="screenUrls.length === 0"
+                style="height: 100%; margin-top: 10px"
             >
               <el-empty
-                :description="$t('androidRemoteTS.code.noScreenshots')"
+                  :description="$t('androidRemoteTS.code.noScreenshots')"
               ></el-empty>
             </el-card>
             <el-row v-else :gutter="20">
               <el-col
-                v-for="u in screenUrls"
-                :xs="8"
-                :sm="8"
-                :md="8"
-                :lg="4"
-                :xl="4"
-                style="margin-top: 10px"
+                  v-for="u in screenUrls"
+                  :xs="8"
+                  :sm="8"
+                  :md="8"
+                  :lg="4"
+                  :xl="4"
+                  style="margin-top: 10px"
               >
                 <el-card shadow="hover" :body-style="{ padding: '10px' }">
                   <el-image
-                    :src="u"
-                    :preview-src-list="screenUrls"
-                    hide-on-click-modal
+                      :src="u"
+                      :preview-src-list="screenUrls"
+                      hide-on-click-modal
                   ></el-image>
                   <div style="text-align: center; margin-top: 5px">
                     <el-button
-                      type="primary"
-                      plain
-                      size="mini"
-                      @click="downloadImg(u)"
+                        type="primary"
+                        plain
+                        size="mini"
+                        @click="downloadImg(u)"
                     >
                       <el-icon :size="12" style="vertical-align: middle">
-                        <Download />
+                        <Download/>
                       </el-icon>
                       {{ $t('androidRemoteTS.code.savePicture') }}
                     </el-button>
@@ -3011,73 +3016,73 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane label="Terminal" name="terminal">
             <el-alert
-              :title="$t('androidRemoteTS.code.precautions')"
-              type="warning"
-              :description="$t('androidRemoteTS.code.precautionsText')"
-              show-icon
-              :closable="false"
-              style="margin-bottom: 10px"
+                :title="$t('androidRemoteTS.code.precautions')"
+                type="warning"
+                :description="$t('androidRemoteTS.code.precautionsText')"
+                show-icon
+                :closable="false"
+                style="margin-bottom: 10px"
             />
             <el-tabs stretch type="border-card">
               <el-tab-pane label="Shell">
                 <el-card
-                  style="border: 0px"
-                  :body-style="{
+                    style="border: 0px"
+                    :body-style="{
                     color: '#FFFFFF',
                     backgroundColor: '#303133',
                     lineHeight: '1.5',
                   }"
                 >
                   <el-scrollbar
-                    ref="terScroll"
-                    noresize
-                    :style="'height:' + terminalHeight + 'px;min-height:450px'"
+                      ref="terScroll"
+                      noresize
+                      :style="'height:' + terminalHeight + 'px;min-height:450px'"
                   >
                     <div
-                      v-for="c in cmdOutPut"
-                      style="white-space: pre-wrap"
-                      v-html="c"
+                        v-for="c in cmdOutPut"
+                        style="white-space: pre-wrap"
+                        v-html="c"
                     ></div>
                   </el-scrollbar>
                   <div style="display: flex; margin-top: 10px">
                     <el-input
-                      v-model="cmdInput"
-                      size="mini"
-                      :placeholder="$t('androidRemoteTS.code.inputSend')"
-                      @keyup.enter="sendCmd"
+                        v-model="cmdInput"
+                        size="mini"
+                        :placeholder="$t('androidRemoteTS.code.inputSend')"
+                        @keyup.enter="sendCmd"
                     >
                       <template #prepend>{{ cmdUser + ':/ $' }}</template>
                     </el-input>
                     <el-button
-                      size="mini"
-                      :disabled="cmdInput.length === 0 || !cmdIsDone"
-                      style="margin-left: 5px"
-                      type="primary"
-                      @click="sendCmd"
-                      >Send
+                        size="mini"
+                        :disabled="cmdInput.length === 0 || !cmdIsDone"
+                        style="margin-left: 5px"
+                        type="primary"
+                        @click="sendCmd"
+                    >Send
                     </el-button>
                     <el-button
-                      size="mini"
-                      :disabled="cmdIsDone"
-                      style="margin-left: 5px"
-                      type="danger"
-                      @click="stopCmd"
-                      >Stop
+                        size="mini"
+                        :disabled="cmdIsDone"
+                        style="margin-left: 5px"
+                        type="danger"
+                        @click="stopCmd"
+                    >Stop
                     </el-button>
                     <el-button
-                      size="mini"
-                      style="margin-left: 5px"
-                      type="warning"
-                      @click="clearCmd"
-                      >Clear
+                        size="mini"
+                        style="margin-left: 5px"
+                        type="warning"
+                        @click="clearCmd"
+                    >Clear
                     </el-button>
                   </div>
                 </el-card>
               </el-tab-pane>
               <el-tab-pane label="Logcat">
                 <el-card
-                  style="border: 0px"
-                  :body-style="{
+                    style="border: 0px"
+                    :body-style="{
                     color: '#FFFFFF',
                     backgroundColor: '#303133',
                     lineHeight: '1.5',
@@ -3094,44 +3099,44 @@ onMounted(() => {
                       <el-option label="SILENT" value="S"></el-option>
                     </el-select>
                     <el-input
-                      v-model="logcatFilter.filter"
-                      style="margin-left: 5px"
-                      size="mini"
-                      :placeholder="$t('androidRemoteTS.code.enterInput')"
+                        v-model="logcatFilter.filter"
+                        style="margin-left: 5px"
+                        size="mini"
+                        :placeholder="$t('androidRemoteTS.code.enterInput')"
                     >
                       <template #prepend>| grep</template>
                     </el-input>
                     <el-button
-                      size="mini"
-                      style="margin-left: 5px"
-                      type="primary"
-                      @click="sendLogcat"
-                      >Search
+                        size="mini"
+                        style="margin-left: 5px"
+                        type="primary"
+                        @click="sendLogcat"
+                    >Search
                     </el-button>
                     <el-button
-                      size="mini"
-                      style="margin-left: 5px"
-                      type="danger"
-                      @click="stopLogcat"
-                      >Stop
+                        size="mini"
+                        style="margin-left: 5px"
+                        type="danger"
+                        @click="stopLogcat"
+                    >Stop
                     </el-button>
                     <el-button
-                      size="mini"
-                      style="margin-left: 5px"
-                      type="warning"
-                      @click="clearLogcat"
-                      >Clear
+                        size="mini"
+                        style="margin-left: 5px"
+                        type="warning"
+                        @click="clearLogcat"
+                    >Clear
                     </el-button>
                   </div>
                   <el-scrollbar
-                    ref="logcatScroll"
-                    noresize
-                    :style="'height:' + terminalHeight + 'px;min-height:450px'"
+                      ref="logcatScroll"
+                      noresize
+                      :style="'height:' + terminalHeight + 'px;min-height:450px'"
                   >
                     <div
-                      v-for="l in logcatOutPut"
-                      style="white-space: pre-wrap"
-                      v-html="l"
+                        v-for="l in logcatOutPut"
+                        style="white-space: pre-wrap"
+                        v-html="l"
                     ></div>
                   </el-scrollbar>
                 </el-card>
@@ -3139,15 +3144,15 @@ onMounted(() => {
             </el-tabs>
           </el-tab-pane>
           <el-tab-pane
-            :label="$t('androidRemoteTS.code.UIAutomation.UIAutomationName')"
-            name="auto"
+              :label="$t('androidRemoteTS.code.UIAutomation.UIAutomationName')"
+              name="auto"
           >
             <div v-if="testCase['id']">
               <el-collapse accordion style="margin-bottom: 20px">
                 <el-collapse-item>
                   <template #title>
                     <div
-                      style="
+                        style="
                         display: flex;
                         align-items: center;
                         width: 100%;
@@ -3155,20 +3160,20 @@ onMounted(() => {
                       "
                     >
                       <strong
-                        style="
+                          style="
                           font-size: 15px;
                           color: #909399;
                           margin-left: 10px;
                         "
-                        >{{
+                      >{{
                           $t('androidRemoteTS.code.UIAutomation.testInfo')
                         }}</strong
                       >
                       <el-button
-                        style="margin-right: 10px"
-                        type="danger"
-                        size="mini"
-                        @click="removeCase"
+                          style="margin-right: 10px"
+                          type="danger"
+                          size="mini"
+                          @click="removeCase"
                       >
                         {{ $t('androidRemoteTS.code.UIAutomation.clean') }}
                       </el-button>
@@ -3176,75 +3181,75 @@ onMounted(() => {
                   </template>
                   <el-descriptions :column="2" size="medium" border>
                     <el-descriptions-item
-                      width="100px"
-                      :label="$t('projectIndexTS.page.caseId')"
-                      >{{ testCase['id'] }}
+                        width="100px"
+                        :label="$t('projectIndexTS.page.caseId')"
+                    >{{ testCase['id'] }}
                     </el-descriptions-item>
                     <el-descriptions-item
-                      width="100px"
-                      :label="$t('projectIndexTS.page.caseName')"
-                      >{{ testCase.name }}
+                        width="100px"
+                        :label="$t('projectIndexTS.page.caseName')"
+                    >{{ testCase.name }}
                     </el-descriptions-item>
                     <el-descriptions-item
-                      :label="
+                        :label="
                         $t('androidRemoteTS.code.UIAutomation.fatherPlayed')
                       "
                     >
                       <div style="display: flex; align-items: center">
                         <el-avatar
-                          style="margin-right: 10px"
-                          :size="27"
-                          :src="
+                            style="margin-right: 10px"
+                            :size="27"
+                            :src="
                             project['projectImg'].length > 0
                               ? project['projectImg']
                               : defaultLogo
                           "
-                          shape="square"
+                            shape="square"
                         ></el-avatar>
                         {{ project['projectName'] }}
                       </div>
                     </el-descriptions-item>
                     <el-descriptions-item
-                      :label="$t('stepListViewTS.platformToBe')"
+                        :label="$t('stepListViewTS.platformToBe')"
                     >
                       <div style="display: flex; align-items: center">
                         <el-avatar
-                          style="margin-right: 10px"
-                          :size="27"
-                          :src="
+                            style="margin-right: 10px"
+                            :size="27"
+                            :src="
                             getImg(
                               testCase['platform'] === 1 ? 'ANDROID' : 'IOS'
                             )
                           "
-                          shape="square"
+                            shape="square"
                         ></el-avatar>
                         {{
                           testCase['platform'] === 1
-                            ? $t('publicStepTS.android')
-                            : 'iOS'
+                              ? $t('publicStepTS.android')
+                              : 'iOS'
                         }}
                       </div>
                     </el-descriptions-item>
                     <el-descriptions-item :label="$t('stepListViewTS.module')">
                       {{
                         testCase['modulesDTO'] !== null
-                          ? testCase['modulesDTO'].name
-                          : ''
+                            ? testCase['modulesDTO'].name
+                            : ''
                       }}
                     </el-descriptions-item>
                     <el-descriptions-item
-                      :label="$t('stepListViewTS.versionName')"
-                      >{{ testCase['version'] }}
+                        :label="$t('stepListViewTS.versionName')"
+                    >{{ testCase['version'] }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="$t('stepListViewTS.designer')"
-                      >{{ testCase['designer'] }}
+                    >{{ testCase['designer'] }}
                     </el-descriptions-item>
                     <el-descriptions-item :label="$t('stepListViewTS.last')"
-                      >{{ testCase['editTime'] }}
+                    >{{ testCase['editTime'] }}
                     </el-descriptions-item>
                     <el-descriptions-item
-                      :label="$t('stepListViewTS.testMessage')"
-                      >{{ testCase['des'] }}
+                        :label="$t('stepListViewTS.testMessage')"
+                    >{{ testCase['des'] }}
                     </el-descriptions-item>
                   </el-descriptions>
                 </el-collapse-item>
@@ -3252,83 +3257,83 @@ onMounted(() => {
               <el-tabs v-model="activeTab2" type="border-card" stretch>
                 <el-tab-pane :label="$t('publicStepTS.list')" name="step">
                   <step-list
-                    :is-show-run="true"
-                    :platform="1"
-                    :is-driver-finish="isDriverFinish"
-                    :case-id="testCase['id']"
-                    :project-id="project['id']"
-                    :debug-loading="debugLoading"
-                    @runStep="runStep"
+                      :is-show-run="true"
+                      :platform="1"
+                      :is-driver-finish="isDriverFinish"
+                      :case-id="testCase['id']"
+                      :project-id="project['id']"
+                      :debug-loading="debugLoading"
+                      @runStep="runStep"
                   />
                 </el-tab-pane>
                 <el-tab-pane
-                  :label="$t('resultDetailTS.page.runLog')"
-                  name="log"
+                    :label="$t('resultDetailTS.page.runLog')"
+                    name="log"
                 >
                   <step-log
-                    :is-read-only="false"
-                    :debug-loading="debugLoading"
-                    :step-log="stepLog"
-                    @clearLog="clearLog"
-                    @stopStep="stopStep"
+                      :is-read-only="false"
+                      :debug-loading="debugLoading"
+                      :step-log="stepLog"
+                      @clearLog="clearLog"
+                      @stopStep="stopStep"
                   />
                 </el-tab-pane>
               </el-tabs>
             </div>
             <div v-else>
               <span style="color: #909399; margin-right: 10px">{{
-                $t('androidRemoteTS.code.associatedProject')
-              }}</span>
+                  $t('androidRemoteTS.code.associatedProject')
+                }}</span>
               <el-select
-                v-model="project"
-                size="mini"
-                value-key="id"
-                :placeholder="$t('androidRemoteTS.code.chooseProject')"
+                  v-model="project"
+                  size="mini"
+                  value-key="id"
+                  :placeholder="$t('androidRemoteTS.code.chooseProject')"
               >
                 <el-option
-                  v-for="item in store.state.projectList"
-                  :key="item.id"
-                  :value="item"
-                  :label="item['projectName']"
+                    v-for="item in store.state.projectList"
+                    :key="item.id"
+                    :value="item"
+                    :label="item['projectName']"
                 >
                   <div style="display: flex; align-items: center">
                     <el-avatar
-                      style="margin-right: 10px"
-                      :size="32"
-                      :src="
+                        style="margin-right: 10px"
+                        :size="32"
+                        :src="
                         item['projectImg'].length > 0
                           ? item['projectImg']
                           : defaultLogo
                       "
-                      shape="square"
+                        shape="square"
                     ></el-avatar>
                     {{ item['projectName'] }}
                   </div>
                 </el-option>
               </el-select>
               <el-button
-                v-if="project !== null"
-                size="mini"
-                type="primary"
-                round
-                style="position: absolute; right: 20px"
-                @click="caseList.open()"
+                  v-if="project !== null"
+                  size="mini"
+                  type="primary"
+                  round
+                  style="position: absolute; right: 20px"
+                  @click="caseList.open()"
               >
                 {{ $t('androidRemoteTS.code.addCase') }}
               </el-button>
               <test-case-list
-                v-if="project !== null"
-                ref="caseList"
-                :project-id="project['id']"
-                :platform="1"
-                :is-read-only="true"
-                @select-case="selectCase"
+                  v-if="project !== null"
+                  ref="caseList"
+                  :project-id="project['id']"
+                  :platform="1"
+                  :is-read-only="true"
+                  @select-case="selectCase"
               ></test-case-list>
               <el-card style="height: 100%; margin-top: 20px">
                 <el-result
-                  icon="info"
-                  :title="$t('androidRemoteTS.code.hintText')"
-                  :sub-title="$t('androidRemoteTS.code.hintMessage')"
+                    icon="info"
+                    :title="$t('androidRemoteTS.code.hintText')"
+                    :sub-title="$t('androidRemoteTS.code.hintMessage')"
                 >
                 </el-result>
               </el-card>
@@ -3339,35 +3344,45 @@ onMounted(() => {
               <el-tab-pane :label="$t('androidRemoteTS.code.nativeControls')">
                 <div v-show="isShowImg">
                   <div
-                    style="
+                      style="
                       margin-bottom: 15px;
                       display: flex;
                       align-items: center;
                       justify-content: space-between;
                     "
                   >
-                    <el-button
-                      type="primary"
-                      size="mini"
-                      :loading="elementLoading"
-                      :disabled="isDriverFinish === false"
-                      @click="getElement"
-                    >
-                      <el-icon :size="12" style="vertical-align: middle">
-                        <Search />
-                      </el-icon>
-                      {{ $t('androidRemoteTS.code.retrieveControlEle') }}
-                    </el-button>
+                    <div>
+                      <el-select
+                          v-model="isMultiWindows"
+                          size="mini"
+                      >
+                        <el-option label="单窗口模式" :value="false"/>
+                        <el-option label="多窗口模式" :value="true"/>
+                      </el-select>
+                      <el-button
+                          style="margin-left:10px"
+                          type="primary"
+                          size="mini"
+                          :loading="elementLoading"
+                          :disabled="isDriverFinish === false"
+                          @click="getElement"
+                      >
+                        <el-icon :size="12" style="vertical-align: middle">
+                          <Search/>
+                        </el-icon>
+                        {{ $t('androidRemoteTS.code.retrieveControlEle') }}
+                      </el-button>
+                    </div>
                     <span
-                      v-if="activity.length > 0"
-                      style="
+                        v-if="activity.length > 0"
+                        style="
                         margin-right: 10px;
                         color: #909399;
                         font-size: 14px;
                         cursor: pointer;
                       "
-                      @click="copy(activity)"
-                      >{{ $t('androidRemoteTS.code.activity') }}：
+                        @click="copy(activity)"
+                    >{{ $t('androidRemoteTS.code.activity') }}：
                       {{ activity }}</span
                     >
                   </div>
@@ -3375,34 +3390,34 @@ onMounted(() => {
                     <el-col :span="7">
                       <el-card shadow="hover">
                         <div
-                          :style="
+                            :style="
                             'width: 100%;background-image: url(' +
                             imgUrl +
                             ');background-size: 100% 100%;'
                           "
                         >
                           <canvas
-                            id="debugPic"
-                            @mousedown="touchstart"
+                              id="debugPic"
+                              @mousedown="touchstart"
                           ></canvas>
                         </div>
                       </el-card>
                       <el-card
-                        v-if="webViewData.length > 0"
-                        :body-style="{ padding: '12px' }"
-                        shadow="hover"
-                        style="margin-top: 10px"
+                          v-if="webViewData.length > 0"
+                          :body-style="{ padding: '12px' }"
+                          shadow="hover"
+                          style="margin-top: 10px"
                       >
                         <el-table :data="webViewData" border>
                           <el-table-column
-                            :label="$t('androidRemoteTS.code.webViewList')"
-                            align="center"
-                            :show-overflow-tooltip="true"
+                              :label="$t('androidRemoteTS.code.webViewList')"
+                              align="center"
+                              :show-overflow-tooltip="true"
                           >
                             <template #default="scope">
                               <span
-                                style="cursor: pointer"
-                                @click="copy(scope.row)"
+                                  style="cursor: pointer"
+                                  @click="copy(scope.row)"
                               >
                                 {{ scope.row }}</span
                               >
@@ -3414,37 +3429,37 @@ onMounted(() => {
                     <el-col :span="9">
                       <el-card v-if="isShowTree" shadow="hover">
                         <el-input
-                          v-model="filterText"
-                          style="margin-bottom: 10px"
-                          size="mini"
-                          :placeholder="$t('androidRemoteTS.code.classFilter')"
+                            v-model="filterText"
+                            style="margin-bottom: 10px"
+                            size="mini"
+                            :placeholder="$t('androidRemoteTS.code.classFilter')"
                         ></el-input>
                         <div style="height: 660px">
                           <el-scrollbar
-                            class="element-tree-scrollbar"
-                            style="height: 100%"
+                              class="element-tree-scrollbar"
+                              style="height: 100%"
                           >
                             <el-tree
-                              ref="tree"
-                              :indent="13"
-                              :filter-node-method="filterNode"
-                              :default-expanded-keys="currentId"
-                              node-key="id"
-                              style="margin-top: 10px; margin-bottom: 20px"
-                              :highlight-current="true"
-                              :accordion="true"
-                              :data="elementData"
-                              @node-click="handleNodeClick"
+                                ref="tree"
+                                :indent="13"
+                                :filter-node-method="filterNode"
+                                :default-expanded-keys="currentId"
+                                node-key="id"
+                                style="margin-top: 10px; margin-bottom: 20px"
+                                :highlight-current="true"
+                                :accordion="true"
+                                :data="elementData"
+                                @node-click="handleNodeClick"
                             >
                               <template #default="{ node, data }">
                                 <span
-                                  v-if="data.detail['resource-id']"
-                                  style="font-size: 14px"
+                                    v-if="data.detail['resource-id']"
+                                    style="font-size: 14px"
                                 >
                                   {{
                                     node.label.substring(
-                                      0,
-                                      node.label.indexOf('>')
+                                        0,
+                                        node.label.indexOf('>')
                                     ) + ' '
                                   }}
                                   <span style="color: #f55781">resource-id</span
@@ -3453,8 +3468,8 @@ onMounted(() => {
                                   }}
                                 </span>
                                 <span v-else style="font-size: 14px">{{
-                                  node.label
-                                }}</span>
+                                    node.label
+                                  }}</span>
                               </template>
                             </el-tree>
                           </el-scrollbar>
@@ -3463,177 +3478,206 @@ onMounted(() => {
                     </el-col>
                     <el-col :span="8">
                       <el-card v-if="isShowTree" shadow="hover">
-                        <div style="height: 695px">
+                        <div style="height: 695px;padding-bottom: 60px">
                           <div
-                            v-if="project && project['id']"
-                            style="text-align: center; margin-bottom: 10px"
+                              v-if="project && project['id']"
+                              style="text-align: center; margin-bottom: 10px"
                           >
                             <el-button
-                              :disabled="elementDetail === null"
-                              plain
-                              size="small"
-                              type="primary"
-                              round
-                              @click="toAddElement('', '')"
-                              >{{ $t('androidRemoteTS.code.addControls') }}
+                                :disabled="elementDetail === null"
+                                plain
+                                size="small"
+                                type="primary"
+                                round
+                                @click="toAddElement('', '')"
+                            >{{ $t('androidRemoteTS.code.addControls') }}
                             </el-button>
                             <el-button
-                              v-if="
+                                v-if="
                                 elementDetail &&
                                 elementDetail['xpath'] &&
                                 isDriverFinish
                               "
-                              :loading="elementScreenLoading"
-                              style="margin-left: 5px"
-                              plain
-                              size="small"
-                              round
-                              @click="getEleScreen(elementDetail['xpath'])"
-                              >{{ $t('androidRemoteTS.code.controlSnapshot') }}
+                                :loading="elementScreenLoading"
+                                style="margin-left: 5px"
+                                plain
+                                size="small"
+                                round
+                                @click="getEleScreen(elementDetail['xpath'])"
+                            >{{ $t('androidRemoteTS.code.controlSnapshot') }}
                             </el-button>
                           </div>
-                          <el-alert
-                            v-else
-                            style="margin-bottom: 10px"
-                            :title="$t('androidRemoteTS.code.titleMessage')"
-                            type="info"
-                            show-icon
-                            close-text="Get!"
-                          />
+                          <div v-else>
+                            <el-alert
+                                style="margin-bottom: 10px"
+                                :title="$t('androidRemoteTS.code.titleMessage')"
+                                type="info"
+                                show-icon
+                                close-text="Get!"
+                            />
+                            <el-select
+                                style="width: 100%"
+                                v-model="project"
+                                size="mini"
+                                value-key="id"
+                                :placeholder="$t('androidRemoteTS.code.chooseProject')"
+                            >
+                              <el-option
+                                  v-for="item in store.state.projectList"
+                                  :key="item.id"
+                                  :value="item"
+                                  :label="item['projectName']"
+                              >
+                                <div style="display: flex; align-items: center">
+                                  <el-avatar
+                                      style="margin-right: 10px"
+                                      :size="32"
+                                      :src="
+                        item['projectImg'].length > 0
+                          ? item['projectImg']
+                          : defaultLogo
+                      "
+                                      shape="square"
+                                  ></el-avatar>
+                                  {{ item['projectName'] }}
+                                </div>
+                              </el-option>
+                            </el-select>
+                          </div>
                           <el-scrollbar
-                            style="height: 100%"
-                            class="element-tree-scrollbar"
+                              style="height: 100%"
+                              class="element-tree-scrollbar"
                           >
                             <el-form
-                              v-if="elementDetail !== null"
-                              label-position="left"
-                              class="element-table"
-                              label-width="100px"
+                                v-if="elementDetail !== null"
+                                label-position="left"
+                                class="element-table"
+                                label-width="100px"
                             >
                               <el-form-item
-                                label="class"
-                                style="cursor: pointer"
-                                @click="copy(elementDetail['class'])"
+                                  label="class"
+                                  style="cursor: pointer"
+                                  @click="copy(elementDetail['class'])"
                               >
                                 <span>{{ elementDetail['class'] }}</span>
                               </el-form-item>
                               <el-form-item
-                                v-if="elementDetail['resource-id']"
-                                label="resource-id"
-                                style="cursor: pointer"
+                                  v-if="elementDetail['resource-id']"
+                                  label="resource-id"
+                                  style="cursor: pointer"
                               >
                                 <span
-                                  @click="copy(elementDetail['resource-id'])"
-                                  >{{ elementDetail['resource-id'] }}</span
+                                    @click="copy(elementDetail['resource-id'])"
+                                >{{ elementDetail['resource-id'] }}</span
                                 >
                                 <el-icon
-                                  v-if="project && project['id']"
-                                  color="green"
-                                  size="16"
-                                  style="
+                                    v-if="project && project['id']"
+                                    color="green"
+                                    size="16"
+                                    style="
                                     vertical-align: middle;
                                     margin-left: 10px;
                                   "
-                                  @click="
+                                    @click="
                                     toAddElement(
                                       'id',
                                       elementDetail['resource-id']
                                     )
                                   "
                                 >
-                                  <Pointer />
+                                  <Pointer/>
                                 </el-icon>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.xpath')"
+                                  :label="$t('androidRemoteTS.code.xpath')"
                               >
                                 <el-table
-                                  stripe
-                                  :empty-text="
+                                    stripe
+                                    :empty-text="
                                     $t('androidRemoteTS.code.xpathNull')
                                   "
-                                  border
-                                  :data="findBestXpath(elementDetail)"
-                                  :show-header="false"
+                                    border
+                                    :data="findBestXpath(elementDetail)"
+                                    :show-header="false"
                                 >
                                   <el-table-column>
                                     <template #default="scope">
                                       <span
-                                        style="cursor: pointer"
-                                        @click="copy(scope.row)"
-                                        >{{ scope.row }}</span
+                                          style="cursor: pointer"
+                                          @click="copy(scope.row)"
+                                      >{{ scope.row }}</span
                                       >
                                       <el-icon
-                                        v-if="project && project['id']"
-                                        color="green"
-                                        size="16"
-                                        style="
+                                          v-if="project && project['id']"
+                                          color="green"
+                                          size="16"
+                                          style="
                                           vertical-align: middle;
                                           margin-left: 10px;
                                         "
-                                        @click="
+                                          @click="
                                           toAddElement('xpath', scope.row)
                                         "
                                       >
-                                        <Pointer />
+                                        <Pointer/>
                                       </el-icon>
                                     </template>
                                   </el-table-column>
                                 </el-table>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.absolutePath')"
-                                style="cursor: pointer"
+                                  :label="$t('androidRemoteTS.code.absolutePath')"
+                                  style="cursor: pointer"
                               >
                                 <span @click="copy(elementDetail['xpath'])">{{
-                                  elementDetail['xpath']
-                                }}</span>
+                                    elementDetail['xpath']
+                                  }}</span>
                                 <el-icon
-                                  v-if="project && project['id']"
-                                  color="green"
-                                  size="16"
-                                  style="
+                                    v-if="project && project['id']"
+                                    color="green"
+                                    size="16"
+                                    style="
                                     vertical-align: middle;
                                     margin-left: 10px;
                                   "
-                                  @click="
+                                    @click="
                                     toAddElement(
                                       'xpath',
                                       elementDetail['xpath']
                                     )
                                   "
                                 >
-                                  <Pointer />
+                                  <Pointer/>
                                 </el-icon>
                               </el-form-item>
                               <el-form-item
-                                label="text"
-                                style="cursor: pointer"
-                                @click="copy(elementDetail['text'])"
+                                  label="text"
+                                  style="cursor: pointer"
+                                  @click="copy(elementDetail['text'])"
                               >
                                 <span>{{ elementDetail['text'] }}</span>
                               </el-form-item>
                               <el-form-item
-                                v-if="elementDetail['content-desc']"
-                                label="content-desc"
-                                style="cursor: pointer"
-                                @click="copy(elementDetail['content-desc'])"
+                                  v-if="elementDetail['content-desc']"
+                                  label="content-desc"
+                                  style="cursor: pointer"
+                                  @click="copy(elementDetail['content-desc'])"
                               >
                                 <span>{{ elementDetail['content-desc'] }}</span>
                               </el-form-item>
                               <el-form-item
-                                label="package"
-                                style="cursor: pointer"
-                                @click="copy(elementDetail['package'])"
+                                  label="package"
+                                  style="cursor: pointer"
+                                  @click="copy(elementDetail['package'])"
                               >
                                 <span>{{ elementDetail['package'] }}</span>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.centerXY')"
-                                style="cursor: pointer"
+                                  :label="$t('androidRemoteTS.code.centerXY')"
+                                  style="cursor: pointer"
                               >
                                 <span
-                                  @click="
+                                    @click="
                                     copy(
                                       computedCenter(
                                         elementDetail['bStart'],
@@ -3641,22 +3685,22 @@ onMounted(() => {
                                       )
                                     )
                                   "
-                                  >{{
+                                >{{
                                     computedCenter(
-                                      elementDetail['bStart'],
-                                      elementDetail['bEnd']
+                                        elementDetail['bStart'],
+                                        elementDetail['bEnd']
                                     )
                                   }}</span
                                 >
                                 <el-icon
-                                  v-if="project && project['id']"
-                                  color="green"
-                                  size="16"
-                                  style="
+                                    v-if="project && project['id']"
+                                    color="green"
+                                    size="16"
+                                    style="
                                     vertical-align: middle;
                                     margin-left: 10px;
                                   "
-                                  @click="
+                                    @click="
                                     toAddElement(
                                       'point',
                                       computedCenter(
@@ -3666,111 +3710,111 @@ onMounted(() => {
                                     )
                                   "
                                 >
-                                  <Pointer />
+                                  <Pointer/>
                                 </el-icon>
                               </el-form-item>
                               <el-form-item label="index">
                                 <span>{{ elementDetail['index'] }}</span>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.one')"
+                                  :label="$t('androidRemoteTS.code.label.one')"
                               >
                                 <el-switch
-                                  :value="
+                                    :value="
                                     JSON.parse(elementDetail['checkable'])
                                   "
-                                  disabled
+                                    disabled
                                 >
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.two')"
+                                  :label="$t('androidRemoteTS.code.label.two')"
                               >
                                 <el-switch
-                                  :value="JSON.parse(elementDetail['checked'])"
-                                  disabled
+                                    :value="JSON.parse(elementDetail['checked'])"
+                                    disabled
                                 >
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.three')"
+                                  :label="$t('androidRemoteTS.code.label.three')"
                               >
                                 <el-switch
-                                  :value="
+                                    :value="
                                     JSON.parse(elementDetail['clickable'])
                                   "
-                                  disabled
+                                    disabled
                                 >
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.four')"
+                                  :label="$t('androidRemoteTS.code.label.four')"
                               >
                                 <el-switch
-                                  :value="JSON.parse(elementDetail['selected'])"
-                                  disabled
+                                    :value="JSON.parse(elementDetail['selected'])"
+                                    disabled
                                 >
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.five')"
+                                  :label="$t('androidRemoteTS.code.label.five')"
                               >
                                 <el-switch
-                                  :value="
+                                    :value="
                                     JSON.parse(elementDetail['displayed'])
                                   "
-                                  disabled
+                                    disabled
                                 >
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.six')"
+                                  :label="$t('androidRemoteTS.code.label.six')"
                               >
                                 <el-switch
-                                  :value="JSON.parse(elementDetail['enabled'])"
-                                  disabled
+                                    :value="JSON.parse(elementDetail['enabled'])"
+                                    disabled
                                 >
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.seven')"
+                                  :label="$t('androidRemoteTS.code.label.seven')"
                               >
                                 <el-switch
-                                  :value="
+                                    :value="
                                     JSON.parse(elementDetail['focusable'])
                                   "
-                                  disabled
+                                    disabled
                                 >
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.eight')"
+                                  :label="$t('androidRemoteTS.code.label.eight')"
                               >
                                 <el-switch
-                                  :value="JSON.parse(elementDetail['focused'])"
-                                  disabled
+                                    :value="JSON.parse(elementDetail['focused'])"
+                                    disabled
                                 >
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.nine')"
+                                  :label="$t('androidRemoteTS.code.label.nine')"
                               >
                                 <el-switch
-                                  :value="
+                                    :value="
                                     JSON.parse(elementDetail['long-clickable'])
                                   "
-                                  disabled
+                                    disabled
                                 >
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.ten')"
+                                  :label="$t('androidRemoteTS.code.label.ten')"
                               >
                                 <el-switch
-                                  :value="
+                                    :value="
                                     JSON.parse(elementDetail['scrollable'])
                                   "
-                                  disabled
+                                    disabled
                                 >
                                 </el-switch>
                               </el-form-item>
@@ -3786,28 +3830,28 @@ onMounted(() => {
                 </div>
                 <el-card v-show="!isShowImg" style="height: 100%">
                   <el-result
-                    icon="info"
-                    :title="$t('androidRemoteTS.code.hintText')"
-                    :sub-title="$t('androidRemoteTS.code.subTitleText')"
+                      icon="info"
+                      :title="$t('androidRemoteTS.code.hintText')"
+                      :sub-title="$t('androidRemoteTS.code.subTitleText')"
                   >
                     <template #extra>
                       <el-button
-                        size="mini"
-                        type="primary"
-                        :disabled="isDriverFinish"
-                        :loading="driverLoading"
-                        @click="openDriver"
-                        >{{ $t('androidRemoteTS.code.UIAutomator2ServerInit') }}
+                          size="mini"
+                          type="primary"
+                          :disabled="isDriverFinish"
+                          :loading="driverLoading"
+                          @click="openDriver"
+                      >{{ $t('androidRemoteTS.code.UIAutomator2ServerInit') }}
                       </el-button>
                       <el-button
-                        type="primary"
-                        size="mini"
-                        :loading="elementLoading"
-                        :disabled="isDriverFinish === false"
-                        @click="getElement"
+                          type="primary"
+                          size="mini"
+                          :loading="elementLoading"
+                          :disabled="isDriverFinish === false"
+                          @click="getElement"
                       >
                         <el-icon :size="12" style="vertical-align: middle">
-                          <Search />
+                          <Search/>
                         </el-icon>
                         {{ $t('androidRemoteTS.code.getEle') }}
                       </el-button>
@@ -3818,47 +3862,47 @@ onMounted(() => {
               <el-tab-pane :label="$t('androidRemoteTS.code.poco')">
                 <div style="margin-bottom: 10px; display: flex">
                   <el-select
-                    v-model="selectPocoType"
-                    size="mini"
-                    @change="switchPocoType"
+                      v-model="selectPocoType"
+                      size="mini"
+                      @change="switchPocoType"
                   >
                     <el-option
-                      v-for="item in pocoTypeList"
-                      :key="item.name"
-                      :value="item.value"
-                      :label="item.name"
+                        v-for="item in pocoTypeList"
+                        :key="item.name"
+                        :value="item.value"
+                        :label="item.name"
                     >
                       <div style="display: flex; align-items: center">
                         <el-avatar
-                          style="margin-right: 10px"
-                          :size="28"
-                          :src="getImg(item.img)"
-                          shape="square"
+                            style="margin-right: 10px"
+                            :size="28"
+                            :src="getImg(item.img)"
+                            shape="square"
                         ></el-avatar>
                         {{ item.name }}
                       </div>
                     </el-option>
                   </el-select>
                   <el-input
-                    v-model="pocoPort"
-                    placeholder="Default connect port"
-                    style="margin-left: 10px; width: 200px"
-                    size="mini"
+                      v-model="pocoPort"
+                      placeholder="Default connect port"
+                      style="margin-left: 10px; width: 200px"
+                      size="mini"
                   ></el-input>
                   <el-button
-                    style="margin-left: 10px"
-                    type="primary"
-                    :loading="pocoLoading"
-                    size="mini"
-                    :disabled="selectPocoType.length === 0"
-                    @click="getPoco(selectPocoType)"
-                    >{{ $t('androidRemoteTS.code.getPoco') }}
+                      style="margin-left: 10px"
+                      type="primary"
+                      :loading="pocoLoading"
+                      size="mini"
+                      :disabled="selectPocoType.length === 0"
+                      @click="getPoco(selectPocoType)"
+                  >{{ $t('androidRemoteTS.code.getPoco') }}
                   </el-button>
                   <el-link
-                    style="position: absolute; right: 20px"
-                    type="primary"
-                    href="https://poco.readthedocs.io/en/latest/source/doc/integration.html"
-                    target="_blank"
+                      style="position: absolute; right: 20px"
+                      type="primary"
+                      href="https://poco.readthedocs.io/en/latest/source/doc/integration.html"
+                      target="_blank"
                   >
                     {{ $t('androidRemoteTS.code.pocoSDK') }}
                   </el-link>
@@ -3867,15 +3911,15 @@ onMounted(() => {
                   <el-col :span="8">
                     <el-card shadow="hover">
                       <div
-                        :style="
+                          :style="
                           'width: 100%;background-image: url(' +
                           imgUrl +
                           ');background-size: 100% 100%;'
                         "
                       >
                         <canvas
-                          id="debugPocoPic"
-                          @mousedown="touchstartpoco"
+                            id="debugPocoPic"
+                            @mousedown="touchstartpoco"
                         ></canvas>
                       </div>
                     </el-card>
@@ -3884,129 +3928,129 @@ onMounted(() => {
                     <el-card shadow="hover">
                       <div style="height: 660px">
                         <el-scrollbar
-                          class="element-tree-scrollbar"
-                          style="height: 100%"
+                            class="element-tree-scrollbar"
+                            style="height: 100%"
                         >
                           <el-tree
-                            ref="pocoTree"
-                            :indent="13"
-                            :default-expanded-keys="currentPocoId"
-                            node-key="id"
-                            style="margin-top: 10px; margin-bottom: 20px"
-                            :highlight-current="true"
-                            :accordion="true"
-                            :data="pocoData"
-                            @node-click="handlePocoClick"
+                              ref="pocoTree"
+                              :indent="13"
+                              :default-expanded-keys="currentPocoId"
+                              node-key="id"
+                              style="margin-top: 10px; margin-bottom: 20px"
+                              :highlight-current="true"
+                              :accordion="true"
+                              :data="pocoData"
+                              @node-click="handlePocoClick"
                           >
                             <template #default="{ node, data }">
                               <div
-                                v-if="data.payload"
-                                style="margin-right: 5px"
+                                  v-if="data.payload"
+                                  style="margin-right: 5px"
                               >
                                 <el-icon
-                                  v-if="
+                                    v-if="
                                     data.payload.type === 'Root' ||
                                     data.payload.type === 'Scene'
                                   "
-                                  :size="15"
-                                  style="margin-top: 3px; color: #67c23a"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #67c23a"
                                 >
-                                  <Operation />
+                                  <Operation/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="data.payload.type === 'Node'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #67c23a"
+                                    v-if="data.payload.type === 'Node'"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #67c23a"
                                 >
-                                  <Share />
+                                  <Share/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="data.payload.type === 'Button'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #409eff"
+                                    v-if="data.payload.type === 'Button'"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #409eff"
                                 >
-                                  <HelpFilled />
+                                  <HelpFilled/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="data.payload.type === 'Layer'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #409eff"
+                                    v-if="data.payload.type === 'Layer'"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #409eff"
                                 >
-                                  <Coin />
+                                  <Coin/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="
+                                    v-if="
                                     data.payload.type === 'Image' ||
                                     data.payload.type === 'Sprite'
                                   "
-                                  :size="15"
-                                  style="margin-top: 3px; color: #67c23a"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #67c23a"
                                 >
-                                  <Picture />
+                                  <Picture/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="data.payload.type === 'Camera'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #409eff"
+                                    v-if="data.payload.type === 'Camera'"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #409eff"
                                 >
-                                  <VideoCamera />
+                                  <VideoCamera/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="data.payload.type === 'Canvas'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #409eff"
+                                    v-if="data.payload.type === 'Canvas'"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #409eff"
                                 >
-                                  <FullScreen />
+                                  <FullScreen/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="data.payload.type === 'Widget'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #409eff"
+                                    v-if="data.payload.type === 'Widget'"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #409eff"
                                 >
-                                  <Menu />
+                                  <Menu/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="
+                                    v-if="
                                     data.payload.type === 'Text' ||
                                     data.payload.type.indexOf('Label') !== -1
                                   "
-                                  :size="15"
-                                  style="margin-top: 3px; color: #e6a23c"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #e6a23c"
                                 >
-                                  <List />
+                                  <List/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="data.payload.type === 'ProgressBar'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #e6a23c"
+                                    v-if="data.payload.type === 'ProgressBar'"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #e6a23c"
                                 >
-                                  <MoreFilled />
+                                  <MoreFilled/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="data.payload.type === 'GameObject'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #f56c6c"
+                                    v-if="data.payload.type === 'GameObject'"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #f56c6c"
                                 >
-                                  <HomeFilled />
+                                  <HomeFilled/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="data.payload.type === 'Game'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #f56c6c"
+                                    v-if="data.payload.type === 'Game'"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #f56c6c"
                                 >
-                                  <Headset />
+                                  <Headset/>
                                 </el-icon>
                                 <el-icon
-                                  v-if="data.payload.type === 'TextField'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #f56c6c"
+                                    v-if="data.payload.type === 'TextField'"
+                                    :size="15"
+                                    style="margin-top: 3px; color: #f56c6c"
                                 >
-                                  <Edit />
+                                  <Edit/>
                                 </el-icon>
                               </div>
                               <span style="font-size: 14px">{{
-                                data.name
-                              }}</span>
+                                  data.name
+                                }}</span>
                             </template>
                           </el-tree>
                         </el-scrollbar>
@@ -4015,44 +4059,73 @@ onMounted(() => {
                   </el-col>
                   <el-col :span="8">
                     <el-card shadow="hover">
-                      <div style="height: 660px">
+                      <div style="height: 660px;padding-bottom: 60px">
                         <div
-                          v-if="project && project['id']"
-                          style="text-align: center; margin-bottom: 10px"
+                            v-if="project && project['id']"
+                            style="text-align: center; margin-bottom: 10px"
                         >
                           <el-button
-                            :disabled="pocoDetail === null"
-                            plain
-                            size="small"
-                            type="primary"
-                            round
-                            @click="toAddElement('poco', '')"
-                            >{{ $t('androidRemoteTS.code.addControls') }}
+                              :disabled="pocoDetail === null"
+                              plain
+                              size="small"
+                              type="primary"
+                              round
+                              @click="toAddElement('poco', '')"
+                          >{{ $t('androidRemoteTS.code.addControls') }}
                           </el-button>
                         </div>
-                        <el-alert
-                          v-else
-                          style="margin-bottom: 10px"
-                          :title="$t('androidRemoteTS.code.titleMessage')"
-                          type="info"
-                          show-icon
-                          close-text="Get!"
-                        />
+                        <div v-else>
+                          <el-alert
+                              style="margin-bottom: 10px"
+                              :title="$t('androidRemoteTS.code.titleMessage')"
+                              type="info"
+                              show-icon
+                              close-text="Get!"
+                          />
+                          <el-select
+                              style="width: 100%"
+                              v-model="project"
+                              size="mini"
+                              value-key="id"
+                              :placeholder="$t('androidRemoteTS.code.chooseProject')"
+                          >
+                            <el-option
+                                v-for="item in store.state.projectList"
+                                :key="item.id"
+                                :value="item"
+                                :label="item['projectName']"
+                            >
+                              <div style="display: flex; align-items: center">
+                                <el-avatar
+                                    style="margin-right: 10px"
+                                    :size="32"
+                                    :src="
+                        item['projectImg'].length > 0
+                          ? item['projectImg']
+                          : defaultLogo
+                      "
+                                    shape="square"
+                                ></el-avatar>
+                                {{ item['projectName'] }}
+                              </div>
+                            </el-option>
+                          </el-select>
+                        </div>
                         <el-scrollbar
-                          style="height: 100%"
-                          class="element-tree-scrollbar"
+                            style="height: 100%"
+                            class="element-tree-scrollbar"
                         >
                           <el-form
-                            v-if="pocoDetail !== null"
-                            label-position="left"
-                            class="element-table"
-                            label-width="100px"
+                              v-if="pocoDetail !== null"
+                              label-position="left"
+                              class="element-table"
+                              label-width="100px"
                           >
                             <el-form-item
-                              v-for="key in Object.keys(pocoDetail)"
-                              :label="key"
-                              style="cursor: pointer"
-                              @click="copy(JSON.stringify(pocoDetail[key]))"
+                                v-for="key in Object.keys(pocoDetail)"
+                                :label="key"
+                                style="cursor: pointer"
+                                @click="copy(JSON.stringify(pocoDetail[key]))"
                             >
                               <span>{{ pocoDetail[key] }}</span>
                             </el-form-item>
@@ -4064,9 +4137,9 @@ onMounted(() => {
                 </el-row>
                 <el-card v-show="!isShowPocoImg" style="height: 100%">
                   <el-result
-                    icon="info"
-                    :title="$t('androidRemoteTS.code.hintText')"
-                    :sub-title="$t('androidRemoteTS.code.getPocoSDKMessage')"
+                      icon="info"
+                      :title="$t('androidRemoteTS.code.hintText')"
+                      :sub-title="$t('androidRemoteTS.code.getPocoSDKMessage')"
                   >
                   </el-result>
                 </el-card>
@@ -4074,25 +4147,25 @@ onMounted(() => {
             </el-tabs>
           </el-tab-pane>
           <el-tab-pane
-            :label="$t('androidRemoteTS.code.webView.webDebug')"
-            name="webview"
+              :label="$t('androidRemoteTS.code.webView.webDebug')"
+              name="webview"
           >
             <div v-if="isWebView">
               <div v-if="webViewListDetail.length == 0">
                 <el-result
-                  icon="info"
-                  :title="$t('androidRemoteTS.code.hintText')"
-                  :sub-title="$t('androidRemoteTS.code.webView.err')"
+                    icon="info"
+                    :title="$t('androidRemoteTS.code.hintText')"
+                    :sub-title="$t('androidRemoteTS.code.webView.err')"
                 >
                   <template #extra>
                     <el-button
-                      type="primary"
-                      size="mini"
-                      :loading="webViewLoading"
-                      @click="getWebViewForward"
+                        type="primary"
+                        size="mini"
+                        :loading="webViewLoading"
+                        @click="getWebViewForward"
                     >
                       <el-icon :size="12" style="vertical-align: middle">
-                        <Search />
+                        <Search/>
                       </el-icon>
                       {{ $t('androidRemoteTS.code.webView.getWeb') }}
                     </el-button>
@@ -4101,40 +4174,40 @@ onMounted(() => {
               </div>
               <div v-else>
                 <el-button
-                  :loading="webViewLoading"
-                  type="primary"
-                  size="mini"
-                  @click="getWebViewForward"
+                    :loading="webViewLoading"
+                    type="primary"
+                    size="mini"
+                    @click="getWebViewForward"
                 >
                   {{ $t('androidRemoteTS.code.webView.againGetWeb') }}
                 </el-button>
                 <el-card
-                  v-for="web in webViewListDetail"
-                  style="margin-top: 15px"
-                  class="device-card"
-                  :body-style="{ padding: '0px 10px 10px 10px' }"
+                    v-for="web in webViewListDetail"
+                    style="margin-top: 15px"
+                    class="device-card"
+                    :body-style="{ padding: '0px 10px 10px 10px' }"
                 >
                   <template #header>
                     <div>
                       <div style="display: flex; align-items: center">
-                        <img :src="getImg('chrome')" width="20" />
+                        <img :src="getImg('chrome')" width="20"/>
                         <strong style="margin-left: 10px"
-                          >{{ web['package'] }} ({{ web['version'] }})</strong
+                        >{{ web['package'] }} ({{ web['version'] }})</strong
                         >
                       </div>
                     </div>
                   </template>
                   <el-card
-                    v-for="w in web.children"
-                    :body-style="{ padding: '15px' }"
-                    style="
+                      v-for="w in web.children"
+                      :body-style="{ padding: '15px' }"
+                      style="
                       margin-top: 10px;
                       word-wrap: break-word;
                       overflow: hidden;
                     "
                   >
                     <div
-                      style="
+                        style="
                         display: flex;
                         align-items: center;
                         justify-content: space-between;
@@ -4143,29 +4216,29 @@ onMounted(() => {
                       <div>
                         <div style="display: flex; align-items: center">
                           <img
-                            v-if="w.favicon"
-                            :src="w.favicon"
-                            width="15"
-                            style="margin-right: 5px"
+                              v-if="w.favicon"
+                              :src="w.favicon"
+                              width="15"
+                              style="margin-right: 5px"
                           />
                           <strong>{{
-                            w.title.length > 0
-                              ? w.title
-                              : $t('androidRemoteTS.code.webView.Untitled')
-                          }}</strong>
+                              w.title.length > 0
+                                  ? w.title
+                                  : $t('androidRemoteTS.code.webView.Untitled')
+                            }}</strong>
                         </div>
                         <div style="color: #909399">
                           {{
                             w.url.length > 50
-                              ? w.url.substring(0, 50) + '...'
-                              : w.url
+                                ? w.url.substring(0, 50) + '...'
+                                : w.url
                           }}
                         </div>
                       </div>
                       <el-button
-                        type="primary"
-                        size="mini"
-                        @click="
+                          type="primary"
+                          size="mini"
+                          @click="
                           tabWebView(
                             web.port,
                             w.id,
@@ -4185,13 +4258,13 @@ onMounted(() => {
             <div v-else>
               <div style="display: flex; align-items: center">
                 <el-page-header
-                  icon="el-icon-arrow-left"
-                  @back="switchIsWebView"
+                    icon="el-icon-arrow-left"
+                    @back="switchIsWebView"
                 >
                   <template #title>
                     <span style="color: #606266">{{
-                      $t('androidRemoteTS.code.webView.return')
-                    }}</span>
+                        $t('androidRemoteTS.code.webView.return')
+                      }}</span>
                   </template>
                   <template #content>
                     {{ $t('androidRemoteTS.code.webView.nowWeb') }}：<strong>{{
@@ -4201,14 +4274,14 @@ onMounted(() => {
                 </el-page-header>
               </div>
               <iframe
-                v-if="!isWebView"
-                allow="clipboard-read;clipboard-write"
-                :style="
+                  v-if="!isWebView"
+                  allow="clipboard-read;clipboard-write"
+                  :style="
                   'border:1px solid #C0C4CC;;width: 100%;height: ' +
                   iFrameHeight +
                   'px;margin-top:15px'
                 "
-                :src="iframeUrl"
+                  :src="iframeUrl"
               >
               </iframe>
             </div>
