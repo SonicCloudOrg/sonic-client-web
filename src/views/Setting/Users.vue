@@ -116,9 +116,6 @@ onMounted(() => {
         >
           <template #default="{ item }">
             <div class="value">{{ item.roleName }}</div>
-            <span class="link" style="margin-left: 10px; font-size: 12px">{{
-              item.comment
-            }}</span>
           </template>
         </el-autocomplete>
       </el-form-item>
