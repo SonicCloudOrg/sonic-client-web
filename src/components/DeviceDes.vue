@@ -199,8 +199,16 @@ const findAgentById = (id) => {
               :src="getImg(device.manufacturer)"
             />
             <img
-              v-else
+              v-else-if="
+                getImg(device.manufacturer) ==
+                img['./../assets/img/unName.jpg'].default
+              "
               style="width: 30px"
+              :src="getImg(device.manufacturer)"
+            />
+            <img
+              v-else
+              style="width: 70px"
               :src="getImg(device.manufacturer)"
             />
           </el-form-item>
