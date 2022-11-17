@@ -535,7 +535,7 @@ const androidRemoteTS = {
     remoteControlPanel: '遠控面板',
     inputText: '輸入文本',
     pleaseText: '請輸入要發送的文字，支援繁體中文',
-    send: '發送',
+    send: '清空输入框',
     remoteADB: '遠端ADB',
     noAgent: '所在Agent未開啟該功能！',
     UIAutomator2ServerInit: '初始化UIAutomator2Server',

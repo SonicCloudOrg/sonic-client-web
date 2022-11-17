@@ -545,7 +545,7 @@ const androidRemoteTS = {
     remoteControlPanel: 'Remote control panel',
     inputText: 'Enter text',
     pleaseText: 'Enter the text to send, CHS is supported',
-    send: 'Send',
+    send: 'Clear Text',
     remoteADB: 'Remote ADB',
     noAgent: 'The Agent is not enabled!',
     UIAutomator2ServerInit: 'Initialize UIAutomator2Server',

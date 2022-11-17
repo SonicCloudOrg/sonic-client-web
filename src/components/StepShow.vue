@@ -216,7 +216,7 @@ const summitStep = () => {
     {{ step.content }}
   </span>
   <span v-if="step.stepType === 'sendKeyForce'">
-    <el-tag size="small" style="margin-right: 10px">键盘输入</el-tag>
+    <el-tag size="small" style="margin-right: 10px">输入法输入</el-tag>
     {{ step.content }}
   </span>
   <span v-if="step.stepType === 'sendKeysByActions'">

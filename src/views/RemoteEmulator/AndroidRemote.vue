@@ -1633,11 +1633,11 @@ const scan = (url) => {
     })
   );
 };
-const sendText = (text) => {
+const sendText = () => {
   websocket.send(
     JSON.stringify({
       type: 'text',
-      detail: text,
+      detail: 'CODE_AC_CLEAN',
     })
   );
 };
@@ -2565,21 +2565,8 @@ onMounted(() => {
                   <template #header>
                     <strong>{{ $t('androidRemoteTS.code.inputText') }}</strong>
                   </template>
-                  <el-form size="small" :model="text">
-                    <el-form-item>
-                      <el-input
-                        v-model="text.content"
-                        clearable
-                        size="small"
-                        :placeholder="$t('androidRemoteTS.code.pleaseText')"
-                      ></el-input>
-                    </el-form-item>
-                  </el-form>
-                  <div style="text-align: center">
-                    <el-button
-                      size="mini"
-                      type="primary"
-                      @click="sendText(text.content)"
+                  <div style="text-align: center; margin: 22px 0px">
+                    <el-button size="mini" type="primary" @click="sendText"
                       >{{ $t('androidRemoteTS.code.send') }}
                     </el-button>
                   </div>

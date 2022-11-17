@@ -382,7 +382,7 @@ const androidOptions = ref([
           },
           {
             value: 'sendKeyForce',
-            label: '键盘输入',
+            label: 'Sonic输入法输入',
           },
         ],
       },
