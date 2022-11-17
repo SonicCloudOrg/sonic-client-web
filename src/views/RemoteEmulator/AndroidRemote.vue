@@ -1,19 +1,20 @@
 <script setup>
 /*
- *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *   sonic-client-web  Front end of Sonic cloud real machine platform.
+ *   Copyright (C) 2022 SonicCloudOrg
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { useRoute, useRouter } from 'vue-router';
 import {
@@ -899,6 +900,37 @@ const websocketOnmessage = (message) => {
     }
   }
 };
+const inputValue = ref('');
+const inputBox = ref(null);
+const inputBoxStyle = ref({});
+const paste = ref('');
+const changeInputHandle = () => {
+  if (inputValue.value) {
+    websocket.send(
+      JSON.stringify({
+        type: 'text',
+        detail: inputValue.value,
+      })
+    );
+    inputValue.value = '';
+  }
+};
+const deleteInputHandle = () => {
+  websocket.send(
+    JSON.stringify({
+      type: 'text',
+      detail: 'CODE_AC_BACK',
+    })
+  );
+};
+const enterInputHandle = () => {
+  websocket.send(
+    JSON.stringify({
+      type: 'text',
+      detail: 'CODE_AC_ENTER',
+    })
+  );
+};
 const openDriver = () => {
   driverLoading.value = true;
   websocket.send(
@@ -937,6 +969,10 @@ const getCurLocation = () => {
     );
     y = directionStatus.value == 180 ? imgHeight - _y : _y;
   }
+  inputBoxStyle.value = {
+    left: `${event.clientX - rect.left}px`,
+    top: `${event.clientY - rect.top}px`,
+  };
   return {
     x,
     y,
@@ -970,6 +1006,10 @@ const getCurLocationForAdb = () => {
     );
     y = directionStatus.value == 180 ? imgHeight - _y : _y;
   }
+  inputBoxStyle.value = {
+    left: `${event.clientX - rect.left}px`,
+    top: `${event.clientY - rect.top}px`,
+  };
   return {
     x,
     y,
@@ -982,9 +1022,10 @@ const mouseup = (event) => {
       websocket.send(
         JSON.stringify({
           type: 'touch',
-          detail: 'u 0\n',
+          detail: 'up\n',
         })
       );
+      inputBox.value.focus();
     }
   } else {
     clearInterval(loop);
@@ -999,6 +1040,7 @@ const mouseup = (event) => {
             point: `${x},${y}`,
           })
         );
+        inputBox.value.focus();
       }
     } else {
       websocket.send(
@@ -1009,6 +1051,7 @@ const mouseup = (event) => {
           pointB: `${x},${y}`,
         })
       );
+      inputBox.value.focus();
     }
     isLongPress = false;
   }
@@ -1022,7 +1065,7 @@ const mouseleave = () => {
     websocket.send(
       JSON.stringify({
         type: 'touch',
-        detail: 'u 0\n',
+        detail: 'up\n',
       })
     );
   }
@@ -1035,7 +1078,7 @@ const mousedown = (event) => {
     websocket.send(
       JSON.stringify({
         type: 'touch',
-        detail: `d 0 ${x} ${y} 50\n`,
+        detail: `down ${x} ${y}\n`,
       })
     );
   } else {
@@ -1068,7 +1111,7 @@ const mousemove = (event) => {
         websocket.send(
           JSON.stringify({
             type: 'touch',
-            detail: `m 0 ${x} ${y} 50\n`,
+            detail: `move ${x} ${y}\n`,
           })
         );
         mouseMoveTime = 0;
@@ -1935,29 +1978,41 @@ onMounted(() => {
             </div>
           </template>
           <div style="margin-right: 40px; text-align: center">
-            <video
-              v-show="screenMode == 'Scrcpy'"
-              id="scrcpy-video"
-              style="display: inline-block; min-height: 100%"
-              :style="canvasRectInfo"
-              autoplay
-              muted
-              @mouseup="mouseup"
-              @mousemove="mousemove"
-              @mousedown="mousedown"
-              @mouseleave="mouseleave"
-            />
-            <canvas
-              v-show="screenMode != 'Scrcpy'"
-              id="canvas"
-              style="display: inline-block"
-              :style="canvasRectInfo"
-              @mouseup="mouseup"
-              @mousemove="mousemove"
-              @mousedown="mousedown"
-              @mouseleave="mouseleave"
-            />
-            <audio id="audio-player" hidden></audio>
+            <div>
+              <input
+                ref="inputBox"
+                v-model="inputValue"
+                class="input-box"
+                type="text"
+                :style="inputBoxStyle"
+                @input="changeInputHandle"
+                @keyup.delete="deleteInputHandle"
+                @keyup.enter="enterInputHandle"
+              />
+              <video
+                v-show="screenMode == 'Scrcpy'"
+                id="scrcpy-video"
+                style="display: inline-block; min-height: 100%"
+                :style="canvasRectInfo"
+                autoplay
+                muted
+                @mouseup="mouseup"
+                @mousemove="mousemove"
+                @mousedown="mousedown"
+                @mouseleave="mouseleave"
+              />
+              <canvas
+                v-show="screenMode != 'Scrcpy'"
+                id="canvas"
+                style="display: inline-block"
+                :style="canvasRectInfo"
+                @mouseup="mouseup"
+                @mousemove="mousemove"
+                @mousedown="mousedown"
+                @mouseleave="mouseleave"
+              />
+              <audio id="audio-player" hidden></audio>
+            </div>
             <el-button-group id="pressKey">
               <el-button
                 size="small"
@@ -2901,7 +2956,6 @@ onMounted(() => {
                 style="margin-right: 6px"
                 @click="getWifiList"
                 >{{ $t('androidRemoteTS.code.refresh') }}</el-button
-              >
               >
               <ColorImg
                 :src="wifiLogo"
@@ -4351,5 +4405,14 @@ onMounted(() => {
 .url-install-box {
   position: relative;
   height: 100%;
+}
+
+.input-box {
+  position: absolute;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  z-index: -1;
+  width: 1px;
 }
 </style>
