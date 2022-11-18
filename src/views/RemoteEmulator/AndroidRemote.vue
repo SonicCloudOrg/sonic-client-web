@@ -1641,6 +1641,20 @@ const sendText = () => {
     })
   );
 };
+const startKeyboard = () => {
+  websocket.send(
+    JSON.stringify({
+      type: 'startKeyboard',
+    })
+  );
+};
+const stopKeyboard = () => {
+  websocket.send(
+    JSON.stringify({
+      type: 'stopKeyboard',
+    })
+  );
+};
 const install = (apk) => {
   if (apk.length > 0) {
     websocket.send(
@@ -2565,9 +2579,22 @@ onMounted(() => {
                   <template #header>
                     <strong>{{ $t('androidRemoteTS.code.inputText') }}</strong>
                   </template>
-                  <div style="text-align: center; margin: 22px 0px">
+                  <el-alert
+                    :title="$t('androidRemoteTS.code.keyboard')"
+                    type="info"
+                    show-icon
+                    :closable="false"
+                  >
+                  </el-alert>
+                  <div style="text-align: center; margin-top: 12px">
                     <el-button size="mini" type="primary" @click="sendText"
                       >{{ $t('androidRemoteTS.code.send') }}
+                    </el-button>
+                    <el-button size="mini" type="primary" @click="startKeyboard"
+                      >{{ $t('androidRemoteTS.code.startKeyboard') }}
+                    </el-button>
+                    <el-button size="mini" type="primary" @click="stopKeyboard"
+                      >{{ $t('androidRemoteTS.code.stopKeyboard') }}
                     </el-button>
                   </div>
                 </el-card>

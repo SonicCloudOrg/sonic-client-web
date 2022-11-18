@@ -77,6 +77,9 @@ const summitStep = () => {
   <span v-if="step.stepType === 'lock'">
     <el-tag size="small">锁定设备</el-tag>
   </span>
+  <span v-if="step.stepType === 'closeKeyboard'">
+    <el-tag size="small">关闭Sonic输入法</el-tag>
+  </span>
   <span v-if="step.stepType === 'unLock'">
     <el-tag size="small">解锁设备</el-tag>
   </span>

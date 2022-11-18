@@ -384,6 +384,10 @@ const androidOptions = ref([
             value: 'sendKeyForce',
             label: 'Sonic输入法输入',
           },
+          {
+            value: 'closeKeyboard',
+            label: '关闭Sonic输入法',
+          },
         ],
       },
       {
