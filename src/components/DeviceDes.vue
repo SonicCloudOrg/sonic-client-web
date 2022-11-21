@@ -460,15 +460,14 @@ const findAgentById = (id) => {
             >
               <template #reference>
                 <el-button
-                  type="danger"
-                  size="mini"
-                  :disabled="
-                    device.status === 'ONLINE' &&
-                    device.status === 'DEBUGGING' &&
-                    device.status === 'TESTING'
-                  "
-                  >{{ $t('common.delete') }}
-                </el-button>
+                    type="danger"
+                    size="mini"
+                    :disabled="device.status === 'ONLINE' ||
+                          device.status === 'DEBUGGING' ||
+                          device.status === 'TESTING'"
+                >{{ $t('common.delete') }}
+                </el-button
+                >
               </template>
             </el-popconfirm>
           </el-form-item>
