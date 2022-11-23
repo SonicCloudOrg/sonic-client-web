@@ -216,7 +216,11 @@ const saveLastSplitObj = () => {
     }
 
     &_top {
-      background-image: url('@/assets/img/top.png');
+      transform:rotate(90deg);
+      -ms-transform:rotate(90deg);
+      -moz-transform:rotate(90deg); 	/* Firefox */
+      -webkit-transform:rotate(90deg); /* Safari 和 Chrome */
+      -o-transform:rotate(90deg); 	/* Opera */
     }
   }
 }
