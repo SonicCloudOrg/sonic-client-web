@@ -128,7 +128,7 @@ const sequence = (column) => {
     if (column.prop === 'designer'){
       sortingType.designerSort = 'asc'
     }
-    if (column.prop === '"editTime"'){
+    if (column.prop === 'editTime'){
       sortingType.editTimeSort = 'asc'
     }
   }else if(column.order === 'descending' ){
