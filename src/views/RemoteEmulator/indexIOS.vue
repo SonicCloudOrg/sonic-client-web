@@ -216,11 +216,11 @@ const saveLastSplitObj = () => {
     }
 
     &_top {
-      transform:rotate(90deg);
-      -ms-transform:rotate(90deg);
-      -moz-transform:rotate(90deg); 	/* Firefox */
-      -webkit-transform:rotate(90deg); /* Safari 和 Chrome */
-      -o-transform:rotate(90deg); 	/* Opera */
+      transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+      -moz-transform: rotate(90deg); /* Firefox */
+      -webkit-transform: rotate(90deg); /* Safari 和 Chrome */
+      -o-transform: rotate(90deg); /* Opera */
     }
   }
 }
