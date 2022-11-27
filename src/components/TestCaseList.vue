@@ -34,8 +34,9 @@ const getTestCaseList = (pageNum, pSize) => {
           name: name.value,
           page: pageNum || 1,
           pageSize: pSize || pageSize.value,
-          orderAsc: sortingType.orderAsc,
-          orderDesc: sortingType.orderDesc,
+          idSort: sortingType.idSort,
+          designerSort: sortingType.designerSort,
+          editTimeSort: sortingType.editTimeSort
         },
       })
       .then((resp) => {
@@ -116,14 +117,35 @@ const getModuleList = () => {
         }
       });
 };
-let sortingType = ref({})
+let sortingType = ref({
+})
 const sequence = (column) => {
-  console.log(column)
+  // 自定义排序，支持多字段，null时候重置所有排序
+  if (column.order === 'ascending'){
+    if (column.prop === 'id'){
+      sortingType.idSort = 'asc'
+    }
+    if (column.prop === 'designer'){
+      sortingType.designerSort = 'asc'
+    }
+    if (column.prop === '"editTime"'){
+      sortingType.editTimeSort = 'asc'
+    }
+  }else if(column.order === 'descending' ){
+    if (column.prop === 'id'){
+      sortingType.idSort = 'desc'
+    }
+    if (column.prop === 'designer'){
+      sortingType.designerSort = 'desc'
+    }
+    if (column.prop === 'editTime'){
+      sortingType.editTimeSort = 'desc'
+    }
+  }else {
+    sortingType = {}
+  }
   //判断排序方式
-  column.order === 'ascending' ? (sortingType.orderAsc = column.prop) : (sortingType.orderDesc = column.prop)
   getTestCaseList()
-  //排序以后重置
-  sortingType = ref({})
 }
 const filter = (e) => {
   moduleIds.value = e.moduleId;
@@ -157,12 +179,12 @@ defineExpose({open});
       @sort-change = "sequence"
   >
     <el-table-column
-      width="100"
-      label="用例Id"
-      prop="id"
-      align="center"
-      sortable="custom"
-      show-overflow-tooltip
+        width="100"
+        label="用例Id"
+        prop="id"
+        align="center"
+        sortable="custom"
+        show-overflow-tooltip
     />
     <el-table-column
         min-width="280"
@@ -189,8 +211,8 @@ defineExpose({open});
     >
       <template #default="scope">
         <el-tag v-if="scope.row.modulesDTO !== null" size="small">{{
-          scope.row.modulesDTO.name
-        }}</el-tag>
+            scope.row.modulesDTO.name
+          }}</el-tag>
         <span v-else>无</span>
       </template>
     </el-table-column>
@@ -211,6 +233,7 @@ defineExpose({open});
     <el-table-column
         min-width="80"
         label="设计人"
+        sortable="custom"
         prop="designer"
         align="center"
         show-overflow-tooltip
