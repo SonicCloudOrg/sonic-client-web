@@ -611,6 +611,8 @@ const androidRemoteTS = {
     addControls: '添加控制項',
     controlSnapshot: '控制項快照',
     titleMessage: '關聯專案後即可保存控制項',
+    pocoRecommend: 'POCO推荐',
+    pocoNull: '暂无POCO推荐语法',
     xpath: 'xpath推薦',
     xpathNull: '暫無xpath推薦語法',
     absolutePath: '絕對路徑',

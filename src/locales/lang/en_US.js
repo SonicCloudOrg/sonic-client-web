@@ -624,6 +624,8 @@ const androidRemoteTS = {
     addControls: 'Add controls',
     controlSnapshot: 'Control Snapshot',
     titleMessage: 'Save controls after associating with a project',
+    pocoRecommend: 'poco recommendation',
+    pocoNull: 'No recommended syntax for poco yet',
     xpath: 'xpath recommendation',
     xpathNull: 'No recommended syntax for xpath yet',
     absolutePath: 'Absolute path',

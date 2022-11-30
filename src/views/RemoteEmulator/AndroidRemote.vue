@@ -411,6 +411,30 @@ const findBestXpath = (elementDetail) => {
   }
   return result;
 };
+const findBestPoco = (elementDetail) => {
+  const result = [];
+  if (elementDetail.name) {
+    result.push(`poco("${elementDetail.name}")`);
+  }
+  if (elementDetail.name && elementDetail.type) {
+    result.push(
+      `poco(name="${elementDetail.name}", type="${elementDetail.type}")`
+    );
+  }
+  return result;
+};
+const findBestXpathForPoco = (elementDetail) => {
+  const result = [];
+  if (elementDetail.name) {
+    result.push(`//*[@name='${elementDetail.name}']`);
+  }
+  if (elementDetail.name && elementDetail.type) {
+    result.push(
+      `//*[@name='${elementDetail.name}' and @type='${elementDetail.type}']`
+    );
+  }
+  return result;
+};
 const downloadImg = (url) => {
   const time = new Date().getTime();
   const link = document.createElement('a');
@@ -3641,6 +3665,7 @@ onMounted(() => {
                                   style="
                                     vertical-align: middle;
                                     margin-left: 10px;
+                                    cursor: pointer;
                                   "
                                   @click="
                                     toAddElement(
@@ -3678,6 +3703,7 @@ onMounted(() => {
                                         style="
                                           vertical-align: middle;
                                           margin-left: 10px;
+                                          cursor: pointer;
                                         "
                                         @click="
                                           toAddElement('xpath', scope.row)
@@ -3703,6 +3729,7 @@ onMounted(() => {
                                   style="
                                     vertical-align: middle;
                                     margin-left: 10px;
+                                    cursor: pointer;
                                   "
                                   @click="
                                     toAddElement(
@@ -3763,6 +3790,7 @@ onMounted(() => {
                                   style="
                                     vertical-align: middle;
                                     margin-left: 10px;
+                                    cursor: pointer;
                                   "
                                   @click="
                                     toAddElement(
@@ -3956,7 +3984,7 @@ onMounted(() => {
                   <el-button
                     style="margin-left: 10px"
                     type="primary"
-                    :loading="pocoLoading"
+                    :loading="pocoLoading || !isDriverFinish"
                     size="mini"
                     :disabled="selectPocoType.length === 0"
                     @click="getPoco(selectPocoType)"
@@ -4188,13 +4216,97 @@ onMounted(() => {
                             label-width="100px"
                           >
                             <el-form-item
-                              v-for="key in Object.keys(pocoDetail)"
-                              :label="key"
-                              style="cursor: pointer"
-                              @click="copy(JSON.stringify(pocoDetail[key]))"
+                              v-if="pocoDetail['name']"
+                              label="name"
+                              @click="copy(JSON.stringify(pocoDetail['name']))"
                             >
-                              <span>{{ pocoDetail[key] }}</span>
+                              <span>{{ pocoDetail['name'] }}</span>
                             </el-form-item>
+                            <el-form-item
+                              :label="$t('androidRemoteTS.code.pocoRecommend')"
+                            >
+                              <el-table
+                                stripe
+                                :empty-text="
+                                  $t('androidRemoteTS.code.pocoNull')
+                                "
+                                border
+                                :data="findBestPoco(pocoDetail)"
+                                :show-header="false"
+                              >
+                                <el-table-column>
+                                  <template #default="scope">
+                                    <span
+                                      style="cursor: pointer"
+                                      @click="copy(scope.row)"
+                                      >{{ scope.row }}</span
+                                    >
+                                    <el-icon
+                                      v-if="project && project['id']"
+                                      color="green"
+                                      size="16"
+                                      style="
+                                        vertical-align: middle;
+                                        margin-left: 10px;
+                                        cursor: pointer;
+                                      "
+                                      @click="toAddElement('poco', scope.row)"
+                                    >
+                                      <Pointer />
+                                    </el-icon>
+                                  </template>
+                                </el-table-column>
+                              </el-table>
+                            </el-form-item>
+                            <el-form-item
+                              style="margin-top: 10px"
+                              :label="$t('androidRemoteTS.code.xpath')"
+                            >
+                              <el-table
+                                stripe
+                                :empty-text="
+                                  $t('androidRemoteTS.code.xpathNull')
+                                "
+                                border
+                                :data="findBestXpathForPoco(pocoDetail)"
+                                :show-header="false"
+                              >
+                                <el-table-column>
+                                  <template #default="scope">
+                                    <span
+                                      style="cursor: pointer"
+                                      @click="copy(scope.row)"
+                                      >{{ scope.row }}</span
+                                    >
+                                    <el-icon
+                                      v-if="project && project['id']"
+                                      color="green"
+                                      size="16"
+                                      style="
+                                        vertical-align: middle;
+                                        margin-left: 10px;
+                                        cursor: pointer;
+                                      "
+                                      @click="toAddElement('xpath', scope.row)"
+                                    >
+                                      <Pointer />
+                                    </el-icon>
+                                  </template>
+                                </el-table-column>
+                              </el-table>
+                            </el-form-item>
+                            <div
+                              v-for="key in Object.keys(pocoDetail)"
+                              style="cursor: pointer"
+                            >
+                              <el-form-item
+                                v-if="key !== 'name'"
+                                :label="key"
+                                @click="copy(JSON.stringify(pocoDetail[key]))"
+                              >
+                                <span>{{ pocoDetail[key] }}</span>
+                              </el-form-item>
+                            </div>
                           </el-form>
                         </el-scrollbar>
                       </div>
