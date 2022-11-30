@@ -2546,7 +2546,11 @@ onMounted(() => {
                               v-if="project && project['id']"
                               color="green"
                               size="16"
-                              style="vertical-align: middle; margin-left: 10px"
+                              style="
+                                vertical-align: middle;
+                                margin-left: 10px;
+                                cursor: pointer;
+                              "
                               @click="
                                 toAddElement(
                                   'accessibilityId',
@@ -2579,6 +2583,7 @@ onMounted(() => {
                                     style="
                                       vertical-align: middle;
                                       margin-left: 10px;
+                                      cursor: pointer;
                                     "
                                     @click="
                                       toAddElement('nsPredicate', scope.row)
@@ -2614,6 +2619,7 @@ onMounted(() => {
                                     style="
                                       vertical-align: middle;
                                       margin-left: 10px;
+                                      cursor: pointer;
                                     "
                                     @click="toAddElement('xpath', scope.row)"
                                   >
@@ -2634,7 +2640,11 @@ onMounted(() => {
                               v-if="project && project['id']"
                               color="green"
                               size="16"
-                              style="vertical-align: middle; margin-left: 10px"
+                              style="
+                                vertical-align: middle;
+                                margin-left: 10px;
+                                cursor: pointer;
+                              "
                               @click="
                                 toAddElement('xpath', elementDetail['xpath'])
                               "
@@ -2685,7 +2695,11 @@ onMounted(() => {
                               v-if="project && project['id']"
                               color="green"
                               size="16"
-                              style="vertical-align: middle; margin-left: 10px"
+                              style="
+                                vertical-align: middle;
+                                margin-left: 10px;
+                                cursor: pointer;
+                              "
                               @click="
                                 toAddElement(
                                   'point',

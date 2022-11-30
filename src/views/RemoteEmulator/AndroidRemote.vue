@@ -4259,7 +4259,6 @@ onMounted(() => {
                               </el-table>
                             </el-form-item>
                             <el-form-item
-                              style="margin-top: 10px"
                               :label="$t('androidRemoteTS.code.xpath')"
                             >
                               <el-table
