@@ -414,7 +414,11 @@ const findBestXpath = (elementDetail) => {
 const findBestPoco = (elementDetail) => {
   const result = [];
   if (elementDetail.name) {
-    result.push(`poco("${elementDetail.name}")`);
+    result.push(
+      `poco("${elementDetail.name}")${
+        elementDetail.index ? `[${elementDetail.index - 1}]` : ''
+      }`
+    );
   }
   if (elementDetail.name && elementDetail.type) {
     result.push(
@@ -648,6 +652,27 @@ const stopCmd = () => {
     })
   );
 };
+const transferPoco = (data) => {
+  for (const i in data) {
+    let tagCount = 0;
+    let siblingIndex = 0;
+    for (const j in data) {
+      if (data[j].name === data[i].name) {
+        tagCount++;
+      }
+      if (i == j) {
+        siblingIndex = tagCount;
+      }
+    }
+    if (tagCount !== 1) {
+      data[i].payload.index = siblingIndex;
+    }
+    if (data[i].children && data[i].children.length > 0) {
+      data[i].children = transferPoco(data[i].children);
+    }
+  }
+  return data;
+};
 const terminalWebsocketOnmessage = (message) => {
   switch (JSON.parse(message.data).msg) {
     case 'wifiListDetail': {
@@ -770,7 +795,9 @@ const websocketOnmessage = (message) => {
           message: $t('androidRemoteTS.getPocoSuccess'),
         });
         pocoData.value = [];
-        pocoData.value.push(JSON.parse(result).result);
+        const list = [];
+        list.push(JSON.parse(result).result);
+        pocoData.value = transferPoco(list);
         setPocoTreeId(pocoData.value, treeId);
         currentPocoId.value = [1];
       } else {
