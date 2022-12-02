@@ -20,7 +20,6 @@ import { useRoute, useRouter } from 'vue-router';
 import {
   computed,
   nextTick,
-  onBeforeMount,
   onBeforeUnmount,
   onMounted,
   ref,
@@ -38,15 +37,6 @@ import ElementUpdate from '@/components/ElementUpdate.vue';
 import Pageable from '@/components/Pageable.vue';
 import defaultLogo from '@/assets/logo.png';
 import {
-  Headset,
-  MoreFilled,
-  FullScreen,
-  Edit,
-  HelpFilled,
-  HomeFilled,
-  Coin,
-  List,
-  Picture,
   VideoPause,
   Refresh,
   Connection,
@@ -71,7 +61,6 @@ import {
   Menu,
   CopyDocument,
   House,
-  Share,
   Back,
   View,
   InfoFilled,
@@ -87,21 +76,19 @@ import AudioProcessor from '@/lib/audio-processor';
 import wifiLogo from '@/assets/img/wifi.png';
 import RenderDeviceName from '../../components/RenderDeviceName.vue';
 import Scrcpy from './Scrcpy';
+import PocoPane from '../../components/PocoPane.vue';
 
+const pocoPaneRef = ref(null);
 const { t: $t } = useI18n();
 
 const { toClipboard } = useClipboard();
 const route = useRoute();
 const store = useStore();
 const router = useRouter();
-const isShowPocoImg = ref(false);
 const wifiList = ref([]);
 const currentWifi = ref('');
 const isConnectWifi = ref(false);
-const selectPocoType = ref('');
-const pocoPort = ref('');
 const pocoLoading = ref(false);
-const pocoData = ref([]);
 const proxyWebPort = ref(0);
 const proxyConnPort = ref(0);
 const filterAppText = ref('');
@@ -118,43 +105,6 @@ const screenUrls = ref([]);
 const uploadUrl = ref('');
 const text = ref({ content: '' });
 const isMultiWindows = ref(false);
-const pocoTypeList = ref([
-  {
-    name: 'Unity3d',
-    value: 'UNITY_3D',
-    img: 'Unity',
-  },
-  {
-    name: 'Egret',
-    value: 'EGRET',
-    img: 'Egret',
-  },
-  {
-    name: 'UE4',
-    value: 'UE4',
-    img: 'UE4',
-  },
-  {
-    name: 'Cocos2dx-js',
-    value: 'COCOS_2DX_JS',
-    img: 'Cocos2dx',
-  },
-  {
-    name: 'Cocos2dx-lua',
-    value: 'COCOS_2DX_LUA',
-    img: 'Cocos2dx',
-  },
-  {
-    name: 'Cocos2dx-c++',
-    value: 'COCOS_2DX_C_PLUS_1',
-    img: 'Cocos2dx',
-  },
-  {
-    name: 'Cocos-creator',
-    value: 'COCOS_CREATOR',
-    img: 'Cocos2dx',
-  },
-]);
 let imgWidth = 0;
 let imgHeight = 0;
 // 旋转状态 // 0 90 180 270
@@ -183,9 +133,7 @@ const isShowTree = ref(false);
 const elementData = ref([]);
 const elementDetail = ref(null);
 const elementScreenLoading = ref(false);
-const pocoDetail = ref(null);
 const tree = ref(null);
-const pocoTree = ref(null);
 const currentId = ref([]);
 const filterText = ref('');
 const project = ref(null);
@@ -193,7 +141,6 @@ const testCase = ref({});
 const activeTab = ref('main');
 const activeTab2 = ref('step');
 const stepLog = ref([]);
-const currentPocoId = ref([]);
 const debugLoading = ref(false);
 const dialogElement = ref(false);
 const dialogImgElement = ref(false);
@@ -411,34 +358,6 @@ const findBestXpath = (elementDetail) => {
   }
   return result;
 };
-const findBestPoco = (elementDetail) => {
-  const result = [];
-  if (elementDetail.name) {
-    result.push(
-      `poco("${elementDetail.name}")${
-        elementDetail.index ? `[${elementDetail.index - 1}]` : ''
-      }`
-    );
-  }
-  if (elementDetail.name && elementDetail.type) {
-    result.push(
-      `poco(name="${elementDetail.name}", type="${elementDetail.type}")`
-    );
-  }
-  return result;
-};
-const findBestXpathForPoco = (elementDetail) => {
-  const result = [];
-  if (elementDetail.name) {
-    result.push(`//*[@name='${elementDetail.name}']`);
-  }
-  if (elementDetail.name && elementDetail.type) {
-    result.push(
-      `//*[@name='${elementDetail.name}' and @type='${elementDetail.type}']`
-    );
-  }
-  return result;
-};
 const downloadImg = (url) => {
   const time = new Date().getTime();
   const link = document.createElement('a');
@@ -524,7 +443,7 @@ const quickCap = () => {
   screenUrls.value.push(imageUrl);
   img.src = imageUrl;
 };
-const setPocoImgData = () => {
+const getImgUrl = () => {
   let imageUrl;
   if (oldBlob) {
     const blob = new Blob([oldBlob], { type: 'image/jpeg' });
@@ -533,25 +452,10 @@ const setPocoImgData = () => {
   } else {
     imageUrl = getVideoScreenshot();
   }
-  const img = new Image();
-  img.src = imageUrl;
-  imgUrl.value = imageUrl;
-  const canvasPoco = document.getElementById('debugPocoPic');
-  img.onload = function () {
-    canvasPoco.width = img.width;
-    canvasPoco.height = img.height;
-  };
-  isShowPocoImg.value = true;
+  return imageUrl;
 };
 const setImgData = () => {
-  let imageUrl;
-  if (oldBlob) {
-    const blob = new Blob([oldBlob], { type: 'image/jpeg' });
-    const URL = window.URL || window.webkitURL;
-    imageUrl = URL.createObjectURL(blob);
-  } else {
-    imageUrl = getVideoScreenshot();
-  }
+  const imageUrl = getImgUrl();
   const img = new Image();
   img.src = imageUrl;
   imgUrl.value = imageUrl;
@@ -652,27 +556,6 @@ const stopCmd = () => {
     })
   );
 };
-const transferPoco = (data) => {
-  for (const i in data) {
-    let tagCount = 0;
-    let siblingIndex = 0;
-    for (const j in data) {
-      if (data[j].name === data[i].name) {
-        tagCount++;
-      }
-      if (i == j) {
-        siblingIndex = tagCount;
-      }
-    }
-    if (tagCount !== 1) {
-      data[i].payload.index = siblingIndex;
-    }
-    if (data[i].children && data[i].children.length > 0) {
-      data[i].children = transferPoco(data[i].children);
-    }
-  }
-  return data;
-};
 const terminalWebsocketOnmessage = (message) => {
   switch (JSON.parse(message.data).msg) {
     case 'wifiListDetail': {
@@ -770,6 +653,10 @@ const screenWebsocketOnmessage = (message) => {
         imgWidth = JSON.parse(message.data).width;
         imgHeight = JSON.parse(message.data).height;
         loading.value = false;
+        pocoPaneRef.value.setSize(
+          JSON.parse(message.data).width,
+          JSON.parse(message.data).height
+        );
         break;
       }
       case 'picFinish': {
@@ -794,12 +681,7 @@ const websocketOnmessage = (message) => {
         ElMessage.success({
           message: $t('androidRemoteTS.getPocoSuccess'),
         });
-        pocoData.value = [];
-        const list = [];
-        list.push(JSON.parse(result).result);
-        pocoData.value = transferPoco(list);
-        setPocoTreeId(pocoData.value, treeId);
-        currentPocoId.value = [1];
+        pocoPaneRef.value.setPocoData(JSON.parse(result).result);
       } else {
         ElMessage.error({
           message: $t('androidRemoteTS.getPocoFail'),
@@ -1197,49 +1079,6 @@ const touchstart = async (event) => {
   });
   await handleNodeClick(tree.value.getCurrentNode());
 };
-const touchstartpoco = async (event) => {
-  const debugPic = document.getElementById('debugPocoPic');
-  const rect = debugPic.getBoundingClientRect();
-  let x;
-  let y;
-  if (directionStatus.value === 0 || directionStatus.value === 180) {
-    x = parseInt(
-      (event.clientX - rect.left) * (imgWidth / debugPic.clientWidth)
-    );
-    y = parseInt(
-      (event.clientY - rect.top) * (imgHeight / debugPic.clientHeight)
-    );
-  } else {
-    x = parseInt(
-      (event.clientX - rect.left) * (imgHeight / debugPic.clientWidth)
-    );
-    y = parseInt(
-      (event.clientY - rect.top) * (imgWidth / debugPic.clientHeight)
-    );
-  }
-  await nextTick(() => {
-    pocoTree.value.setCurrentKey(
-      findPocoMinSize(findPocoByPoint(pocoData.value, x, y))
-    );
-  });
-  await handlePocoClick(pocoTree.value.getCurrentNode());
-};
-const findPocoMinSize = (data) => {
-  if (data.length === 0) {
-    return null;
-  }
-  let result = data[0];
-  for (const i in data) {
-    if (data[i].size === result.size) {
-      result = data[i];
-    }
-    if (data[i].size < result.size) {
-      result = data[i];
-    }
-  }
-  currentPocoId.value = [result.ele.id];
-  return result.ele.id;
-};
 const findMinSize = (data) => {
   if (data.length === 0) {
     return null;
@@ -1257,55 +1096,6 @@ const findMinSize = (data) => {
   }
   currentId.value = [result.ele.id];
   return result.ele.id;
-};
-const findPocoByPoint = (ele, x, y) => {
-  const result = [];
-  for (const i in ele) {
-    let eleStartX;
-    let eleStartY;
-    let eleEndX;
-    let eleEndY;
-    if (directionStatus.value === 0 || directionStatus.value === 180) {
-      eleStartX =
-        ele[i].payload.pos[0] * imgWidth -
-        (ele[i].payload.size[0] * imgWidth) / 2;
-      eleStartY =
-        ele[i].payload.pos[1] * imgHeight -
-        (ele[i].payload.size[1] * imgHeight) / 2;
-      eleEndX =
-        ele[i].payload.pos[0] * imgWidth +
-        (ele[i].payload.size[0] * imgWidth) / 2;
-      eleEndY =
-        ele[i].payload.pos[1] * imgHeight +
-        (ele[i].payload.size[1] * imgHeight) / 2;
-    } else {
-      eleStartX =
-        ele[i].payload.pos[0] * imgHeight -
-        (ele[i].payload.size[0] * imgHeight) / 2;
-      eleStartY =
-        ele[i].payload.pos[1] * imgWidth -
-        (ele[i].payload.size[1] * imgWidth) / 2;
-      eleEndX =
-        ele[i].payload.pos[0] * imgHeight +
-        (ele[i].payload.size[0] * imgHeight) / 2;
-      eleEndY =
-        ele[i].payload.pos[1] * imgWidth +
-        (ele[i].payload.size[1] * imgWidth) / 2;
-    }
-    if (x >= eleStartX && x <= eleEndX && y >= eleStartY && y <= eleEndY) {
-      result.push({
-        ele: ele[i],
-        size: (eleEndX - eleStartX) * (eleEndY - eleStartY),
-      });
-    }
-    if (ele[i].children) {
-      const childrenResult = findPocoByPoint(ele[i].children, x, y);
-      if (childrenResult.length > 0) {
-        result.push.apply(result, childrenResult);
-      }
-    }
-  }
-  return result;
 };
 const findElementByPoint = (ele, x, y) => {
   const result = [];
@@ -1344,29 +1134,6 @@ const handleNodeClick = (data) => {
     elementDetail.value = data.detail;
     print(data);
   }
-};
-const handlePocoClick = (data) => {
-  if (data !== null) {
-    pocoDetail.value = data.payload;
-    printPoco(data.payload);
-  }
-};
-const printPoco = (data) => {
-  const canvas = document.getElementById('debugPocoPic');
-  const g = canvas.getContext('2d');
-  g.clearRect(0, 0, canvas.width, canvas.height);
-  const eleStartX = data.pos[0] * imgWidth - (data.size[0] * imgWidth) / 2;
-  const eleStartY = data.pos[1] * imgHeight - (data.size[1] * imgHeight) / 2;
-  const a = Math.round(Math.random() * 255);
-  const b = Math.round(Math.random() * 255);
-  const c = Math.round(Math.random() * 255);
-  g.fillStyle = `rgba(${a}, ${b}, ${c}, 0.6)`;
-  g.fillRect(
-    eleStartX * (canvas.width / imgWidth),
-    eleStartY * (canvas.height / imgHeight),
-    data.size[0] * imgWidth * (canvas.width / imgWidth),
-    data.size[1] * imgHeight * (canvas.height / imgHeight)
-  );
 };
 const print = (data) => {
   const canvas = document.getElementById('debugPic');
@@ -1619,16 +1386,6 @@ const beforeAvatarUpload = (file) => {
   });
   return false;
 };
-let treeId = 1;
-const setPocoTreeId = (data) => {
-  for (const i in data) {
-    data[i].id = treeId;
-    treeId++;
-    if (data[i].children) {
-      setPocoTreeId(data[i].children, treeId);
-    }
-  }
-};
 const beforeAvatarUpload2 = (file) => {
   if (file.name.endsWith('.apk')) {
     return true;
@@ -1731,34 +1488,14 @@ const getElement = () => {
     })
   );
 };
-const switchPocoType = (e) => {
-  switch (e) {
-    case 'UNITY_3D':
-    case 'UE4':
-      pocoPort.value = '5001';
-      break;
-    case 'COCOS_2DX_JS':
-    case 'COCOS_CREATOR':
-    case 'EGRET':
-      pocoPort.value = '5003';
-      break;
-    case 'COCOS_2DX_LUA':
-      pocoPort.value = '15004';
-      break;
-    case 'COCOS_2DX_C_PLUS_1':
-      pocoPort.value = '18888';
-      break;
-  }
-};
-const getPoco = (engine) => {
+const getPoco = (engine, port) => {
   pocoLoading.value = true;
-  setPocoImgData();
   websocket.send(
     JSON.stringify({
       type: 'debug',
       detail: 'poco',
       engine,
-      port: pocoPort.value,
+      port,
     })
   );
 };
@@ -3979,374 +3716,17 @@ onMounted(() => {
                 </el-card>
               </el-tab-pane>
               <el-tab-pane :label="$t('androidRemoteTS.code.poco')">
-                <div style="margin-bottom: 10px; display: flex">
-                  <el-select
-                    v-model="selectPocoType"
-                    size="mini"
-                    @change="switchPocoType"
-                  >
-                    <el-option
-                      v-for="item in pocoTypeList"
-                      :key="item.name"
-                      :value="item.value"
-                      :label="item.name"
-                    >
-                      <div style="display: flex; align-items: center">
-                        <el-avatar
-                          style="margin-right: 10px"
-                          :size="28"
-                          :src="getImg(item.img)"
-                          shape="square"
-                        ></el-avatar>
-                        {{ item.name }}
-                      </div>
-                    </el-option>
-                  </el-select>
-                  <el-input
-                    v-model="pocoPort"
-                    placeholder="Default connect port"
-                    style="margin-left: 10px; width: 200px"
-                    size="mini"
-                  ></el-input>
-                  <el-button
-                    style="margin-left: 10px"
-                    type="primary"
-                    :loading="pocoLoading || !isDriverFinish"
-                    size="mini"
-                    :disabled="selectPocoType.length === 0"
-                    @click="getPoco(selectPocoType)"
-                    >{{ $t('androidRemoteTS.code.getPoco') }}
-                  </el-button>
-                  <el-link
-                    style="position: absolute; right: 20px"
-                    type="primary"
-                    href="https://poco.readthedocs.io/en/latest/source/doc/integration.html"
-                    target="_blank"
-                  >
-                    {{ $t('androidRemoteTS.code.pocoSDK') }}
-                  </el-link>
-                </div>
-                <el-row v-show="isShowPocoImg" :gutter="10">
-                  <el-col :span="8">
-                    <el-card shadow="hover">
-                      <div
-                        :style="
-                          'width: 100%;background-image: url(' +
-                          imgUrl +
-                          ');background-size: 100% 100%;'
-                        "
-                      >
-                        <canvas
-                          id="debugPocoPic"
-                          @mousedown="touchstartpoco"
-                        ></canvas>
-                      </div>
-                    </el-card>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-card shadow="hover">
-                      <div style="height: 660px">
-                        <el-scrollbar
-                          class="element-tree-scrollbar"
-                          style="height: 100%"
-                        >
-                          <el-tree
-                            ref="pocoTree"
-                            :indent="13"
-                            :default-expanded-keys="currentPocoId"
-                            node-key="id"
-                            style="margin-top: 10px; margin-bottom: 20px"
-                            :highlight-current="true"
-                            :accordion="true"
-                            :data="pocoData"
-                            @node-click="handlePocoClick"
-                          >
-                            <template #default="{ node, data }">
-                              <div
-                                v-if="data.payload"
-                                style="margin-right: 5px"
-                              >
-                                <el-icon
-                                  v-if="
-                                    data.payload.type === 'Root' ||
-                                    data.payload.type === 'Scene'
-                                  "
-                                  :size="15"
-                                  style="margin-top: 3px; color: #67c23a"
-                                >
-                                  <Operation />
-                                </el-icon>
-                                <el-icon
-                                  v-if="data.payload.type === 'Node'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #67c23a"
-                                >
-                                  <Share />
-                                </el-icon>
-                                <el-icon
-                                  v-if="data.payload.type === 'Button'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #409eff"
-                                >
-                                  <HelpFilled />
-                                </el-icon>
-                                <el-icon
-                                  v-if="data.payload.type === 'Layer'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #409eff"
-                                >
-                                  <Coin />
-                                </el-icon>
-                                <el-icon
-                                  v-if="
-                                    data.payload.type === 'Image' ||
-                                    data.payload.type === 'Sprite'
-                                  "
-                                  :size="15"
-                                  style="margin-top: 3px; color: #67c23a"
-                                >
-                                  <Picture />
-                                </el-icon>
-                                <el-icon
-                                  v-if="data.payload.type === 'Camera'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #409eff"
-                                >
-                                  <VideoCamera />
-                                </el-icon>
-                                <el-icon
-                                  v-if="data.payload.type === 'Canvas'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #409eff"
-                                >
-                                  <FullScreen />
-                                </el-icon>
-                                <el-icon
-                                  v-if="data.payload.type === 'Widget'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #409eff"
-                                >
-                                  <Menu />
-                                </el-icon>
-                                <el-icon
-                                  v-if="
-                                    data.payload.type === 'Text' ||
-                                    data.payload.type.indexOf('Label') !== -1
-                                  "
-                                  :size="15"
-                                  style="margin-top: 3px; color: #e6a23c"
-                                >
-                                  <List />
-                                </el-icon>
-                                <el-icon
-                                  v-if="data.payload.type === 'ProgressBar'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #e6a23c"
-                                >
-                                  <MoreFilled />
-                                </el-icon>
-                                <el-icon
-                                  v-if="data.payload.type === 'GameObject'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #f56c6c"
-                                >
-                                  <HomeFilled />
-                                </el-icon>
-                                <el-icon
-                                  v-if="data.payload.type === 'Game'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #f56c6c"
-                                >
-                                  <Headset />
-                                </el-icon>
-                                <el-icon
-                                  v-if="data.payload.type === 'TextField'"
-                                  :size="15"
-                                  style="margin-top: 3px; color: #f56c6c"
-                                >
-                                  <Edit />
-                                </el-icon>
-                              </div>
-                              <span style="font-size: 14px">{{
-                                data.name
-                              }}</span>
-                            </template>
-                          </el-tree>
-                        </el-scrollbar>
-                      </div>
-                    </el-card>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-card shadow="hover">
-                      <div style="height: 660px; padding-bottom: 60px">
-                        <div
-                          v-if="project && project['id']"
-                          style="text-align: center; margin-bottom: 10px"
-                        >
-                          <el-button
-                            :disabled="pocoDetail === null"
-                            plain
-                            size="small"
-                            type="primary"
-                            round
-                            @click="toAddElement('poco', '')"
-                            >{{ $t('androidRemoteTS.code.addControls') }}
-                          </el-button>
-                        </div>
-                        <div v-else>
-                          <el-alert
-                            style="margin-bottom: 10px"
-                            :title="$t('androidRemoteTS.code.titleMessage')"
-                            type="info"
-                            show-icon
-                            close-text="Get!"
-                          />
-                          <el-select
-                            v-model="project"
-                            style="width: 100%"
-                            size="mini"
-                            value-key="id"
-                            :placeholder="
-                              $t('androidRemoteTS.code.chooseProject')
-                            "
-                          >
-                            <el-option
-                              v-for="item in store.state.projectList"
-                              :key="item.id"
-                              :value="item"
-                              :label="item['projectName']"
-                            >
-                              <div style="display: flex; align-items: center">
-                                <el-avatar
-                                  style="margin-right: 10px"
-                                  :size="32"
-                                  :src="
-                                    item['projectImg'].length > 0
-                                      ? item['projectImg']
-                                      : defaultLogo
-                                  "
-                                  shape="square"
-                                ></el-avatar>
-                                {{ item['projectName'] }}
-                              </div>
-                            </el-option>
-                          </el-select>
-                        </div>
-                        <el-scrollbar
-                          style="height: 100%"
-                          class="element-tree-scrollbar"
-                        >
-                          <el-form
-                            v-if="pocoDetail !== null"
-                            label-position="left"
-                            class="element-table"
-                            label-width="100px"
-                          >
-                            <el-form-item
-                              v-if="pocoDetail['name']"
-                              label="name"
-                              @click="copy(JSON.stringify(pocoDetail['name']))"
-                            >
-                              <span>{{ pocoDetail['name'] }}</span>
-                            </el-form-item>
-                            <el-form-item
-                              :label="$t('androidRemoteTS.code.pocoRecommend')"
-                            >
-                              <el-table
-                                stripe
-                                :empty-text="
-                                  $t('androidRemoteTS.code.pocoNull')
-                                "
-                                border
-                                :data="findBestPoco(pocoDetail)"
-                                :show-header="false"
-                              >
-                                <el-table-column>
-                                  <template #default="scope">
-                                    <span
-                                      style="cursor: pointer"
-                                      @click="copy(scope.row)"
-                                      >{{ scope.row }}</span
-                                    >
-                                    <el-icon
-                                      v-if="project && project['id']"
-                                      color="green"
-                                      size="16"
-                                      style="
-                                        vertical-align: middle;
-                                        margin-left: 10px;
-                                        cursor: pointer;
-                                      "
-                                      @click="toAddElement('poco', scope.row)"
-                                    >
-                                      <Pointer />
-                                    </el-icon>
-                                  </template>
-                                </el-table-column>
-                              </el-table>
-                            </el-form-item>
-                            <el-form-item
-                              :label="$t('androidRemoteTS.code.xpath')"
-                            >
-                              <el-table
-                                stripe
-                                :empty-text="
-                                  $t('androidRemoteTS.code.xpathNull')
-                                "
-                                border
-                                :data="findBestXpathForPoco(pocoDetail)"
-                                :show-header="false"
-                              >
-                                <el-table-column>
-                                  <template #default="scope">
-                                    <span
-                                      style="cursor: pointer"
-                                      @click="copy(scope.row)"
-                                      >{{ scope.row }}</span
-                                    >
-                                    <el-icon
-                                      v-if="project && project['id']"
-                                      color="green"
-                                      size="16"
-                                      style="
-                                        vertical-align: middle;
-                                        margin-left: 10px;
-                                        cursor: pointer;
-                                      "
-                                      @click="toAddElement('xpath', scope.row)"
-                                    >
-                                      <Pointer />
-                                    </el-icon>
-                                  </template>
-                                </el-table-column>
-                              </el-table>
-                            </el-form-item>
-                            <div
-                              v-for="key in Object.keys(pocoDetail)"
-                              style="cursor: pointer"
-                            >
-                              <el-form-item
-                                v-if="key !== 'name'"
-                                :label="key"
-                                @click="copy(JSON.stringify(pocoDetail[key]))"
-                              >
-                                <span>{{ pocoDetail[key] }}</span>
-                              </el-form-item>
-                            </div>
-                          </el-form>
-                        </el-scrollbar>
-                      </div>
-                    </el-card>
-                  </el-col>
-                </el-row>
-                <el-card v-show="!isShowPocoImg" style="height: 100%">
-                  <el-result
-                    icon="info"
-                    :title="$t('androidRemoteTS.code.hintText')"
-                    :sub-title="$t('androidRemoteTS.code.getPocoSDKMessage')"
-                  >
-                  </el-result>
-                </el-card>
+                <poco-pane
+                  ref="pocoPaneRef"
+                  :poco-loading="pocoLoading"
+                  :is-driver-finish="isDriverFinish"
+                  :direction-status="directionStatus"
+                  :project="project"
+                  :project-list="store.state.projectList"
+                  :get-img-url="getImgUrl"
+                  @get-poco="getPoco"
+                  @copy="copy"
+                />
               </el-tab-pane>
             </el-tabs>
           </el-tab-pane>
@@ -4545,11 +3925,6 @@ onMounted(() => {
 }
 
 #debugPic {
-  width: 100%;
-  height: auto;
-}
-
-#debugPocoPic {
   width: 100%;
   height: auto;
 }
