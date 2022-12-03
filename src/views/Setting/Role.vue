@@ -101,7 +101,6 @@ const getRoleResourceList = (roleId) => {
     .then((resp) => {
       if (resp.code === 2000) {
         roleResourcesList.value = resp.data;
-        console.log(roleResourcesList);
         roleResourcesDialogVisible.value = true;
       } else {
         ElMessage.success({

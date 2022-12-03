@@ -71,8 +71,10 @@ import {
 import { useI18n } from 'vue-i18n';
 import RenderDeviceName from '../../components/RenderDeviceName.vue';
 import PocoPane from '../../components/PocoPane.vue';
+import IOSPerf from '../../components/IOSPerf.vue';
 
 const pocoPaneRef = ref(null);
+const iosPerfRef = ref(null);
 const { t: $t } = useI18n();
 const { toClipboard } = useClipboard();
 const route = useRoute();
@@ -648,6 +650,9 @@ const screenWebsocketOnmessage = (message) => {
 };
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data).msg) {
+    case 'perfDetail':
+      iosPerfRef.value.setData(JSON.parse(message.data).detail);
+      break;
     case 'poco': {
       pocoLoading.value = false;
       const { result } = JSON.parse(message.data);
@@ -824,6 +829,20 @@ const getPasteboard = () => {
   websocket.send(
     JSON.stringify({
       type: 'getPasteboard',
+    })
+  );
+};
+const startPerfmon = () => {
+  websocket.send(
+    JSON.stringify({
+      type: 'startPerfmon',
+    })
+  );
+};
+const stopPerfmon = () => {
+  websocket.send(
+    JSON.stringify({
+      type: 'stopPerfmon',
     })
   );
 };
@@ -2989,6 +3008,13 @@ onMounted(() => {
               >
               </iframe>
             </div>
+          </el-tab-pane>
+          <el-tab-pane label="性能监控" name="perfmon">
+            <i-o-s-perf
+              ref="iosPerfRef"
+              @start-perfmon="startPerfmon"
+              @stop-perfmon="stopPerfmon"
+            />
           </el-tab-pane>
         </el-tabs>
       </el-col>

@@ -35,7 +35,7 @@ class Scrcpy {
 
   cmdFN(cmd) {
     if (cmd.msg == 'size') {
-      console.log(`初始化成功: size: ${cmd.width},${cmd.height}`);
+      console.log(`init size: ${cmd.width},${cmd.height}`);
       this.isInit = true;
     }
   }
