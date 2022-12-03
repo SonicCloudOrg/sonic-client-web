@@ -40,6 +40,9 @@ const clearPerfmon = () => {
   cpu.value = [];
   mem.value = [];
   gpu.value = [];
+  fps.value = [];
+  disk.value = [];
+  network.value = [];
 };
 const setData = (data) => {
   console.log(data);
@@ -278,8 +281,6 @@ const printGpu = () => {
       data: ['Device Utilization', 'Renderer Utilization', 'Tiler Utilization'],
     },
     xAxis: {
-      boundaryGap: false,
-      type: 'category',
       data: gpu.value.map((obj) => {
         return moment(new Date(obj.timestamp * 1000)).format('HH:mm:ss');
       }),
@@ -301,9 +302,6 @@ const printGpu = () => {
         data: gpu.value.map((obj) => {
           return obj.device_utilization;
         }),
-        showSymbol: false,
-        areaStyle: {},
-        boundaryGap: false,
       },
       {
         name: 'Renderer Utilization',
@@ -311,9 +309,6 @@ const printGpu = () => {
         data: gpu.value.map((obj) => {
           return obj.renderer_utilization;
         }),
-        showSymbol: false,
-        areaStyle: {},
-        boundaryGap: false,
       },
       {
         name: 'Tiler Utilization',
@@ -321,9 +316,6 @@ const printGpu = () => {
         data: gpu.value.map((obj) => {
           return obj.tiler_utilization;
         }),
-        showSymbol: false,
-        areaStyle: {},
-        boundaryGap: false,
       },
     ],
   };
