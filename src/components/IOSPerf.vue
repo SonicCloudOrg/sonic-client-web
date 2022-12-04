@@ -47,9 +47,9 @@ const clearPerfmon = () => {
   fps.value = [];
   disk.value = [];
   network.value = [];
+  procPerf.value = [];
 };
 const setData = (data) => {
-  console.log(data);
   if (data.type === 'sys_cpu') {
     cpu.value.push(data);
     printCpu();
