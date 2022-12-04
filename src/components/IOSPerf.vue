@@ -716,6 +716,7 @@ const printPerfMem = () => {
       v-model="perfBundleId"
       style="margin-right: 10px; width: 280px"
       filterable
+      clearable
       size="mini"
       placeholder="(可选) 点此可指定监听应用Process性能"
     >
