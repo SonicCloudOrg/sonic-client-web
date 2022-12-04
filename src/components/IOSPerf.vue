@@ -28,8 +28,12 @@ echarts.use([
 const { t: $t } = useI18n();
 const emit = defineEmits(['startPerfmon', 'stopPerfmon']);
 const isStart = ref(false);
+const perfBundleId = ref('');
+const props = defineProps({
+  appList: Array,
+});
 const startPerfmon = () => {
-  emit('startPerfmon');
+  emit('startPerfmon', perfBundleId.value);
   isStart.value = true;
 };
 const stopPerfmon = () => {
@@ -70,6 +74,11 @@ const setData = (data) => {
     network.value.push(data);
     printNetwork();
   }
+  if (data.type === 'process') {
+    procPerf.value.push(data);
+    printPerfCpu();
+    printPerfMem();
+  }
 };
 const cpu = ref([]);
 const mem = ref([]);
@@ -77,6 +86,7 @@ const gpu = ref([]);
 const fps = ref([]);
 const disk = ref([]);
 const network = ref([]);
+const procPerf = ref([]);
 defineExpose({ setData });
 const printCpu = () => {
   let chart = echarts.getInstanceByDom(document.getElementById('sysCpuChart'));
@@ -537,13 +547,203 @@ const printNetwork = () => {
   };
   chart.setOption(option);
 };
+const printPerfCpu = () => {
+  let chart = echarts.getInstanceByDom(document.getElementById('perfCpuChart'));
+  if (chart == null) {
+    chart = echarts.init(document.getElementById('perfCpuChart'));
+  }
+  chart.resize();
+  const option = {
+    title: {
+      text: 'Process CPU',
+      textStyle: {
+        color: '#606266',
+      },
+      x: 'center',
+      y: 'top',
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    grid: { top: '15%' },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true, title: 'Save' },
+      },
+    },
+    xAxis: {
+      boundaryGap: false,
+      type: 'category',
+      data: procPerf.value.map((obj) => {
+        return moment(new Date(obj.timestamp * 1000)).format('HH:mm:ss');
+      }),
+    },
+    dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        start: 30,
+        end: 100,
+        xAxisIndex: [0, 1],
+      },
+    ],
+    yAxis: [{ name: 'CPU使用率(%)', min: 0 }],
+    series: [
+      {
+        type: 'line',
+        data: procPerf.value.map((obj) => {
+          if (obj.proc_perf && obj.proc_perf.cpuUsage) {
+            return obj.proc_perf.cpuUsage;
+          }
+        }),
+        showSymbol: false,
+        areaStyle: {},
+        boundaryGap: false,
+      },
+    ],
+  };
+  chart.setOption(option);
+};
+const printPerfMem = () => {
+  let chart = echarts.getInstanceByDom(document.getElementById('perfMemChart'));
+  if (chart == null) {
+    chart = echarts.init(document.getElementById('perfMemChart'));
+  }
+  chart.resize();
+  const option = {
+    color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#409EFF'],
+    title: {
+      text: 'Process Memory',
+      textStyle: {
+        color: '#606266',
+      },
+      x: 'center',
+      y: 'top',
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    grid: { top: '30%', left: '13%' },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true, title: 'Save' },
+      },
+    },
+    legend: {
+      top: '8%',
+      data: [
+        'Mem Anon',
+        'Mem Resident Size',
+        'Mem Virtual Size',
+        'Phys Footprint',
+      ],
+    },
+    xAxis: {
+      boundaryGap: false,
+      type: 'category',
+      data: procPerf.value.map((obj) => {
+        return moment(new Date(obj.timestamp * 1000)).format('HH:mm:ss');
+      }),
+    },
+    dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        start: 30,
+        end: 100,
+        xAxisIndex: [0, 1],
+      },
+    ],
+    yAxis: [{ name: '内存占用(b)', min: 0 }],
+    series: [
+      {
+        name: 'Mem Anon',
+        type: 'line',
+        data: procPerf.value.map((obj) => {
+          if (obj.proc_perf && obj.proc_perf.memAnon) {
+            return obj.proc_perf.memAnon;
+          }
+        }),
+        showSymbol: false,
+        areaStyle: {},
+        boundaryGap: false,
+      },
+      {
+        name: 'Mem Resident Size',
+        type: 'line',
+        data: procPerf.value.map((obj) => {
+          if (obj.proc_perf && obj.proc_perf.memResidentSize) {
+            return obj.proc_perf.memResidentSize;
+          }
+        }),
+        showSymbol: false,
+        areaStyle: {},
+        boundaryGap: false,
+      },
+      {
+        name: 'Mem Virtual Size',
+        type: 'line',
+        data: procPerf.value.map((obj) => {
+          if (obj.proc_perf && obj.proc_perf.memVirtualSize) {
+            return obj.proc_perf.memVirtualSize;
+          }
+        }),
+        showSymbol: false,
+        areaStyle: {},
+        boundaryGap: false,
+      },
+      {
+        name: 'Phys Footprint',
+        type: 'line',
+        data: procPerf.value.map((obj) => {
+          if (obj.proc_perf && obj.proc_perf.physFootprint) {
+            return obj.proc_perf.physFootprint;
+          }
+        }),
+        showSymbol: false,
+        areaStyle: {},
+        boundaryGap: false,
+      },
+    ],
+  };
+  chart.setOption(option);
+};
 </script>
 
 <template>
   <div>
+    <el-select
+      v-model="perfBundleId"
+      style="margin-right: 10px; width: 280px"
+      filterable
+      size="mini"
+      placeholder="(可选) 点此可指定监听应用Process性能"
+    >
+      <el-option v-for="a in appList" :value="a.bundleId">
+        <div style="display: flex; align-items: center">
+          <el-avatar
+            style="margin-right: 10px"
+            :size="30"
+            :src="'data:image/png;base64,' + a.iconBase64"
+            shape="square"
+          ></el-avatar>
+          {{ a.name }}
+          <span
+            style="
+              float: right;
+              margin-left: 15px;
+              color: #909399;
+              font-size: 13px;
+              font-style: italic;
+            "
+            >{{ a.bundleId }}</span
+          >
+        </div>
+      </el-option>
+    </el-select>
     <el-button
       type="primary"
-      size="small"
+      size="mini"
       :loading="isStart"
       @click="startPerfmon"
     >
@@ -552,85 +752,109 @@ const printNetwork = () => {
       </el-icon>
       开始监控
     </el-button>
-    <el-button type="warning" size="small" @click="stopPerfmon">
+    <el-button type="warning" size="mini" @click="stopPerfmon">
       <el-icon :size="12" style="vertical-align: middle">
         <VideoPause />
       </el-icon>
       停止监控
     </el-button>
-    <el-button type="danger" size="small" @click="clearPerfmon">
+    <el-button type="danger" size="mini" @click="clearPerfmon">
       <el-icon :size="12" style="vertical-align: middle">
         <Delete />
       </el-icon>
       清空数据
     </el-button>
-    <el-row :gutter="10">
-      <el-col :span="12">
+    <el-tabs style="margin-top: 10px" stretch type="border-card">
+      <el-tab-pane label="System PerfMon">
+        <el-row :gutter="10">
+          <el-col :span="12">
+            <el-card style="margin-top: 10px">
+              <div
+                id="sysCpuChart"
+                v-loading="cpu.length === 0"
+                element-loading-text="暂无数据"
+                element-loading-spinner="el-icon-box"
+                style="width: 100%; height: 350px"
+              ></div>
+            </el-card>
+          </el-col>
+          <el-col :span="12">
+            <el-card style="margin-top: 10px">
+              <div
+                id="sysMemChart"
+                v-loading="mem.length === 0"
+                element-loading-text="暂无数据"
+                element-loading-spinner="el-icon-box"
+                style="width: 100%; height: 350px"
+              ></div>
+            </el-card>
+          </el-col>
+          <el-col :span="12">
+            <el-card style="margin-top: 10px">
+              <div
+                id="sysGpuChart"
+                v-loading="gpu.length === 0"
+                element-loading-text="暂无数据"
+                element-loading-spinner="el-icon-box"
+                style="width: 100%; height: 350px"
+              ></div>
+            </el-card>
+          </el-col>
+          <el-col :span="12">
+            <el-card style="margin-top: 10px">
+              <div
+                id="sysFpsChart"
+                v-loading="fps.length === 0"
+                element-loading-text="暂无数据"
+                element-loading-spinner="el-icon-box"
+                style="width: 100%; height: 350px"
+              ></div>
+            </el-card>
+          </el-col>
+          <el-col :span="12">
+            <el-card style="margin-top: 10px">
+              <div
+                id="sysDiskChart"
+                v-loading="disk.length === 0"
+                element-loading-text="暂无数据"
+                element-loading-spinner="el-icon-box"
+                style="width: 100%; height: 350px"
+              ></div>
+            </el-card>
+          </el-col>
+          <el-col :span="12">
+            <el-card style="margin-top: 10px">
+              <div
+                id="sysNetworkChart"
+                v-loading="network.length === 0"
+                element-loading-text="暂无数据"
+                element-loading-spinner="el-icon-box"
+                style="width: 100%; height: 350px"
+              ></div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane label="Process PerfMon">
         <el-card style="margin-top: 10px">
           <div
-            id="sysCpuChart"
-            v-loading="cpu.length === 0"
+            id="perfCpuChart"
+            v-loading="procPerf.length === 0"
             element-loading-text="暂无数据"
             element-loading-spinner="el-icon-box"
             style="width: 100%; height: 350px"
           ></div>
         </el-card>
-      </el-col>
-      <el-col :span="12">
         <el-card style="margin-top: 10px">
           <div
-            id="sysMemChart"
-            v-loading="mem.length === 0"
+            id="perfMemChart"
+            v-loading="procPerf.length === 0"
             element-loading-text="暂无数据"
             element-loading-spinner="el-icon-box"
             style="width: 100%; height: 350px"
           ></div>
         </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card style="margin-top: 10px">
-          <div
-            id="sysGpuChart"
-            v-loading="gpu.length === 0"
-            element-loading-text="暂无数据"
-            element-loading-spinner="el-icon-box"
-            style="width: 100%; height: 350px"
-          ></div>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card style="margin-top: 10px">
-          <div
-            id="sysFpsChart"
-            v-loading="fps.length === 0"
-            element-loading-text="暂无数据"
-            element-loading-spinner="el-icon-box"
-            style="width: 100%; height: 350px"
-          ></div>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card style="margin-top: 10px">
-          <div
-            id="sysDiskChart"
-            v-loading="disk.length === 0"
-            element-loading-text="暂无数据"
-            element-loading-spinner="el-icon-box"
-            style="width: 100%; height: 350px"
-          ></div>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card style="margin-top: 10px">
-          <div
-            id="sysNetworkChart"
-            v-loading="network.length === 0"
-            element-loading-text="暂无数据"
-            element-loading-spinner="el-icon-box"
-            style="width: 100%; height: 350px"
-          ></div>
-        </el-card>
-      </el-col>
-    </el-row>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>

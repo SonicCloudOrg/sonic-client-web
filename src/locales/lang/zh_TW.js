@@ -729,6 +729,7 @@ const usersTS = {
   },
 };
 const IOSRemote = {
+  perfmon: '性能监控',
   startSimulating: '開始模擬定位...',
   positioningRestored: '已恢復定位',
   loadingAppList: '載入應用列表中，請稍後...',

@@ -745,6 +745,7 @@ const usersTS = {
   },
 };
 const IOSRemote = {
+  perfmon: 'PerfMon',
   startSimulating: 'Start simulating the positioning...',
   positioningRestored: 'Positioning has been resumed',
   loadingAppList: 'Loading the list of apps, please wait...',

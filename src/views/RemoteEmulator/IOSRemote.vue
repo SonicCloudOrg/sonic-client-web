@@ -326,7 +326,7 @@ const saveEle = () => {
   });
 };
 const switchTabs = (e) => {
-  if (e.props.name === 'apps') {
+  if (e.props.name === 'apps' || e.props.name === 'perfmon') {
     if (appList.value.length === 0) {
       refreshAppList();
     }
@@ -836,10 +836,11 @@ const getPasteboard = () => {
     })
   );
 };
-const startPerfmon = () => {
+const startPerfmon = (bundleId) => {
   websocket.send(
     JSON.stringify({
       type: 'startPerfmon',
+      bundleId,
     })
   );
 };
@@ -3044,9 +3045,10 @@ onMounted(() => {
               </iframe>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="性能监控" name="perfmon">
+          <el-tab-pane :label="$t('IOSRemote.perfmon')" name="perfmon">
             <i-o-s-perf
               ref="iosPerfRef"
+              :app-list="appList"
               @start-perfmon="startPerfmon"
               @stop-perfmon="stopPerfmon"
             />
