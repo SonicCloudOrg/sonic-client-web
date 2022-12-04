@@ -106,6 +106,7 @@ let time = 0;
 let isLongPress = false;
 const mouseMoveTime = 0;
 const remoteWDAPort = ref(0);
+const remoteSIBPort = ref(0);
 const elementLoading = ref(false);
 const isShowImg = ref(false);
 const isDriverFinish = ref(false);
@@ -650,6 +651,9 @@ const screenWebsocketOnmessage = (message) => {
 };
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data).msg) {
+    case 'share':
+      remoteSIBPort.value = JSON.parse(message.data).port;
+      break;
     case 'perfDetail':
       iosPerfRef.value.setData(JSON.parse(message.data).detail);
       break;
@@ -1720,6 +1724,37 @@ onMounted(() => {
               </el-col>
               <el-col :span="12">
                 <el-tabs type="border-card" stretch>
+                  <el-tab-pane :label="$t('IOSRemote.remoteSIB')">
+                    <div style="padding: 13px 0">
+                      <div
+                        v-loading="remoteSIBPort === 0"
+                        element-loading-background="rgba(255, 255, 255, 1)"
+                        style="margin-top: 20px; margin-bottom: 20px"
+                      >
+                        <el-card
+                          :body-style="{
+                            backgroundColor: '#303133',
+                            cursor: 'pointer',
+                          }"
+                          @click="
+                            copy(
+                              'sib remote connect --host ' +
+                                agent['host'] +
+                                ' -p ' +
+                                remoteSIBPort
+                            )
+                          "
+                        >
+                          <strong style="color: #f2f6fc">{{
+                            'sib remote connect --host ' +
+                            agent['host'] +
+                            ' -p ' +
+                            remoteSIBPort
+                          }}</strong>
+                        </el-card>
+                      </div>
+                    </div>
+                  </el-tab-pane>
                   <el-tab-pane :label="$t('IOSRemote.remoteWDA')">
                     <div style="padding: 13px 0">
                       <div

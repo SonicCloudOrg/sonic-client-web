@@ -772,6 +772,7 @@ const IOSRemote = {
     end: 'resume positioning',
   },
   remoteWDA: 'Remote WDA',
+  remoteSIB: 'Remote SIB',
   driverNotSuccess: 'driver was not initialized successfully',
   errLog: 'File interchange and crash log',
   waitOpen: 'This feature will be opened soon',

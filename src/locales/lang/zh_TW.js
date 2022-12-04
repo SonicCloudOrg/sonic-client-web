@@ -756,6 +756,7 @@ const IOSRemote = {
     end: '恢復定位',
   },
   remoteWDA: '遠端WDA',
+  remoteSIB: '遠端SIB',
   driverNotSuccess: 'driver未初始化成功',
   errLog: '檔互傳與crash日誌',
   waitOpen: '該功能即將開放',
