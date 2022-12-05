@@ -17,7 +17,9 @@ import { ElMessage } from 'element-plus';
 import { useI18n } from 'vue-i18n';
 import StepLog from '../components/StepLog.vue';
 import axios from '../http/axios';
+import IOSPerfChart from '../components/IOSPerfChart.vue';
 
+const iosPerfChart = ref(null);
 const { t: $t } = useI18n();
 echarts.use([
   PieChart,
@@ -97,7 +99,7 @@ const changeCase = (e) => {
 const switchType = (e) => {
   if (e.props.name === 'perform') {
     nextTick(() => {
-      getPerform(caseId.value, deviceId.value);
+      getPerform();
     });
   }
   if (e.props.name === 'record') {
@@ -123,128 +125,14 @@ const getRecord = () => {
       }
     });
 };
-const getLegend = (data) => {
-  const result = [];
-  if (data.length > 0) {
-    for (const k in JSON.parse(data[0].log)) {
-      result.push(k);
-    }
-  }
-  return result;
-};
-const getSeries = (data, legend) => {
-  const result = [];
-  if (data.length > 0 && legend.length > 0) {
-    for (const j in legend) {
-      const d = [];
-      for (const i in data) {
-        for (const k in JSON.parse(data[i].log)) {
-          if (k === legend[j]) {
-            d.push(JSON.parse(data[i].log)[k]);
-          }
-        }
-      }
-      result.push({
-        name: legend[j],
-        type: 'line',
-        areaStyle: {},
-        data: d,
-      });
-    }
-  }
-  return result;
-};
-const getTimes = (data) => {
-  const result = [];
-  for (const i in data) {
-    result.push(data[i].time);
-  }
-  return result;
-};
-const getPerform = (cid, did) => {
-  let mem = echarts.getInstanceByDom(
-    document.getElementById(`mem${cid}${did}`)
-  );
-  if (mem == null) {
-    mem = echarts.init(document.getElementById(`mem${cid}${did}`));
-  }
-  let bat = echarts.getInstanceByDom(
-    document.getElementById(`bat${cid}${did}`)
-  );
-  if (bat == null) {
-    bat = echarts.init(document.getElementById(`bat${cid}${did}`));
-  }
-  const option = {
-    title: {
-      textStyle: {
-        color: '#606266',
-      },
-      x: 'center',
-      y: 'top',
-    },
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
-        label: {
-          backgroundColor: '#6a7985',
-        },
-      },
-    },
-    toolbox: {
-      feature: {
-        saveAsImage: { show: true, title: $t('form.save') },
-      },
-    },
-    xAxis: [
-      {
-        type: 'category',
-        boundaryGap: false,
-        axisTick: {
-          inside: true,
-        },
-        axisLine: {
-          lineStyle: {
-            color: '#909399',
-            shadowBlur: 2.5,
-          },
-        },
-        axisLabel: {
-          interval: 0,
-          rotate: 40,
-        },
-      },
-    ],
-    legend: {
-      top: '8%',
-      textStyle: {
-        color: '#606266',
-      },
-    },
-    grid: {
-      top: '24%',
-      left: '3%',
-      right: '4%',
-      bottom: '10%',
-      containLabel: true,
-    },
-    yAxis: [
-      {
-        type: 'value',
-        axisTick: {
-          inside: true,
-        },
-        axisLine: {
-          lineStyle: {
-            color: '#909399',
-            shadowBlur: 2.5,
-          },
-        },
-      },
-    ],
-  };
-  mem.showLoading();
-  bat.showLoading();
+const cpu = ref([]);
+const mem = ref([]);
+const gpu = ref([]);
+const fps = ref([]);
+const disk = ref([]);
+const network = ref([]);
+const procPerf = ref([]);
+const getPerform = () => {
   axios
     .get('/controller/resultDetail/listAll', {
       params: {
@@ -254,77 +142,39 @@ const getPerform = (cid, did) => {
         type: 'perform',
       },
     })
-    .then(async (resp) => {
-      if (resp.code === 2000 && resp.data.length > 0) {
-        mem.hideLoading();
-        bat.hideLoading();
-        const memList = [];
-        const batList = [];
-        for (const i in resp.data) {
-          if (resp.data[i].status === 1) {
-            memList.push(resp.data[i]);
-          }
-          if (resp.data[i].status === 2) {
-            batList.push(resp.data[i]);
-          }
+    .then((resp) => {
+      for (const i in resp.data) {
+        const r = JSON.parse(resp.data[i].log);
+        if (r.type === 'sys_cpu') {
+          cpu.value.push(r);
         }
-        const memLegend = getLegend(memList);
-        const memData = getSeries(memList, memLegend);
-        mem.setOption({
-          title: { text: $t('resultDetailTS.memoryInfo') },
-          series: memData,
-          legend: {
-            data: memLegend,
-          },
-          xAxis: [
-            {
-              data: getTimes(memList),
-            },
-          ],
-          yAxis: [{ name: $t('resultDetailTS.unit') }],
-        });
-        mem.setOption(option);
-        const batLegend = getLegend(batList);
-        const batData = getSeries(batList, batLegend);
-        bat.setOption({
-          title: { text: $t('resultDetailTS.battery') },
-          series: batData,
-          legend: {
-            data: batLegend,
-          },
-          xAxis: [
-            {
-              data: getTimes(batList),
-            },
-          ],
-          yAxis: [{ name: $t('projectIndexTS.unit'), max: 100, min: 0 }],
-        });
-        bat.setOption(option);
-        if (resizeFun !== undefined) {
-          window.removeEventListener('resize', resizeFun);
+        if (r.type === 'sys_mem') {
+          mem.value.push(r);
         }
-        resizeFun = () => {
-          mem.resize();
-          bat.resize();
-        };
-        window.addEventListener('resize', resizeFun);
-      } else {
-        mem.showLoading({
-          text: $t('resultDetailTS.memoryShort'),
-          fontSize: 20,
-          textColor: '#606266',
-          showSpinner: false,
-        });
-        bat.showLoading({
-          text: $t('resultDetailTS.batteryShort'),
-          fontSize: 20,
-          textColor: '#606266',
-          showSpinner: false,
-        });
-        ElMessage.info({
-          message: $t('resultDetailTS.performance'),
-        });
+        if (r.type === 'gpu') {
+          gpu.value.push(r);
+        }
+        if (r.type === 'fps') {
+          fps.value.push(r);
+        }
+        if (r.type === 'sys_disk') {
+          disk.value.push(r);
+        }
+        if (r.type === 'sys_network') {
+          network.value.push(r);
+        }
+        if (r.type === 'process') {
+          procPerf.value.push(r);
+        }
       }
+      iosPerfChart.value.printCpu();
+      iosPerfChart.value.printMem();
+      iosPerfChart.value.printGpu();
+      iosPerfChart.value.printFps();
+      iosPerfChart.value.printDisk();
+      iosPerfChart.value.printNetwork();
+      iosPerfChart.value.printPerfCpu();
+      iosPerfChart.value.printPerfMem();
     });
 };
 const switchDevice = async (e) => {
@@ -662,18 +512,19 @@ onUnmounted(() => {
                 :label="$t('resultDetailTS.page.performanceInfo')"
                 name="perform"
               >
-                <el-card>
-                  <div
-                    :id="'mem' + c['case'].id + d.id"
-                    style="width: 100%; height: 400px; margin-top: 20px"
-                  ></div>
-                </el-card>
-                <el-card style="margin-top: 10px">
-                  <div
-                    :id="'bat' + c['case'].id + d.id"
-                    style="width: 100%; height: 400px; margin-top: 20px"
-                  ></div>
-                </el-card>
+                <i-o-s-perf-chart
+                  ref="iosPerfChart"
+                  :cid="c['case'].id"
+                  :rid="route.params.resultId"
+                  :did="d.id"
+                  :cpu="cpu"
+                  :mem="mem"
+                  :fps="fps"
+                  :gpu="gpu"
+                  :disk="disk"
+                  :network="network"
+                  :proc-perf="procPerf"
+                />
               </el-tab-pane>
               <el-tab-pane
                 :label="$t('resultDetailTS.page.runRecording')"
