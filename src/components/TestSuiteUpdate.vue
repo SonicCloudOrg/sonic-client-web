@@ -64,6 +64,8 @@ const testSuite = ref({
   id: null,
   name: '',
   platform: null,
+  isOpenPerfmon: 0,
+  perfmonInterval: 1000,
   cover: 1,
   projectId: route.params.projectId,
   devices: [],
@@ -226,15 +228,22 @@ onMounted(() => {
         </el-option>
       </el-select>
     </el-form-item>
-    <el-alert
-      title="覆盖类型"
-      type="info"
-      description="用例覆盖即为每个用例只分配一个设备，设备覆盖即为每个设备都会执行所有用例"
-      show-icon
-      style="margin-bottom: 10px"
-      close-text="Get!"
-    >
-    </el-alert>
+    <el-form-item label="性能监控">
+      <el-switch
+        v-model="testSuite.isOpenPerfmon"
+        :active-value="1"
+        :inactive-value="0"
+      />
+    </el-form-item>
+    <el-form-item v-if="testSuite.isOpenPerfmon === 1" label="采集间隔">
+      <el-input-number
+        v-model="testSuite.perfmonInterval"
+        style="margin-right: 10px"
+        :min="1000"
+        :step="500"
+        :max="120000"
+      />ms
+    </el-form-item>
     <el-form-item label="覆盖类型">
       <el-select
         v-model="testSuite.cover"
