@@ -29,7 +29,6 @@ const props = defineProps({
   pocoLoading: Boolean,
   isDriverFinish: Boolean,
   directionStatus: Object,
-  project: Object,
   projectList: Array,
   getImgUrl: Function,
 });
@@ -250,6 +249,9 @@ const setPocoTreeId = (data) => {
 };
 const findBestPoco = (elementDetail) => {
   const result = [];
+  if (elementDetail.text) {
+    result.push(`poco(text="${elementDetail.text}")`);
+  }
   if (elementDetail.name) {
     result.push(
       `poco("${elementDetail.name}")${
@@ -266,6 +268,9 @@ const findBestPoco = (elementDetail) => {
 };
 const findBestXpathForPoco = (elementDetail) => {
   const result = [];
+  if (elementDetail.text) {
+    result.push(`//*[@text='${elementDetail.text}']`);
+  }
   if (elementDetail.name) {
     result.push(`//*[@name='${elementDetail.name}']`);
   }
@@ -318,8 +323,9 @@ const element = ref({
   eleValue: '',
   projectId: 0,
 });
+const project = ref({});
 const toAddElement = (eleType, eleValue) => {
-  if (props.project) {
+  if (project.value) {
     element.value.eleType = eleType;
     element.value.eleValue = eleValue;
     dialogElement.value = true;

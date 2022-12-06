@@ -3721,7 +3721,6 @@ onMounted(() => {
                   :poco-loading="pocoLoading"
                   :is-driver-finish="isDriverFinish"
                   :direction-status="directionStatus"
-                  :project="project"
                   :project-list="store.state.projectList"
                   :get-img-url="getImgUrl"
                   @get-poco="getPoco"

@@ -228,7 +228,7 @@ onMounted(() => {
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="性能监控">
+    <el-form-item label="性能采集">
       <el-switch
         v-model="testSuite.isOpenPerfmon"
         :active-value="1"

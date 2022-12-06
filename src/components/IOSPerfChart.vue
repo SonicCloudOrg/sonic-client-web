@@ -11,6 +11,7 @@ import {
 } from 'echarts/components';
 import { LineChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
+import { nextTick } from 'vue';
 
 echarts.use([
   DataZoomComponent,
@@ -727,10 +728,33 @@ defineExpose({
   printPerfCpu,
   printPerfMem,
 });
+const switchTab = (e) => {
+  if (e.index == 1) {
+    nextTick(() => {
+      const memChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `perfMemChart`
+        )
+      );
+      memChart.resize();
+      const cpuChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `perfCpuChart`
+        )
+      );
+      cpuChart.resize();
+    });
+  }
+};
 </script>
 
 <template>
-  <el-tabs style="margin-top: 10px" stretch type="border-card">
+  <el-tabs
+    style="margin-top: 10px"
+    stretch
+    type="border-card"
+    @tab-click="switchTab"
+  >
     <el-tab-pane label="System PerfMon">
       <el-row :gutter="10">
         <el-col :span="12">
