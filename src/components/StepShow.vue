@@ -181,7 +181,7 @@ const summitStep = () => {
   </span>
   <span v-if="step.stepType === 'toHandle'">
     <el-tag size="small" style="margin-right: 10px">切换Handle</el-tag>
-    Handle页面标题：{{ step.content }}
+    Handle切换信息：{{ step.content }}
   </span>
   <span
     v-if="

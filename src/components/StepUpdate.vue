@@ -1484,10 +1484,10 @@ onMounted(() => {
         type="info"
         title="TIPS: Handle相当于页面的Tab，切换WebView后找不到页面可以尝试切换Handle"
       />
-      <el-form-item label="Handle标题">
+      <el-form-item label="Handle信息">
         <el-input
           v-model="step.content"
-          placeholder="请输入Handle页面标题的名称"
+          placeholder="请输入Handle页面标题 或 地址 或 index下标"
         ></el-input>
       </el-form-item>
     </div>
