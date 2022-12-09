@@ -40,6 +40,7 @@ const devices = {
     battery: {
       level: 'Level',
       temperature: 'Temp',
+      voltage: 'Voltage',
     },
     agent: 'Agent',
   },

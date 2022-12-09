@@ -40,6 +40,7 @@ const devices = {
     battery: {
       level: '電池電量',
       temperature: '電池溫度',
+      voltage: '充电电压',
     },
     agent: '所在位置',
   },

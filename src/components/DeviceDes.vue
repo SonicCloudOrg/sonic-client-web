@@ -408,7 +408,48 @@ const findAgentById = (id) => {
           <el-form-item :label="$t('devices.detail.cpu')">
             <span>{{ device.cpu }}</span>
           </el-form-item>
-          <el-form-item :label="$t('devices.detail.pwd')">
+          <el-form-item :label="$t('devices.form.battery.voltage')">
+            <div
+              :style="{
+                position: 'relative',
+                display: 'flex',
+                'align-items': 'center',
+                color:
+                  device['voltage'] === 0 ||
+                  (device.status !== 'ONLINE' &&
+                    device.status !== 'DEBUGGING' &&
+                    device.status !== 'TESTING')
+                    ? '#606266'
+                    : '#67C23A',
+              }"
+            >
+              <ColorImg
+                v-if="
+                  device['voltage'] !== 0 &&
+                  (device.status === 'ONLINE' ||
+                    device.status === 'DEBUGGING' ||
+                    device.status === 'TESTING')
+                "
+                style="margin-right: 5px"
+                :src="img['./../assets/img/voltage.png'].default"
+                :width="20"
+                :height="20"
+                :color="device['level'] === 0 ? '#606266' : '#67C23A'"
+              />
+              {{
+                device['voltage'] === 0 ||
+                (device.status !== 'ONLINE' &&
+                  device.status !== 'DEBUGGING' &&
+                  device.status !== 'TESTING')
+                  ? $t('form.unknown')
+                  : (device['voltage'] / 1000).toFixed(2) + ' V'
+              }}
+            </div>
+          </el-form-item>
+          <el-form-item
+            v-if="device.platform !== 2"
+            :label="$t('devices.detail.pwd')"
+          >
             <el-input
               v-model="device.password"
               show-word-limit

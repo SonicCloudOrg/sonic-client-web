@@ -40,6 +40,7 @@ const devices = {
     battery: {
       level: 'バッテリ',
       temperature: 'おんど',
+      voltage: 'Voltage',
     },
     agent: '位置',
   },
