@@ -434,7 +434,7 @@ const findAgentById = (id) => {
                 :src="img['./../assets/img/voltage.png'].default"
                 :width="20"
                 :height="20"
-                :color="device['level'] === 0 ? '#606266' : '#67C23A'"
+                :color="device['voltage'] === 0 ? '#606266' : '#67C23A'"
               />
               {{
                 device['voltage'] === 0 ||
