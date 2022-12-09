@@ -95,11 +95,11 @@ const devices = {
   adTemperature: {
     temperature: '當設備溫度≥',
     height: '高溫值',
-    onlyAd: '時（僅安卓），會通知機器人告警。',
+    onlyAd: '時，會通知機器人告警。',
     then: '當',
     timeout: '高溫超時',
     continuedTime: '時間內溫度持續≥',
-    onlyAdNotice: '時（僅安卓），會通知機器人並',
+    onlyAdNotice: '時，會通知機器人並',
     shutdown: '關機',
   },
 };

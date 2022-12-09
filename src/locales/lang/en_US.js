@@ -95,11 +95,11 @@ const devices = {
   adTemperature: {
     temperature: 'When the device temperature is ≥',
     height: 'High temperature value',
-    onlyAd: 'the robot will be notified of the alarm (Android only).',
+    onlyAd: 'the robot will be notified of the alarm.',
     then: 'then',
     timeout: 'High temperature timeout',
     continuedTime: 'Temperature continues for ≥',
-    onlyAdNotice: 'the robot will be notified(Android only) and',
+    onlyAdNotice: 'the robot will be notified and',
     shutdown: 'shutdown',
   },
 };
