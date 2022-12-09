@@ -940,19 +940,19 @@ onUnmounted(() => {
       >
         <template #default>
           <div>
-            {{ $t('devices.adTemperature.temperature')
-            }}<span style="color: #409eff">
+            {{ $t('devices.adTemperature.temperature') }}
+            <span style="color: #409eff">
               {{ $t('devices.adTemperature.height') }}</span
             >
             {{ $t('devices.adTemperature.onlyAd') }}
           </div>
           <div>
-            {{ $t('devices.adTemperature.then')
-            }}<span style="color: #e6a23c">
+            {{ $t('devices.adTemperature.then') }}
+            <span style="color: #e6a23c">
               {{ $t('devices.adTemperature.timeout') }}</span
             >
-            {{ $t('devices.adTemperature.continuedTime')
-            }}<span style="color: #409eff">
+            {{ $t('devices.adTemperature.continuedTime') }}
+            <span style="color: #409eff">
               {{ $t('devices.adTemperature.height') }}</span
             >
             {{ $t('devices.adTemperature.onlyAdNotice')
