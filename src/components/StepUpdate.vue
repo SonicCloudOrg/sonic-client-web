@@ -499,6 +499,10 @@ const androidOptions = ref([
             label: '清空输入框',
           },
           {
+            value: 'getElementAttr',
+            label: '验证控件属性',
+          },
+          {
             value: 'getTextValue',
             label: '获取文本',
           },
@@ -594,6 +598,18 @@ const androidOptions = ref([
             value: 'closePocoDriver',
             label: '关闭PocoDriver',
           },
+          {
+            value: 'getPocoElementAttr',
+            label: '验证控件属性',
+          },
+          {
+            value: 'getPocoTextValue',
+            label: '获取文本',
+          },
+          {
+            value: 'getPocoText',
+            label: '验证文本',
+          },
         ],
       },
     ],
@@ -605,10 +621,6 @@ const androidOptions = ref([
       {
         value: 'getActivity',
         label: '验证Activity',
-      },
-      {
-        value: 'getElementAttr',
-        label: '验证原生控件属性',
       },
       {
         value: 'assert',
@@ -873,6 +885,18 @@ const iOSOptions = ref([
           {
             value: 'thawSource',
             label: '解冻控件树',
+          },
+          {
+            value: 'getPocoElementAttr',
+            label: '验证控件属性',
+          },
+          {
+            value: 'getPocoTextValue',
+            label: '获取文本',
+          },
+          {
+            value: 'getPocoText',
+            label: '验证文本',
           },
           {
             value: 'closePocoDriver',
@@ -1708,6 +1732,27 @@ onMounted(() => {
       </el-form-item>
     </div>
 
+    <div v-if="step.stepType === 'getPocoTextValue'">
+      <el-alert
+        show-icon
+        style="margin-bottom: 10px"
+        close-text="Get!"
+        type="info"
+        title="TIPS: 可以将获取的文本放入临时变量中"
+      />
+      <element-select
+        label="控件元素"
+        place="请选择控件元素"
+        :index="0"
+        :project-id="projectId"
+        type="poco"
+        :step="step"
+      />
+      <el-form-item label="变量名">
+        <el-input v-model="step.content" placeholder="请输入变量名"></el-input>
+      </el-form-item>
+    </div>
+
     <div v-if="step.stepType === 'setPasteboard'">
       <el-form-item label="文本信息">
         <el-input
@@ -1739,6 +1784,20 @@ onMounted(() => {
         :index="0"
         :project-id="projectId"
         type="normal"
+        :step="step"
+      />
+      <el-form-item label="期望值">
+        <el-input v-model="step.content" placeholder="请输入期望值"></el-input>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'getPocoText'">
+      <element-select
+        label="控件元素"
+        place="请选择控件元素"
+        :index="0"
+        :project-id="projectId"
+        type="poco"
         :step="step"
       />
       <el-form-item label="期望值">
@@ -1813,9 +1872,43 @@ onMounted(() => {
         }"
       >
         <el-select v-model="step.content">
-          <el-option label="True" value="true"></el-option>
-          <el-option label="False" value="false"></el-option>
+          <el-option label="true" value="true"></el-option>
+          <el-option label="false" value="false"></el-option>
         </el-select>
+      </el-form-item>
+    </div>
+
+    <div v-if="step.stepType === 'getPocoElementAttr'">
+      <element-select
+        label="控件元素"
+        place="请选择控件元素"
+        :index="0"
+        :project-id="projectId"
+        type="poco"
+        :step="step"
+      />
+      <el-form-item
+        label="元素属性"
+        prop="text"
+        :rules="{
+          required: true,
+          message: '元素属性不能为空',
+          trigger: 'change',
+        }"
+      >
+        <el-select
+          v-model="step.text"
+          label="属性"
+          placeholder="请选择元素属性"
+        >
+          <el-option value="type"></el-option>
+          <el-option value="name"></el-option>
+          <el-option value="clickable"></el-option>
+          <el-option value="visible"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="期望值" prop="content">
+        <el-input v-model="step.content" placeholder="请输入期望值"></el-input>
       </el-form-item>
     </div>
 

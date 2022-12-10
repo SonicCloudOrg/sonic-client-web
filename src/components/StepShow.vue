@@ -257,7 +257,8 @@ const summitStep = () => {
   <span
     v-if="
       step.stepType === 'getTextValue' ||
-      step.stepType === 'getWebViewTextValue'
+      step.stepType === 'getWebViewTextValue' ||
+      step.stepType === 'getPocoTextValue'
     "
   >
     <el-tag size="small">获取文本</el-tag>
@@ -270,7 +271,11 @@ const summitStep = () => {
     获取到变量：{{ step.content }}
   </span>
   <span
-    v-if="step.stepType === 'getText' || step.stepType === 'getWebViewText'"
+    v-if="
+      step.stepType === 'getText' ||
+      step.stepType === 'getWebViewText' ||
+      step.stepType === 'getPocoText'
+    "
   >
     <el-tag size="small">验证文本</el-tag>
     <el-tag
@@ -289,7 +294,12 @@ const summitStep = () => {
     <el-tag size="small" style="margin-right: 10px">验证Activity</el-tag>
     期望值：{{ step.content }}
   </span>
-  <span v-if="step.stepType === 'getElementAttr'">
+  <span
+    v-if="
+      step.stepType === 'getElementAttr' ||
+      step.stepType === 'getPocoElementAttr'
+    "
+  >
     <el-tag size="small" style="margin-right: 10px">验证元素属性</el-tag>
     <el-tag
       type="info"
@@ -300,11 +310,7 @@ const summitStep = () => {
     断言：
     <el-tag size="small" style="margin-right: 10px">{{ step.text }}</el-tag>
     期望值：
-    <el-tag
-      size="small"
-      style="margin-right: 10px; text-transform: capitalize"
-      >{{ step.content }}</el-tag
-    >
+    <el-tag size="small" style="margin-right: 10px">{{ step.content }}</el-tag>
   </span>
   <span v-if="step.stepType === 'setTheRealPositionOfTheWindow'">
     <el-tag type="warning" size="small">设置偏移量</el-tag>
