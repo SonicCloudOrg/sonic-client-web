@@ -1,17 +1,4 @@
-FROM nginx:1.20.0
-
-RUN apt-get -qqy update && \
-    apt-get -qqy --no-install-recommends install \
-    wget \
-    gnupg
-
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
-  && apt-get update -qqy \
-  && apt-get -qqy install google-chrome-stable \
-  && rm /etc/apt/sources.list.d/google-chrome.list \
-   && rm -rf /var/lib/apt/lists/* \
-  && apt-get clean
+FROM registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-client-web-base:v1.0.0
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY dist/  /usr/share/nginx/html/
