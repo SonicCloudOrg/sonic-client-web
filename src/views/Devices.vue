@@ -27,6 +27,7 @@ import ColorImg from '@/components/ColorImg.vue';
 import DeviceDes from '../components/DeviceDes.vue';
 import Pageable from '../components/Pageable.vue';
 import axios from '../http/axios';
+import HubSettings from '../components/HubSettings.vue';
 
 const store = useStore();
 const { t: $t } = useI18n();
@@ -133,7 +134,16 @@ const robotList = [
   { name: '友空间机器人', value: 4, img: 'You' },
 ];
 const dialogAgent = ref(false);
+const dialogHub = ref(false);
 const updateAgentForm = ref(null);
+const settingId = ref(0);
+const hubSetting = async (id) => {
+  settingId.value = id;
+  await openHub();
+};
+const openHub = () => {
+  dialogHub.value = true;
+};
 watch(dialogAgent, (newValue, oldValue) => {
   if (!newValue) {
     agent.value = {
@@ -764,9 +774,9 @@ onUnmounted(() => {
       </el-card>
     </el-tab-pane>
     <el-tab-pane name="agent" :label="$t('devices.agentCenter')">
-      <el-button type="primary" size="mini" @click="openAgent">{{
-        $t('agent.newAgent')
-      }}</el-button>
+      <el-button type="primary" size="mini" @click="openAgent"
+        >{{ $t('agent.newAgent') }}
+      </el-button>
       <el-table :data="agentList" border style="margin-top: 10px">
         <el-table-column
           prop="id"
@@ -843,9 +853,9 @@ onUnmounted(() => {
           width="150"
         >
           <template #default="scope">
-            <el-button size="mini" @click="copy(scope.row.secretKey)">{{
-              $t('agent.clickToCopy')
-            }}</el-button>
+            <el-button size="mini" @click="copy(scope.row.secretKey)"
+              >{{ $t('agent.clickToCopy') }}
+            </el-button>
           </template>
         </el-table-column>
         <el-table-column
@@ -869,9 +879,15 @@ onUnmounted(() => {
         <el-table-column
           :label="$t('agent.operation')"
           align="center"
-          width="180"
+          width="280"
         >
           <template #default="scope">
+            <el-button
+              size="mini"
+              :disabled="scope.row.status !== 1 || scope.row.hasHub === 0"
+              @click="hubSetting(scope.row.id)"
+              >Hub配置
+            </el-button>
             <el-button
               size="mini"
               type="primary"
@@ -1021,9 +1037,12 @@ onUnmounted(() => {
       </el-form-item>
     </el-form>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="updateAgent">{{
-        $t('form.confirm')
-      }}</el-button>
+      <el-button size="small" type="primary" @click="updateAgent"
+        >{{ $t('form.confirm') }}
+      </el-button>
     </div>
+  </el-dialog>
+  <el-dialog v-model="dialogHub" title="Hub配置" width="1300px">
+    <hub-settings v-if="dialogHub" :agent-id="settingId"></hub-settings>
   </el-dialog>
 </template>

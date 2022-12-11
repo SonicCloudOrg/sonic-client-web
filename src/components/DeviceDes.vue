@@ -432,7 +432,7 @@ const findAgentById = (id) => {
                 "
                 style="margin-right: 5px"
                 :src="img['./../assets/img/voltage.png'].default"
-                :width="20"
+                :width="15"
                 :height="20"
                 :color="device['voltage'] === 0 ? '#606266' : '#67C23A'"
               />
