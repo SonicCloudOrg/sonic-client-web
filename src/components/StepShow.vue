@@ -19,6 +19,7 @@
 
 import { ElMessage } from 'element-plus';
 import { useRoute } from 'vue-router';
+import { Edit } from '@element-plus/icons';
 import CodeEditor from './CodeEditor.vue';
 import axios from '../http/axios';
 
@@ -43,20 +44,28 @@ const summitStep = () => {
     v-if="step.stepType === 'runScript'"
     style="display: inline-block; margin-right: 10px; flex: 1; width: 70%"
   >
-    <el-tag size="small" type="warning" style="margin-right: 10px"
-      >运行自定义脚本</el-tag
-    >
-    <div style="margin: 4px 0">
-      <CodeEditor
-        v-model:code="step.content"
-        v-model:language="step.text"
-        :project-id="route.params.projectId"
-        :show-footer="true"
-        :show-tool-bar="true"
-        height="auto"
-        @save="summitStep"
-      ></CodeEditor>
-    </div>
+    <el-collapse style="margin: 5px 0">
+      <el-collapse-item>
+        <template #title>
+          <el-tag size="small" type="warning" style="margin-right: 10px"
+            >运行自定义脚本</el-tag
+          >
+          点击展开/收起脚本编辑器
+          <el-icon>
+            <Edit />
+          </el-icon>
+        </template>
+        <CodeEditor
+          v-model:code="step.content"
+          v-model:language="step.text"
+          :project-id="route.params.projectId"
+          :show-footer="true"
+          :show-tool-bar="true"
+          height="auto"
+          @save="summitStep"
+        ></CodeEditor>
+      </el-collapse-item>
+    </el-collapse>
   </span>
   <span v-if="step.conditionType === 1">
     <el-tag size="small" type="warning" style="margin-right: 10px">if</el-tag>

@@ -35,6 +35,12 @@ const getTag = (status) => {
       return '';
   }
 };
+const isPic = (s) => {
+  return (
+    s.startsWith('http') &&
+    (s.endsWith('.jpg') || s.endsWith('.jpeg') || s.endsWith('.png'))
+  );
+};
 </script>
 
 <template>
@@ -110,13 +116,7 @@ const getTag = (status) => {
                 >{{ scope.row['des'] }}</el-tag
               >
             </span>
-            <div
-              v-if="
-                scope.row.log.indexOf('http') !== -1 &&
-                (scope.row.log.indexOf('.jpg') !== -1 ||
-                  scope.row.log.indexOf('.png') !== -1)
-              "
-            >
+            <div v-if="isPic(scope.row.log)">
               <el-image
                 :z-index="5000"
                 fit="contain"

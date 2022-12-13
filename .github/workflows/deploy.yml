@@ -34,8 +34,8 @@ jobs:
       - run: npm cache clear --force && npm install
       - run: npm run build
       - name: login docker hub
-        run: echo "${{ secrets.ACCESS_TOKEN_ALIYUN }}" | docker login --username=${{ secrets.ALIYUN_USERNAME }} registry.cn-hongkong.aliyuncs.com --password-stdin
+        run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login -u zhouyixun --password-stdin
       - name: build docker image
-        run: docker build -t registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-client-web:${{ steps.previoustag.outputs.tag }} .
+        run: docker build -t sonicorg/sonic-client-web:${{ steps.previoustag.outputs.tag }} .
       - name: push docker image
-        run: docker push registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-client-web:${{ steps.previoustag.outputs.tag }}
+        run: docker push sonicorg/sonic-client-web:${{ steps.previoustag.outputs.tag }}
