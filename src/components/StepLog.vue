@@ -127,6 +127,23 @@ const isPic = (s) => {
               ></el-image>
             </div>
             <span
+              v-else-if="scope.row.log.startsWith('Script: <br>')"
+              style="white-space: break-spaces"
+              >Script:
+              <el-collapse style="margin: 5px 0">
+                <el-collapse-item>
+                  <template #title> 点击展开/收起脚本 </template>
+                  <span
+                    v-html="
+                      scope.row.log.substring(
+                        scope.row.log.indexOf('Script: <br>') + 12
+                      )
+                    "
+                  ></span>
+                </el-collapse-item>
+              </el-collapse>
+            </span>
+            <span
               v-else
               style="white-space: break-spaces"
               v-html="scope.row.log"
