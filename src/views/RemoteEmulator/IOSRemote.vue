@@ -1667,61 +1667,29 @@ onMounted(() => {
           >
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-tabs type="border-card" stretch>
-                  <el-tab-pane :label="$t('IOSRemote.siri.command')">
-                    <el-form size="small" :model="text" style="padding: 24px 0">
-                      <el-form-item>
-                        <el-input
-                          v-model="text.content"
-                          clearable
-                          size="small"
-                          :placeholder="$t('IOSRemote.siri.inputCommand')"
-                        ></el-input>
-                      </el-form-item>
-                      <div style="text-align: center">
-                        <el-button
-                          size="mini"
-                          type="primary"
-                          @click="sendCommand(text.content)"
-                          >{{ $t('androidRemoteTS.code.send') }}
-                        </el-button>
-                      </div>
-                    </el-form>
-                  </el-tab-pane>
-                  <el-tab-pane :label="$t('IOSRemote.positioning.mock')">
-                    <el-form size="small" :model="simLocation">
-                      <el-form-item :label="$t('IOSRemote.positioning.x')">
-                        <el-input-number
-                          v-model="simLocation.long"
-                          style="width: 100%"
-                          :precision="6"
-                          :step="0.1"
-                          controls-position="right"
-                        />
-                      </el-form-item>
-                      <el-form-item :label="$t('IOSRemote.positioning.y')">
-                        <el-input-number
-                          v-model="simLocation.lat"
-                          style="width: 100%"
-                          :precision="6"
-                          :step="0.1"
-                          controls-position="right"
-                        />
-                      </el-form-item>
-                    </el-form>
+                <el-card>
+                  <template #header>
+                    <strong>{{ $t('IOSRemote.siri.command') }}</strong>
+                  </template>
+                  <el-form size="small" :model="text" style="padding: 12px 0">
+                    <el-form-item>
+                      <el-input
+                        v-model="text.content"
+                        clearable
+                        size="small"
+                        :placeholder="$t('IOSRemote.siri.inputCommand')"
+                      ></el-input>
+                    </el-form-item>
                     <div style="text-align: center">
-                      <el-button size="mini" type="primary" @click="locationSet"
-                        >{{ $t('IOSRemote.positioning.start') }}
-                      </el-button>
                       <el-button
                         size="mini"
                         type="primary"
-                        @click="locationUnset"
-                        >{{ $t('IOSRemote.positioning.end') }}
+                        @click="sendCommand(text.content)"
+                        >{{ $t('androidRemoteTS.code.send') }}
                       </el-button>
                     </div>
-                  </el-tab-pane>
-                </el-tabs>
+                  </el-form>
+                </el-card>
               </el-col>
               <el-col :span="12">
                 <el-tabs type="border-card" stretch>
@@ -1796,7 +1764,7 @@ onMounted(() => {
                   </el-tab-pane>
                 </el-tabs>
               </el-col>
-              <el-col :span="12" style="margin-top: 20px">
+              <el-col :span="12" style="margin-top: 10px">
                 <el-card>
                   <template #header>
                     <strong>{{ $t('IOSRemote.clipboard.operate') }}</strong>
@@ -1823,39 +1791,42 @@ onMounted(() => {
                   </div>
                 </el-card>
               </el-col>
-              <el-col :span="12" style="margin-top: 15px">
+              <el-col :span="12" style="margin-top: 10px">
                 <el-card>
                   <template #header>
-                    <strong>{{ $t('IOSRemote.errLog') }}</strong>
+                    <strong>{{ $t('IOSRemote.positioning.mock') }}</strong>
                   </template>
-                  <div
-                    v-loading="true"
-                    style="text-align: center"
-                    element-loading-spinner="el-icon-lock"
-                    element-loading-background="rgba(255, 255, 255, 1)"
-                    :element-loading-text="$t('IOSRemote.waitOpen')"
+                  <el-form
+                    size="small"
+                    :model="simLocation"
+                    style="padding: 38px 0"
                   >
-                    <el-upload
-                      v-loading="uploadLoading"
-                      drag
-                      action=""
-                      :with-credentials="true"
-                      :limit="1"
-                      :before-upload="beforeAvatarUpload2"
-                      :on-exceed="limitOut"
-                      :http-request="uploadPackage"
-                    >
-                      <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">
-                        {{ $t('IOSRemote.moveIPA')
-                        }}<em>{{ $t('devices.detail.uploadImg') }}</em>
-                      </div>
-                      <template #tip>
-                        <div class="el-upload__tip">
-                          {{ $t('IOSRemote.onlyIPAFile') }}
-                        </div>
-                      </template>
-                    </el-upload>
+                    <el-form-item :label="$t('IOSRemote.positioning.x')">
+                      <el-input-number
+                        v-model="simLocation.long"
+                        style="width: 100%"
+                        :precision="6"
+                        :step="0.1"
+                        controls-position="right"
+                      />
+                    </el-form-item>
+                    <el-form-item :label="$t('IOSRemote.positioning.y')">
+                      <el-input-number
+                        v-model="simLocation.lat"
+                        style="width: 100%"
+                        :precision="6"
+                        :step="0.1"
+                        controls-position="right"
+                      />
+                    </el-form-item>
+                  </el-form>
+                  <div style="text-align: center">
+                    <el-button size="mini" type="primary" @click="locationSet"
+                      >{{ $t('IOSRemote.positioning.start') }}
+                    </el-button>
+                    <el-button size="mini" type="primary" @click="locationUnset"
+                      >{{ $t('IOSRemote.positioning.end') }}
+                    </el-button>
                   </div>
                 </el-card>
               </el-col>
