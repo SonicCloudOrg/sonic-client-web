@@ -43,6 +43,7 @@ const robotList = [
   { name: '企业微信机器人', value: 2, img: 'WeChat' },
   { name: '飞书群机器人', value: 3, img: 'FeiShu' },
   { name: '友空间机器人', value: 4, img: 'You' },
+  { name: '电报机器人', value: 5, img: 'Telegram'}
 ];
 const beforeAvatarUpload = (file) => {
   if (file.name.endsWith('.jpg') || file.name.endsWith('.png')) {
