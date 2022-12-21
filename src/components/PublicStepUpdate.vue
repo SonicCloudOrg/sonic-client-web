@@ -1,4 +1,5 @@
 <script setup>
+import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref, watch } from 'vue';
 import { Delete, Edit, Plus } from '@element-plus/icons';
 import { ElMessage } from 'element-plus';
@@ -7,6 +8,9 @@ import StepShow from './StepShow.vue';
 import StepUpdate from './StepUpdate.vue';
 import StepDraggable from './StepDraggable.vue';
 import Pageable from './Pageable.vue';
+
+const router = useRouter();
+const route = useRoute();
 
 const props = defineProps({
   projectId: Number,
@@ -173,15 +177,24 @@ const getPublicStepInfo = (id) => {
   axios.get('/controller/publicSteps', { params: { id } }).then((resp) => {
     if (resp.code === 2000) {
       publicStep.value = resp.data;
+      getStepList();
     }
   });
 };
 onMounted(() => {
   if (props.publicStepId !== 0) {
     getPublicStepInfo(props.publicStepId);
+  } else {
+    getStepList();
   }
-  getStepList();
 });
+const jump = (id) => {
+  let routeData;
+  routeData = router.resolve({
+    path: `/Home/${route.params.projectId}/StepListView/${id}`,
+  });
+  window.open(routeData.href, '_blank');
+};
 </script>
 
 <template>
@@ -335,6 +348,7 @@ onMounted(() => {
               </el-icon>
             </el-button>
             <el-popconfirm
+              v-if="scope.row.caseId === 0"
               style="margin-left: 10px"
               :confirm-button-text="$t('form.confirm')"
               :cancel-button-text="$t('form.cancel')"
@@ -345,6 +359,24 @@ onMounted(() => {
             >
               <template #reference>
                 <el-button circle type="danger" size="mini">
+                  <el-icon :size="13" style="vertical-align: middle">
+                    <Delete />
+                  </el-icon>
+                </el-button>
+              </template>
+            </el-popconfirm>
+            <el-popconfirm
+              v-else
+              style="margin-left: 10px"
+              confirm-button-text="前往用例详情"
+              :cancel-button-text="$t('form.cancel')"
+              icon="el-icon-warning"
+              icon-color="red"
+              title="该步骤存在于用例中，删除前需前往用例详情移出！"
+              @confirm="jump(scope.row.caseId)"
+            >
+              <template #reference>
+                <el-button circle type="warning" size="mini">
                   <el-icon :size="13" style="vertical-align: middle">
                     <Delete />
                   </el-icon>

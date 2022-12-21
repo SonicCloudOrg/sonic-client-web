@@ -201,9 +201,9 @@ onMounted(() => {
       </el-table-column>
     </el-table>
     <div style="text-align: center; margin-top: 20px">
-      <el-button size="small" type="danger" @click="deleteReal(deleteId)"
-        >{{ $t('elements.sureDelete') }})</el-button
-      >
+      <el-button size="small" type="danger" @click="deleteReal(deleteId)">{{
+        $t('elements.sureDelete')
+      }}</el-button>
     </div>
   </el-dialog>
   <el-button size="mini" round type="primary" @click="open">{{

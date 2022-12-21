@@ -83,6 +83,10 @@ const summitStep = () => {
       >while</el-tag
     >
   </span>
+  <span v-if="step.stepType === 'siriCommand'">
+    <el-tag size="small" style="margin-right: 10px">发送Siri指令</el-tag
+    >{{ step.content }}
+  </span>
   <span v-if="step.stepType === 'lock'">
     <el-tag size="small">锁定设备</el-tag>
   </span>

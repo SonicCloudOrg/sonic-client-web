@@ -40,6 +40,51 @@ const flush = () => {
 };
 const deleteStep = (id) => {
   axios
+    .get('/controller/steps/deleteCheck', {
+      params: {
+        id,
+      },
+    })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        publicSteps.value = resp.data;
+        if (publicSteps.value.length === 0) {
+          deleteReal(id);
+        } else {
+          deleteId.value = id;
+          checkDialog.value = true;
+        }
+      }
+    });
+};
+const resetCaseId = (id) => {
+  axios
+    .get('/controller/steps/resetCaseId', {
+      params: {
+        id,
+      },
+    })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        ElMessage.success({
+          message: resp.message,
+        });
+        checkDialog.value = false;
+        getStepsList();
+      }
+    });
+};
+const checkDialog = ref(false);
+const deleteId = ref(0);
+const publicSteps = ref([]);
+watch(checkDialog, (newValue, oldValue) => {
+  if (!newValue) {
+    deleteId.value = 0;
+    publicSteps.value = [];
+  }
+});
+const deleteReal = (id) => {
+  axios
     .delete('/controller/steps', {
       params: {
         id,
@@ -50,6 +95,7 @@ const deleteStep = (id) => {
         ElMessage.success({
           message: resp.message,
         });
+        checkDialog.value = false;
         getStepsList();
       }
     });
@@ -90,6 +136,33 @@ onMounted(() => {
 </script>
 
 <template>
+  <el-dialog v-model="checkDialog" title="公共步骤列表" width="600px">
+    <el-alert
+      title="警告"
+      type="warning"
+      show-icon
+      :closable="false"
+      description="该步骤已存在于以下公共步骤中！"
+    />
+    <el-table :data="publicSteps" border style="margin-top: 20px">
+      <el-table-column
+        prop="id"
+        width="90"
+        label="id"
+        align="center"
+      ></el-table-column>
+      <el-table-column prop="name" label="公共步骤名称" header-align="center">
+      </el-table-column>
+    </el-table>
+    <div style="text-align: center; margin-top: 20px">
+      <el-button size="small" type="primary" @click="resetCaseId(deleteId)"
+        >仅移出本用例</el-button
+      >
+      <el-button size="small" type="danger" @click="deleteReal(deleteId)"
+        >完全删除</el-button
+      >
+    </div>
+  </el-dialog>
   <el-dialog v-model="dialogVisible" title="步骤信息" width="600px">
     <step-update
       v-if="dialogVisible"
