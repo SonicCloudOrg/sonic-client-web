@@ -196,7 +196,7 @@ const elements = {
   stepInfo: 'Step info',
   warn: 'Warning',
   warnInfo:
-    'This control already exists in the following step, deleting this control will delete it along with the following step! Please go to the corresponding step to modify the control or make sure the corresponding step is discarded!',
+    'This element already exists in the following steps. Deleting this element will affect the following steps! Please delete and go to the corresponding step to modify the control or confirm that the corresponding step has been abandoned!',
   stepList: {
     stepId: 'Step Id',
     useCaseId: 'Use case Id',
