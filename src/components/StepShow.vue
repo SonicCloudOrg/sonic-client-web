@@ -343,6 +343,12 @@ const summitStep = () => {
   <span v-if="step.stepType === 'stepScreen'">
     <el-tag size="small">获取截图</el-tag>
   </span>
+  <span v-if="step.stepType === 'webViewRefresh'">
+    <el-tag size="small">刷新页面</el-tag>
+  </span>
+  <span v-if="step.stepType === 'webViewBack'">
+    <el-tag size="small">回退页面</el-tag>
+  </span>
   <span v-if="step.stepType === 'startPocoDriver'">
     <el-tag size="small">启动PocoDriver</el-tag>
   </span>

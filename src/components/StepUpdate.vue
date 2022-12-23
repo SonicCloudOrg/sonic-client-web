@@ -552,6 +552,14 @@ const androidOptions = ref([
             value: 'getTitle',
             label: '验证标题',
           },
+          {
+            value: 'webViewRefresh',
+            label: '刷新页面',
+          },
+          {
+            value: 'webViewBack',
+            label: '回退页面',
+          },
         ],
       },
       {

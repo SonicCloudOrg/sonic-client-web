@@ -137,16 +137,16 @@ onMounted(() => {
 
 <template>
   <el-dialog v-model="checkDialog" title="公共步骤列表" width="600px">
-    <el-alert
-      title="警告"
-      type="warning"
-      show-icon
-      :closable="false">
-    <template #default>
-      <div>该步骤已存在于以下公共步骤中！</div>
-      <div>选择【仅移出本用例】后，步骤从本用例删除，不影响以下公共步骤。</div>
-      <div>选择【彻底删除】后，本步骤从本用例删除，并且从以下公共步骤中删除本步骤。</div>
-    </template>
+    <el-alert title="警告" type="warning" show-icon :closable="false">
+      <template #default>
+        <div>该步骤已存在于以下公共步骤中！</div>
+        <div>
+          选择【仅移出本用例】后，步骤从本用例删除，不影响以下公共步骤。
+        </div>
+        <div>
+          选择【彻底删除】后，本步骤从本用例删除，并且从以下公共步骤中删除本步骤。
+        </div>
+      </template>
     </el-alert>
     <el-table :data="publicSteps" border style="margin-top: 20px">
       <el-table-column
