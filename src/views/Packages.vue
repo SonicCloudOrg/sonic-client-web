@@ -70,7 +70,7 @@ onMounted(() => {
 <template>
   <a
     style="float: right; margin-bottom: 20px"
-    href="https://sonic-cloud.gitee.io/#/SCH"
+    href="https://sonic-cloud.cn/sch"
     target="_blank"
   >
     <el-button size="mini" plain type="primary">{{

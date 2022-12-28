@@ -30,16 +30,6 @@ const props = defineProps({
   stepId: Number,
   parentId: Number,
 });
-const selectCondition = (e) => {
-  step.value.stepType = '';
-  step.value.text = '';
-  step.value.elements = [];
-  step.value.content = '';
-  step.value.error = 1;
-  if (e === 3) {
-    step.value.stepType = 'else';
-  }
-};
 const step = ref({
   id: null,
   caseId: props.caseId,
@@ -190,11 +180,11 @@ const monkeyOptions = {
   },
   systemEvent: {
     label: '物理按键事件权重',
-    des: 'Home、返回、音量控制键等等',
+    des: 'Home、返回键等等',
   },
   navEvent: {
     label: '系统导航事件权重',
-    des: '随机开关WIFI、飞行模式、定位',
+    des: '随机开关WIFI',
   },
   isOpenH5Listener: {
     label: 'H5页面监听器',
@@ -249,15 +239,19 @@ const emit = defineEmits(['flush']);
 const summitStep = () => {
   stepForm.value.validate((valid) => {
     if (valid) {
-      if (step.value.stepType === 'monkey') {
+      if (step.value.conditionType === 3) {
+        step.value.stepType = '';
+        step.value.text = '';
+        step.value.elements = [];
+        step.value.content = '';
+        step.value.error = 1;
+      }else if (step.value.stepType === 'monkey') {
         removeEmpty(activityList.value);
         step.value.text = JSON.stringify(activityList.value);
         step.value.content = JSON.stringify(monkey.value);
-      }
-      if (step.value.stepType === 'setTheRealPositionOfTheWindow') {
+      }else if (step.value.stepType === 'setTheRealPositionOfTheWindow') {
         step.value.content = JSON.stringify(offsets.value);
-      }
-      if (step.value.stepType === 'runScript') {
+      }else if (step.value.stepType === 'runScript') {
         if (step.value.text.length === 0) {
           step.value.text = 'Groovy';
         }
@@ -1054,6 +1048,7 @@ onMounted(() => {
       </el-icon>
     </el-divider>
 
+    <div v-if="step.conditionType !== 3">
     <div v-if="step.stepType === 'keyCodeSelf'">
       <el-form-item
         label="按键Code"
@@ -2209,7 +2204,7 @@ onMounted(() => {
           <span
             >TIPS: 保存后直接在步骤列表编辑脚本，关于脚本的使用，可参考
             <a
-              href="https://sonic-cloud.gitee.io/#/Document?tag=runScript"
+              href="https://sonic-cloud.cn/document?tag=runScript"
               target="_blank"
             >
               使用文档
@@ -2217,6 +2212,7 @@ onMounted(() => {
           </span>
         </template>
       </el-alert>
+    </div>
     </div>
 
     <el-form-item label="逻辑处理">
@@ -2299,6 +2295,7 @@ onMounted(() => {
         </el-popover>
       </el-form-item>
     </div>
+
   </el-form>
 
   <div style="text-align: center; margin-top: 20px">
