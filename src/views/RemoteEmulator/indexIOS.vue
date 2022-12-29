@@ -51,7 +51,7 @@ const canvasRectInfo = ref(
         height: `${layoutSplitInfo.value.top}px`,
       }
 );
-const swithLayout = () => {
+const switchLayout = () => {
   // console.log('swithLayout!!', tabPosition.value);
   if (tabPosition.value == 'left') {
     // 变竖屏
@@ -102,9 +102,9 @@ const lineMousedown = (event) => {
   parentNode = event.target.parentNode; // 记录分割线的父组件，防止移动的时候变化
 };
 const lineMousemove = (event) => {
-  event.preventDefault();
   // event.stopPropagation()
   if (isPress.value) {
+    event.preventDefault();
     // console.log('lineMousemove', event.clientX, event.clientY);
     if (mouseMoveTime < 2) {
       mouseMoveTime++;
@@ -180,7 +180,7 @@ const saveLastSplitObj = () => {
     >
       <div
         :class="['button', tabPosition == 'left' ? 'button_top' : '']"
-        @click="swithLayout"
+        @click="switchLayout"
       />
     </el-tooltip>
     <IOSRemote
