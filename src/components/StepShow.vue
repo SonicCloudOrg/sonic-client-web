@@ -303,6 +303,10 @@ const summitStep = () => {
     <el-tag size="small" style="margin-right: 10px">验证标题</el-tag>
     期望值：{{ step.content }}
   </span>
+  <span v-if="step.stepType === 'getUrl'">
+    <el-tag size="small" style="margin-right: 10px">验证网址</el-tag>
+    期望值：{{ step.content }}
+  </span>
   <span v-if="step.stepType === 'getActivity'">
     <el-tag size="small" style="margin-right: 10px">验证Activity</el-tag>
     期望值：{{ step.content }}

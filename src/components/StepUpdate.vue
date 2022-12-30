@@ -30,6 +30,9 @@ const props = defineProps({
   stepId: Number,
   parentId: Number,
 });
+const selectCondition = (e) => {
+  step.value.error = 1;
+};
 const step = ref({
   id: null,
   caseId: props.caseId,
@@ -545,6 +548,10 @@ const androidOptions = ref([
           {
             value: 'getTitle',
             label: '验证标题',
+          },
+          {
+            value: 'getUrl',
+            label: '验证网址',
           },
           {
             value: 'webViewRefresh',
@@ -1828,7 +1835,7 @@ onMounted(() => {
         </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'getTitle'">
+      <div v-if="step.stepType === 'getTitle' || step.stepType === 'getUrl'">
         <el-form-item label="期望值">
           <el-input
             v-model="step.content"

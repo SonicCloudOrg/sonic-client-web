@@ -19,7 +19,7 @@ import StepLog from '../components/StepLog.vue';
 import axios from '../http/axios';
 import IOSPerfChart from '../components/IOSPerfChart.vue';
 
-const iosPerfChart = ref(null);
+const iosPerfChartMap = {};
 const { t: $t } = useI18n();
 echarts.use([
   PieChart,
@@ -132,6 +132,15 @@ const fps = ref([]);
 const disk = ref([]);
 const network = ref([]);
 const procPerf = ref([]);
+const clearPerfmon = () => {
+  cpu.value = [];
+  mem.value = [];
+  gpu.value = [];
+  fps.value = [];
+  disk.value = [];
+  network.value = [];
+  procPerf.value = [];
+};
 const getPerform = () => {
   axios
     .get('/controller/resultDetail/listAll', {
@@ -142,7 +151,8 @@ const getPerform = () => {
         type: 'perform',
       },
     })
-    .then((resp) => {
+    .then(async (resp) => {
+      await clearPerfmon();
       for (const i in resp.data) {
         const r = JSON.parse(resp.data[i].log);
         if (r.type === 'sys_cpu') {
@@ -167,15 +177,21 @@ const getPerform = () => {
           procPerf.value.push(r);
         }
       }
-      iosPerfChart.value.printCpu();
-      iosPerfChart.value.printMem();
-      iosPerfChart.value.printGpu();
-      iosPerfChart.value.printFps();
-      iosPerfChart.value.printDisk();
-      iosPerfChart.value.printNetwork();
-      iosPerfChart.value.printPerfCpu();
-      iosPerfChart.value.printPerfMem();
+      const key = `${route.params.resultId}-${caseId.value}-${deviceId.value}-iosPerfChart`;
+      iosPerfChartMap[key].printCpu();
+      iosPerfChartMap[key].printMem();
+      iosPerfChartMap[key].printGpu();
+      iosPerfChartMap[key].printFps();
+      iosPerfChartMap[key].printDisk();
+      iosPerfChartMap[key].printNetwork();
+      iosPerfChartMap[key].printPerfCpu();
+      iosPerfChartMap[key].printPerfMem();
     });
+};
+const setRef = (el, key) => {
+  if (el) {
+    iosPerfChartMap[key] = el;
+  }
 };
 const switchDevice = async (e) => {
   page = 1;
@@ -513,7 +529,19 @@ onUnmounted(() => {
                 name="perform"
               >
                 <i-o-s-perf-chart
-                  ref="iosPerfChart"
+                  :ref="
+                    (el) =>
+                      setRef(
+                        el,
+                        route.params.resultId +
+                          '-' +
+                          c['case'].id +
+                          '-' +
+                          d.id +
+                          '-' +
+                          'iosPerfChart'
+                      )
+                  "
                   :cid="c['case'].id"
                   :rid="route.params.resultId"
                   :did="d.id"

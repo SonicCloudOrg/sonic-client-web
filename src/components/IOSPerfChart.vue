@@ -42,7 +42,7 @@ echarts.use([
 ]);
 
 const props = defineProps({
-  rid: Number,
+  rid: String,
   cid: Number,
   did: Number,
   cpu: Array,
