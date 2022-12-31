@@ -44,6 +44,7 @@ const robotList = [
   { name: '飞书群机器人', value: 3, img: 'FeiShu' },
   { name: '友空间机器人', value: 4, img: 'You' },
   { name: 'Telegram机器人', value: 5, img: 'Telegram' },
+  { name: 'LINE Notify', value: 6, img: 'LineNotify'}
 ];
 const beforeAvatarUpload = (file) => {
   if (file.name.endsWith('.jpg') || file.name.endsWith('.png')) {
