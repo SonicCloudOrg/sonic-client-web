@@ -1953,6 +1953,13 @@ onMounted(() => {
                   :label="$t('androidRemoteTS.code.version')"
                   width="120"
                 ></el-table-column>
+                <el-table-column
+                  header-align="center"
+                  show-overflow-tooltip
+                  prop="shortVersion"
+                  :label="$t('androidRemoteTS.code.subversion')"
+                  width="120"
+                ></el-table-column>
                 <el-table-column align="center" width="200">
                   <template #header>
                     <el-input
