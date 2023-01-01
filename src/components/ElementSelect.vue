@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { QuestionFilled } from '@element-plus/icons';
 import axios from '../http/axios';
 
 const props = defineProps({
@@ -38,6 +39,40 @@ const findByProjectIdAndEleType = (event, pageNum, pSize) => {
       })
       .then((resp) => {
         pageData.value = resp.data;
+        if (name.value.length === 0) {
+          if (props.type === 'normal') {
+            if (props.step.platform === 1) {
+              pageData.value.content.push({
+                id: null,
+                eleName: '当前迭代控件',
+                eleType: 'androidIterator',
+                eleValue: '',
+                moduleId: 0,
+                projectId: props.projectId,
+              });
+            }
+            if (props.step.platform === 2) {
+              pageData.value.content.push({
+                id: null,
+                eleName: '当前迭代控件',
+                eleType: 'iOSIterator',
+                eleValue: '',
+                moduleId: 0,
+                projectId: props.projectId,
+              });
+            }
+          }
+          if (props.type === 'poco') {
+            pageData.value.content.push({
+              id: null,
+              eleName: '当前迭代控件',
+              eleType: 'pocoIterator',
+              eleValue: '',
+              moduleId: 0,
+              projectId: props.projectId,
+            });
+          }
+        }
         currentPage.value = pageData.value.number + 1;
       });
   }
@@ -63,6 +98,38 @@ const findByModule = (n) => {
 onMounted(() => {
   if (props.step.elements[props.index]) {
     pageData.value.content.push(props.step.elements[props.index]);
+  }
+  if (props.type === 'normal') {
+    if (props.step.platform === 1) {
+      pageData.value.content.push({
+        id: null,
+        eleName: '当前迭代控件',
+        eleType: 'androidIterator',
+        eleValue: '',
+        moduleId: 0,
+        projectId: props.projectId,
+      });
+    }
+    if (props.step.platform === 2) {
+      pageData.value.content.push({
+        id: null,
+        eleName: '当前迭代控件',
+        eleType: 'iOSIterator',
+        eleValue: '',
+        moduleId: 0,
+        projectId: props.projectId,
+      });
+    }
+  }
+  if (props.type === 'poco') {
+    pageData.value.content.push({
+      id: null,
+      eleName: '当前迭代控件',
+      eleType: 'pocoIterator',
+      eleValue: '',
+      moduleId: 0,
+      projectId: props.projectId,
+    });
   }
   getModuleList();
 });
@@ -107,7 +174,34 @@ onMounted(() => {
             :key="item.id"
             :label="item['eleName']"
             :value="item"
-          ></el-option>
+          >
+            <span>{{ item['eleName'] }}</span>
+            <el-popover
+              v-if="
+                item.eleType === 'androidIterator' ||
+                item.eleType === 'pocoIterator' ||
+                item.eleType === 'iOSIterator'
+              "
+              placement="right"
+              :width="300"
+              trigger="hover"
+            >
+              <p>
+                当父级步骤存在
+                <strong style="color: #409eff">迭代控件</strong>
+                时，可选择本控件作为
+                <strong style="color: #409eff">当前迭代控件</strong> 进行操作
+              </p>
+              <template #reference>
+                <el-icon
+                  :size="15"
+                  style="vertical-align: middle; margin-left: 5px"
+                >
+                  <QuestionFilled />
+                </el-icon>
+              </template>
+            </el-popover>
+          </el-option>
           <div style="text-align: center; margin-top: 5px">
             <el-pagination
               v-model:current-page="currentPage"

@@ -289,7 +289,7 @@ body,
 }
 
 .el-select-dropdown__wrap {
-    max-height: 390px !important;
+    max-height: 430px !important;
 }
 
 .el-table-filter__checkbox-group label.el-checkbox {
