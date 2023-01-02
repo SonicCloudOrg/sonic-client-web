@@ -10,6 +10,10 @@ const props = defineProps({
   type: String,
   projectId: Number,
   step: Object,
+  ignoreIterator: {
+    type: Boolean,
+    default: false,
+  },
 });
 const pageData = ref({
   content: [],
@@ -39,7 +43,7 @@ const findByProjectIdAndEleType = (event, pageNum, pSize) => {
       })
       .then((resp) => {
         pageData.value = resp.data;
-        if (name.value.length === 0) {
+        if (name.value.length === 0 && !props.ignoreIterator) {
           if (props.type === 'normal') {
             if (props.step.platform === 1) {
               pageData.value.content.push({
@@ -99,38 +103,6 @@ onMounted(() => {
   if (props.step.elements[props.index]) {
     pageData.value.content.push(props.step.elements[props.index]);
   }
-  if (props.type === 'normal') {
-    if (props.step.platform === 1) {
-      pageData.value.content.push({
-        id: null,
-        eleName: '当前迭代控件',
-        eleType: 'androidIterator',
-        eleValue: '',
-        moduleId: 0,
-        projectId: props.projectId,
-      });
-    }
-    if (props.step.platform === 2) {
-      pageData.value.content.push({
-        id: null,
-        eleName: '当前迭代控件',
-        eleType: 'iOSIterator',
-        eleValue: '',
-        moduleId: 0,
-        projectId: props.projectId,
-      });
-    }
-  }
-  if (props.type === 'poco') {
-    pageData.value.content.push({
-      id: null,
-      eleName: '当前迭代控件',
-      eleType: 'pocoIterator',
-      eleValue: '',
-      moduleId: 0,
-      projectId: props.projectId,
-    });
-  }
   getModuleList();
 });
 </script>
@@ -188,7 +160,7 @@ onMounted(() => {
             >
               <p>
                 当父级步骤存在
-                <strong style="color: #409eff">迭代控件</strong>
+                <strong style="color: #409eff">迭代控件列表</strong>
                 时，可选择本控件作为
                 <strong style="color: #409eff">当前迭代控件</strong> 进行操作
               </p>

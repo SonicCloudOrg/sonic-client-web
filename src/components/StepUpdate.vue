@@ -212,6 +212,13 @@ const changeType = (e) => {
   step.value.elements = [];
   step.value.content = '';
   activityList.value = [{ name: '' }];
+  if (
+    step.value.stepType === 'iteratorAndroidElement' ||
+    step.value.stepType === 'iteratorIOSElement' ||
+    step.value.stepType === 'iteratorPocoElement'
+  ) {
+    step.value.conditionType = 4;
+  }
 };
 const isShowInputNumber = (data) => {
   if (
@@ -507,6 +514,10 @@ const androidOptions = ref([
             value: 'getText',
             label: '验证文本',
           },
+          {
+            value: 'iteratorAndroidElement',
+            label: '迭代控件列表',
+          },
         ],
       },
       {
@@ -618,6 +629,10 @@ const androidOptions = ref([
           {
             value: 'getPocoText',
             label: '验证文本',
+          },
+          {
+            value: 'iteratorPocoElement',
+            label: '迭代控件列表',
           },
         ],
       },
@@ -853,6 +868,10 @@ const iOSOptions = ref([
             value: 'getText',
             label: '验证文本',
           },
+          {
+            value: 'iteratorIOSElement',
+            label: '迭代控件列表',
+          },
         ],
       },
       {
@@ -910,6 +929,10 @@ const iOSOptions = ref([
           {
             value: 'closePocoDriver',
             label: '关闭PocoDriver',
+          },
+          {
+            value: 'iteratorPocoElement',
+            label: '迭代控件列表',
           },
         ],
       },
@@ -2249,12 +2272,60 @@ onMounted(() => {
           </template>
         </el-alert>
       </div>
+
+      <div
+        v-if="
+          step.stepType === 'iteratorAndroidElement' ||
+          step.stepType === 'iteratorIOSElement'
+        "
+      >
+        <el-alert
+          show-icon
+          style="margin-bottom: 10px"
+          close-text="Get!"
+          title="TIPS: 用于迭代操作控件列表，子步骤中引用【当前迭代控件】以操作列表中的控件"
+          type="info"
+        />
+        <element-select
+          label="控件元素"
+          place="请选择控件元素"
+          :index="0"
+          :project-id="projectId"
+          type="normal"
+          :step="step"
+          :ignore-iterator="true"
+        />
+      </div>
+
+      <div v-if="step.stepType === 'iteratorPocoElement'">
+        <el-alert
+          show-icon
+          style="margin-bottom: 10px"
+          close-text="Get!"
+          title="TIPS: 用于迭代操作控件列表，子步骤中引用【当前迭代控件】以操作列表中的控件"
+          type="info"
+        />
+        <element-select
+          label="控件元素"
+          place="请选择控件元素"
+          :index="0"
+          :project-id="projectId"
+          type="poco"
+          :step="step"
+          :ignore-iterator="true"
+        />
+      </div>
     </div>
 
     <el-form-item label="逻辑处理">
       <el-select
         v-model="step.conditionType"
         placeholder="请选择逻辑条件"
+        :disabled="
+          step.stepType === 'iteratorAndroidElement' ||
+          step.stepType === 'iteratorIOSElement' ||
+          step.stepType === 'iteratorPocoElement'
+        "
         @change="selectCondition"
       >
         <el-option label="无" :value="0"></el-option>

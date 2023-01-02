@@ -223,6 +223,19 @@ const summitStep = () => {
     }}</el-tag>
   </span>
   <span
+    v-if="
+      step.stepType === 'iteratorAndroidElement' ||
+      step.stepType === 'iteratorIOSElement' ||
+      step.stepType === 'iteratorPocoElement'
+    "
+  >
+    <el-tag size="small">迭代控件</el-tag>
+    <el-tag type="info" size="small" style="margin-left: 10px">{{
+      step.elements[0]['eleName']
+    }}</el-tag>
+    <el-tag size="small" style="margin-left: 10px">子控件</el-tag>
+  </span>
+  <span
     v-if="step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys'"
   >
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
