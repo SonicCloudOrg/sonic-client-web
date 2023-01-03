@@ -134,8 +134,8 @@ const summitStep = () => {
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    <el-tag size="small" style="margin-left: 10px">控件信息</el-tag>
-    输出属性：{{ step.text }}
+    <el-tag size="small" style="margin: 0 10px">控件信息</el-tag>
+    目标属性：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'tap'">
     <el-tag size="small">点击坐标</el-tag>
