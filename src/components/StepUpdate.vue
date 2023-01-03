@@ -515,6 +515,10 @@ const androidOptions = ref([
             label: '验证文本',
           },
           {
+            value: 'logElementAttr',
+            label: '日志输出控件信息',
+          },
+          {
             value: 'iteratorAndroidElement',
             label: '迭代控件列表',
           },
@@ -629,6 +633,10 @@ const androidOptions = ref([
           {
             value: 'getPocoText',
             label: '验证文本',
+          },
+          {
+            value: 'logPocoElementAttr',
+            label: '日志输出控件信息',
           },
           {
             value: 'iteratorPocoElement',
@@ -861,12 +869,20 @@ const iOSOptions = ref([
             label: '清空输入框',
           },
           {
+            value: 'getElementAttr',
+            label: '验证控件属性',
+          },
+          {
             value: 'getTextValue',
             label: '获取文本',
           },
           {
             value: 'getText',
             label: '验证文本',
+          },
+          {
+            value: 'logElementAttr',
+            label: '日志输出控件信息',
           },
           {
             value: 'iteratorIOSElement',
@@ -915,6 +931,10 @@ const iOSOptions = ref([
             label: '解冻控件树',
           },
           {
+            value: 'closePocoDriver',
+            label: '关闭PocoDriver',
+          },
+          {
             value: 'getPocoElementAttr',
             label: '验证控件属性',
           },
@@ -927,8 +947,8 @@ const iOSOptions = ref([
             label: '验证文本',
           },
           {
-            value: 'closePocoDriver',
-            label: '关闭PocoDriver',
+            value: 'logPocoElementAttr',
+            label: '日志输出控件信息',
           },
           {
             value: 'iteratorPocoElement',
@@ -1883,6 +1903,36 @@ onMounted(() => {
         />
       </div>
 
+      <div
+        v-if="
+          step.stepType === 'logElementAttr' ||
+          step.stepType === 'logPocoElementAttr'
+        "
+      >
+        <element-select
+          label="控件元素"
+          place="请选择控件元素"
+          :index="0"
+          :project-id="projectId"
+          :type="step.stepType === 'logElementAttr' ? 'normal' : 'poco'"
+          :step="step"
+        />
+        <el-form-item
+          label="控件属性"
+          prop="text"
+          :rules="{
+            required: true,
+            message: '控件属性不能为空',
+            trigger: 'change',
+          }"
+        >
+          <el-input
+            v-model="step.text"
+            placeholder="请输入需要输出的控件属性"
+          ></el-input>
+        </el-form-item>
+      </div>
+
       <div v-if="step.stepType === 'getElementAttr'">
         <element-select
           label="控件元素"
@@ -1893,18 +1943,19 @@ onMounted(() => {
           :step="step"
         />
         <el-form-item
-          label="元素属性"
+          label="控件属性"
           prop="text"
           :rules="{
             required: true,
-            message: '元素属性不能为空',
+            message: '控件属性不能为空',
             trigger: 'change',
           }"
         >
           <el-select
+            v-if="step.platform === 1"
             v-model="step.text"
             label="属性"
-            placeholder="请选择元素属性"
+            placeholder="请选择控件属性"
           >
             <el-option value="checkable"></el-option>
             <el-option value="checked"></el-option>
@@ -1917,6 +1968,11 @@ onMounted(() => {
             <el-option value="long-clickable"></el-option>
             <el-option value="scrollable"></el-option>
           </el-select>
+          <el-input
+            v-else
+            v-model="step.text"
+            placeholder="请输入控件属性"
+          ></el-input>
         </el-form-item>
         <el-form-item
           label="期望值"
@@ -1944,18 +2000,18 @@ onMounted(() => {
           :step="step"
         />
         <el-form-item
-          label="元素属性"
+          label="控件属性"
           prop="text"
           :rules="{
             required: true,
-            message: '元素属性不能为空',
+            message: '控件属性不能为空',
             trigger: 'change',
           }"
         >
           <el-select
             v-model="step.text"
             label="属性"
-            placeholder="请选择元素属性"
+            placeholder="请选择控件属性"
           >
             <el-option value="type"></el-option>
             <el-option value="name"></el-option>

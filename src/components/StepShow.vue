@@ -124,6 +124,19 @@ const summitStep = () => {
     <el-tag size="small" style="margin-right: 10px">切换窗口模式</el-tag
     >{{ step.content === 'true' ? '多窗口模式' : '单窗口模式' }}
   </span>
+  <span
+    v-if="
+      step.stepType === 'logElementAttr' ||
+      step.stepType === 'logPocoElementAttr'
+    "
+  >
+    <el-tag size="small">日志输出</el-tag>
+    <el-tag type="info" size="small" style="margin-left: 10px">{{
+      step.elements[0]['eleName']
+    }}</el-tag>
+    <el-tag size="small" style="margin-left: 10px">控件信息</el-tag>
+    输出属性：{{ step.text }}
+  </span>
   <span v-if="step.stepType === 'tap'">
     <el-tag size="small">点击坐标</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
