@@ -231,6 +231,7 @@ const isShowInputNumber = (data) => {
   }
   return true;
 };
+const attrList = ref([]);
 const removeEmpty = (data) => {
   for (const i in data) {
     const item = data[i];
@@ -261,6 +262,11 @@ const summitStep = () => {
         step.value.content = JSON.stringify(monkey.value);
       } else if (step.value.stepType === 'setTheRealPositionOfTheWindow') {
         step.value.content = JSON.stringify(offsets.value);
+      } else if (
+        step.value.stepType === 'logElementAttr' ||
+        step.value.stepType === 'logPocoElementAttr'
+      ) {
+        step.value.text = JSON.stringify(attrList.value);
       } else if (step.value.stepType === 'runScript') {
         if (step.value.text.length === 0) {
           step.value.text = 'Groovy';
@@ -332,6 +338,12 @@ const getStepInfo = (id) => {
       }
       if (step.value.stepType === 'setTheRealPositionOfTheWindow') {
         offsets.value = JSON.parse(step.value.content);
+      }
+      if (
+        step.value.stepType === 'logElementAttr' ||
+        step.value.stepType === 'logPocoElementAttr'
+      ) {
+        attrList.value = JSON.parse(step.value.text);
       }
       if (step.value.stepType === 'monkey') {
         monkey.value = JSON.parse(step.value.content);
@@ -1919,17 +1931,83 @@ onMounted(() => {
         />
         <el-form-item
           label="控件属性"
-          prop="text"
           :rules="{
             required: true,
             message: '控件属性不能为空',
             trigger: 'change',
           }"
         >
-          <el-input
-            v-model="step.text"
-            placeholder="请输入需要输出的控件属性"
-          ></el-input>
+          <el-select
+            v-if="step.stepType === 'logPocoElementAttr'"
+            v-model="attrList"
+            label="目标属性"
+            placeholder="请选择控件属性，可多选"
+            multiple
+          >
+            <el-option value="layer"></el-option>
+            <el-option value="name"></el-option>
+            <el-option value="tag"></el-option>
+            <el-option value="text"></el-option>
+            <el-option value="texture"></el-option>
+            <el-option value="_instanceId"></el-option>
+            <el-option value="_ilayer"></el-option>
+            <el-option value="type"></el-option>
+            <el-option value="visible"></el-option>
+            <el-option value="global"></el-option>
+            <el-option value="local"></el-option>
+            <el-option value="components"></el-option>
+            <el-option value="anchorPoint"></el-option>
+            <el-option value="scale"></el-option>
+            <el-option value="size"></el-option>
+            <el-option value="pos"></el-option>
+            <el-option value="clickable"></el-option>
+          </el-select>
+          <el-select
+            v-else-if="step.platform === 1"
+            v-model="attrList"
+            label="目标属性"
+            placeholder="请选择控件属性，可多选"
+            multiple
+          >
+            <el-option value="class"></el-option>
+            <el-option value="password"></el-option>
+            <el-option value="resource-id"></el-option>
+            <el-option value="text"></el-option>
+            <el-option value="content-desc"></el-option>
+            <el-option value="package"></el-option>
+            <el-option value="checkable"></el-option>
+            <el-option value="checked"></el-option>
+            <el-option value="clickable"></el-option>
+            <el-option value="selected"></el-option>
+            <el-option value="displayed"></el-option>
+            <el-option value="enabled"></el-option>
+            <el-option value="focusable"></el-option>
+            <el-option value="focused"></el-option>
+            <el-option value="long-clickable"></el-option>
+            <el-option value="scrollable"></el-option>
+            <el-option value="bounds"></el-option>
+            <el-option value="extras"></el-option>
+            <el-option value="contentSize"></el-option>
+          </el-select>
+          <el-select
+            v-else
+            v-model="attrList"
+            label="目标属性"
+            placeholder="请选择控件属性，可多选"
+            multiple
+          >
+            <el-option value="UID"></el-option>
+            <el-option value="accessibilityContainer"></el-option>
+            <el-option value="accessible"></el-option>
+            <el-option value="enabled"></el-option>
+            <el-option value="index"></el-option>
+            <el-option value="label"></el-option>
+            <el-option value="name"></el-option>
+            <el-option value="rect"></el-option>
+            <el-option value="selected"></el-option>
+            <el-option value="type"></el-option>
+            <el-option value="visible"></el-option>
+          </el-select>
         </el-form-item>
       </div>
 
@@ -1968,11 +2046,15 @@ onMounted(() => {
             <el-option value="long-clickable"></el-option>
             <el-option value="scrollable"></el-option>
           </el-select>
-          <el-input
+          <el-select
             v-else
             v-model="step.text"
-            placeholder="请输入控件属性"
-          ></el-input>
+            label="属性"
+            placeholder="请选择控件属性"
+          >
+            <el-option value="enabled"></el-option>
+            <el-option value="visible"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item
           label="期望值"
