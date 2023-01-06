@@ -710,7 +710,7 @@ const websocketOnmessage = (message) => {
       proxyWebPort.value = JSON.parse(message.data).webPort;
       proxyConnPort.value = JSON.parse(message.data).port;
       nextTick(() => {
-        iFrameHeight.value = document.body.clientHeight - 180;
+        iFrameHeight.value = document.body.clientHeight - 150;
       });
       break;
     }
@@ -2024,7 +2024,7 @@ onMounted(() => {
               v-if="proxyWebPort !== 0"
               allow="clipboard-read;clipboard-write"
               :style="
-                'border:1px solid #C0C4CC;;width: 100%;height: ' +
+                'border:1px solid #C0C4CC;width: 100%;height: ' +
                 iFrameHeight +
                 'px;margin-top:15px'
               "

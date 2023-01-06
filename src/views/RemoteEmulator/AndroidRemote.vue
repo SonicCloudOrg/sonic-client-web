@@ -2775,7 +2775,7 @@ onMounted(() => {
               v-if="proxyWebPort !== 0"
               allow="clipboard-read;clipboard-write"
               :style="
-                'border:1px solid #C0C4CC;;width: 100%;height: ' +
+                'border:1px solid #C0C4CC;width: 100%;height: ' +
                 iFrameHeight +
                 'px;margin-top:15px'
               "
