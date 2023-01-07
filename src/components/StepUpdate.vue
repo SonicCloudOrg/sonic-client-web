@@ -487,6 +487,10 @@ const androidOptions = ref([
             label: '切换窗口模式',
           },
           {
+            value: 'switchVisibleMode',
+            label: '切换Displayed控件展示',
+          },
+          {
             value: 'isExistEle',
             label: '判断控件元素是否存在',
           },
@@ -1647,6 +1651,23 @@ onMounted(() => {
           <el-select v-model="step.content">
             <el-option label="多窗口模式" value="true"></el-option>
             <el-option label="单窗口模式" value="false"></el-option>
+          </el-select>
+        </el-form-item>
+      </div>
+
+      <div v-if="step.stepType === 'switchVisibleMode'">
+        <el-form-item
+            label="切换显示"
+            prop="content"
+            :rules="{
+            required: true,
+            message: '不能为空',
+            trigger: 'change',
+          }"
+        >
+          <el-select v-model="step.content">
+            <el-option label="显示" value="true"></el-option>
+            <el-option label="隐藏" value="false"></el-option>
           </el-select>
         </el-form-item>
       </div>
