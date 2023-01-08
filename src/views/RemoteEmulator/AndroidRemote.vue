@@ -77,8 +77,10 @@ import wifiLogo from '@/assets/img/wifi.png';
 import RenderDeviceName from '../../components/RenderDeviceName.vue';
 import Scrcpy from './Scrcpy';
 import PocoPane from '../../components/PocoPane.vue';
+import AndroidPerf from '../../components/AndroidPerf.vue';
 
 const pocoPaneRef = ref(null);
+const androidPerfRef = ref(null);
 const { t: $t } = useI18n();
 
 const { toClipboard } = useClipboard();
@@ -187,7 +189,7 @@ const switchTabs = (e) => {
   if (e.props.name === 'proxy') {
     getWifiList();
   }
-  if (e.props.name === 'apps') {
+  if (e.props.name === 'apps'|| e.props.name === 'perfmon') {
     if (appList.value.length === 0) {
       refreshAppList();
     }
@@ -200,6 +202,21 @@ const switchTabs = (e) => {
       getWebViewForward();
     }
   }
+};
+const startPerfmon = (bundleId) => {
+  websocket.send(
+      JSON.stringify({
+        type: 'startPerfmon',
+        bundleId,
+      })
+  );
+};
+const stopPerfmon = () => {
+  websocket.send(
+      JSON.stringify({
+        type: 'stopPerfmon',
+      })
+  );
 };
 const img = import.meta.globEager('../../assets/img/*');
 let websocket = null;
@@ -675,6 +692,9 @@ const screenWebsocketOnmessage = (message) => {
 };
 const websocketOnmessage = (message) => {
   switch (JSON.parse(message.data).msg) {
+    case 'perfDetail':
+      androidPerfRef.value.setData(JSON.parse(message.data).detail);
+      break;
     case 'poco': {
       pocoLoading.value = false;
       const { result } = JSON.parse(message.data);
@@ -3878,6 +3898,14 @@ onMounted(() => {
               >
               </iframe>
             </div>
+          </el-tab-pane>
+          <el-tab-pane :label="$t('IOSRemote.perfmon')" name="perfmon">
+            <android-perf
+                ref="androidPerfRef"
+                :app-list="appList"
+                @start-perfmon="startPerfmon"
+                @stop-perfmon="stopPerfmon"
+            />
           </el-tab-pane>
         </el-tabs>
       </el-col>
