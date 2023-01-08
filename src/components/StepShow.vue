@@ -125,7 +125,8 @@ const summitStep = () => {
     >{{ step.content === 'true' ? '多窗口模式' : '单窗口模式' }}
   </span>
   <span v-if="step.stepType === 'switchVisibleMode'">
-    <el-tag size="small" style="margin-right: 10px">切换Displayed控件展示</el-tag
+    <el-tag size="small" style="margin-right: 10px"
+      >切换Invisible控件展示</el-tag
     >{{ step.content === 'true' ? '显示' : '隐藏' }}
   </span>
   <span

@@ -105,6 +105,7 @@ const screenUrls = ref([]);
 const uploadUrl = ref('');
 const text = ref({ content: '' });
 const isMultiWindows = ref(false);
+const isVisible = ref(false);
 let imgWidth = 0;
 let imgHeight = 0;
 // 旋转状态 // 0 90 180 270
@@ -1485,6 +1486,7 @@ const getElement = () => {
       type: 'debug',
       detail: 'tree',
       isMulti: isMultiWindows.value,
+      isVisible: isVisible.value,
     })
   );
 };
@@ -3208,6 +3210,14 @@ onMounted(() => {
                       <el-select v-model="isMultiWindows" size="mini">
                         <el-option label="单窗口模式" :value="false" />
                         <el-option label="多窗口模式" :value="true" />
+                      </el-select>
+                      <el-select
+                        v-model="isVisible"
+                        style="margin-left: 10px"
+                        size="mini"
+                      >
+                        <el-option label="隐藏Invisible控件" :value="false" />
+                        <el-option label="显示Invisible控件" :value="true" />
                       </el-select>
                       <el-button
                         style="margin-left: 10px"

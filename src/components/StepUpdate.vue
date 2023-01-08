@@ -488,7 +488,7 @@ const androidOptions = ref([
           },
           {
             value: 'switchVisibleMode',
-            label: '切换Displayed控件展示',
+            label: '切换Invisible控件展示',
           },
           {
             value: 'isExistEle',
@@ -1657,9 +1657,9 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'switchVisibleMode'">
         <el-form-item
-            label="切换显示"
-            prop="content"
-            :rules="{
+          label="切换显示"
+          prop="content"
+          :rules="{
             required: true,
             message: '不能为空',
             trigger: 'change',
