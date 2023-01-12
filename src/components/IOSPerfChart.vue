@@ -185,7 +185,6 @@ const printMem = () => {
           return obj.app_memory;
         }),
         showSymbol: false,
-        areaStyle: {},
         boundaryGap: false,
       },
       {
@@ -195,7 +194,6 @@ const printMem = () => {
           return obj.free_memory;
         }),
         showSymbol: false,
-        areaStyle: {},
         boundaryGap: false,
       },
       {
@@ -205,7 +203,6 @@ const printMem = () => {
           return obj.cached_files;
         }),
         showSymbol: false,
-        areaStyle: {},
         boundaryGap: false,
       },
       {
@@ -215,7 +212,6 @@ const printMem = () => {
           return obj.compressed;
         }),
         showSymbol: false,
-        areaStyle: {},
         boundaryGap: false,
       },
       {
@@ -225,7 +221,6 @@ const printMem = () => {
           return obj.used_memory;
         }),
         showSymbol: false,
-        areaStyle: {},
         boundaryGap: false,
       },
       {
@@ -235,7 +230,6 @@ const printMem = () => {
           return obj.wired_memory;
         }),
         showSymbol: false,
-        areaStyle: {},
         boundaryGap: false,
       },
     ],
@@ -692,7 +686,6 @@ const printPerfMem = () => {
           }
         }),
         showSymbol: false,
-        areaStyle: {},
         boundaryGap: false,
       },
       {
@@ -704,7 +697,6 @@ const printPerfMem = () => {
           }
         }),
         showSymbol: false,
-        areaStyle: {},
         boundaryGap: false,
       },
       {
@@ -716,7 +708,6 @@ const printPerfMem = () => {
           }
         }),
         showSymbol: false,
-        areaStyle: {},
         boundaryGap: false,
       },
       {
@@ -728,7 +719,6 @@ const printPerfMem = () => {
           }
         }),
         showSymbol: false,
-        areaStyle: {},
         boundaryGap: false,
       },
     ],

@@ -17,7 +17,7 @@
         "@element-plus/icons": "0.0.11",
         "axios": "0.21.4",
         "codemirror": "^6.0.1",
-        "echarts": "5.2.1",
+        "echarts": "5.3.0",
         "element-plus": "1.1.0-beta.24",
         "jmuxer": "^2.0.3",
         "less": "^4.1.2",

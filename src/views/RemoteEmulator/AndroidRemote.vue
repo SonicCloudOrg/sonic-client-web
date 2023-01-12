@@ -189,7 +189,7 @@ const switchTabs = (e) => {
   if (e.props.name === 'proxy') {
     getWifiList();
   }
-  if (e.props.name === 'apps'|| e.props.name === 'perfmon') {
+  if (e.props.name === 'apps' || e.props.name === 'perfmon') {
     if (appList.value.length === 0) {
       refreshAppList();
     }
@@ -205,17 +205,17 @@ const switchTabs = (e) => {
 };
 const startPerfmon = (bundleId) => {
   websocket.send(
-      JSON.stringify({
-        type: 'startPerfmon',
-        bundleId,
-      })
+    JSON.stringify({
+      type: 'startPerfmon',
+      bundleId,
+    })
   );
 };
 const stopPerfmon = () => {
   websocket.send(
-      JSON.stringify({
-        type: 'stopPerfmon',
-      })
+    JSON.stringify({
+      type: 'stopPerfmon',
+    })
   );
 };
 const img = import.meta.globEager('../../assets/img/*');
@@ -3901,10 +3901,10 @@ onMounted(() => {
           </el-tab-pane>
           <el-tab-pane :label="$t('IOSRemote.perfmon')" name="perfmon">
             <android-perf
-                ref="androidPerfRef"
-                :app-list="appList"
-                @start-perfmon="startPerfmon"
-                @stop-perfmon="stopPerfmon"
+              ref="androidPerfRef"
+              :app-list="appList"
+              @start-perfmon="startPerfmon"
+              @stop-perfmon="stopPerfmon"
             />
           </el-tab-pane>
         </el-tabs>

@@ -48,46 +48,149 @@ const props = defineProps({
   sysPerf: Array,
   procPerf: Array,
 });
-const printSystem = ()=>{
-  console.log(props.sysPerf)
-  printCpu()
-}
-const printProcess = ()=>{
-
-}
-const getCpuGroup = ()=>{
-  let result = []
-  for(let i in props.sysPerf[0].cpu){
-    result.push({
-      type: 'line',
-      data: props.sysPerf.map((obj) => {
-        return obj.cpu[i].user
-      }),
-      showSymbol: false,
-      areaStyle: {},
-      boundaryGap: false,
-    })
+const printSystem = () => {
+  printCpu();
+  printSingleCpu();
+  printMem();
+  printNetwork();
+};
+const printProcess = () => {
+  printPerfCpu();
+  printProcThread();
+  printPerfMem();
+  printProcFps();
+};
+const getNetworkDataGroup = () => {
+  const result = [];
+  const rx = [];
+  const tx = [];
+  for (const i in props.sysPerf) {
+    for (const j in props.sysPerf[i].networkInfo) {
+      rx.push(props.sysPerf[i].networkInfo[j].rx);
+      tx.push(props.sysPerf[i].networkInfo[j].tx);
+      break;
+    }
+  }
+  result.push({
+    type: 'line',
+    name: 'tx',
+    data: tx,
+    showSymbol: false,
+    boundaryGap: false,
+  });
+  result.push({
+    type: 'line',
+    name: 'rx',
+    data: rx,
+    showSymbol: false,
+    boundaryGap: false,
+  });
+  return result;
+};
+const getCpuDataGroup = () => {
+  const result = [];
+  for (const i in props.sysPerf) {
+    if (props.sysPerf[i].cpuInfo) {
+      for (const j in props.sysPerf[i].cpuInfo.cpu) {
+        result.push({
+          type: 'line',
+          stack: 'Total',
+          name: j,
+          data: props.sysPerf.map((obj) => {
+            if (obj.cpuInfo) {
+              return obj.cpuInfo.cpu[j];
+            }
+            return 0;
+          }),
+          showSymbol: false,
+          areaStyle: {},
+          boundaryGap: false,
+        });
+      }
+      break;
+    }
   }
   return result;
-}
-const printCpu = () => {
+};
+const getCpuDataLegend = () => {
+  const result = [];
+  for (const i in props.sysPerf) {
+    if (props.sysPerf[i].cpuInfo) {
+      for (const j in props.sysPerf[i].cpuInfo.cpu) {
+        result.push(j);
+      }
+      break;
+    }
+  }
+  return result;
+};
+const getCpuLegend = () => {
+  const result = [];
+  for (const i in props.sysPerf) {
+    if (props.sysPerf[i].cpuInfo) {
+      for (const j in props.sysPerf[i].cpuInfo) {
+        if (j !== 'cpu') {
+          result.push(j);
+        }
+      }
+      break;
+    }
+  }
+  return result;
+};
+const getCpuGroup = () => {
+  const result = [];
+  for (const i in props.sysPerf) {
+    if (props.sysPerf[i].cpuInfo) {
+      for (const j in props.sysPerf[i].cpuInfo) {
+        if (j !== 'cpu') {
+          result.push({
+            type: 'line',
+            name: j,
+            data: props.sysPerf.map((obj) => {
+              if (obj.cpuInfo) {
+                return (
+                  obj.cpuInfo[j].user +
+                  obj.cpuInfo[j].system +
+                  obj.cpuInfo[j].steal +
+                  obj.cpuInfo[j].softIrq +
+                  obj.cpuInfo[j].nice +
+                  obj.cpuInfo[j].irq +
+                  obj.cpuInfo[j].iowait +
+                  obj.cpuInfo[j].idle +
+                  obj.cpuInfo[j].guest
+                );
+              }
+              return 0;
+            }),
+            showSymbol: false,
+            areaStyle: {},
+            boundaryGap: false,
+          });
+        }
+      }
+      break;
+    }
+  }
+  return result;
+};
+const printSingleCpu = () => {
   let chart = echarts.getInstanceByDom(
     document.getElementById(
-      `${props.rid}-${props.cid}-${props.did}-` + `sysCpuChart`
+      `${props.rid}-${props.cid}-${props.did}-` + `sysSingleCpuChart`
     )
   );
   if (chart == null) {
     chart = echarts.init(
       document.getElementById(
-        `${props.rid}-${props.cid}-${props.did}-` + `sysCpuChart`
+        `${props.rid}-${props.cid}-${props.did}-` + `sysSingleCpuChart`
       )
     );
   }
   chart.resize();
   const option = {
-    color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#409EFF'],
     title: {
-      text: 'System CPU',
+      text: 'System Single-Core CPU',
       textStyle: {
         color: '#606266',
       },
@@ -96,8 +199,18 @@ const printCpu = () => {
     },
     tooltip: {
       trigger: 'axis',
+      position(pos, params, dom, rect, size) {
+        const obj = { top: 60 };
+        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+        return obj;
+      },
+      valueFormatter: (value) => `${value.toFixed(3)} %`,
     },
-    grid: { top: '15%' },
+    legend: {
+      top: '8%',
+      data: getCpuLegend(),
+    },
+    grid: { top: '26%' },
     toolbox: {
       feature: {
         saveAsImage: { show: true, title: 'Save' },
@@ -119,463 +232,503 @@ const printCpu = () => {
         xAxisIndex: [0, 1],
       },
     ],
-    yAxis: [{ name: 'CPU使用率(%)', min: 0 }],
+    yAxis: [{ name: 'CPU单核使用率(%)', min: 0 }],
     series: getCpuGroup(),
   };
   chart.setOption(option);
 };
-// const printMem = () => {
-//   let chart = echarts.getInstanceByDom(
-//     document.getElementById(
-//       `${props.rid}-${props.cid}-${props.did}-` + `sysMemChart`
-//     )
-//   );
-//   if (chart == null) {
-//     chart = echarts.init(
-//       document.getElementById(
-//         `${props.rid}-${props.cid}-${props.did}-` + `sysMemChart`
-//       )
-//     );
-//   }
-//   chart.resize();
-//   const option = {
-//     color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#409EFF'],
-//     title: {
-//       text: 'System Memory',
-//       textStyle: {
-//         color: '#606266',
-//       },
-//       x: 'center',
-//       y: 'top',
-//     },
-//     tooltip: {
-//       trigger: 'axis',
-//     },
-//     grid: { top: '30%', left: '13%' },
-//     toolbox: {
-//       feature: {
-//         saveAsImage: { show: true, title: 'Save' },
-//       },
-//     },
-//     legend: {
-//       top: '8%',
-//       data: [
-//         'App Memory',
-//         'Free Memory',
-//         'Cached Files',
-//         'Compressed',
-//         'Used Memory',
-//         'Wired Memory',
-//       ],
-//     },
-//     xAxis: {
-//       boundaryGap: false,
-//       type: 'category',
-//       data: props.mem.map((obj) => {
-//         return moment(new Date(obj.timestamp * 1000)).format('HH:mm:ss');
-//       }),
-//     },
-//     dataZoom: [
-//       {
-//         show: true,
-//         realtime: true,
-//         start: 30,
-//         end: 100,
-//         xAxisIndex: [0, 1],
-//       },
-//     ],
-//     yAxis: [{ name: '内存占用(b)', min: 0 }],
-//     series: [
-//       {
-//         name: 'App Memory',
-//         type: 'line',
-//         data: props.mem.map((obj) => {
-//           return obj.app_memory;
-//         }),
-//         showSymbol: false,
-//         areaStyle: {},
-//         boundaryGap: false,
-//       },
-//       {
-//         name: 'Free Memory',
-//         type: 'line',
-//         data: props.mem.map((obj) => {
-//           return obj.free_memory;
-//         }),
-//         showSymbol: false,
-//         areaStyle: {},
-//         boundaryGap: false,
-//       },
-//       {
-//         name: 'Cached Files',
-//         type: 'line',
-//         data: props.mem.map((obj) => {
-//           return obj.cached_files;
-//         }),
-//         showSymbol: false,
-//         areaStyle: {},
-//         boundaryGap: false,
-//       },
-//       {
-//         name: 'Compressed',
-//         type: 'line',
-//         data: props.mem.map((obj) => {
-//           return obj.compressed;
-//         }),
-//         showSymbol: false,
-//         areaStyle: {},
-//         boundaryGap: false,
-//       },
-//       {
-//         name: 'Used Memory',
-//         type: 'line',
-//         data: props.mem.map((obj) => {
-//           return obj.used_memory;
-//         }),
-//         showSymbol: false,
-//         areaStyle: {},
-//         boundaryGap: false,
-//       },
-//       {
-//         name: 'Wired Memory',
-//         type: 'line',
-//         data: props.mem.map((obj) => {
-//           return obj.wired_memory;
-//         }),
-//         showSymbol: false,
-//         areaStyle: {},
-//         boundaryGap: false,
-//       },
-//     ],
-//   };
-//   chart.setOption(option);
-// };
-// const printFps = () => {
-//   let chart = echarts.getInstanceByDom(
-//     document.getElementById(
-//       `${props.rid}-${props.cid}-${props.did}-` + `sysFpsChart`
-//     )
-//   );
-//   if (chart == null) {
-//     chart = echarts.init(
-//       document.getElementById(
-//         `${props.rid}-${props.cid}-${props.did}-` + `sysFpsChart`
-//       )
-//     );
-//   }
-//   chart.resize();
-//   const option = {
-//     color: ['#67C23A'],
-//     title: {
-//       text: 'System FPS',
-//       textStyle: {
-//         color: '#606266',
-//       },
-//       x: 'center',
-//       y: 'top',
-//     },
-//     tooltip: {
-//       trigger: 'axis',
-//     },
-//     grid: { top: '15%' },
-//     toolbox: {
-//       feature: {
-//         saveAsImage: { show: true, title: 'Save' },
-//       },
-//     },
-//     xAxis: {
-//       data: props.fps.map((obj) => {
-//         return moment(new Date(obj.timestamp * 1000)).format('HH:mm:ss');
-//       }),
-//     },
-//     dataZoom: [
-//       {
-//         show: true,
-//         realtime: true,
-//         start: 30,
-//         end: 100,
-//         xAxisIndex: [0, 1],
-//       },
-//     ],
-//     yAxis: [{ name: 'FPS', min: 0 }],
-//     series: [
-//       {
-//         type: 'line',
-//         data: props.fps.map((obj) => {
-//           return obj.fps;
-//         }),
-//         showSymbol: false,
-//       },
-//     ],
-//   };
-//   chart.setOption(option);
-// };
-// const printNetwork = () => {
-//   let chart = echarts.getInstanceByDom(
-//     document.getElementById(
-//       `${props.rid}-${props.cid}-${props.did}-` + `sysNetworkChart`
-//     )
-//   );
-//   if (chart == null) {
-//     chart = echarts.init(
-//       document.getElementById(
-//         `${props.rid}-${props.cid}-${props.did}-` + `sysNetworkChart`
-//       )
-//     );
-//   }
-//   chart.resize();
-//   const option = {
-//     color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#409EFF'],
-//     title: {
-//       text: 'System Network',
-//       textStyle: {
-//         color: '#606266',
-//       },
-//       x: 'center',
-//       y: 'top',
-//     },
-//     tooltip: {
-//       trigger: 'axis',
-//     },
-//     grid: { top: '25%', left: '18%' },
-//     toolbox: {
-//       feature: {
-//         saveAsImage: { show: true, title: 'Save' },
-//       },
-//     },
-//     legend: {
-//       top: '8%',
-//       data: ['Bytes In', 'Bytes Out', 'Packets In', 'Packets Out'],
-//     },
-//     xAxis: {
-//       data: props.network.map((obj) => {
-//         return moment(new Date(obj.timestamp * 1000)).format('HH:mm:ss');
-//       }),
-//     },
-//     dataZoom: [
-//       {
-//         show: true,
-//         realtime: true,
-//         start: 30,
-//         end: 100,
-//         xAxisIndex: [0, 1],
-//       },
-//     ],
-//     yAxis: [{ name: '上下行(b)', min: 0 }],
-//     series: [
-//       {
-//         name: 'Bytes In',
-//         type: 'line',
-//         data: props.network.map((obj) => {
-//           return obj.bytes_in;
-//         }),
-//         showSymbol: false,
-//       },
-//       {
-//         name: 'Bytes Out',
-//         type: 'line',
-//         data: props.network.map((obj) => {
-//           return obj.bytes_out;
-//         }),
-//         showSymbol: false,
-//       },
-//       {
-//         name: 'Packets In',
-//         type: 'line',
-//         data: props.network.map((obj) => {
-//           return obj.packets_in;
-//         }),
-//         showSymbol: false,
-//       },
-//       {
-//         name: 'Packets Out',
-//         type: 'line',
-//         data: props.network.map((obj) => {
-//           return obj.packets_out;
-//         }),
-//         showSymbol: false,
-//       },
-//     ],
-//   };
-//   chart.setOption(option);
-// };
-// const printPerfCpu = () => {
-//   let chart = echarts.getInstanceByDom(
-//     document.getElementById(
-//       `${props.rid}-${props.cid}-${props.did}-` + `perfCpuChart`
-//     )
-//   );
-//   if (chart == null) {
-//     chart = echarts.init(
-//       document.getElementById(
-//         `${props.rid}-${props.cid}-${props.did}-` + `perfCpuChart`
-//       )
-//     );
-//   }
-//   chart.resize();
-//   const option = {
-//     title: {
-//       text: 'Process CPU',
-//       textStyle: {
-//         color: '#606266',
-//       },
-//       x: 'center',
-//       y: 'top',
-//     },
-//     tooltip: {
-//       trigger: 'axis',
-//     },
-//     grid: { top: '15%' },
-//     toolbox: {
-//       feature: {
-//         saveAsImage: { show: true, title: 'Save' },
-//       },
-//     },
-//     xAxis: {
-//       boundaryGap: false,
-//       type: 'category',
-//       data: props.procPerf.map((obj) => {
-//         return moment(new Date(obj.timestamp * 1000)).format('HH:mm:ss');
-//       }),
-//     },
-//     dataZoom: [
-//       {
-//         show: true,
-//         realtime: true,
-//         start: 30,
-//         end: 100,
-//         xAxisIndex: [0, 1],
-//       },
-//     ],
-//     yAxis: [{ name: 'CPU使用率(%)', min: 0 }],
-//     series: [
-//       {
-//         type: 'line',
-//         data: props.procPerf.map((obj) => {
-//           if (obj.proc_perf && obj.proc_perf.cpuUsage) {
-//             return obj.proc_perf.cpuUsage;
-//           }
-//         }),
-//         showSymbol: false,
-//         areaStyle: {},
-//         boundaryGap: false,
-//       },
-//     ],
-//   };
-//   chart.setOption(option);
-// };
-// const printPerfMem = () => {
-//   let chart = echarts.getInstanceByDom(
-//     document.getElementById(
-//       `${props.rid}-${props.cid}-${props.did}-` + `perfMemChart`
-//     )
-//   );
-//   if (chart == null) {
-//     chart = echarts.init(
-//       document.getElementById(
-//         `${props.rid}-${props.cid}-${props.did}-` + `perfMemChart`
-//       )
-//     );
-//   }
-//   chart.resize();
-//   const option = {
-//     color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#409EFF'],
-//     title: {
-//       text: 'Process Memory',
-//       textStyle: {
-//         color: '#606266',
-//       },
-//       x: 'center',
-//       y: 'top',
-//     },
-//     tooltip: {
-//       trigger: 'axis',
-//     },
-//     grid: { top: '30%', left: '13%' },
-//     toolbox: {
-//       feature: {
-//         saveAsImage: { show: true, title: 'Save' },
-//       },
-//     },
-//     legend: {
-//       top: '8%',
-//       data: [
-//         'Mem Anon',
-//         'Mem Resident Size',
-//         'Mem Virtual Size',
-//         'Phys Footprint',
-//       ],
-//     },
-//     xAxis: {
-//       boundaryGap: false,
-//       type: 'category',
-//       data: props.procPerf.map((obj) => {
-//         return moment(new Date(obj.timestamp * 1000)).format('HH:mm:ss');
-//       }),
-//     },
-//     dataZoom: [
-//       {
-//         show: true,
-//         realtime: true,
-//         start: 30,
-//         end: 100,
-//         xAxisIndex: [0, 1],
-//       },
-//     ],
-//     yAxis: [{ name: '内存占用(b)', min: 0 }],
-//     series: [
-//       {
-//         name: 'Mem Anon',
-//         type: 'line',
-//         data: props.procPerf.map((obj) => {
-//           if (obj.proc_perf && obj.proc_perf.memAnon) {
-//             return obj.proc_perf.memAnon;
-//           }
-//         }),
-//         showSymbol: false,
-//         areaStyle: {},
-//         boundaryGap: false,
-//       },
-//       {
-//         name: 'Mem Resident Size',
-//         type: 'line',
-//         data: props.procPerf.map((obj) => {
-//           if (obj.proc_perf && obj.proc_perf.memResidentSize) {
-//             return obj.proc_perf.memResidentSize;
-//           }
-//         }),
-//         showSymbol: false,
-//         areaStyle: {},
-//         boundaryGap: false,
-//       },
-//       {
-//         name: 'Mem Virtual Size',
-//         type: 'line',
-//         data: props.procPerf.map((obj) => {
-//           if (obj.proc_perf && obj.proc_perf.memVirtualSize) {
-//             return obj.proc_perf.memVirtualSize;
-//           }
-//         }),
-//         showSymbol: false,
-//         areaStyle: {},
-//         boundaryGap: false,
-//       },
-//       {
-//         name: 'Phys Footprint',
-//         type: 'line',
-//         data: props.procPerf.map((obj) => {
-//           if (obj.proc_perf && obj.proc_perf.physFootprint) {
-//             return obj.proc_perf.physFootprint;
-//           }
-//         }),
-//         showSymbol: false,
-//         areaStyle: {},
-//         boundaryGap: false,
-//       },
-//     ],
-//   };
-//   chart.setOption(option);
-// };
+const printCpu = () => {
+  let chart = echarts.getInstanceByDom(
+    document.getElementById(
+      `${props.rid}-${props.cid}-${props.did}-` + `sysCpuChart`
+    )
+  );
+  if (chart == null) {
+    chart = echarts.init(
+      document.getElementById(
+        `${props.rid}-${props.cid}-${props.did}-` + `sysCpuChart`
+      )
+    );
+  }
+  chart.resize();
+  const option = {
+    title: {
+      text: 'System Total CPU',
+      textStyle: {
+        color: '#606266',
+      },
+      x: 'center',
+      y: 'top',
+    },
+    tooltip: {
+      trigger: 'axis',
+      position(pos, params, dom, rect, size) {
+        const obj = { top: 60 };
+        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+        return obj;
+      },
+      valueFormatter: (value) => `${value.toFixed(3)} %`,
+    },
+    legend: {
+      top: '8%',
+      data: getCpuDataLegend(),
+    },
+    grid: { top: '28%' },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true, title: 'Save' },
+      },
+    },
+    xAxis: {
+      boundaryGap: false,
+      type: 'category',
+      data: props.sysPerf.map((obj) => {
+        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      }),
+    },
+    dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        start: 30,
+        end: 100,
+        xAxisIndex: [0, 1],
+      },
+    ],
+    yAxis: [{ name: 'CPU总使用率(%)', min: 0 }],
+    series: getCpuDataGroup(),
+  };
+  chart.setOption(option);
+};
+const printMem = () => {
+  let chart = echarts.getInstanceByDom(
+    document.getElementById(
+      `${props.rid}-${props.cid}-${props.did}-` + `sysMemChart`
+    )
+  );
+  if (chart == null) {
+    chart = echarts.init(
+      document.getElementById(
+        `${props.rid}-${props.cid}-${props.did}-` + `sysMemChart`
+      )
+    );
+  }
+  chart.resize();
+  const option = {
+    color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#409EFF'],
+    title: {
+      text: 'System Memory',
+      textStyle: {
+        color: '#606266',
+      },
+      x: 'center',
+      y: 'top',
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    grid: { top: '30%', left: '20%' },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true, title: 'Save' },
+      },
+    },
+    legend: {
+      top: '8%',
+      data: [
+        'Mem Buffers',
+        'Mem Cached',
+        'Mem Free',
+        'Mem Total',
+        'Swap Free',
+        'Swap Total',
+      ],
+    },
+    xAxis: {
+      boundaryGap: false,
+      type: 'category',
+      data: props.sysPerf.map((obj) => {
+        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      }),
+    },
+    dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        start: 30,
+        end: 100,
+        xAxisIndex: [0, 1],
+      },
+    ],
+    yAxis: [{ name: '内存占用(b)', min: 0 }],
+    series: [
+      {
+        name: 'Mem Buffers',
+        type: 'line',
+        data: props.sysPerf.map((obj) => {
+          return obj.memInfo.memBuffers;
+        }),
+        showSymbol: false,
+        boundaryGap: false,
+      },
+      {
+        name: 'Mem Cached',
+        type: 'line',
+        data: props.sysPerf.map((obj) => {
+          return obj.memInfo.memCached;
+        }),
+        showSymbol: false,
+        boundaryGap: false,
+      },
+      {
+        name: 'Mem Free',
+        type: 'line',
+        data: props.sysPerf.map((obj) => {
+          return obj.memInfo.memFree;
+        }),
+        showSymbol: false,
+        boundaryGap: false,
+      },
+      {
+        name: 'Mem Total',
+        type: 'line',
+        data: props.sysPerf.map((obj) => {
+          return obj.memInfo.memTotal;
+        }),
+        showSymbol: false,
+        boundaryGap: false,
+      },
+      {
+        name: 'Swap Free',
+        type: 'line',
+        data: props.sysPerf.map((obj) => {
+          return obj.memInfo.swapFree;
+        }),
+        showSymbol: false,
+        boundaryGap: false,
+      },
+      {
+        name: 'Swap Total',
+        type: 'line',
+        data: props.sysPerf.map((obj) => {
+          return obj.memInfo.swapTotal;
+        }),
+        showSymbol: false,
+        boundaryGap: false,
+      },
+    ],
+  };
+  chart.setOption(option);
+};
+const printProcFps = () => {
+  let chart = echarts.getInstanceByDom(
+    document.getElementById(
+      `${props.rid}-${props.cid}-${props.did}-` + `sysFpsChart`
+    )
+  );
+  if (chart == null) {
+    chart = echarts.init(
+      document.getElementById(
+        `${props.rid}-${props.cid}-${props.did}-` + `sysFpsChart`
+      )
+    );
+  }
+  chart.resize();
+  const option = {
+    color: ['#67C23A'],
+    title: {
+      text: 'Process FPS',
+      textStyle: {
+        color: '#606266',
+      },
+      x: 'center',
+      y: 'top',
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    grid: { top: '15%' },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true, title: 'Save' },
+      },
+    },
+    xAxis: {
+      data: props.procPerf.map((obj) => {
+        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      }),
+    },
+    dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        start: 30,
+        end: 100,
+        xAxisIndex: [0, 1],
+      },
+    ],
+    yAxis: [{ name: 'FPS', min: 0 }],
+    series: [
+      {
+        type: 'line',
+        data: props.procPerf.map((obj) => {
+          return obj.fps;
+        }),
+        showSymbol: false,
+      },
+    ],
+  };
+  chart.setOption(option);
+};
+const printProcThread = () => {
+  let chart = echarts.getInstanceByDom(
+    document.getElementById(
+      `${props.rid}-${props.cid}-${props.did}-` + `procThreadChart`
+    )
+  );
+  if (chart == null) {
+    chart = echarts.init(
+      document.getElementById(
+        `${props.rid}-${props.cid}-${props.did}-` + `procThreadChart`
+      )
+    );
+  }
+  chart.resize();
+  const option = {
+    color: ['#ee6666'],
+    title: {
+      text: 'Process Thread Count',
+      textStyle: {
+        color: '#606266',
+      },
+      x: 'center',
+      y: 'top',
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    grid: { top: '15%' },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true, title: 'Save' },
+      },
+    },
+    xAxis: {
+      data: props.procPerf.map((obj) => {
+        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      }),
+    },
+    dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        start: 30,
+        end: 100,
+        xAxisIndex: [0, 1],
+      },
+    ],
+    yAxis: [{ name: 'Count', min: 0 }],
+    series: [
+      {
+        type: 'line',
+        data: props.procPerf.map((obj) => {
+          return obj.threadCount;
+        }),
+        showSymbol: false,
+      },
+    ],
+  };
+  chart.setOption(option);
+};
+const printNetwork = () => {
+  let chart = echarts.getInstanceByDom(
+    document.getElementById(
+      `${props.rid}-${props.cid}-${props.did}-` + `sysNetworkChart`
+    )
+  );
+  if (chart == null) {
+    chart = echarts.init(
+      document.getElementById(
+        `${props.rid}-${props.cid}-${props.did}-` + `sysNetworkChart`
+      )
+    );
+  }
+  chart.resize();
+  const option = {
+    color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#409EFF'],
+    title: {
+      text: 'System Network',
+      textStyle: {
+        color: '#606266',
+      },
+      x: 'center',
+      y: 'top',
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    grid: { top: '20%', left: '18%' },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true, title: 'Save' },
+      },
+    },
+    xAxis: {
+      data: props.sysPerf.map((obj) => {
+        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      }),
+    },
+    dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        start: 30,
+        end: 100,
+        xAxisIndex: [0, 1],
+      },
+    ],
+    yAxis: [{ name: '上下行(b)', min: 0 }],
+    series: getNetworkDataGroup(),
+  };
+  chart.setOption(option);
+};
+const printPerfCpu = () => {
+  let chart = echarts.getInstanceByDom(
+    document.getElementById(
+      `${props.rid}-${props.cid}-${props.did}-` + `perfCpuChart`
+    )
+  );
+  if (chart == null) {
+    chart = echarts.init(
+      document.getElementById(
+        `${props.rid}-${props.cid}-${props.did}-` + `perfCpuChart`
+      )
+    );
+  }
+  chart.resize();
+  const option = {
+    title: {
+      text: 'Process CPU',
+      textStyle: {
+        color: '#606266',
+      },
+      x: 'center',
+      y: 'top',
+    },
+    tooltip: {
+      trigger: 'axis',
+      valueFormatter: (value) => `${value.toFixed(3)} %`,
+    },
+    grid: { top: '15%' },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true, title: 'Save' },
+      },
+    },
+    xAxis: {
+      boundaryGap: false,
+      type: 'category',
+      data: props.procPerf.map((obj) => {
+        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      }),
+    },
+    dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        start: 30,
+        end: 100,
+        xAxisIndex: [0, 1],
+      },
+    ],
+    yAxis: [{ name: 'CPU使用率(%)', min: 0 }],
+    series: [
+      {
+        type: 'line',
+        data: props.procPerf.map((obj) => {
+          return obj.cpuUtilization;
+        }),
+        showSymbol: false,
+        areaStyle: {},
+        boundaryGap: false,
+      },
+    ],
+  };
+  chart.setOption(option);
+};
+const printPerfMem = () => {
+  let chart = echarts.getInstanceByDom(
+    document.getElementById(
+      `${props.rid}-${props.cid}-${props.did}-` + `perfMemChart`
+    )
+  );
+  if (chart == null) {
+    chart = echarts.init(
+      document.getElementById(
+        `${props.rid}-${props.cid}-${props.did}-` + `perfMemChart`
+      )
+    );
+  }
+  chart.resize();
+  const option = {
+    color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#409EFF'],
+    title: {
+      text: 'Process Memory',
+      textStyle: {
+        color: '#606266',
+      },
+      x: 'center',
+      y: 'top',
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    grid: { top: '20%', left: '20%' },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true, title: 'Save' },
+      },
+    },
+    xAxis: {
+      boundaryGap: false,
+      type: 'category',
+      data: props.procPerf.map((obj) => {
+        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      }),
+    },
+    dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        start: 30,
+        end: 100,
+        xAxisIndex: [0, 1],
+      },
+    ],
+    yAxis: [{ name: '内存占用(b)', min: 0 }],
+    series: [
+      {
+        name: 'Phy RSS',
+        type: 'line',
+        data: props.procPerf.map((obj) => {
+          return obj.phyRSS;
+        }),
+        showSymbol: false,
+        boundaryGap: false,
+      },
+      {
+        name: 'VM RSS',
+        type: 'line',
+        data: props.procPerf.map((obj) => {
+          return obj.vmRSS;
+        }),
+        showSymbol: false,
+        boundaryGap: false,
+      },
+    ],
+  };
+  chart.setOption(option);
+};
 defineExpose({
   printSystem,
   printProcess,
@@ -595,6 +748,18 @@ const switchTab = (e) => {
         )
       );
       cpuChart.resize();
+      const fpsChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `sysFpsChart`
+        )
+      );
+      fpsChart.resize();
+      const threadChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `procThreadChart`
+        )
+      );
+      threadChart.resize();
     });
   }
 };
@@ -609,7 +774,18 @@ const switchTab = (e) => {
   >
     <el-tab-pane label="System PerfMon">
       <el-row :gutter="10">
-        <el-col :span="24">
+        <el-col :span="12">
+          <el-card style="margin-top: 10px">
+            <div
+              :id="rid + '-' + cid + '-' + did + '-' + 'sysSingleCpuChart'"
+              v-loading="sysPerf.length === 0"
+              element-loading-text="暂无数据"
+              element-loading-spinner="el-icon-box"
+              style="width: 100%; height: 350px"
+            ></div>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
           <el-card style="margin-top: 10px">
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysCpuChart'"
@@ -620,82 +796,77 @@ const switchTab = (e) => {
             ></div>
           </el-card>
         </el-col>
-<!--        <el-col :span="12">-->
-<!--          <el-card style="margin-top: 10px">-->
-<!--            <div-->
-<!--              :id="rid + '-' + cid + '-' + did + '-' + 'sysMemChart'"-->
-<!--              v-loading="mem.length === 0"-->
-<!--              element-loading-text="暂无数据"-->
-<!--              element-loading-spinner="el-icon-box"-->
-<!--              style="width: 100%; height: 350px"-->
-<!--            ></div>-->
-<!--          </el-card>-->
-<!--        </el-col>-->
-<!--        <el-col :span="12">-->
-<!--          <el-card style="margin-top: 10px">-->
-<!--            <div-->
-<!--              :id="rid + '-' + cid + '-' + did + '-' + 'sysGpuChart'"-->
-<!--              v-loading="gpu.length === 0"-->
-<!--              element-loading-text="暂无数据"-->
-<!--              element-loading-spinner="el-icon-box"-->
-<!--              style="width: 100%; height: 350px"-->
-<!--            ></div>-->
-<!--          </el-card>-->
-<!--        </el-col>-->
-<!--        <el-col :span="12">-->
-<!--          <el-card style="margin-top: 10px">-->
-<!--            <div-->
-<!--              :id="rid + '-' + cid + '-' + did + '-' + 'sysFpsChart'"-->
-<!--              v-loading="fps.length === 0"-->
-<!--              element-loading-text="暂无数据"-->
-<!--              element-loading-spinner="el-icon-box"-->
-<!--              style="width: 100%; height: 350px"-->
-<!--            ></div>-->
-<!--          </el-card>-->
-<!--        </el-col>-->
-<!--        <el-col :span="12">-->
-<!--          <el-card style="margin-top: 10px">-->
-<!--            <div-->
-<!--              :id="rid + '-' + cid + '-' + did + '-' + 'sysDiskChart'"-->
-<!--              v-loading="disk.length === 0"-->
-<!--              element-loading-text="暂无数据"-->
-<!--              element-loading-spinner="el-icon-box"-->
-<!--              style="width: 100%; height: 350px"-->
-<!--            ></div>-->
-<!--          </el-card>-->
-<!--        </el-col>-->
-<!--        <el-col :span="12">-->
-<!--          <el-card style="margin-top: 10px">-->
-<!--            <div-->
-<!--              :id="rid + '-' + cid + '-' + did + '-' + 'sysNetworkChart'"-->
-<!--              v-loading="network.length === 0"-->
-<!--              element-loading-text="暂无数据"-->
-<!--              element-loading-spinner="el-icon-box"-->
-<!--              style="width: 100%; height: 350px"-->
-<!--            ></div>-->
-<!--          </el-card>-->
-<!--        </el-col>-->
+        <el-col :span="12">
+          <el-card style="margin-top: 10px">
+            <div
+              :id="rid + '-' + cid + '-' + did + '-' + 'sysMemChart'"
+              v-loading="sysPerf.length === 0"
+              element-loading-text="暂无数据"
+              element-loading-spinner="el-icon-box"
+              style="width: 100%; height: 350px"
+            ></div>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card style="margin-top: 10px">
+            <div
+              :id="rid + '-' + cid + '-' + did + '-' + 'sysNetworkChart'"
+              v-loading="sysPerf.length === 0"
+              element-loading-text="暂无数据"
+              element-loading-spinner="el-icon-box"
+              style="width: 100%; height: 350px"
+            ></div>
+          </el-card>
+        </el-col>
       </el-row>
     </el-tab-pane>
-<!--    <el-tab-pane label="Process PerfMon">-->
-<!--      <el-card style="margin-top: 10px">-->
-<!--        <div-->
-<!--          :id="rid + '-' + cid + '-' + did + '-' + 'perfCpuChart'"-->
-<!--          v-loading="procPerf.length === 0"-->
-<!--          element-loading-text="暂无数据"-->
-<!--          element-loading-spinner="el-icon-box"-->
-<!--          style="width: 100%; height: 350px"-->
-<!--        ></div>-->
-<!--      </el-card>-->
-<!--      <el-card style="margin-top: 10px">-->
-<!--        <div-->
-<!--          :id="rid + '-' + cid + '-' + did + '-' + 'perfMemChart'"-->
-<!--          v-loading="procPerf.length === 0"-->
-<!--          element-loading-text="暂无数据"-->
-<!--          element-loading-spinner="el-icon-box"-->
-<!--          style="width: 100%; height: 350px"-->
-<!--        ></div>-->
-<!--      </el-card>-->
-<!--    </el-tab-pane>-->
+    <el-tab-pane label="Process PerfMon">
+      <el-row :gutter="10">
+        <el-col :span="12">
+          <el-card style="margin-top: 10px">
+            <div
+              :id="rid + '-' + cid + '-' + did + '-' + 'perfCpuChart'"
+              v-loading="procPerf.length === 0"
+              element-loading-text="暂无数据"
+              element-loading-spinner="el-icon-box"
+              style="width: 100%; height: 350px"
+            ></div>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card style="margin-top: 10px">
+            <div
+              :id="rid + '-' + cid + '-' + did + '-' + 'perfMemChart'"
+              v-loading="procPerf.length === 0"
+              element-loading-text="暂无数据"
+              element-loading-spinner="el-icon-box"
+              style="width: 100%; height: 350px"
+            ></div>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card style="margin-top: 10px">
+            <div
+              :id="rid + '-' + cid + '-' + did + '-' + 'sysFpsChart'"
+              v-loading="procPerf.length === 0"
+              element-loading-text="暂无数据"
+              element-loading-spinner="el-icon-box"
+              style="width: 100%; height: 350px"
+            ></div>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card style="margin-top: 10px">
+            <div
+              :id="rid + '-' + cid + '-' + did + '-' + 'procThreadChart'"
+              v-loading="procPerf.length === 0"
+              element-loading-text="暂无数据"
+              element-loading-spinner="el-icon-box"
+              style="width: 100%; height: 350px"
+            ></div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-tab-pane>
   </el-tabs>
 </template>

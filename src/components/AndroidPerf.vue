@@ -42,11 +42,14 @@ const clearPerfmon = () => {
   procPerf.value = [];
 };
 const setData = (data) => {
-  if (data.pid) {
-    procPerf.value.push(data);
+  if (data.process) {
+    data.process.timeStamp = data.timeStamp;
+    procPerf.value.push(data.process);
     androidPerfChart.value.printProcess();
-  }else{
-    sysPerf.value.push(data);
+  }
+  if (data.system) {
+    data.system.timeStamp = data.timeStamp;
+    sysPerf.value.push(data.system);
     androidPerfChart.value.printSystem();
   }
 };
