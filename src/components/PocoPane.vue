@@ -384,9 +384,9 @@ defineExpose({ setPocoData, setSize });
       <el-button
         style="margin-left: 10px"
         type="primary"
-        :loading="pocoLoading || !isDriverFinish"
+        :loading="pocoLoading"
         size="mini"
-        :disabled="selectPocoType.length === 0"
+        :disabled="selectPocoType.length === 0 || !isDriverFinish"
         @click="getPoco(selectPocoType)"
         >{{ $t('androidRemoteTS.code.getPoco') }}
       </el-button>

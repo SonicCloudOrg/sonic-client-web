@@ -894,6 +894,18 @@ const openDriver = () => {
     })
   );
 };
+const closeDriver = () => {
+  isDriverFinish.value = false;
+  websocket.send(
+    JSON.stringify({
+      type: 'debug',
+      detail: 'closeDriver',
+    })
+  );
+  ElMessage.success({
+    message: $t('androidRemoteTS.code.closeDriverMessage'),
+  });
+};
 const getCurLocation = () => {
   let x;
   let y;
@@ -2457,6 +2469,13 @@ onMounted(() => {
                         :loading="driverLoading"
                         @click="openDriver"
                         >{{ $t('androidRemoteTS.code.UIAutomator2ServerInit') }}
+                      </el-button>
+                      <el-button
+                        size="mini"
+                        type="danger"
+                        :disabled="!isDriverFinish"
+                        @click="closeDriver"
+                        >{{ $t('androidRemoteTS.code.closeDriver') }}
                       </el-button>
                       <div style="margin-top: 8px">
                         Status:

@@ -543,6 +543,8 @@ const androidRemoteTS = {
     remoteADB: '遠端ADB',
     noAgent: '所在Agent未開啟該功能！',
     UIAutomator2ServerInit: '初始化UIAutomator2Server',
+    closeDriver: '停止UIAutomator2Server',
+    closeDriverMessage: '停止UIAutomator2Server成功！',
     automaticInitialization: '下次進入自動初始化',
     scanQRCode: '掃描二維碼',
     errTitle: 'OPPO、vivo部分機型上傳二維碼後不出現在相冊，需要重啟後生效',

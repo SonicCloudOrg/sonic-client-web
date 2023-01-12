@@ -547,12 +547,15 @@ const androidRemoteTS = {
     inputText: 'Enter text',
     pleaseText: 'Enter the text to send, CHS is supported',
     send: 'Clear Text',
-    keyboard: '清空输入框与实时输入仅在Sonic输入法开启时可用',
-    startKeyboard: '启动Sonic输入法',
-    stopKeyboard: '禁用Sonic输入法',
+    keyboard:
+      'Clear input box and real-time input are only available when Sonic Keyboard is enable',
+    startKeyboard: 'Enable Sonic Keyboard',
+    stopKeyboard: 'Disable Sonic Keyboard',
     remoteADB: 'Remote ADB',
     noAgent: 'The Agent is not enabled!',
     UIAutomator2ServerInit: 'Initialize UIAutomator2Server',
+    closeDriver: 'Stop UIAutomator2Server',
+    closeDriverMessage: 'Stop UIAutomator2Server successful!',
     automaticInitialization: 'Next time enter automatic initialization',
     scanQRCode: 'Scan QR code',
     errTitle:
