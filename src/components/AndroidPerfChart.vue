@@ -94,7 +94,6 @@ const getCpuDataGroup = () => {
       for (const j in props.sysPerf[i].cpuInfo.cpu) {
         result.push({
           type: 'line',
-          stack: 'Total',
           name: j,
           data: props.sysPerf.map((obj) => {
             if (obj.cpuInfo) {
@@ -149,17 +148,7 @@ const getCpuGroup = () => {
             name: j,
             data: props.sysPerf.map((obj) => {
               if (obj.cpuInfo) {
-                return (
-                  obj.cpuInfo[j].user +
-                  obj.cpuInfo[j].system +
-                  obj.cpuInfo[j].steal +
-                  obj.cpuInfo[j].softIrq +
-                  obj.cpuInfo[j].nice +
-                  obj.cpuInfo[j].irq +
-                  obj.cpuInfo[j].iowait +
-                  obj.cpuInfo[j].idle +
-                  obj.cpuInfo[j].guest
-                );
+                return obj.cpuInfo[j].cpuUsage;
               }
               return 0;
             }),
