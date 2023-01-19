@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import axios from '../http/axios';
 import TestSuiteUpdate from '../components/TestSuiteUpdate.vue';
+import TestSuiteParamsUpdate from '../components/TestSuiteParamsUpdate.vue';
 import Pageable from '../components/Pageable.vue';
 
 const { t: $t } = useI18n();
@@ -13,12 +14,16 @@ const route = useRoute();
 const pageData = ref({});
 const pageSize = ref(15);
 const dialogVisible = ref(false);
+const paramsDialogVisible = ref(false)
 const name = ref('');
 const currentPage = ref(0);
 const suiteId = ref(0);
 const loading = ref(false);
 const open = () => {
   dialogVisible.value = true;
+};
+const openParams = () => {
+  paramsDialogVisible.value = true;
 };
 const getTestSuiteList = (pageNum, pSize) => {
   axios
@@ -71,6 +76,10 @@ const editSuite = async (id) => {
   suiteId.value = id;
   await open();
 };
+const updateSuiteParams = async (id) => {
+  suiteId.value = id;
+  await openParams();
+}
 watch(dialogVisible, (newValue, oldValue) => {
   if (!newValue) {
     suiteId.value = 0;
@@ -95,6 +104,16 @@ onMounted(() => {
       v-if="dialogVisible"
       :suite-id="suiteId"
       @flush="flush"
+    />
+  </el-dialog>
+  <el-dialog
+    v-model="paramsDialogVisible"
+    title="套件参数"  
+    width="800px"
+  >
+    <test-suite-params-update
+      v-if="paramsDialogVisible"
+      :suite-id="suiteId"
     />
   </el-dialog>
   <el-button size="mini" round type="primary" @click="open">{{
@@ -237,7 +256,7 @@ onMounted(() => {
       </template>
     </el-table-column>
     <el-table-column
-      width="250"
+      width="300"
       fixed="right"
       :label="$t('common.operate')"
       align="center"
@@ -252,6 +271,7 @@ onMounted(() => {
           @click="editSuite(scope.row.id)"
           >{{ $t('common.edit') }}</el-button
         >
+        <el-button size="mini" type="warning" @click="updateSuiteParams(scope.row.id)">参数</el-button>
         <el-popconfirm
           style="margin-left: 10px"
           :confirm-button-text="$t('form.confirm')"
