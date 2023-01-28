@@ -750,6 +750,33 @@ const switchTab = (e) => {
       );
       threadChart.resize();
     });
+  } else {
+    nextTick(() => {
+      const memChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `sysMemChart`
+        )
+      );
+      memChart.resize();
+      const cpuChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `sysSingleCpuChart`
+        )
+      );
+      cpuChart.resize();
+      const cpuChart2 = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `sysCpuChart`
+        )
+      );
+      cpuChart2.resize();
+      const networkChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `sysNetworkChart`
+        )
+      );
+      networkChart.resize();
+    });
   }
 };
 </script>

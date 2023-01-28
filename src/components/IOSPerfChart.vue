@@ -751,6 +751,45 @@ const switchTab = (e) => {
       );
       cpuChart.resize();
     });
+  } else {
+    nextTick(() => {
+      const memChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `sysMemChart`
+        )
+      );
+      memChart.resize();
+      const cpuChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `sysCpuChart`
+        )
+      );
+      cpuChart.resize();
+      const gpuChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `sysGpuChart`
+        )
+      );
+      gpuChart.resize();
+      const fpsChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `sysFpsChart`
+        )
+      );
+      fpsChart.resize();
+      const diskChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `sysDiskChart`
+        )
+      );
+      diskChart.resize();
+      const networkChart = echarts.getInstanceByDom(
+        document.getElementById(
+          `${props.rid}-${props.cid}-${props.did}-` + `sysNetworkChart`
+        )
+      );
+      networkChart.resize();
+    });
   }
 };
 </script>
