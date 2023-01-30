@@ -427,24 +427,6 @@ const androidOptions = ref([
     ],
   },
   {
-    label: '触控操作',
-    value: 'action',
-    children: [
-      {
-        value: 'tap',
-        label: '点击坐标',
-      },
-      {
-        value: 'longPressPoint',
-        label: '长按坐标',
-      },
-      {
-        value: 'swipe',
-        label: '滑动拖拽',
-      },
-    ],
-  },
-  {
     label: '应用操作',
     value: 'app',
     children: [
@@ -537,6 +519,24 @@ const androidOptions = ref([
           {
             value: 'iteratorAndroidElement',
             label: '迭代控件列表',
+          },
+        ],
+      },
+      {
+        label: '坐标控件',
+        value: 'pointEle',
+        children: [
+          {
+            value: 'tap',
+            label: '点击坐标',
+          },
+          {
+            value: 'longPressPoint',
+            label: '长按坐标',
+          },
+          {
+            value: 'swipe',
+            label: '滑动拖拽',
           },
         ],
       },
@@ -735,12 +735,22 @@ const androidOptions = ref([
         disabled: true,
       },
       {
+        value: 'pause',
+        label: '强制等待',
+      },
+    ],
+  },
+  {
+    label: '运行设置',
+    value: 'settings',
+    children: [
+      {
         value: 'stepHold',
         label: '步骤间隔设置',
       },
       {
-        value: 'pause',
-        label: '强制等待',
+        value: 'switchTouchMode',
+        label: '触控模式设置',
       },
     ],
   },
@@ -801,24 +811,6 @@ const iOSOptions = ref([
             label: '获取文本',
           },
         ],
-      },
-    ],
-  },
-  {
-    label: '触控操作',
-    value: 'action',
-    children: [
-      {
-        value: 'tap',
-        label: '点击坐标',
-      },
-      {
-        value: 'longPressPoint',
-        label: '长按坐标',
-      },
-      {
-        value: 'swipe',
-        label: '滑动拖拽',
       },
     ],
   },
@@ -903,6 +895,24 @@ const iOSOptions = ref([
           {
             value: 'iteratorIOSElement',
             label: '迭代控件列表',
+          },
+        ],
+      },
+      {
+        label: '坐标控件',
+        value: 'pointEle',
+        children: [
+          {
+            value: 'tap',
+            label: '点击坐标',
+          },
+          {
+            value: 'longPressPoint',
+            label: '长按坐标',
+          },
+          {
+            value: 'swipe',
+            label: '滑动拖拽',
           },
         ],
       },
@@ -1044,12 +1054,18 @@ const iOSOptions = ref([
         disabled: true,
       },
       {
-        value: 'stepHold',
-        label: '步骤间隔设置',
-      },
-      {
         value: 'pause',
         label: '强制等待',
+      },
+    ],
+  },
+  {
+    label: '运行设置',
+    value: 'settings',
+    children: [
+      {
+        value: 'stepHold',
+        label: '步骤间隔设置',
       },
     ],
   },
@@ -1171,6 +1187,25 @@ onMounted(() => {
             <el-option value="home"></el-option>
             <el-option value="volumeup"></el-option>
             <el-option value="volumedown"></el-option>
+          </el-select>
+        </el-form-item>
+      </div>
+
+      <div v-if="step.stepType === 'switchTouchMode'">
+        <el-form-item
+          label="触控模式"
+          :rules="[
+            {
+              required: true,
+              message: '请选择触控模式，默认为APK触控',
+              trigger: 'change',
+            },
+          ]"
+          prop="content"
+        >
+          <el-select v-model="step.content" placeholder="请选择触控模式">
+            <el-option value="SONIC_APK"></el-option>
+            <el-option value="ADB"></el-option>
           </el-select>
         </el-form-item>
       </div>

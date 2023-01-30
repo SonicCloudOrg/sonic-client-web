@@ -105,6 +105,10 @@ const summitStep = () => {
   <span v-if="step.stepType === 'screenAbort'">
     <el-tag size="small">关闭自动旋转</el-tag>
   </span>
+  <span v-if="step.stepType === 'switchTouchMode'">
+    <el-tag size="small" style="margin-right: 10px">触控模式设置</el-tag
+    >设置为：{{ step.content }} 模式
+  </span>
   <span v-if="step.stepType === 'keyCode' || step.stepType === 'keyCodeSelf'">
     <el-tag size="small">按下系统{{ step.content }}键</el-tag>
   </span>
