@@ -1671,16 +1671,14 @@ onMounted(() => {
                   <template #header>
                     <strong>{{ $t('IOSRemote.siri.command') }}</strong>
                   </template>
-                  <el-form size="small" :model="text" style="padding: 12px 0">
-                    <el-form-item>
-                      <el-input
-                        v-model="text.content"
-                        clearable
-                        size="small"
-                        :placeholder="$t('IOSRemote.siri.inputCommand')"
-                      ></el-input>
-                    </el-form-item>
-                    <div style="text-align: center">
+                  <div style="padding: 12px 0">
+                    <el-input
+                      v-model="text.content"
+                      clearable
+                      size="small"
+                      :placeholder="$t('IOSRemote.siri.inputCommand')"
+                    ></el-input>
+                    <div style="text-align: center; margin-top: 15px">
                       <el-button
                         size="mini"
                         type="primary"
@@ -1688,7 +1686,7 @@ onMounted(() => {
                         >{{ $t('androidRemoteTS.code.send') }}
                       </el-button>
                     </div>
-                  </el-form>
+                  </div>
                 </el-card>
               </el-col>
               <el-col :span="12">

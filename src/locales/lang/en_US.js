@@ -546,7 +546,8 @@ const androidRemoteTS = {
     remoteControlPanel: 'Remote control panel',
     inputText: 'Enter text',
     pleaseText: 'Enter the text to send, CHS is supported',
-    send: 'Clear Text',
+    clear: 'Clear',
+    send: 'Send',
     keyboard:
       'Clear input box and real-time input are only available when Sonic Keyboard is enable',
     startKeyboard: 'Enable Sonic Keyboard',

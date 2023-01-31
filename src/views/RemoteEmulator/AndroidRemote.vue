@@ -2410,7 +2410,7 @@ onMounted(() => {
                   </el-alert>
                   <div style="text-align: center; margin-top: 12px">
                     <el-button size="mini" type="primary" @click="sendText"
-                      >{{ $t('androidRemoteTS.code.send') }}
+                      >{{ $t('androidRemoteTS.code.clear') }}
                     </el-button>
                     <el-button size="mini" type="primary" @click="startKeyboard"
                       >{{ $t('androidRemoteTS.code.startKeyboard') }}
