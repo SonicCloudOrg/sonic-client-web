@@ -1650,7 +1650,26 @@ onMounted(() => {
   }
   getDeviceById(route.params.deviceId);
   store.commit('autoChangeCollapse');
+  getRemoteTimeout();
 });
+const remoteTimeout = ref(0);
+const getRemoteTimeout = () => {
+  axios.get('/controller/confList/getRemoteTimeout').then((resp) => {
+    remoteTimeout.value = resp.data * 60;
+    setInterval(() => {
+      remoteTimeout.value -= 1;
+    }, 1000);
+  });
+};
+function parseTimeout(time) {
+  let h = parseInt((time / 60 / 60) % 24);
+  h = h < 10 ? `0${h}` : h;
+  let m = parseInt((time / 60) % 60);
+  m = m < 10 ? `0${m}` : m;
+  let s = parseInt(time % 60);
+  s = s < 10 ? `0${s}` : s;
+  return `${h} 时 ${m} 分 ${s} 秒 `;
+}
 </script>
 
 <template>
@@ -1709,7 +1728,12 @@ onMounted(() => {
     />
   </el-dialog>
   <el-page-header
-    :content="$t('routes.remoteControl')"
+    :content="
+      $t('routes.remoteControl') +
+      ' - ' +
+      parseTimeout(remoteTimeout) +
+      '后将自动解除占用'
+    "
     style="margin-top: 15px; margin-left: 20px"
     @back="close"
   />

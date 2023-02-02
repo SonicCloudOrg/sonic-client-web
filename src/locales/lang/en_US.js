@@ -181,8 +181,11 @@ const routes = {
   timedTask: 'Timed Task',
   projectSetting: 'Project Setting',
   projectPage: 'Project Home',
-  resource: '',
-  role: '',
+  resource: 'Resource Manage',
+  role: 'Roles Manage',
+  users: 'Users Manage',
+  sysJobs: 'System Jobs',
+  remoteSettings: 'Remote Settings',
   scripts: 'Scripts Template Management',
 };
 const setting = {
@@ -684,6 +687,7 @@ const settingIndexTS = {
     userCon: 'User Configuration',
     systemCon: 'System Configuration',
     scheduled: 'System timed tasks',
+    remoteSettings: 'Remote Settings',
   },
 };
 const resourceTS = {

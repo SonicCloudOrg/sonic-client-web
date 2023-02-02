@@ -180,8 +180,11 @@ const routes = {
   timedTask: '定時任務',
   projectSetting: '項目設定',
   projectPage: '項目首頁',
-  resource: '',
-  role: '',
+  resource: '资源管理',
+  role: '角色管理',
+  users: '用户配置',
+  sysJobs: '系统定时任务',
+  remoteSettings: '远程控制配置',
   scripts: '脚本模板',
 };
 const setting = {
@@ -667,6 +670,7 @@ const settingIndexTS = {
     userCon: '使用者配置',
     systemCon: '系統組態',
     scheduled: '系統排程任務',
+    remoteSettings: '远程控制配置',
   },
 };
 const resourceTS = {

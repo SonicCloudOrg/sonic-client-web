@@ -182,8 +182,11 @@ const routes = {
   timedTask: 'タイミングタスク',
   projectSetting: 'プロジェクトの設定',
   projectPage: 'プロジェクトのトップページ',
-  resource: '',
-  role: '',
+  resource: 'Resource Manage',
+  role: 'Roles Manage',
+  users: 'Users Manage',
+  sysJobs: 'System Jobs',
+  remoteSettings: 'Remote Settings',
   scripts: '脚本模板',
 };
 const setting = {
@@ -669,6 +672,7 @@ const settingIndexTS = {
     userCon: '用户配置',
     systemCon: '系统配置',
     scheduled: '系统定时任务',
+    remoteSettings: '远程控制配置',
   },
 };
 const resourceTS = {
