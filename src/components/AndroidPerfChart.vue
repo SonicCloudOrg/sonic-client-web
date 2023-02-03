@@ -694,6 +694,10 @@ const printPerfMem = () => {
         xAxisIndex: [0, 1],
       },
     ],
+    legend: {
+      top: '8%',
+      data: ['Phy RSS', 'VM RSS', 'Total PSS'],
+    },
     yAxis: [{ name: '内存占用(b)', min: 0 }],
     series: [
       {
@@ -710,6 +714,15 @@ const printPerfMem = () => {
         type: 'line',
         data: props.procPerf.map((obj) => {
           return obj.vmRSS;
+        }),
+        showSymbol: false,
+        boundaryGap: false,
+      },
+      {
+        name: 'Total PSS',
+        type: 'line',
+        data: props.procPerf.map((obj) => {
+          return obj.totalPSS;
         }),
         showSymbol: false,
         boundaryGap: false,
