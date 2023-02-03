@@ -143,7 +143,11 @@ const findAgentById = (id) => {
   >
     <template #header>
       <RenderDeviceName :device="device"></RenderDeviceName>
-      <RenderStatus :status="device.status" :user="device.user"></RenderStatus>
+      <RenderStatus
+        :status="device.status"
+        :user="device.user"
+        :ud-id="device.udId"
+      ></RenderStatus>
     </template>
     <el-row>
       <el-col :span="10">
