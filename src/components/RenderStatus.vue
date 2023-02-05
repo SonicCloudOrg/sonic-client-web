@@ -62,6 +62,7 @@ const stopDebug = () => {
     </template>
   </el-popconfirm>
   <el-tag v-else :type="selObj.type" size="mini" style="float: right">
+    <i v-if="status === 'TESTING'" class="el-icon-loading"></i>
     {{ $t('devices.status.' + status) }}
   </el-tag>
 </template>
