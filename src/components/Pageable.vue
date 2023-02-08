@@ -17,7 +17,7 @@ const changeSize = (num) => {
 <template>
   <el-pagination
     v-if="isPageSet === true"
-    v-model:current-page="currentPage"
+    :current-page="currentPage"
     background
     style="text-align: center; margin-top: 20px"
     :page-size="pageSize"
@@ -29,7 +29,7 @@ const changeSize = (num) => {
   ></el-pagination>
   <el-pagination
     v-else
-    v-model:current-page="currentPage"
+    :current-page="currentPage"
     background
     style="text-align: center; margin-top: 20px"
     :page-size="pageSize"

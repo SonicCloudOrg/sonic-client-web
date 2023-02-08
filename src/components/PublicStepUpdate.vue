@@ -30,6 +30,7 @@ const updatePub = ref(null);
 const parentId = ref(0);
 const pageData = ref({});
 const pageSize = ref(10);
+const pageCurrNum = ref(1);
 const dialogVisible = ref(false);
 const stepId = ref(0);
 const tabValue = ref('select');
@@ -53,13 +54,15 @@ const getImg = (name) => {
   return result;
 };
 const getStepList = (pageNum, pSize) => {
+  pageSize.value = pSize || pageSize.value;
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/steps/list', {
       params: {
         projectId: props.projectId,
         platform: publicStep.value.platform,
-        page: pageNum || 1,
-        pageSize: pSize || pageSize.value,
+        page: pageCurrNum.value,
+        pageSize: pageSize.value,
       },
     })
     .then((resp) => {
@@ -72,13 +75,15 @@ const searchListOfSteps = (pageNum, pSize) => {
   if (searchText.value.length === 0) {
     getStepList(pageNum, pSize);
   } else {
+    pageSize.value = pSize || pageSize.value;
+    pageCurrNum.value = pageNum || pageCurrNum.value;
     axios
       .get('/controller/steps/search/list', {
         params: {
           projectId: props.projectId,
           platform: publicStep.value.platform,
-          page: pageNum || 1,
-          pageSize: pSize || pageSize.value,
+          page: pageCurrNum.value,
+          pageSize: pageSize.value,
           searchContent: searchText.value,
         },
       })

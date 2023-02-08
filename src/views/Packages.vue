@@ -16,19 +16,21 @@ const route = useRoute();
 const router = useRouter();
 const pageData = ref({});
 const pageSize = ref(15);
-const currentPage = ref(0);
+const pageCurrNum = ref(1);
 const platform = ref('');
 const branch = ref('');
 
 const getPackageList = (pageNum, pSize) => {
+  pageSize.value = pSize || pageSize.value;
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/packages/list', {
       params: {
         projectId: route.params.projectId,
-        page: pageNum || 1,
+        page: pageCurrNum.value,
+        pageSize: pageSize.value,
         platform: platform.value,
         branch: branch.value,
-        pageSize: pSize || pageSize.value,
       },
     })
     .then((resp) => {

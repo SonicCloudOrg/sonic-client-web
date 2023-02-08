@@ -11,6 +11,7 @@ const route = useRoute();
 
 const pageData = ref({});
 const pageSize = ref(15);
+const pageCurrNum = ref(1);
 const path = ref('');
 
 const updateStatus = (id, needAuth) => {
@@ -45,11 +46,13 @@ const refresh = (id, needAuth) => {
 };
 
 const getResourceList = (pageNum, pSize) => {
+  pageSize.value = pSize || pageSize.value;
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/resources/list', {
       params: {
-        page: pageNum || 1,
-        pageSize: pSize || pageSize.value,
+        page: pageCurrNum.value,
+        pageSize: pageSize.value,
         path: path.value,
       },
     })

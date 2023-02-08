@@ -12,22 +12,24 @@ const { t: $t } = useI18n();
 const route = useRoute();
 const pageData = ref({});
 const pageSize = ref(15);
+const pageCurrNum = ref(1);
 const dialogVisible = ref(false);
 const name = ref('');
-const currentPage = ref(0);
 const suiteId = ref(0);
 const loading = ref(false);
 const open = () => {
   dialogVisible.value = true;
 };
 const getTestSuiteList = (pageNum, pSize) => {
+  pageSize.value = pSize || pageSize.value;
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/testSuites/list', {
       params: {
         projectId: route.params.projectId,
         name: name.value,
-        page: pageNum || 1,
-        pageSize: pSize || pageSize.value,
+        page: pageCurrNum.value,
+        pageSize: pageSize.value,
       },
     })
     .then((resp) => {

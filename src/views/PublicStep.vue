@@ -14,6 +14,7 @@ const route = useRoute();
 const dialogVisible = ref(false);
 const pageData = ref({});
 const pageSize = ref(15);
+const pageCurrNum = ref(1);
 const publicStepId = ref(0);
 watch(dialogVisible, (newValue, oldValue) => {
   if (!newValue) {
@@ -34,12 +35,14 @@ const flush = (e) => {
   getPublicStepList();
 };
 const getPublicStepList = (pageNum, pSize) => {
+  pageSize.value = pSize || pageSize.value;
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/publicSteps/list', {
       params: {
         projectId: route.params.projectId,
-        page: pageNum || 1,
-        pageSize: pSize || pageSize.value,
+        page: pageCurrNum.value,
+        pageSize: pageSize.value,
       },
     })
     .then((resp) => {

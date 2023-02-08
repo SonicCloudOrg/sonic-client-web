@@ -151,14 +151,16 @@ const handleStateUpdate = (viewUpdate) => {
 };
 
 const pageData = ref([]);
+const pageCurrNum = ref(1);
 const name = ref('');
 const getScriptList = (pageNum, pSize) => {
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/scripts/list', {
       params: {
         projectId: props.projectId,
         name: name.value,
-        page: pageNum || 1,
+        page: pageCurrNum.value,
         pageSize: 5,
       },
     })

@@ -12,14 +12,16 @@ const route = useRoute();
 const router = useRouter();
 const pageData = ref({});
 const pageSize = ref(15);
-const currentPage = ref(0);
+const pageCurrNum = ref(1);
 const getResultList = (pageNum, pSize) => {
+  pageSize.value = pSize || pageSize.value;
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/results/list', {
       params: {
         projectId: route.params.projectId,
-        page: pageNum || 1,
-        pageSize: pSize || pageSize.value,
+        page: pageCurrNum.value,
+        pageSize: pageSize.value,
       },
     })
     .then((resp) => {

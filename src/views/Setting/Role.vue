@@ -12,6 +12,7 @@ const route = useRoute();
 
 const pageData = ref({});
 const pageSize = ref(15);
+const pageCurrNum = ref(1);
 const path = ref('');
 const dialogVisible = ref(false);
 const updateRoles = ref(null);
@@ -111,11 +112,13 @@ const getRoleResourceList = (roleId) => {
 };
 
 const getRolesList = (pageNum, pSize) => {
+  pageSize.value = pSize || pageSize.value;
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/roles/list', {
       params: {
-        page: pageNum || 1,
-        pageSize: pSize || pageSize.value,
+        page: pageCurrNum.value,
+        pageSize: pageSize.value,
       },
     })
     .then((resp) => {

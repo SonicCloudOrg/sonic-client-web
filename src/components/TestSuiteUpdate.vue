@@ -89,15 +89,18 @@ const tabValue = ref('select');
 const pageData = ref([]);
 const name = ref('');
 const pageSize = ref(10);
+const pageCurrNum = ref(1);
 const getTestCaseList = (pageNum, pSize) => {
+  pageSize.value = pSize || pageSize.value;
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/testCases/list', {
       params: {
         platform: testSuite.value.platform,
         projectId: route.params.projectId,
         name: name.value,
-        page: pageNum || 1,
-        pageSize: pSize || pageSize.value,
+        page: pageCurrNum.value,
+        pageSize: pageSize.value,
       },
     })
     .then((resp) => {

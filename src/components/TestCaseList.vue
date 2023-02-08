@@ -18,6 +18,7 @@ const props = defineProps({
 const router = useRouter();
 const pageData = ref({});
 const pageSize = ref(15);
+const pageCurrNum = ref(1);
 const name = ref('');
 const caseId = ref(0);
 const dialogVisible = ref(false);
@@ -25,6 +26,8 @@ const tableLoading = ref(false);
 const moduleIds = ref([]);
 const getTestCaseList = (pageNum, pSize) => {
   tableLoading.value = true;
+  pageSize.value = pSize || pageSize.value;
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/testCases/list', {
       params: {
@@ -32,8 +35,8 @@ const getTestCaseList = (pageNum, pSize) => {
         moduleIds: moduleIds.value.length > 0 ? moduleIds.value : undefined,
         platform: props.platform,
         name: name.value,
-        page: pageNum || 1,
-        pageSize: pSize || pageSize.value,
+        page: pageCurrNum.value,
+        pageSize: pageSize.value,
         idSort: sortingType.value.idSort,
         designerSort: sortingType.value.designerSort,
         editTimeSort: sortingType.value.editTimeSort,

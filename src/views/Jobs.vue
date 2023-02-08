@@ -12,6 +12,7 @@ const route = useRoute();
 const dialogVisible = ref(false);
 const pageData = ref({});
 const pageSize = ref(15);
+const pageCurrNum = ref(1);
 const updateJob = ref(null);
 const testSuiteList = ref([]);
 const dialogCron = ref(false);
@@ -37,12 +38,14 @@ const open = () => {
   dialogVisible.value = true;
 };
 const getJobsList = (pageNum, pSize) => {
+  pageSize.value = pSize || pageSize.value;
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/jobs/list', {
       params: {
         projectId: route.params.projectId,
-        page: pageNum || 1,
-        pageSize: pSize || pageSize.value,
+        page: pageCurrNum.value,
+        pageSize: pageSize.value,
       },
     })
     .then((resp) => {

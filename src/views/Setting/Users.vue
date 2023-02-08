@@ -12,6 +12,7 @@ const route = useRoute();
 
 const pageData = ref({});
 const pageSize = ref(15);
+const pageCurrNum = ref(1);
 const name = ref('');
 const dialogVisible = ref(false);
 
@@ -70,11 +71,13 @@ const summit = async () => {
 };
 
 const getUserList = (pageNum, pSize) => {
+  pageSize.value = pSize || pageSize.value;
+  pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
     .get('/controller/users/list', {
       params: {
-        page: pageNum || 1,
-        pageSize: pSize || pageSize.value,
+        page: pageCurrNum.value,
+        pageSize: pageSize.value,
         userName: name.value,
       },
     })
