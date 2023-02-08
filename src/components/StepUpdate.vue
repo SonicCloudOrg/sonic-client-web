@@ -473,6 +473,10 @@ const androidOptions = ref([
             label: '切换Invisible控件展示',
           },
           {
+            value: 'switchIgnoreMode',
+            label: '切换忽略不重要视图模式',
+          },
+          {
             value: 'isExistEle',
             label: '判断控件元素是否存在',
           },
@@ -1686,6 +1690,23 @@ onMounted(() => {
           <el-select v-model="step.content">
             <el-option label="多窗口模式" value="true"></el-option>
             <el-option label="单窗口模式" value="false"></el-option>
+          </el-select>
+        </el-form-item>
+      </div>
+
+      <div v-if="step.stepType === 'switchIgnoreMode'">
+        <el-form-item
+          label="是否忽略"
+          prop="content"
+          :rules="{
+            required: true,
+            message: '不能为空',
+            trigger: 'change',
+          }"
+        >
+          <el-select v-model="step.content">
+            <el-option label="忽略" value="true"></el-option>
+            <el-option label="不忽略" value="false"></el-option>
           </el-select>
         </el-form-item>
       </div>

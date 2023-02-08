@@ -107,6 +107,7 @@ const screenUrls = ref([]);
 const uploadUrl = ref('');
 const text = ref({ content: '' });
 const isMultiWindows = ref(false);
+const isIgnore = ref(true);
 const isVisible = ref(false);
 let imgWidth = 0;
 let imgHeight = 0;
@@ -1518,6 +1519,7 @@ const getElement = () => {
       type: 'debug',
       detail: 'tree',
       isMulti: isMultiWindows.value,
+      isIgnore: isIgnore.value,
       isVisible: isVisible.value,
     })
   );
@@ -3281,6 +3283,14 @@ function parseTimeout(time) {
                       >
                         <el-option label="隐藏Invisible控件" :value="false" />
                         <el-option label="显示Invisible控件" :value="true" />
+                      </el-select>
+                      <el-select
+                        v-model="isIgnore"
+                        style="margin-left: 10px"
+                        size="mini"
+                      >
+                        <el-option label="忽略不重要视图" :value="true" />
+                        <el-option label="不忽略不重要视图" :value="false" />
                       </el-select>
                       <el-button
                         style="margin-left: 10px"

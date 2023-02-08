@@ -128,6 +128,11 @@ const summitStep = () => {
     <el-tag size="small" style="margin-right: 10px">切换窗口模式</el-tag
     >{{ step.content === 'true' ? '多窗口模式' : '单窗口模式' }}
   </span>
+  <span v-if="step.stepType === 'switchIgnoreMode'">
+    <el-tag size="small" style="margin-right: 10px"
+      >切换忽略不重要视图模式</el-tag
+    >{{ step.content === 'true' ? '忽略' : '不忽略' }}
+  </span>
   <span v-if="step.stepType === 'switchVisibleMode'">
     <el-tag size="small" style="margin-right: 10px"
       >切换Invisible控件展示</el-tag
@@ -177,13 +182,16 @@ const summitStep = () => {
     <el-tag size="small" style="margin-right: 10px">获取剪切板文本</el-tag>
     提取到变量：{{ step.content }}
   </span>
-  <span
-    v-if="
-      step.stepType === 'findElementInterval' ||
-      step.stepType === 'setDefaultFindPocoElementInterval'
-    "
-  >
-    <el-tag size="small" style="margin-right: 10px">设置查找控件策略</el-tag>
+  <span v-if="step.stepType === 'findElementInterval'">
+    <el-tag size="small" style="margin-right: 10px"
+      >设置查找原生控件策略</el-tag
+    >
+    重试次数：{{ step.content }} 重试间隔：{{ step.text }} ms
+  </span>
+  <span v-if="step.stepType === 'setDefaultFindPocoElementInterval'">
+    <el-tag size="small" style="margin-right: 10px"
+      >设置查找POCO控件策略</el-tag
+    >
     重试次数：{{ step.content }} 重试间隔：{{ step.text }} ms
   </span>
   <span v-if="step.stepType === 'openApp'">
