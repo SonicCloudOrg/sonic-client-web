@@ -20,13 +20,19 @@
 import { ElMessage } from 'element-plus';
 import { useRoute } from 'vue-router';
 import { Edit } from '@element-plus/icons';
+import { useI18n } from 'vue-i18n';
+import { ref } from 'vue';
 import CodeEditor from './CodeEditor.vue';
 import axios from '../http/axios';
+import ChildStepListView from './ChildStepListView.vue';
 
+const { t: $t } = useI18n();
 const route = useRoute();
 const props = defineProps({
   step: Object,
 });
+
+const childStep = ref([]);
 
 const summitStep = () => {
   axios.put('/controller/steps', props.step).then((resp) => {
@@ -34,6 +40,16 @@ const summitStep = () => {
       ElMessage.success({
         message: resp.message,
       });
+    }
+  });
+};
+
+const getPublicStepInfo = (id) => {
+  axios.get('/controller/publicSteps', { params: { id } }).then((resp) => {
+    if (resp.code === 2000) {
+      if (resp.data.steps) {
+        childStep.value = resp.data.steps;
+      }
     }
   });
 };
@@ -440,6 +456,17 @@ const summitStep = () => {
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.content
     }}</el-tag>
+    <el-popover placement="bottom" :width="700" trigger="click">
+      <child-step-list-view :steps="childStep" />
+      <template #reference>
+        <el-button
+          style="margin-left: 10px"
+          size="mini"
+          @click="getPublicStepInfo(step.text)"
+          >{{ $t('publicStepTS.viewSteps') }}</el-button
+        >
+      </template>
+    </el-popover>
   </span>
   <span v-if="step.stepType === 'monkey'">
     <el-tag style="margin-right: 10px" type="warning" size="small"

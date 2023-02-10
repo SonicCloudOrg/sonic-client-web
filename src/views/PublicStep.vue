@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n';
 import PublicStepUpdate from '../components/PublicStepUpdate.vue';
 import Pageable from '../components/Pageable.vue';
 import axios from '../http/axios';
-import StepShow from '../components/StepShow.vue';
+import ChildStepListView from '../components/ChildStepListView.vue';
 
 const { t: $t } = useI18n();
 
@@ -128,36 +128,8 @@ onMounted(() => {
       align="center"
     >
       <template #default="scope">
-        <el-popover placement="left" :width="500" trigger="click">
-          <el-table :data="scope.row.steps" border max-height="350">
-            <el-table-column
-              width="80"
-              :label="$t('publicStepTS.stepId')"
-              prop="id"
-              align="center"
-              show-overflow-tooltip
-            />
-            <el-table-column
-              width="90"
-              :label="$t('publicStepTS.useCase')"
-              align="center"
-            >
-              <template #default="scope">
-                <el-tag v-if="scope.row.caseId === 0" size="mini">{{
-                  $t('common.null')
-                }}</el-tag>
-                <span v-else>{{ scope.row.caseId }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :label="$t('publicStepTS.stepInfo')"
-              header-align="center"
-            >
-              <template #default="scope">
-                <step-show :step="scope.row" />
-              </template>
-            </el-table-column>
-          </el-table>
+        <el-popover placement="left" :width="700" trigger="click">
+          <child-step-list-view :steps="scope.row.steps" />
           <template #reference>
             <el-button size="mini">{{
               $t('publicStepTS.viewSteps')
