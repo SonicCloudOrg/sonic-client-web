@@ -19,7 +19,7 @@
 import { createI18n } from 'vue-i18n';
 import { getLocal } from '@/utils/cache/localStorage';
 import { LOCALE_KEY } from '@/config/cache';
-import { LOCALE } from '@/config/locale';
+import { LOCALE, localeSetting } from '@/config/locale';
 // 按需引入组件库语言包
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import zhTW from 'element-plus/es/locale/lang/zh-tw';
@@ -28,7 +28,7 @@ import ja from 'element-plus/es/locale/lang/ja';
 import { setHtmlPageLang, getSystemLanguage, supportLanguage } from './helper';
 // ...更多语言
 
-const langDefault = LOCALE.ZH_CN;
+const langDefault = localeSetting.locale;
 let localeData = null;
 
 function defaultLanguage() {

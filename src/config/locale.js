@@ -53,7 +53,7 @@ export const localeList = [
 export const localeSetting = {
   showPicker: true,
   // Locale
-  locale: LOCALE.ZH_CN,
+  locale: LOCALE.EN_US,
   // available Locales
   availableLocales: [LOCALE.ZH_CN, LOCALE.EN_US, LOCALE.ZH_TW, LOCALE.JA_JP], // ...更多语言
 };
