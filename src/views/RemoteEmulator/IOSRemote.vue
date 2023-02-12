@@ -748,11 +748,9 @@ const websocketOnmessage = (message) => {
       break;
     }
     case 'openDriver': {
-      ElMessage({
-        type: JSON.parse(message.data).status,
-        message: JSON.parse(message.data).detail,
-      });
+      let msg = $t('IOSRemote.driverStatus.fail');
       if (JSON.parse(message.data).status === 'success') {
+        msg = $t('IOSRemote.driverStatus.success');
         imgWidth = JSON.parse(message.data).width;
         imgHeight = JSON.parse(message.data).height;
         isDriverFinish.value = true;
@@ -763,6 +761,10 @@ const websocketOnmessage = (message) => {
           JSON.parse(message.data).height
         );
       }
+      ElMessage({
+        type: JSON.parse(message.data).status,
+        message: msg,
+      });
       break;
     }
     case 'step': {
@@ -784,7 +786,7 @@ const websocketOnmessage = (message) => {
         imgElementUrl.value = JSON.parse(message.data).img;
         dialogImgElement.value = true;
       } else {
-        ElMessage.error(JSON.parse(message.data).errMsg);
+        ElMessage.error('IOSRemote.eleScreen.err');
       }
       elementScreenLoading.value = false;
       break;

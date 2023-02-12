@@ -472,6 +472,10 @@ const versionsTS = {
   delMessage: 'Delete this version?',
 };
 const androidRemoteTS = {
+  driverStatus: {
+    success: 'Init UIAutomator2 Server successful!',
+    fail: 'Init UIAutomator2 Server failed!',
+  },
   repairedSuccess: 'Repaired successfully',
   associationSuccess: 'Associated successfully',
   copySuccess: 'Copy Success',
@@ -754,6 +758,13 @@ const usersTS = {
   },
 };
 const IOSRemote = {
+  driverStatus: {
+    success: 'Init WebDriverAgent successful!',
+    fail: 'Init WebDriverAgent failed!',
+  },
+  eleScreen: {
+    err: 'Get Element Screenshot failed!',
+  },
   perfmon: 'PerfMon',
   startSimulating: 'Start simulating the positioning...',
   positioningRestored: 'Positioning has been resumed',

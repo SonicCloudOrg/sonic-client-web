@@ -465,6 +465,10 @@ const versionsTS = {
   delMessage: '確定刪除該版本嗎？',
 };
 const androidRemoteTS = {
+  driverStatus: {
+    success: '初始化 UIAutomator2 Server 完成！',
+    fail: '初始化 UIAutomator2 Server 失败！',
+  },
   repairedSuccess: '修復成功',
   associationSuccess: '關聯成功',
   copySuccess: '複製成功',
@@ -737,6 +741,13 @@ const usersTS = {
   },
 };
 const IOSRemote = {
+  driverStatus: {
+    success: '初始化 WebDriverAgent 完成！',
+    fail: '初始化 WebDriverAgent 失败！',
+  },
+  eleScreen: {
+    err: '获取元素截图失败！',
+  },
   perfmon: '性能监控',
   startSimulating: '開始模擬定位...',
   positioningRestored: '已恢復定位',
