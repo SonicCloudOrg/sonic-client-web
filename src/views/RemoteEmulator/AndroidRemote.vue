@@ -842,7 +842,7 @@ const websocketOnmessage = (message) => {
         imgElementUrl.value = JSON.parse(message.data).img;
         dialogImgElement.value = true;
       } else {
-        ElMessage.error('IOSRemote.eleScreen.err');
+        ElMessage.error($t('IOSRemote.eleScreen.err'));
       }
       elementScreenLoading.value = false;
       break;
