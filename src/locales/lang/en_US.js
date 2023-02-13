@@ -358,13 +358,13 @@ const modulesTS = {
 };
 const packagesTS = {
   accessGuide: 'Access Guide',
-  buildLink: 'build link',
-  platform: 'platform',
-  no: 'not specified',
-  packageName: 'Package name',
+  buildLink: 'Source',
+  platform: 'Platform',
+  no: 'Not specified',
+  packageName: 'Package Name',
   branch: 'branch',
   inputName: 'Enter branch name',
-  downloadLink: 'download hyperlink',
+  downloadLink: 'Download Link',
   copyUrl: 'Copy url',
   creatTime: 'Created Time',
 };
