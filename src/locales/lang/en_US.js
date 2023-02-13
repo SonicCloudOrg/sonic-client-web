@@ -229,7 +229,7 @@ const elements = {
   inputNameSearch: 'Enter the name of element to search',
   moduleName: 'Name',
   targetingType: 'Type',
-  coordinate: 'Coordinate',
+  coordinate: 'Point',
   picture: 'Picture',
   notSpecified: 'Not specified',
   cEleValue: 'Element value',
@@ -816,7 +816,7 @@ const IOSRemote = {
     getText: 'Get clipboard text',
   },
   clarityAndFps: 'Clarity and FPS',
-  calibrationCoordinates: 'Calibration coordinates',
+  calibrationCoordinates: 'Calibration Points',
   volume: 'volume',
   siri: {
     command: 'Siri command',
