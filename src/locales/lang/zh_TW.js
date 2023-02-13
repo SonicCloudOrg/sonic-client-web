@@ -10,6 +10,9 @@ const robot = {
   robotSecretPlaceholder: '（可選）請輸入群機器人的金鑰',
 };
 const agent = {
+  hub: {
+    config: 'Hub配置',
+  },
   newAgent: '新增Agent',
   clickToCopy: '點擊複製',
   status: {
@@ -141,6 +144,7 @@ const form = {
 };
 // 彈出型視窗相關
 const dialog = {
+  welcome: '歡迎回來！',
   permissionDenied: '暫不許可當前用戶！',
   suffixError: '檔案格式有誤！',
   projectInfo: '專案資訊',
@@ -154,6 +158,11 @@ const dialog = {
 };
 // 一般操作
 const common = {
+  release: '后将自动解除占用',
+  at: '在 ',
+  hour: '时',
+  min: '分',
+  sec: '秒',
   null: '無',
   delete: '刪除',
   edit: '編輯',
@@ -465,6 +474,20 @@ const versionsTS = {
   delMessage: '確定刪除該版本嗎？',
 };
 const androidRemoteTS = {
+  element: {
+    windows: {
+      single: '单窗口模式',
+      multi: '多窗口模式',
+    },
+    visible: {
+      hid: '隐藏Invisible控件',
+      show: '显示Invisible控件',
+    },
+    unimportant: {
+      ignore: '忽略不重要视图',
+      show: '不忽略不重要视图',
+    },
+  },
   driverStatus: {
     success: '初始化 UIAutomator2 Server 完成！',
     fail: '初始化 UIAutomator2 Server 失败！',
@@ -629,16 +652,16 @@ const androidRemoteTS = {
     absolutePath: '絕對路徑',
     centerXY: '中心座標',
     label: {
-      one: '是否可勾選',
-      two: '是否勾選',
-      three: '是否可點擊',
-      four: '是否被選',
-      five: '是否顯示',
-      six: '是否可用',
-      seven: '是否可聚焦',
-      eight: '是否聚焦',
-      nine: '是否支持長按',
-      ten: '是否支持滾動',
+      checkable: 'checkable',
+      checked: 'checked',
+      clickable: 'clickable',
+      selected: 'selected',
+      displayed: 'displayed',
+      enabled: 'enable',
+      focusable: 'focusable',
+      focused: 'focused',
+      longClickable: 'long-clickable',
+      scrollable: 'scrollable',
     },
     subTitleText: '請先獲取控件元素，該功能需要初始化Driver',
     getEle: '獲取控件元素',

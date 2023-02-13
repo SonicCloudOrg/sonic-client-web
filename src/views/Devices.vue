@@ -888,7 +888,7 @@ onUnmounted(() => {
               size="mini"
               :disabled="scope.row.status !== 1 || scope.row.hasHub === 0"
               @click="hubSetting(scope.row.id)"
-              >Hub配置
+              >{{ $t('agent.hub.config') }}
             </el-button>
             <el-button
               size="mini"

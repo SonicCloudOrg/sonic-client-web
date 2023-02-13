@@ -10,6 +10,9 @@ const robot = {
   robotSecretPlaceholder: '(Optional) Please enter the key of the group robot',
 };
 const agent = {
+  hub: {
+    config: 'Hub Config',
+  },
   newAgent: 'New Agent',
   clickToCopy: 'Copy Key',
   status: {
@@ -46,7 +49,7 @@ const devices = {
   },
   detail: {
     image: 'Image',
-    uploadImg: 'Click to Upload',
+    uploadImg: ' Click to Upload',
     nickName: 'NickName',
     nickPlaceholder: 'Enter device nickname',
     name: 'Name',
@@ -99,7 +102,7 @@ const devices = {
     then: 'then',
     timeout: 'High temperature timeout',
     continuedTime: 'Temperature continues for ≥',
-    onlyAdNotice: 'the robot will be notified and',
+    onlyAdNotice: 'the robot will be notified and ',
     shutdown: 'shutdown',
   },
 };
@@ -142,6 +145,7 @@ const form = {
 };
 // 弹窗相关
 const dialog = {
+  welcome: 'Welcome back! ',
   permissionDenied: 'Permission denied!',
   suffixError: 'Incorrect file suffix!',
   projectInfo: 'Project Information',
@@ -155,6 +159,11 @@ const dialog = {
 };
 // 通用操作
 const common = {
+  release: 'the occupation will be automatically released',
+  at: 'After ',
+  hour: 'h',
+  min: 'm',
+  sec: 's',
   null: 'Null',
   delete: 'Delete',
   edit: 'Edit',
@@ -472,6 +481,20 @@ const versionsTS = {
   delMessage: 'Delete this version?',
 };
 const androidRemoteTS = {
+  element: {
+    windows: {
+      single: 'Single Window Mode',
+      multi: 'Multi Window Mode',
+    },
+    visible: {
+      hid: 'Hidden Invisible Element',
+      show: 'Show Invisible Element',
+    },
+    unimportant: {
+      ignore: 'Ignore Unimportant View',
+      show: 'Show Unimportant View',
+    },
+  },
   driverStatus: {
     success: 'Init UIAutomator2 Server successful!',
     fail: 'Init UIAutomator2 Server failed!',
@@ -586,8 +609,8 @@ const androidRemoteTS = {
     refresh: 'Refresh',
     appName: 'APP Name',
     packagesName: 'Package Name',
-    version: 'Version number',
-    subversion: 'Subversion number',
+    version: 'Version',
+    subversion: 'Subversion',
     nameSearch: 'Search by application name or package name',
     open: 'Open',
     unInstall: 'Uninstall',
@@ -636,23 +659,23 @@ const androidRemoteTS = {
     addControls: 'Add element',
     controlSnapshot: 'Element Snapshot',
     titleMessage: 'Save elements after associating with a project',
-    pocoRecommend: 'poco recommendation',
+    pocoRecommend: 'poco recommend',
     pocoNull: 'No recommended syntax for poco yet',
-    xpath: 'xpath recommendation',
+    xpath: 'xpath recommend',
     xpathNull: 'No recommended syntax for xpath yet',
-    absolutePath: 'Absolute path',
-    centerXY: 'Center coordinates',
+    absolutePath: 'absolute path',
+    centerXY: 'center Point',
     label: {
-      one: 'Checkable or not',
-      two: 'Checkable or not',
-      three: 'Clickable or not',
-      four: 'Checked or not',
-      five: 'Show or not',
-      six: 'Available or not',
-      seven: 'Focusable or not',
-      eight: 'Focused or not',
-      nine: 'If or not long press is supported',
-      ten: 'Whether to support scrolling',
+      checkable: 'checkable',
+      checked: 'checked',
+      clickable: 'clickable',
+      selected: 'selected',
+      displayed: 'displayed',
+      enabled: 'enable',
+      focusable: 'focusable',
+      focused: 'focused',
+      longClickable: 'long-clickable',
+      scrollable: 'scrollable',
     },
     subTitleText:
       'Please get the element first, this function needs to initialize the Driver',

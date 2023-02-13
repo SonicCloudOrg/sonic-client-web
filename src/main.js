@@ -67,7 +67,7 @@ initApp().then(() => {
         if (resp.code === 2000) {
           store.commit('setUserInfo', resp.data);
           ElMessage.success({
-            message: `欢迎回来！${store.state.userInfo.userName}`,
+            message: `${$tc('dialog.welcome')}${store.state.userInfo.userName}`,
           });
           next();
         }

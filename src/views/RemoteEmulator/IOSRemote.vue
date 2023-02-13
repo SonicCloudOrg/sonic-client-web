@@ -1240,7 +1240,9 @@ function parseTimeout(time) {
   m = m < 10 ? `0${m}` : m;
   let s = parseInt(time % 60);
   s = s < 10 ? `0${s}` : s;
-  return `${h} 时 ${m} 分 ${s} 秒 `;
+  return `${h} ${$t('common.hour')} ${m} ${$t('common.min')} ${s} ${$t(
+    'common.sec'
+  )} `;
 }
 </script>
 
@@ -1303,8 +1305,9 @@ function parseTimeout(time) {
     :content="
       $t('routes.remoteControl') +
       ' - ' +
+      $t('common.at') +
       parseTimeout(remoteTimeout) +
-      '后将自动解除占用'
+      $t('common.release')
     "
     style="margin-top: 15px; margin-left: 20px"
     @back="close"
@@ -1925,7 +1928,7 @@ function parseTimeout(time) {
             </el-row>
             <el-card shadow="hover" style="margin-top: 15px">
               <el-table :data="currAppListPageData" border>
-                <el-table-column width="90" header-align="center">
+                <el-table-column width="100" header-align="center">
                   <template #header>
                     <el-button size="mini" @click="refreshAppList"
                       >{{ $t('androidRemoteTS.code.refresh') }}
@@ -2827,18 +2830,14 @@ function parseTimeout(time) {
                               <el-form-item label="index">
                                 <span>{{ elementDetail['index'] }}</span>
                               </el-form-item>
-                              <el-form-item
-                                :label="$t('androidRemoteTS.code.label.six')"
-                              >
+                              <el-form-item label="enabled">
                                 <el-switch
                                   :value="JSON.parse(elementDetail['enabled'])"
                                   disabled
                                 >
                                 </el-switch>
                               </el-form-item>
-                              <el-form-item
-                                :label="$t('androidRemoteTS.code.label.five')"
-                              >
+                              <el-form-item label="visible">
                                 <el-switch
                                   :value="JSON.parse(elementDetail['visible'])"
                                   disabled

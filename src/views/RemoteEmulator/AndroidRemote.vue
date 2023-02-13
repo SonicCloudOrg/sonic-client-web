@@ -1672,7 +1672,9 @@ function parseTimeout(time) {
   m = m < 10 ? `0${m}` : m;
   let s = parseInt(time % 60);
   s = s < 10 ? `0${s}` : s;
-  return `${h} 时 ${m} 分 ${s} 秒 `;
+  return `${h} ${$t('common.hour')} ${m} ${$t('common.min')} ${s} ${$t(
+    'common.sec'
+  )} `;
 }
 </script>
 
@@ -1735,8 +1737,9 @@ function parseTimeout(time) {
     :content="
       $t('routes.remoteControl') +
       ' - ' +
+      $t('common.at') +
       parseTimeout(remoteTimeout) +
-      '后将自动解除占用'
+      $t('common.release')
     "
     style="margin-top: 15px; margin-left: 20px"
     @back="close"
@@ -2710,7 +2713,7 @@ function parseTimeout(time) {
             </el-row>
             <el-card shadow="hover" style="margin-top: 15px">
               <el-table :data="currAppListPageData" border>
-                <el-table-column width="90" header-align="center">
+                <el-table-column width="100" header-align="center">
                   <template #header>
                     <el-button size="mini" @click="refreshAppList"
                       >{{ $t('androidRemoteTS.code.refresh') }}
@@ -3275,24 +3278,46 @@ function parseTimeout(time) {
                   >
                     <div>
                       <el-select v-model="isMultiWindows" size="mini">
-                        <el-option label="单窗口模式" :value="false" />
-                        <el-option label="多窗口模式" :value="true" />
+                        <el-option
+                          :label="$t('androidRemoteTS.element.windows.single')"
+                          :value="false"
+                        />
+                        <el-option
+                          :label="$t('androidRemoteTS.element.windows.multi')"
+                          :value="true"
+                        />
                       </el-select>
                       <el-select
                         v-model="isVisible"
                         style="margin-left: 10px"
                         size="mini"
                       >
-                        <el-option label="隐藏Invisible控件" :value="false" />
-                        <el-option label="显示Invisible控件" :value="true" />
+                        <el-option
+                          :label="$t('androidRemoteTS.element.visible.hid')"
+                          :value="false"
+                        />
+                        <el-option
+                          :label="$t('androidRemoteTS.element.visible.show')"
+                          :value="true"
+                        />
                       </el-select>
                       <el-select
                         v-model="isIgnore"
                         style="margin-left: 10px"
                         size="mini"
                       >
-                        <el-option label="忽略不重要视图" :value="true" />
-                        <el-option label="不忽略不重要视图" :value="false" />
+                        <el-option
+                          :label="
+                            $t('androidRemoteTS.element.unimportant.ignore')
+                          "
+                          :value="true"
+                        />
+                        <el-option
+                          :label="
+                            $t('androidRemoteTS.element.unimportant.show')
+                          "
+                          :value="false"
+                        />
                       </el-select>
                       <el-button
                         style="margin-left: 10px"
@@ -3658,7 +3683,9 @@ function parseTimeout(time) {
                                 <span>{{ elementDetail['index'] }}</span>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.one')"
+                                :label="
+                                  $t('androidRemoteTS.code.label.checkable')
+                                "
                               >
                                 <el-switch
                                   :value="
@@ -3669,7 +3696,9 @@ function parseTimeout(time) {
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.two')"
+                                :label="
+                                  $t('androidRemoteTS.code.label.checked')
+                                "
                               >
                                 <el-switch
                                   :value="JSON.parse(elementDetail['checked'])"
@@ -3678,7 +3707,9 @@ function parseTimeout(time) {
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.three')"
+                                :label="
+                                  $t('androidRemoteTS.code.label.clickable')
+                                "
                               >
                                 <el-switch
                                   :value="
@@ -3689,7 +3720,9 @@ function parseTimeout(time) {
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.four')"
+                                :label="
+                                  $t('androidRemoteTS.code.label.selected')
+                                "
                               >
                                 <el-switch
                                   :value="JSON.parse(elementDetail['selected'])"
@@ -3698,7 +3731,9 @@ function parseTimeout(time) {
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.five')"
+                                :label="
+                                  $t('androidRemoteTS.code.label.displayed')
+                                "
                               >
                                 <el-switch
                                   :value="
@@ -3709,7 +3744,9 @@ function parseTimeout(time) {
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.six')"
+                                :label="
+                                  $t('androidRemoteTS.code.label.enabled')
+                                "
                               >
                                 <el-switch
                                   :value="JSON.parse(elementDetail['enabled'])"
@@ -3718,7 +3755,9 @@ function parseTimeout(time) {
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.seven')"
+                                :label="
+                                  $t('androidRemoteTS.code.label.focusable')
+                                "
                               >
                                 <el-switch
                                   :value="
@@ -3729,7 +3768,9 @@ function parseTimeout(time) {
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.eight')"
+                                :label="
+                                  $t('androidRemoteTS.code.label.focused')
+                                "
                               >
                                 <el-switch
                                   :value="JSON.parse(elementDetail['focused'])"
@@ -3738,7 +3779,9 @@ function parseTimeout(time) {
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.nine')"
+                                :label="
+                                  $t('androidRemoteTS.code.label.longClickable')
+                                "
                               >
                                 <el-switch
                                   :value="
@@ -3749,7 +3792,9 @@ function parseTimeout(time) {
                                 </el-switch>
                               </el-form-item>
                               <el-form-item
-                                :label="$t('androidRemoteTS.code.label.ten')"
+                                :label="
+                                  $t('androidRemoteTS.code.label.scrollable')
+                                "
                               >
                                 <el-switch
                                   :value="
