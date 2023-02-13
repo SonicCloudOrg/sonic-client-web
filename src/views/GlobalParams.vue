@@ -151,7 +151,7 @@ onMounted(() => {
   }}</el-button>
   <el-table :data="pageData" style="width: 100%; margin-top: 20px" border>
     <el-table-column
-      :label="$t('globalParamsTs.paramsList.id')"
+      label="id"
       width="90"
       align="center"
       prop="id"

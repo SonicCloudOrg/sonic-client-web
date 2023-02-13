@@ -296,7 +296,7 @@ onMounted(() => {
         </el-switch>
       </template>
     </el-table-column>
-    <el-table-column :label="$t('common.operate')" width="250" align="center">
+    <el-table-column :label="$t('common.operate')" width="290" align="center">
       <template #default="scope">
         <el-button
           type="success"

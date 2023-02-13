@@ -19,7 +19,9 @@
 import axios from '@/http/axios';
 import { onMounted, ref } from 'vue';
 import { ElMessage } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const remoteTimeout = ref(0);
 
 const getRemoteTimeout = () => {
@@ -52,19 +54,19 @@ onMounted(() => {
 <template>
   <div>
     <el-alert
-      title="用于配置远程控制的最长占用时间，超过该时间后，会自动解除当前的占用情况恢复为空闲。（仅影响远程控制，运行测试的设备不受影响）"
+      :title="$t('settingIndexTS.remote.alertMsg')"
       type="info"
       :closable="false"
       style="margin-bottom: 10px"
     />
-    远控最长占用时间：
+    {{ $t('settingIndexTS.remote.text') }}
     <el-input-number v-model="remoteTimeout" :min="1" :max="9600" />
     min
     <el-divider />
     <div style="text-align: center">
-      <el-button type="primary" size="small" @click="setRemoteTimeout"
-        >保存</el-button
-      >
+      <el-button type="primary" size="small" @click="setRemoteTimeout">{{
+        $t('form.save')
+      }}</el-button>
     </div>
   </div>
 </template>

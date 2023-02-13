@@ -102,12 +102,7 @@ onMounted(() => {
     $t('publicStepTS.add')
   }}</el-button>
   <el-table :data="pageData['content']" border style="margin-top: 10px">
-    <el-table-column
-      width="100"
-      :label="$t('publicStepTS.id')"
-      prop="id"
-      align="center"
-    />
+    <el-table-column width="100" label="id" prop="id" align="center" />
     <el-table-column
       :label="$t('publicStepTS.name')"
       prop="name"
@@ -124,7 +119,7 @@ onMounted(() => {
     </el-table-column>
     <el-table-column
       :label="$t('publicStepTS.list')"
-      width="110"
+      width="130"
       align="center"
     >
       <template #default="scope">

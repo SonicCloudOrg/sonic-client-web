@@ -131,9 +131,7 @@ onMounted(() => {
           active-color="#13ce66"
           :active-value="1"
           :inactive-value="0"
-          @change="
-            updateStatus(scope.row.id, scope.row.needAuth === 1 ? true : false)
-          "
+          @change="updateStatus(scope.row.id, scope.row.needAuth === 1)"
         >
         </el-switch>
       </template>

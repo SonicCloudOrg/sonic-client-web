@@ -2,10 +2,12 @@
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { ElMessage } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 import Pageable from '../components/Pageable.vue';
 import ScriptUpdate from '../components/ScriptUpdate.vue';
 import axios from '../http/axios';
 
+const { t: $t } = useI18n();
 const route = useRoute();
 const id = ref(0);
 const pageData = ref({});
@@ -70,7 +72,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-dialog v-model="dialogVisible" title="模板信息" width="1200px">
+  <el-dialog v-model="dialogVisible" :title="$t('script.info')" width="1200px">
     <script-update
       v-if="dialogVisible"
       :id="id"
@@ -78,18 +80,18 @@ onMounted(() => {
       @flush="flush"
     />
   </el-dialog>
-  <el-button size="mini" round type="primary" @click="open()"
-    >新增模板</el-button
-  >
+  <el-button size="mini" round type="primary" @click="open()">{{
+    $t('script.add')
+  }}</el-button>
 
   <el-table style="margin-top: 20px" border :data="pageData.content">
-    <el-table-column align="center" width="80" property="id" label="脚本id" />
+    <el-table-column align="center" width="80" property="id" label="id" />
     <el-table-column header-align="center" property="name">
       <template #header>
         <el-input
           v-model="name"
           size="mini"
-          placeholder="输入名称搜索"
+          :placeholder="$t('script.typeSearch')"
           @input="getScriptList()"
         />
       </template>
@@ -98,12 +100,15 @@ onMounted(() => {
       align="center"
       width="100"
       property="scriptLanguage"
-      label="脚本语言"
+      :label="$t('script.lang')"
     />
-    <el-table-column align="center" width="150" label="操作">
+    <el-table-column align="center" width="170" :label="$t('common.operate')">
       <template #default="scope">
-        <el-button type="primary" size="mini" @click="editScript(scope.row.id)"
-          >编辑</el-button
+        <el-button
+          type="primary"
+          size="mini"
+          @click="editScript(scope.row.id)"
+          >{{ $t('common.edit') }}</el-button
         >
         <el-popconfirm
           style="margin-left: 10px"
@@ -111,11 +116,13 @@ onMounted(() => {
           :cancel-button-text="$t('form.cancel')"
           icon="el-icon-warning"
           icon-color="red"
-          title="确定删除该脚本模板吗？"
+          :title="$t('script.deleteMsg')"
           @confirm="deleteScript(scope.row.id)"
         >
           <template #reference>
-            <el-button type="danger" size="mini">删除</el-button>
+            <el-button type="danger" size="mini">{{
+              $t('common.delete')
+            }}</el-button>
           </template>
         </el-popconfirm>
       </template>

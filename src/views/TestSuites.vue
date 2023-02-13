@@ -154,7 +154,7 @@ onMounted(() => {
     </el-table-column>
     <el-table-column
       :label="$t('testSuitesTS.associated')"
-      width="130"
+      width="160"
       align="center"
     >
       <template #default="scope">
@@ -196,7 +196,7 @@ onMounted(() => {
     </el-table-column>
     <el-table-column
       :label="$t('testSuitesTS.associatedCase')"
-      width="130"
+      width="170"
       align="center"
     >
       <template #default="scope">

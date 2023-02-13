@@ -220,9 +220,9 @@ const getData = () => {
         const option = {
           animationDuration: 3000,
           title: {
-            text:
-              store.state.project.projectName +
-              $t('projectIndexTS.code.runInfo'),
+            text: `${store.state.project.projectName} - ${$t(
+              'projectIndexTS.code.runInfo'
+            )}`,
             subtext: `${times.value[0]} ~ ${times.value[1]}`,
             textStyle: {
               color: '#606266',
@@ -282,7 +282,7 @@ const getData = () => {
                 return { name, value: obj.value };
               }),
               label: {
-                formatter: '{b}: {@2012}次 ({d}%)',
+                formatter: '{b}: {@2012} ({d}%)',
               },
             },
           ],
@@ -394,7 +394,7 @@ onUnmounted(() => {
             align="center"
             prop="device_id"
             :label="$t('elements.picture')"
-            width="60"
+            width="70"
           >
             <template #default="scope">
               <img

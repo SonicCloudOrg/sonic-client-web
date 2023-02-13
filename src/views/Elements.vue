@@ -218,12 +218,7 @@ onMounted(() => {
     border
     @filter-change="filter"
   >
-    <el-table-column
-      :label="$t('elements.controlId')"
-      width="90"
-      align="center"
-      prop="id"
-    >
+    <el-table-column label="id" width="90" align="center" prop="id">
     </el-table-column>
 
     <el-table-column
@@ -266,12 +261,15 @@ onMounted(() => {
       :filters="[
         { text: 'id（resource-id）', value: 'id' },
         { text: 'xpath', value: 'xpath' },
+        { text: 'accessibilityId', value: 'accessibilityId' },
+        { text: 'classChain', value: 'classChain' },
+        { text: 'POCO', value: 'poco' },
         { text: 'name', value: 'name' },
         { text: 'cssSelector', value: 'cssSelector' },
         { text: $t('elements.coordinate'), value: 'point' },
         { text: $t('elements.picture'), value: 'image' },
         { text: 'nsPredicate', value: 'nsPredicate' },
-        { text: 'androidUIAutomator', value: 'androidUIAutomator' },
+        { text: 'uiautomator', value: 'androidUIAutomator' },
         { text: 'linkText', value: 'linkText' },
         { text: 'className', value: 'className' },
         { text: 'tagName', value: 'tagName' },
@@ -322,7 +320,7 @@ onMounted(() => {
       </template>
     </el-table-column>
 
-    <el-table-column :label="$t('common.operate')" width="210" align="center">
+    <el-table-column :label="$t('common.operate')" width="230" align="center">
       <template #default="scope">
         <el-button
           type="primary"

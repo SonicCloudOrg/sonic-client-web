@@ -1,6 +1,13 @@
 /**
  * ZH_CN language
  */
+const script = {
+  info: '模板信息',
+  add: '新增模板',
+  typeSearch: '输入名称搜索',
+  lang: '脚本语言',
+  deleteMsg: '确定删除该脚本模板吗？',
+};
 const robot = {
   robotType: '机器人类型',
   robotTypePlaceholder: '请选择机器人类型',
@@ -120,6 +127,7 @@ const layout = {
   welcomeSpeech: '欢迎来到Sonic云真机测试平台，请选择项目进入',
   addProject: '新增项目',
   officialWebSite: 'Sonic官方网站',
+  document: '使用文档',
   versionUpdateRecord: '版本更新记录',
 };
 // 表单相关
@@ -464,6 +472,7 @@ const testSuitesTS = {
   delMessage: '确定删除该测试套件吗？套件下的用例将移出该套件',
 };
 const versionsTS = {
+  name: '名称',
   iteration: '版本迭代信息',
   noNull: '版本名称不能为空',
   inputName: '请输入版本名称',
@@ -699,6 +708,11 @@ const settingIndexTS = {
     scheduled: '系统定时任务',
     remoteSettings: '远程控制配置',
   },
+  remote: {
+    alertMsg:
+      '用于配置远程控制的最长占用时间，超过该时间后，会自动解除当前的占用情况恢复为空闲。（仅影响远程控制，运行测试的设备不受影响）',
+    text: '远控最长占用时间：',
+  },
 };
 const resourceTS = {
   syncSucceed: '同步成功!',
@@ -856,5 +870,6 @@ export default {
     sysJobsTS,
     usersTS,
     IOSRemote,
+    script,
   },
 };

@@ -302,7 +302,7 @@ const changeLocaleHandler = function (val) {
               <el-menu-item
                 index="2-0"
                 @click="goToUrl('https://sonic-cloud.cn/document')"
-                >使用文档
+                >{{ $t('layout.document') }}
               </el-menu-item>
               <el-menu-item
                 index="2-2"

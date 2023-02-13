@@ -103,7 +103,7 @@ onMounted(() => {
     >
       <el-form-item
         prop="versionName"
-        :label="$t('stepListViewTS.versionName')"
+        :label="$t('versionsTS.name')"
         :rules="{
           required: true,
           message: $t('versionsTS.noNull'),

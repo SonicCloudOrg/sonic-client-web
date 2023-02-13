@@ -383,7 +383,7 @@ onUnmounted(() => {
           v-if="results['id']"
           label-position="left"
           class="demo-table-expand"
-          label-width="80px"
+          label-width="120px"
           style="margin-left: 10px; word-break: break-all"
         >
           <el-form-item :label="$t('resultDetailTS.page.resultId')">
