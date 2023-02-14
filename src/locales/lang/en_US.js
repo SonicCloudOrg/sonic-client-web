@@ -1,6 +1,18 @@
 /**
  * EN language
  */
+const perf = {
+  select: '(Optional) Click here to select the listening application process performance',
+  start: 'Start',
+  stop: 'Stop',
+  clear: 'Clear',
+  singleCpu: 'CPU Single Usage',
+  totalCpu: 'CPU Total Usage',
+  memUsage: 'Memory Usage',
+  network: 'Network',
+  procCpu: 'CPU Usage',
+  emptyData: 'No Data',
+};
 const script = {
   info: 'Template information',
   add: 'New template',
@@ -888,5 +900,6 @@ export default {
     usersTS,
     IOSRemote,
     script,
+    perf,
   },
 };

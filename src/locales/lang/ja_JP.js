@@ -1,6 +1,18 @@
 /**
  * JP language
  */
+const perf = {
+  select: '(可选) 点此可指定监听应用Process性能',
+  start: '开始监控',
+  stop: '停止监控',
+  clear: '清空数据',
+  singleCpu: 'CPU单核使用率',
+  totalCpu: 'CPU总使用率',
+  memUsage: '内存占用',
+  network: '上下行',
+  procCpu: 'CPU使用率',
+  emptyData: '暂无数据',
+};
 const script = {
   info: '模板信息',
   add: '新增模板',
@@ -873,5 +885,6 @@ export default {
     usersTS,
     IOSRemote,
     script,
+    perf,
   },
 };

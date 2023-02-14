@@ -66,7 +66,7 @@ defineExpose({ setData });
       filterable
       clearable
       size="mini"
-      placeholder="(可选) 点此可指定监听应用Process性能"
+      :placeholder="$t('perf.select')"
     >
       <el-option v-for="a in appList" :value="a.packageName">
         <div style="display: flex; align-items: center">
@@ -99,19 +99,19 @@ defineExpose({ setData });
       <el-icon :size="12" style="vertical-align: middle">
         <View />
       </el-icon>
-      开始监控
+      {{ $t('perf.start') }}
     </el-button>
     <el-button type="warning" size="mini" @click="stopPerfmon">
       <el-icon :size="12" style="vertical-align: middle">
         <VideoPause />
       </el-icon>
-      停止监控
+      {{ $t('perf.stop') }}
     </el-button>
     <el-button type="danger" size="mini" @click="clearPerfmon">
       <el-icon :size="12" style="vertical-align: middle">
         <Delete />
       </el-icon>
-      清空数据
+      {{ $t('perf.clear') }}
     </el-button>
     <android-perf-chart
       ref="androidPerfChart"
