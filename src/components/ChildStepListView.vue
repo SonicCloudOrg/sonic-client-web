@@ -32,9 +32,10 @@ const props = defineProps({
       v-for="(s, index) in steps"
       :key="index"
       :timestamp="
-        '步骤' +
+        $t('steps.step') +
         (index + 1) +
-        '  - 所属用例：' +
+        '  - ' +
+        $t('steps.cases') +
         (s.caseId === 0 ? $t('common.null') : s.caseId)
       "
       placement="top"
@@ -55,5 +56,5 @@ const props = defineProps({
       </div>
     </el-timeline-item>
   </el-timeline>
-  <el-empty v-else description="暂无步骤"></el-empty>
+  <el-empty v-else :description="$t('steps.empty')"></el-empty>
 </template>

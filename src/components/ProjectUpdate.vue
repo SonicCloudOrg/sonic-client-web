@@ -3,8 +3,10 @@ import { onMounted, ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import { useI18n } from 'vue-i18n';
 import axios from '../http/axios';
 
+const { t: $t } = useI18n();
 const props = defineProps({
   isUpdate: Boolean,
 });
@@ -43,22 +45,22 @@ const robotList = [
   { name: '企业微信机器人', value: 2, img: 'WeChat' },
   { name: '飞书群机器人', value: 3, img: 'FeiShu' },
   { name: '友空间机器人', value: 4, img: 'You' },
-  { name: 'Telegram机器人', value: 5, img: 'Telegram' },
+  { name: 'Telegram Bot', value: 5, img: 'Telegram' },
   { name: 'LINE Notify', value: 6, img: 'LineNotify' },
-  { name: 'Slack Bot', value: 7, img: 'SlackBot'},
+  { name: 'Slack Bot', value: 7, img: 'SlackBot' },
 ];
 const beforeAvatarUpload = (file) => {
   if (file.name.endsWith('.jpg') || file.name.endsWith('.png')) {
     return true;
   }
   ElMessage.error({
-    message: '文件格式有误！',
+    message: $t('dialog.suffixError'),
   });
   return false;
 };
 const limitOut = () => {
   ElMessage.error({
-    message: '只能添加一个文件！请先移除旧文件',
+    message: $t('androidRemoteTS.addOne'),
   });
 };
 const upload = (content) => {
@@ -126,7 +128,7 @@ onMounted(() => {
     label-width="100px"
     class="project-table-expand"
   >
-    <el-form-item label="项目Logo" prop="projectImg">
+    <el-form-item :label="$t('project.logo')" prop="projectImg">
       <el-upload
         action=""
         list-type="picture-card"
@@ -140,32 +142,32 @@ onMounted(() => {
       </el-upload>
     </el-form-item>
     <el-form-item
-      label="项目名称"
+      :label="$t('project.name')"
       prop="projectName"
       :rules="{
         required: true,
-        message: '项目名称不能为空',
+        message: $t('project.nameMessage'),
         trigger: 'blur',
       }"
     >
       <el-input
         v-model="project.projectName"
-        placeholder="请输入项目名"
+        :placeholder="$t('project.namePlace')"
       ></el-input>
     </el-form-item>
-    <el-form-item label="项目描述" prop="projectDes">
+    <el-form-item :label="$t('project.des')" prop="projectDes">
       <el-input
         v-model="project.projectDes"
         type="textarea"
         :rows="5"
-        placeholder="请输入项目描述"
+        :placeholder="$t('project.desPlace')"
       ></el-input>
     </el-form-item>
-    <el-form-item label="机器人类型">
+    <el-form-item :label="$t('robot.robotType')">
       <el-select
         v-model="project.robotType"
         style="width: 100%"
-        placeholder="请选择机器人类型"
+        :placeholder="$t('robot.robotTypePlaceholder')"
       >
         <el-option
           v-for="item in robotList"
@@ -186,29 +188,23 @@ onMounted(() => {
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="机器人Hook" prop="robotToken">
+    <el-form-item :label="$t('robot.robotToken')" prop="robotToken">
       <el-input
         v-model="project.robotToken"
-        placeholder="请输入群机器人的WebHook"
+        :placeholder="$t('robot.robotTokenPlaceholder')"
       ></el-input>
-      <span style="font-size: 13px; color: #999"
-        >填写群机器人的WebHook，可在机器人设置页面查看，机器人用于报告通知</span
-      >
     </el-form-item>
-    <el-form-item label="机器人密钥" prop="robotSecret">
+    <el-form-item :label="$t('robot.robotSecret')" prop="robotSecret">
       <el-input
         v-model="project.robotSecret"
-        placeholder="（可选）请输入群机器人的密钥"
+        :placeholder="$t('robot.robotSecretPlaceholder')"
         type="password"
       ></el-input>
-      <span style="font-size: 13px; color: #999"
-        >（可选）填写群机器人的密钥，可在机器人设置页面查看</span
-      >
     </el-form-item>
   </el-form>
   <div style="text-align: center">
     <el-button size="medium" type="primary" icon="el-icon-edit" @click="summit"
-      >提交
+      >{{ $t('form.save') }}
     </el-button>
     <el-button
       v-if="isUpdate"
@@ -216,24 +212,26 @@ onMounted(() => {
       size="medium"
       icon="el-icon-delete"
       @click="dialogDel = true"
-      >删除项目
+      >{{ $t('project.delete') }}
     </el-button>
   </div>
-  <el-dialog v-model="dialogDel" title="警告" width="25%" center>
+  <el-dialog v-model="dialogDel" width="25%" center>
     <div style="text-align: center">
-      <p>确定删除这个项目吗？</p>
+      <p>{{ $t('project.deleteConfirmMsg') }}</p>
       <p style="color: red">
-        <i class="el-icon-warning">项目包含的所有信息将一并删除！</i>
+        <i class="el-icon-warning">{{ $t('project.deleteConfirmMsgDes') }}</i>
       </p>
     </div>
     <template #footer>
-      <el-button size="small" @click="dialogDel = false">取 消</el-button>
+      <el-button size="small" @click="dialogDel = false">{{
+        $t('form.cancel')
+      }}</el-button>
       <el-button
         v-loading.fullscreen.lock="fullscreenLoading"
         size="small"
         type="danger"
         @click="delProject"
-        >确 定
+        >{{ $t('form.confirm') }}
       </el-button>
     </template>
   </el-dialog>

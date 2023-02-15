@@ -29,6 +29,7 @@ import {
 import { LineChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 import { nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 echarts.use([
   DataZoomComponent,
@@ -41,6 +42,7 @@ echarts.use([
   TooltipComponent,
 ]);
 
+const { t: $t } = useI18n();
 const props = defineProps({
   rid: String,
   cid: Number,
@@ -101,7 +103,7 @@ const printCpu = () => {
         xAxisIndex: [0, 1],
       },
     ],
-    yAxis: [{ name: 'CPU使用率(%)', min: 0 }],
+    yAxis: [{ name: `${$t('perf.totalCpu')}(%)`, min: 0 }],
     series: [
       {
         type: 'line',
@@ -176,7 +178,7 @@ const printMem = () => {
         xAxisIndex: [0, 1],
       },
     ],
-    yAxis: [{ name: '内存占用(b)', min: 0 }],
+    yAxis: [{ name: `${$t('perf.memUsage')}(b)`, min: 0 }],
     series: [
       {
         name: 'App Memory',
@@ -287,7 +289,7 @@ const printGpu = () => {
         xAxisIndex: [0, 1],
       },
     ],
-    yAxis: [{ name: '利用率(%)', min: 0 }],
+    yAxis: [{ name: '(%)', min: 0 }],
     series: [
       {
         name: 'Device Utilization',
@@ -425,7 +427,7 @@ const printDisk = () => {
         xAxisIndex: [0, 1],
       },
     ],
-    yAxis: [{ name: '数据量(b)', min: 0 }],
+    yAxis: [{ name: `${$t('perf.byteData')}(b)`, min: 0 }],
     series: [
       {
         name: 'Data Read',
@@ -514,7 +516,7 @@ const printNetwork = () => {
         xAxisIndex: [0, 1],
       },
     ],
-    yAxis: [{ name: '上下行(b)', min: 0 }],
+    yAxis: [{ name: `${$t('perf.network')}(b)`, min: 0 }],
     series: [
       {
         name: 'Bytes In',
@@ -600,7 +602,7 @@ const printPerfCpu = () => {
         xAxisIndex: [0, 1],
       },
     ],
-    yAxis: [{ name: 'CPU使用率(%)', min: 0 }],
+    yAxis: [{ name: `${$t('perf.procCpu')}(%)`, min: 0 }],
     series: [
       {
         type: 'line',
@@ -675,7 +677,7 @@ const printPerfMem = () => {
         xAxisIndex: [0, 1],
       },
     ],
-    yAxis: [{ name: '内存占用(b)', min: 0 }],
+    yAxis: [{ name: `${$t('perf.memUsage')}(b)`, min: 0 }],
     series: [
       {
         name: 'Mem Anon',
@@ -808,7 +810,7 @@ const switchTab = (e) => {
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysCpuChart'"
               v-loading="cpu.length === 0"
-              element-loading-text="暂无数据"
+              :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
             ></div>
@@ -819,7 +821,7 @@ const switchTab = (e) => {
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysMemChart'"
               v-loading="mem.length === 0"
-              element-loading-text="暂无数据"
+              :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
             ></div>
@@ -830,7 +832,7 @@ const switchTab = (e) => {
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysGpuChart'"
               v-loading="gpu.length === 0"
-              element-loading-text="暂无数据"
+              :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
             ></div>
@@ -841,7 +843,7 @@ const switchTab = (e) => {
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysFpsChart'"
               v-loading="fps.length === 0"
-              element-loading-text="暂无数据"
+              :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
             ></div>
@@ -852,7 +854,7 @@ const switchTab = (e) => {
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysDiskChart'"
               v-loading="disk.length === 0"
-              element-loading-text="暂无数据"
+              :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
             ></div>
@@ -863,7 +865,7 @@ const switchTab = (e) => {
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysNetworkChart'"
               v-loading="network.length === 0"
-              element-loading-text="暂无数据"
+              :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
             ></div>
@@ -876,7 +878,7 @@ const switchTab = (e) => {
         <div
           :id="rid + '-' + cid + '-' + did + '-' + 'perfCpuChart'"
           v-loading="procPerf.length === 0"
-          element-loading-text="暂无数据"
+          :element-loading-text="$t('perf.emptyData')"
           element-loading-spinner="el-icon-box"
           style="width: 100%; height: 350px"
         ></div>
@@ -885,7 +887,7 @@ const switchTab = (e) => {
         <div
           :id="rid + '-' + cid + '-' + did + '-' + 'perfMemChart'"
           v-loading="procPerf.length === 0"
-          element-loading-text="暂无数据"
+          :element-loading-text="$t('perf.emptyData')"
           element-loading-spinner="el-icon-box"
           style="width: 100%; height: 350px"
         ></div>

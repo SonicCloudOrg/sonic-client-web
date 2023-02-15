@@ -1,7 +1,9 @@
 <script setup>
 import axios from '@/http/axios';
 import { ElMessage } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const statusList = {
   ONLINE: {
     type: 'success',
@@ -47,7 +49,7 @@ const stopDebug = () => {
 <template>
   <el-popconfirm
     v-if="udId.length > 0 && status === 'DEBUGGING'"
-    title="确定强制解除该设备占用状态吗？"
+    :title="$t('common.releaseTip')"
     icon-color="#F56C6C"
     @confirm="stopDebug"
   >

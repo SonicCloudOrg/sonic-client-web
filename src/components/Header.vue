@@ -31,11 +31,11 @@ const copy = (value) => {
   try {
     toClipboard(value);
     ElMessage.success({
-      message: '复制成功！',
+      message: $t('dialog.copy.success'),
     });
   } catch (e) {
     ElMessage.error({
-      message: '复制失败！',
+      message: $t('dialog.copy.fail'),
     });
   }
 };
@@ -444,10 +444,10 @@ const changeLocaleHandler = function (val) {
         v-if="dialogToken"
         label-position="left"
         class="demo-table-expand"
-        label-width="70px"
+        label-width="90px"
         size="small"
       >
-        <el-form-item label="过期天数">
+        <el-form-item :label="$t('token.day')">
           <el-input-number
             v-model="day"
             size="small"
@@ -455,15 +455,15 @@ const changeLocaleHandler = function (val) {
             :max="999"
           ></el-input-number>
         </el-form-item>
-        <el-form-item label="生成结果">
+        <el-form-item :label="$t('token.result')">
           <div
             v-if="tokenNew !== ''"
             style="cursor: pointer"
             @click="copy(tokenNew)"
           >
-            {{ tokenNew.substring(0, 15) + '*******(请点击复制)' }}
+            {{ tokenNew.substring(0, 15) + '*******' + $t('token.click') }}
           </div>
-          <div v-else>点击确定后在此处复制</div>
+          <div v-else>{{ $t('token.copy') }}</div>
         </el-form-item>
       </el-form>
       <div style="text-align: center">

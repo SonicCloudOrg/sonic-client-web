@@ -1,6 +1,63 @@
 /**
  * ZH_TW language
  */
+const pubSteps = {
+  auto: '自动保存中...',
+  selectPass: '选择成功！已加入到已选步骤',
+  removePass: '移出成功！',
+  stepInfo: '步骤信息',
+  name: '公共步骤名称',
+  nameMsg: '公共步骤名称不能为空',
+  namePlace: '请输入公共步骤名称',
+  platform: '平台',
+  platformPlace: '请选择平台',
+  stepTip: '保存后即可编辑已选步骤',
+  selected: '已选步骤',
+  list: '步骤列表',
+  listTip: '从此处添加或编辑步骤，并加入到已选步骤中',
+  addStep: '添加步骤',
+  searchPlace: '按照控件元素名称搜索',
+  search: '搜索',
+  case: '所属用例Id',
+  deleteCaseTip: '确定彻底删除该步骤吗？',
+  goToCase: '前往用例详情',
+  goToCaseTip: '该步骤存在于用例中，删除前需前往用例详情移出！',
+};
+const steps = {
+  step: '步骤',
+  cases: '所属用例：',
+  empty: '暂无步骤',
+};
+const code = {
+  placeholder: '请选择',
+  settings: '设置',
+  temp: '导入模板',
+  table: {
+    name: '输入名称搜索',
+    lang: '脚本语言',
+    type: '导入方式',
+    add: '追加',
+    replace: '替换',
+  },
+  tip: '编辑后记得保存哦',
+};
+const token = {
+  day: '过期天数',
+  result: '生成结果',
+  click: '(请点击复制)',
+  copy: '点击确定后在此处复制',
+};
+const project = {
+  logo: '项目Logo',
+  name: '项目名称',
+  nameMessage: '项目名称不能为空',
+  namePlace: '请输入项目名',
+  des: '项目描述',
+  desPlace: '请输入项目描述',
+  delete: '删除项目',
+  deleteConfirmMsg: '确定删除这个项目吗？',
+  deleteConfirmMsgDes: '项目包含的所有信息将一并删除！',
+};
 const perf = {
   select: '(可选) 点此可指定监听应用Process性能',
   start: '开始监控',
@@ -12,6 +69,7 @@ const perf = {
   network: '上下行',
   procCpu: 'CPU使用率',
   emptyData: '暂无数据',
+  byteData: '数据量',
 };
 const script = {
   info: '模板信息',
@@ -179,6 +237,7 @@ const dialog = {
 // 一般操作
 const common = {
   release: '后将自动解除占用',
+  releaseTip: '确定强制解除该设备占用状态吗？',
   at: '在 ',
   hour: '时',
   min: '分',
@@ -884,5 +943,10 @@ export default {
     IOSRemote,
     script,
     perf,
+    steps,
+    code,
+    token,
+    project,
+    pubSteps,
   },
 };

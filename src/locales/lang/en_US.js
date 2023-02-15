@@ -1,8 +1,68 @@
 /**
  * EN language
  */
+const pubSteps = {
+  auto: 'Auto Saving...',
+  selectPass: 'Selection successful! Added to the selected step',
+  removePass: 'Remove successful!',
+  stepInfo: 'Step Info',
+  name: 'Name',
+  nameMsg: 'Public step name cannot be empty',
+  namePlace: 'Please enter pubic step name',
+  platform: 'Platform',
+  platformPlace: 'Please select platform',
+  stepTip: 'You can edit the selected steps after saving',
+  selected: 'Selected Steps',
+  list: 'Step List',
+  listTip: 'Add or edit steps from here and add to the selected steps',
+  addStep: 'Add steps',
+  searchPlace: 'Search by element name',
+  search: 'Search',
+  case: 'CaseId',
+  deleteCaseTip: 'Are you sure to delete this step completely?',
+  goToCase: 'Go to case details',
+  goToCaseTip:
+    'This step exists in the case. You need to go to the use case details before deleting!',
+};
+const steps = {
+  step: 'Step',
+  cases: 'CaseId: ',
+  empty: 'Empty Step',
+};
+const code = {
+  placeholder: 'Please choose language',
+  settings: 'Settings',
+  temp: 'Import',
+  table: {
+    name: 'Enter name to search',
+    lang: 'Language',
+    type: 'Import Type',
+    add: 'add',
+    replace: 'replace',
+  },
+  tip: 'Remember to save after editing',
+};
+const token = {
+  day: 'Expiration',
+  result: 'Result',
+  click: '(Click to copy)',
+  copy: 'Click Confirm to copy here',
+};
+const project = {
+  logo: 'Project Logo',
+  name: 'Name',
+  nameMessage: 'Project name cannot be empty',
+  namePlace: 'Please enter project name',
+  des: 'Description',
+  desPlace: 'Please enter project description',
+  delete: 'Delete Project',
+  deleteConfirmMsg: 'Are you sure to delete this project?',
+  deleteConfirmMsgDes:
+    'All information contained in the project will be deleted!',
+};
 const perf = {
-  select: '(Optional) Click here to select the listening application process performance',
+  select:
+    '(Optional) Click here to select the listening application process performance',
   start: 'Start',
   stop: 'Stop',
   clear: 'Clear',
@@ -12,6 +72,7 @@ const perf = {
   network: 'Network',
   procCpu: 'CPU Usage',
   emptyData: 'No Data',
+  byteData: 'Data',
 };
 const script = {
   info: 'Template information',
@@ -180,6 +241,8 @@ const dialog = {
 // 通用操作
 const common = {
   release: 'the occupation will be automatically released',
+  releaseTip:
+    'Are you sure you want to forcibly remove the occupation status of this device?',
   at: 'After ',
   hour: 'h',
   min: 'm',
@@ -187,7 +250,7 @@ const common = {
   null: 'Null',
   delete: 'Delete',
   edit: 'Edit',
-  operate: 'Opertation',
+  operate: 'Operation',
   copy: 'Copy',
 };
 // 路由
@@ -901,5 +964,10 @@ export default {
     IOSRemote,
     script,
     perf,
+    steps,
+    code,
+    token,
+    project,
+    pubSteps,
   },
 };

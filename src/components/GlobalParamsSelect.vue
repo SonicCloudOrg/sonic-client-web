@@ -35,7 +35,6 @@ const getGlobalParamsList = (event) => {
       value-key="id"
       allow-create
       :placeholder="place"
-      placeholder="请输入变量名称筛选"
       @visible-change="getGlobalParamsList"
     >
       <el-option
