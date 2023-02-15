@@ -134,6 +134,7 @@ const robotList = [
   { name: '友空间机器人', value: 4, img: 'You' },
   { name: 'Telegram机器人', value: 5, img: 'Telegram' },
   { name: 'LINE Notify', value: 6, img: 'LineNotify' },
+  { name: 'Slack', value: 7, img: 'SlackNotify'},
 ];
 const dialogAgent = ref(false);
 const dialogHub = ref(false);
