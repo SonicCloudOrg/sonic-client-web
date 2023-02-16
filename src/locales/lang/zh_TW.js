@@ -2,6 +2,13 @@
  * ZH_TW language
  */
 const pubSteps = {
+  pList: '公共步骤列表',
+  alertOne: '该步骤已存在于以下公共步骤中！',
+  alertTwo: '选择【仅移出本用例】后，步骤从本用例删除，不影响以下公共步骤。',
+  alertThree:
+    '选择【彻底删除】后，本步骤从本用例删除，并且从以下公共步骤中删除本步骤。',
+  resetCaseId: '仅移出本用例',
+  deleteReal: '彻底删除',
   auto: '自动保存中...',
   selectPass: '选择成功！已加入到已选步骤',
   removePass: '移出成功！',
@@ -27,6 +34,8 @@ const steps = {
   step: '步骤',
   cases: '所属用例：',
   empty: '暂无步骤',
+  remove: '确定移除该步骤吗？',
+  run: '开始运行',
 };
 const code = {
   placeholder: '请选择',
@@ -72,6 +81,8 @@ const perf = {
   byteData: '数据量',
 };
 const script = {
+  name: '模板名称',
+  namePlace: '请填写模板名称',
   info: '模板信息',
   add: '新增模板',
   typeSearch: '输入名称搜索',

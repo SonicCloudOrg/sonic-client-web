@@ -2,6 +2,14 @@
  * EN language
  */
 const pubSteps = {
+  pList: 'Public Steps List',
+  alertOne: 'This step already exists in the following public steps!',
+  alertTwo:
+    'After selecting 【Remove Only This Case】, the steps are deleted from this case, and the following public steps are not affected.',
+  alertThree:
+    'After selecting 【Delete Completely】, this step is deleted from this case and from the following public steps.',
+  resetCaseId: 'Remove Only This Case',
+  deleteReal: 'Delete Completely',
   auto: 'Auto Saving...',
   selectPass: 'Selection successful! Added to the selected step',
   removePass: 'Remove successful!',
@@ -28,6 +36,8 @@ const steps = {
   step: 'Step',
   cases: 'CaseId: ',
   empty: 'Empty Step',
+  remove: 'Are you sure to delete this step?',
+  run: 'Run Steps',
 };
 const code = {
   placeholder: 'Please choose language',
@@ -75,6 +85,8 @@ const perf = {
   byteData: 'Data',
 };
 const script = {
+  name: 'Name',
+  namePlace: 'Please enter template name',
   info: 'Template information',
   add: 'New template',
   typeSearch: 'Enter name to search',

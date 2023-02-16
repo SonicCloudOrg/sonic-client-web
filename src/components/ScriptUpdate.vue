@@ -18,9 +18,11 @@
  */
 import { onMounted, ref } from 'vue';
 import { ElMessage } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 import CodeEditor from './CodeEditor.vue';
 import axios from '../http/axios';
 
+const { t: $t } = useI18n();
 const props = defineProps({
   projectId: Number,
   id: Number,
@@ -84,14 +86,18 @@ onMounted(() => {
   >
     <el-form-item
       prop="name"
-      label="模板名称"
+      :label="$t('script.name')"
       :rules="{
         required: true,
-        message: '请填写模板名称',
+        message: $t('script.namePlace'),
         trigger: 'blur',
       }"
     >
-      <el-input v-model="script.name" size="mini" placeholder="输入模板名称" />
+      <el-input
+        v-model="script.name"
+        size="mini"
+        :placeholder="$t('script.namePlace')"
+      />
     </el-form-item>
 
     <div style="margin: 4px 0">

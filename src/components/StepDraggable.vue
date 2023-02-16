@@ -26,9 +26,11 @@ import {
   CopyDocument,
 } from '@element-plus/icons';
 import { ElMessage } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 import StepShow from './StepShow.vue';
 import axios from '../http/axios';
 
+const { t: $t } = useI18n();
 const props = defineProps({
   steps: Array,
   isEdit: {
@@ -116,7 +118,7 @@ const copyStep = (id) => {
       <el-timeline-item
         v-for="(s, index) in steps"
         :key="index"
-        :timestamp="'步骤' + (index + 1)"
+        :timestamp="$t('steps.step') + (index + 1)"
         placement="top"
         :type="
           s['error'] === 1 ? 'primary' : s['error'] === 2 ? 'warning' : 'danger'
@@ -180,7 +182,7 @@ const copyStep = (id) => {
                 :cancel-button-text="$t('form.cancel')"
                 icon="el-icon-warning"
                 icon-color="red"
-                title="确定移除该步骤吗？"
+                :title="$t('steps.remove')"
                 @confirm="deleteStep(s.id)"
               >
                 <template #reference>
@@ -243,7 +245,7 @@ const copyStep = (id) => {
               :cancel-button-text="$t('form.cancel')"
               icon="el-icon-warning"
               icon-color="red"
-              title="确定移除该步骤吗？"
+              :title="$t('steps.remove')"
               @confirm="deleteStep(s.id)"
             >
               <template #reference>
@@ -259,5 +261,5 @@ const copyStep = (id) => {
       </el-timeline-item>
     </VueDraggableNext>
   </el-timeline>
-  <el-empty v-else description="暂无步骤"></el-empty>
+  <el-empty v-else :description="$t('steps.empty')"></el-empty>
 </template>

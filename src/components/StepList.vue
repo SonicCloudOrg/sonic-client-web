@@ -1,10 +1,12 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import { ElMessage } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 import axios from '../http/axios';
 import StepDraggable from './StepDraggable.vue';
 import StepUpdate from './StepUpdate.vue';
 
+const { t: $t } = useI18n();
 const steps = ref([]);
 const props = defineProps({
   caseId: Number,
@@ -136,15 +138,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-dialog v-model="checkDialog" title="公共步骤列表" width="600px">
-    <el-alert title="警告" type="warning" show-icon :closable="false">
+  <el-dialog v-model="checkDialog" :title="$t('pubSteps.pList')" width="600px">
+    <el-alert title="Warning" type="warning" show-icon :closable="false">
       <template #default>
-        <div>该步骤已存在于以下公共步骤中！</div>
+        <div>{{ $t('pubSteps.alertOne') }}</div>
         <div>
-          选择【仅移出本用例】后，步骤从本用例删除，不影响以下公共步骤。
+          {{ $t('pubSteps.alertTwo') }}
         </div>
         <div>
-          选择【彻底删除】后，本步骤从本用例删除，并且从以下公共步骤中删除本步骤。
+          {{ $t('pubSteps.alertThree') }}
         </div>
       </template>
     </el-alert>
@@ -155,19 +157,27 @@ onMounted(() => {
         label="id"
         align="center"
       ></el-table-column>
-      <el-table-column prop="name" label="公共步骤名称" header-align="center">
+      <el-table-column
+        prop="name"
+        :label="$t('pubSteps.name')"
+        header-align="center"
+      >
       </el-table-column>
     </el-table>
     <div style="text-align: center; margin-top: 20px">
-      <el-button size="small" type="primary" @click="resetCaseId(deleteId)"
-        >仅移出本用例</el-button
-      >
-      <el-button size="small" type="danger" @click="deleteReal(deleteId)"
-        >彻底删除</el-button
-      >
+      <el-button size="small" type="primary" @click="resetCaseId(deleteId)">{{
+        $t('pubSteps.resetCaseId')
+      }}</el-button>
+      <el-button size="small" type="danger" @click="deleteReal(deleteId)">{{
+        $t('pubSteps.deleteReal')
+      }}</el-button>
     </div>
   </el-dialog>
-  <el-dialog v-model="dialogVisible" title="步骤信息" width="600px">
+  <el-dialog
+    v-model="dialogVisible"
+    :title="$t('pubSteps.stepInfo')"
+    width="600px"
+  >
     <step-update
       v-if="dialogVisible"
       :step-id="stepId"
@@ -187,11 +197,11 @@ onMounted(() => {
         :disabled="!isDriverFinish && steps.length > 0"
         @click="runStep"
       >
-        开始运行
+        {{ $t('steps.run') }}
       </el-button>
-      <el-button type="primary" size="mini" @click="addStep"
-        >新增步骤</el-button
-      >
+      <el-button type="primary" size="mini" @click="addStep">{{
+        $t('pubSteps.addStep')
+      }}</el-button>
     </el-button-group>
   </div>
   <step-draggable
