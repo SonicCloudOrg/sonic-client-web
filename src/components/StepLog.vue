@@ -1,7 +1,9 @@
 <script setup>
 import { watch, nextTick, ref } from 'vue';
 import { Loading, CircleCheckFilled, CaretBottom } from '@element-plus/icons';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const props = defineProps({
   stepLog: Array,
   debugLoading: Boolean,
@@ -52,14 +54,14 @@ const isPic = (s) => {
       :disabled="!debugLoading"
       @click="stopStep"
     >
-      强制终止
+      {{ $t('steps.forceStep') }}
     </el-button>
     <el-button
       icon="el-icon-delete"
       type="danger"
       size="mini"
       @click="clearLog()"
-      >清空
+      >{{ $t('steps.clear') }}
     </el-button>
   </div>
   <div :style="isReadOnly ? 'height:100%' : 'height: 650px'">
@@ -70,7 +72,7 @@ const isPic = (s) => {
     >
       <el-table :data="stepLog" style="width: 100%" border>
         <el-table-column
-          label="状态"
+          :label="$t('steps.status')"
           width="50"
           header-align="center"
           align="center"
@@ -100,13 +102,13 @@ const isPic = (s) => {
         </el-table-column>
         <el-table-column
           prop="time"
-          label="时间"
+          :label="$t('steps.time')"
           width="100"
           header-align="center"
           align="center"
         >
         </el-table-column>
-        <el-table-column header-align="center" label="步骤详情">
+        <el-table-column header-align="center" :label="$t('steps.detail')">
           <template #default="scope">
             <span v-if="scope.row['des']">
               <el-tag
@@ -132,7 +134,7 @@ const isPic = (s) => {
               >Script:
               <el-collapse style="margin: 5px 0">
                 <el-collapse-item>
-                  <template #title> 点击展开/收起脚本 </template>
+                  <template #title> {{ $t('steps.script') }} </template>
                   <span
                     v-html="
                       scope.row.log.substring(
@@ -161,7 +163,7 @@ const isPic = (s) => {
                 <el-icon class="is-loading" style="margin-right: 5px">
                   <Loading />
                 </el-icon>
-                运行中
+                {{ $t('steps.running') }}
               </div>
               <div
                 v-else
@@ -171,7 +173,7 @@ const isPic = (s) => {
                 <el-icon style="margin-right: 5px">
                   <CircleCheckFilled />
                 </el-icon>
-                运行完毕
+                {{ $t('steps.done') }}
               </div>
             </div>
           </div>
@@ -184,7 +186,7 @@ const isPic = (s) => {
               <el-icon class="is-loading" style="margin-right: 5px">
                 <Loading />
               </el-icon>
-              加载中
+              {{ $t('steps.loading') }}
             </div>
             <div
               v-else-if="isDone"
@@ -194,7 +196,7 @@ const isPic = (s) => {
               <el-icon style="margin-right: 5px">
                 <CircleCheckFilled />
               </el-icon>
-              加载完毕
+              {{ $t('steps.loadDone') }}
             </div>
             <div
               v-else
@@ -205,7 +207,7 @@ const isPic = (s) => {
               <el-icon style="margin-right: 5px">
                 <CaretBottom />
               </el-icon>
-              加载更多
+              {{ $t('steps.loadMore') }}
             </div>
           </div>
         </template>

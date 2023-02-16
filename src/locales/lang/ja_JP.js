@@ -1,6 +1,38 @@
 /**
  * JP language
  */
+const suite = {
+  name: '套件名称',
+  namePlace: '请填写套件名称',
+  perf: '性能采集',
+  interval: '采集间隔',
+  devicePlace: '请选择测试设备，可输入型号、备注、中文名称、序列号筛选',
+  selectedCase: '已选用例',
+};
+const testcase = {
+  info: '用例信息',
+  namePlace: '输入用例名称搜索',
+  model: '模块名称',
+  version: '版本名称',
+  designer: '设计人',
+  editTime: '最后修改日期',
+  deleteTip: '确定删除该用例吗？用例下的步骤将移出该用例',
+  name: '用例名称',
+  nameMsg: '请填写用例名称',
+  project: '所属项目',
+  projectPlace: '请选择项目',
+  platform: '平台',
+  platformPlace: '请选择平台',
+  modelLabel: '模块',
+  modelPlace: '请选择模块',
+  versionLabel: '版本',
+  versionPlace: '请选择版本',
+  des: '用例描述',
+  desPlace: '输入用例描述',
+  empty: '暂无用例',
+  add: '马上添加',
+  list: '用例列表',
+};
 const pubSteps = {
   pList: '公共步骤列表',
   alertOne: '该步骤已存在于以下公共步骤中！',
@@ -36,6 +68,17 @@ const steps = {
   empty: '暂无步骤',
   remove: '确定移除该步骤吗？',
   run: '开始运行',
+  forceStep: '强制终止',
+  clear: '清空',
+  status: '状态',
+  time: '时间',
+  detail: '步骤详情',
+  script: '点击展开/收起脚本',
+  running: '运行中',
+  done: '运行完毕',
+  loading: '加载中',
+  loadDone: '加载完毕',
+  loadMore: '加载更多',
 };
 const code = {
   placeholder: '请选择',
@@ -961,5 +1004,7 @@ export default {
     token,
     project,
     pubSteps,
+    testcase,
+    suite,
   },
 };

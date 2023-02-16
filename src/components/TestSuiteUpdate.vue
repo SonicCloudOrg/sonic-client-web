@@ -21,11 +21,13 @@ import { ElMessage } from 'element-plus';
 import { useRoute } from 'vue-router';
 import { VueDraggableNext } from 'vue-draggable-next';
 import { Delete, Rank, Plus } from '@element-plus/icons';
+import { useI18n } from 'vue-i18n';
 import RenderDeviceName from './RenderDeviceName.vue';
 import RenderStatus from './RenderStatus.vue';
 import axios from '../http/axios';
 import Pageable from './Pageable.vue';
 
+const { t: $t } = useI18n();
 const route = useRoute();
 const props = defineProps({
   suiteId: Number,
@@ -57,7 +59,7 @@ const getPhoneImg = (name, url) => {
 };
 const suiteForm = ref(null);
 const platformList = [
-  { name: '安卓', value: 1, img: 'ANDROID' },
+  { name: 'Android', value: 1, img: 'ANDROID' },
   { name: 'iOS', value: 2, img: 'IOS' },
 ];
 const testSuite = ref({
@@ -182,32 +184,32 @@ onMounted(() => {
   >
     <el-form-item
       prop="name"
-      label="套件名称"
+      :label="$t('suite.name')"
       :rules="{
         required: true,
-        message: '请填写套件名称',
+        message: $t('suite.namePlace'),
         trigger: 'blur',
       }"
     >
       <el-input
         v-model="testSuite.name"
         size="mini"
-        placeholder="输入套件名称"
+        :placeholder="$t('suite.namePlace')"
       />
     </el-form-item>
     <el-form-item
       prop="platform"
-      label="平台"
+      :label="$t('testcase.platform')"
       :rules="{
         required: true,
-        message: '请选择平台',
+        message: $t('testcase.platformPlace'),
         trigger: 'change',
       }"
     >
       <el-select
         v-model="testSuite.platform"
         style="width: 100%"
-        placeholder="请选择平台"
+        :placeholder="$t('testcase.platformPlace')"
         @change="getSource"
       >
         <el-option
@@ -231,14 +233,17 @@ onMounted(() => {
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="性能采集">
+    <el-form-item :label="$t('suite.perf')">
       <el-switch
         v-model="testSuite.isOpenPerfmon"
         :active-value="1"
         :inactive-value="0"
       />
     </el-form-item>
-    <el-form-item v-if="testSuite.isOpenPerfmon === 1" label="采集间隔">
+    <el-form-item
+      v-if="testSuite.isOpenPerfmon === 1"
+      :label="$t('suite.interval')"
+    >
       <el-input-number
         v-model="testSuite.perfmonInterval"
         style="margin-right: 10px"
@@ -247,17 +252,16 @@ onMounted(() => {
         :max="120000"
       />ms
     </el-form-item>
-    <el-form-item label="覆盖类型">
-      <el-select
-        v-model="testSuite.cover"
-        style="width: 100%"
-        placeholder="请选择覆盖类型"
-      >
-        <el-option :value="1" label="用例覆盖"></el-option>
-        <el-option :value="2" label="设备覆盖"></el-option>
+    <el-form-item :label="$t('testSuitesTS.coverType')">
+      <el-select v-model="testSuite.cover" style="width: 100%">
+        <el-option :value="1" :label="$t('testSuitesTS.testCover')"></el-option>
+        <el-option
+          :value="2"
+          :label="$t('testSuitesTS.deviceCover')"
+        ></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item prop="device" label="关联设备">
+    <el-form-item prop="device" :label="$t('testSuitesTS.associated')">
       <el-select
         v-model="testSuite.devices"
         :disabled="testSuite.platform === null"
@@ -267,7 +271,7 @@ onMounted(() => {
         :filter-method="filterDevice"
         style="width: 100%"
         multiple
-        placeholder="请选择测试设备，可输入型号、备注、中文名称、序列号筛选"
+        :placeholder="$t('suite.devicePlace')"
       >
         <el-option
           v-for="item in deviceData"
@@ -302,9 +306,9 @@ onMounted(() => {
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item prop="testCases" label="关联用例">
+    <el-form-item prop="testCases" :label="$t('testSuitesTS.associatedCase')">
       <el-tabs v-model="tabValue" type="border-card" stretch>
-        <el-tab-pane label="已选用例" name="select">
+        <el-tab-pane :label="$t('suite.selectedCase')" name="select">
           <el-timeline v-if="testSuite.testCases.length > 0">
             <VueDraggableNext
               v-model="testSuite.testCases"
@@ -319,7 +323,7 @@ onMounted(() => {
               <el-timeline-item
                 v-for="(s, index) in testSuite.testCases"
                 :key="index"
-                :timestamp="'测试用例' + (index + 1)"
+                :timestamp="$t('homeTS.testCase.case') + (index + 1)"
                 placement="top"
                 type="primary"
                 style="padding-bottom: 0px !important"
@@ -346,17 +350,17 @@ onMounted(() => {
               </el-timeline-item>
             </VueDraggableNext>
           </el-timeline>
-          <el-empty v-else description="暂无用例">
-            <el-button size="mini" @click="tabValue = 'list'"
-              >马上添加</el-button
-            >
+          <el-empty v-else :description="$t('testcase.empty')">
+            <el-button size="mini" @click="tabValue = 'list'">{{
+              $t('testcase.add')
+            }}</el-button>
           </el-empty>
         </el-tab-pane>
-        <el-tab-pane label="用例列表" name="list">
+        <el-tab-pane :label="$t('testcase.list')" name="list">
           <el-table :data="pageData['content']" border style="margin-top: 10px">
             <el-table-column
               width="80"
-              label="用例Id"
+              label="id"
               prop="id"
               align="center"
               show-overflow-tooltip
@@ -371,25 +375,29 @@ onMounted(() => {
                 <el-input
                   v-model="name"
                   size="mini"
-                  placeholder="输入用例名称搜索"
+                  :placeholder="$t('testcase.namePlace')"
                   @input="getTestCaseList()"
                 />
               </template>
             </el-table-column>
             <el-table-column
               min-width="80"
-              label="设计人"
+              :label="$t('testcase.designer')"
               prop="designer"
               align="center"
               show-overflow-tooltip
             />
             <el-table-column
               min-width="180"
-              label="最后修改日期"
+              :label="$t('testcase.editTime')"
               prop="editTime"
               align="center"
             />
-            <el-table-column label="操作" width="80" align="center">
+            <el-table-column
+              :label="$t('common.operate')"
+              width="100"
+              align="center"
+            >
               <template #default="scope">
                 <el-button circle size="mini" @click="addToPublic(scope.row)">
                   <el-icon :size="13" style="vertical-align: middle">
@@ -412,6 +420,8 @@ onMounted(() => {
   </el-form>
 
   <div style="text-align: center; margin-top: 20px">
-    <el-button size="small" type="primary" @click="summit">提交</el-button>
+    <el-button size="small" type="primary" @click="summit">{{
+      $t('form.save')
+    }}</el-button>
   </div>
 </template>

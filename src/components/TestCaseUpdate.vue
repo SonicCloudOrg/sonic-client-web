@@ -44,7 +44,7 @@ const getImg = (name) => {
   return result;
 };
 const platformList = [
-  { name: '安卓', value: 1, img: 'ANDROID' },
+  { name: 'Android', value: 1, img: 'ANDROID' },
   { name: 'iOS', value: 2, img: 'IOS' },
 ];
 const emit = defineEmits(['flush']);
@@ -76,7 +76,7 @@ const getModuleList = () => {
     .then((resp) => {
       if (resp.code === 2000) {
         moduleList.value = resp.data;
-        moduleList.value.push({ id: 0, name: '无' });
+        moduleList.value.push({ id: 0, name: $t('common.null') });
       }
     });
 };
@@ -112,29 +112,32 @@ onMounted(() => {
   >
     <el-form-item
       prop="name"
-      label="用例名称"
+      :label="$t('testcase.name')"
       :rules="{
         required: true,
-        message: '请填写用例名称',
+        message: $t('testcase.nameMsg'),
         trigger: 'blur',
       }"
     >
       <el-input
         v-model="testCase.name"
         size="mini"
-        placeholder="输入用例名称"
+        :placeholder="$t('testcase.nameMsg')"
       />
     </el-form-item>
     <el-form-item
       prop="projectId"
-      label="所属项目"
+      :label="$t('testcase.project')"
       :rules="{
         required: true,
-        message: '请选择项目',
+        message: $t('testcase.projectPlace'),
         trigger: 'change',
       }"
     >
-      <el-select v-model="testCase.projectId" placeholder="请选择项目">
+      <el-select
+        v-model="testCase.projectId"
+        :placeholder="$t('testcase.projectPlace')"
+      >
         <el-option
           v-for="item in store.state.projectList"
           :key="item.id"
@@ -157,14 +160,17 @@ onMounted(() => {
     </el-form-item>
     <el-form-item
       prop="platform"
-      label="平台"
+      :label="$t('testcase.platform')"
       :rules="{
         required: true,
-        message: '请选择平台',
+        message: $t('testcase.platformPlace'),
         trigger: 'change',
       }"
     >
-      <el-select v-model="testCase.platform" placeholder="请选择平台">
+      <el-select
+        v-model="testCase.platform"
+        :placeholder="$t('testcase.platformPlace')"
+      >
         <el-option
           v-for="item in platformList"
           :key="item.name"
@@ -186,8 +192,11 @@ onMounted(() => {
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="模块">
-      <el-select v-model="testCase.moduleId" placeholder="请选择模块">
+    <el-form-item :label="$t('testcase.modelLabel')">
+      <el-select
+        v-model="testCase.moduleId"
+        :placeholder="$t('testcase.modelPlace')"
+      >
         <el-option
           v-for="item in moduleList"
           :key="item.name"
@@ -197,10 +206,10 @@ onMounted(() => {
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="版本">
+    <el-form-item :label="$t('testcase.versionLabel')">
       <el-select
         v-model="testCase.version"
-        placeholder="请选择版本"
+        :placeholder="$t('testcase.versionPlace')"
         @visible-change="getVersionList"
       >
         <el-option
@@ -211,7 +220,7 @@ onMounted(() => {
         ></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="用例描述">
+    <el-form-item :label="$t('testcase.des')">
       <el-input
         v-model="testCase.des"
         :autosize="{ minRows: 3, maxRows: 7 }"
@@ -219,11 +228,13 @@ onMounted(() => {
         show-word-limit
         type="textarea"
         size="mini"
-        placeholder="输入用例描述"
+        :placeholder="$t('testcase.desPlace')"
       />
     </el-form-item>
   </el-form>
   <div style="text-align: center; margin-top: 20px">
-    <el-button size="small" type="primary" @click="summit">提交</el-button>
+    <el-button size="small" type="primary" @click="summit">{{
+      $t('form.save')
+    }}</el-button>
   </div>
 </template>

@@ -116,7 +116,7 @@ const getModuleList = () => {
         resp.data.map((item) => {
           moduleList.value.push({ text: item.name, value: item.id });
         });
-        moduleList.value.push({ text: '无', value: 0 });
+        moduleList.value.push({ text: $t('common.null'), value: 0 });
       }
     });
 };
@@ -159,7 +159,7 @@ defineExpose({ open });
 </script>
 
 <template>
-  <el-dialog v-model="dialogVisible" title="用例信息" width="600px">
+  <el-dialog v-model="dialogVisible" :title="$t('testcase.info')" width="600px">
     <test-case-update
       v-if="dialogVisible"
       :project-id="projectId"
@@ -181,7 +181,7 @@ defineExpose({ open });
   >
     <el-table-column
       width="100"
-      label="用例Id"
+      label="id"
       prop="id"
       align="center"
       sortable="custom"
@@ -198,14 +198,14 @@ defineExpose({ open });
         <el-input
           v-model="name"
           size="mini"
-          placeholder="输入用例名称搜索"
+          :placeholder="$t('testcase.namePlace')"
           @input="getTestCaseList()"
         />
       </template>
     </el-table-column>
     <el-table-column
       min-width="110"
-      label="模块名称"
+      :label="$t('testcase.model')"
       prop="moduleId"
       column-key="moduleId"
       align="center"
@@ -215,12 +215,12 @@ defineExpose({ open });
         <el-tag v-if="scope.row.modulesDTO !== null" size="small"
           >{{ scope.row.modulesDTO.name }}
         </el-tag>
-        <span v-else>无</span>
+        <span v-else>{{ $t('common.null') }}</span>
       </template>
     </el-table-column>
     <el-table-column
       min-width="80"
-      label="版本名称"
+      :label="$t('testcase.version')"
       prop="version"
       align="center"
     >
@@ -228,12 +228,12 @@ defineExpose({ open });
         <el-tag v-if="scope.row.version.length > 0" type="info" size="small"
           >{{ scope.row.version }}
         </el-tag>
-        <span v-else>无</span>
+        <span v-else>{{ $t('common.null') }}</span>
       </template>
     </el-table-column>
     <el-table-column
       min-width="80"
-      label="设计人"
+      :label="$t('testcase.designer')"
       sortable="custom"
       prop="designer"
       align="center"
@@ -242,7 +242,7 @@ defineExpose({ open });
     />
     <el-table-column
       min-width="180"
-      label="最后修改日期"
+      :label="$t('testcase.editTime')"
       prop="editTime"
       align="center"
       :sort-orders="['ascending', 'descending']"
@@ -252,20 +252,20 @@ defineExpose({ open });
       v-if="!isReadOnly"
       width="300"
       fixed="right"
-      label="操作"
+      :label="$t('common.operate')"
       align="center"
     >
       <template #default="scope">
         <el-button
           size="mini"
           @click="router.push('StepListView/' + scope.row.id)"
-          >步骤详情
+          >{{ $t('steps.detail') }}
         </el-button>
         <el-button size="mini" type="primary" @click="editCase(scope.row.id)"
-          >编辑
+          >{{ $t('common.edit') }}
         </el-button>
         <el-button size="mini" type="primary" plain @click="copy(scope.row.id)"
-          >复制
+          >{{ $t('common.copy') }}
         </el-button>
         <el-popconfirm
           style="margin-left: 10px"
@@ -273,11 +273,13 @@ defineExpose({ open });
           :cancel-button-text="$t('form.cancel')"
           icon="el-icon-warning"
           icon-color="red"
-          title="确定删除该用例吗？用例下的步骤将移出该用例"
+          :title="$t('testcase.deleteTip')"
           @confirm="deleteCase(scope.row.id)"
         >
           <template #reference>
-            <el-button type="danger" size="mini">删除</el-button>
+            <el-button type="danger" size="mini">{{
+              $t('common.delete')
+            }}</el-button>
           </template>
         </el-popconfirm>
       </template>
