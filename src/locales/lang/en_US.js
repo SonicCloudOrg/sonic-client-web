@@ -320,6 +320,8 @@ const dialog = {
     success: 'Copy Successful!',
     fail: 'Copy failed!',
   },
+  ready: 'Sonic preparation...Please wait...',
+  error: 'System Error!',
 };
 // 通用操作
 const common = {
@@ -617,7 +619,7 @@ const stepListViewTS = {
   testMessage: 'Description',
 };
 const testSuitesTS = {
-  testStart: 'Testing has started...',
+  testStart: ' Testing has started...',
   info: 'Test Suite Information',
   add: 'Add test suite',
   id: 'Suite Id',

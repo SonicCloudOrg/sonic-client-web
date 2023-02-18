@@ -83,11 +83,11 @@ $http.interceptors.response.use(
   (err) => {
     if (err.response.status === 503) {
       ElMessage.info({
-        message: '后台准备中...请稍后...',
+        message: $tc('dialog.ready'),
       });
     } else {
       ElMessage.error({
-        message: '系统出错了！',
+        message: $tc('dialog.error'),
       });
     }
     return Promise.reject(err);

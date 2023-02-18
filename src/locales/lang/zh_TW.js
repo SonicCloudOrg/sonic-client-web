@@ -312,6 +312,8 @@ const dialog = {
     success: '複製成功！',
     fail: '複製失敗！',
   },
+  ready: '后台准备中...请稍后...',
+  error: '系统出错了！',
 };
 // 一般操作
 const common = {

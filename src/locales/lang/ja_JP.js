@@ -314,6 +314,8 @@ const dialog = {
     success: 'コピー成功!',
     fail: 'コピー失敗!',
   },
+  ready: '后台准备中...请稍后...',
+  error: '系统出错了！',
 };
 // 通用操作
 const common = {
