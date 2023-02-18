@@ -2,15 +2,29 @@
  * ZH_TW language
  */
 const element = {
-  currentIteration:"当前迭代控件",
-  modelFilter:"模块筛选",
-  nameFilter:"名称筛选",
-  namePlace:"请输入控件名称筛选",
-  iterationList:"迭代控件列表",
-  whenList:"当父级步骤存在",
-  thenList:"时，可选择本控件作为",
-  last:" 进行操作",
-  paramTip:"需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+  currentIteration: '当前迭代控件',
+  modelFilter: '模块筛选',
+  nameFilter: '名称筛选',
+  namePlace: '请输入控件名称筛选',
+  iterationList: '迭代控件列表',
+  whenList: '当父级步骤存在',
+  thenList: '时，可选择本控件作为',
+  last: ' 进行操作',
+  paramTip: '需要临时变量或全局变量时，可以添加{{变量名}}的形式',
+  name: '控件名称',
+  nameMsg: '请输入控件元素名称',
+  type: '定位类型',
+  typePlace: '请选择定位类型',
+  deviceType: '移动端常用定位方式',
+  specType: '特殊定位方式',
+  point: '坐标（支持相对坐标）',
+  poco: 'POCO（仅支持游戏控件）',
+  image: '图片',
+  webViewType: 'WebView常用定位方式',
+  value: '控件元素值',
+  valuePlace: '请输入控件元素值',
+  model: '所属模块',
+  modelPlace: '请选择模块',
 };
 const suite = {
   name: '套件名称',
@@ -1015,6 +1029,6 @@ export default {
     pubSteps,
     testcase,
     suite,
-    element
+    element,
   },
 };

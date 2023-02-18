@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 import axios from '../http/axios';
-import {useI18n} from "vue-i18n";
 
 const { t: $t } = useI18n();
 const props = defineProps({
@@ -118,47 +118,47 @@ onMounted(() => {
   >
     <el-form-item
       prop="eleName"
-      label="控件名称"
+      :label="$t('element.name')"
       :rules="{
         required: true,
-        message: '控件元素名称不能为空',
+        message: $t('element.nameMsg'),
         trigger: 'blur',
       }"
     >
       <el-input
         v-model="element.eleName"
-        placeholder="请输入控件元素名称"
+        :placeholder="$t('element.nameMsg')"
       ></el-input>
     </el-form-item>
-    <el-form-item prop="eleType" label="定位类型">
+    <el-form-item prop="eleType" :label="$t('element.type')">
       <el-select
         v-model="element.eleType"
         style="width: 100%"
-        placeholder="请选择定位类型"
+        :placeholder="$t('element.typePlace')"
       >
-        <el-option-group label="移动端常用定位方式">
+        <el-option-group :label="$t('element.deviceType')">
           <el-option label="id（resource-id）" value="id"></el-option>
           <el-option value="xpath"></el-option>
           <el-option value="accessibilityId"></el-option>
           <el-option
-            label="nsPredicate（仅支持iOS10或以上）"
+            label="nsPredicate（Only iOS）"
             value="nsPredicate"
           ></el-option>
           <el-option
-            label="classChain（仅支持iOS）"
+            label="classChain（Only iOS）"
             value="classChain"
           ></el-option>
           <el-option
-            label="uiautomator（仅支持Android）"
+            label="uiautomator（Only Android）"
             value="androidUIAutomator"
           ></el-option>
         </el-option-group>
-        <el-option-group label="特殊定位方式">
-          <el-option label="坐标（支持相对坐标）" value="point"></el-option>
-          <el-option label="POCO（仅支持游戏控件）" value="poco"></el-option>
-          <el-option label="图片" value="image"></el-option>
+        <el-option-group :label="$t('element.specType')">
+          <el-option :label="$t('element.point')" value="point"></el-option>
+          <el-option :label="$t('element.poco')" value="poco"></el-option>
+          <el-option :label="$t('element.image')" value="image"></el-option>
         </el-option-group>
-        <el-option-group label="WebView常用定位方式">
+        <el-option-group :label="$t('element.webViewType')">
           <el-option value="name"></el-option>
           <el-option value="cssSelector"></el-option>
           <el-option value="linkText"></el-option>
@@ -169,7 +169,7 @@ onMounted(() => {
         </el-option-group>
       </el-select>
     </el-form-item>
-    <el-form-item prop="eleValue" label="控件元素值">
+    <el-form-item prop="eleValue" :label="$t('element.value')">
       <el-upload
         v-if="element.eleType === 'image'"
         drag
@@ -182,9 +182,14 @@ onMounted(() => {
         list-type="picture"
       >
         <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__text">
+          {{ $t('androidRemoteTS.code.messageFive')
+          }}<em>{{ $t('devices.detail.uploadImg') }}</em>
+        </div>
         <template #tip>
-          <div class="el-upload__tip">只能上传jpg/png文件</div>
+          <div class="el-upload__tip">
+            {{ $t('androidRemoteTS.code.messageFour') }}
+          </div>
         </template>
       </el-upload>
       <el-input
@@ -192,14 +197,14 @@ onMounted(() => {
         v-model="element.eleValue"
         type="textarea"
         autosize
-        placeholder="请输入控件元素值"
+        :placeholder="$t('element.valuePlace')"
       ></el-input>
     </el-form-item>
-    <el-form-item label="所属模块">
+    <el-form-item :label="$t('element.model')">
       <el-select
         v-model="element.moduleId"
         style="width: 100%"
-        placeholder="请选择模块"
+        :placeholder="$t('element.modelPlace')"
       >
         <el-option
           v-for="item in moduleList"
@@ -211,9 +216,9 @@ onMounted(() => {
       </el-select>
     </el-form-item>
     <div style="text-align: center">
-      <el-button size="small" type="primary" @click="saveElement"
-        >确 定</el-button
-      >
+      <el-button size="small" type="primary" @click="saveElement">{{
+        $t('form.save')
+      }}</el-button>
     </div>
   </el-form>
 </template>

@@ -2,15 +2,30 @@
  * EN language
  */
 const element = {
-  currentIteration:"Current iteration element",
-  modelFilter:"Model Filter",
-  nameFilter:"Name Filter",
-  namePlace:"Please input element name to search",
-  iterationList:"Iterate Element List",
-  whenList:"When the parent step exists",
-  thenList:", You can select this element as",
-  last:" carry on operation.",
-  paramTip:"If temporary params or global params are needed, you can put {{params name}} in."
+  currentIteration: 'Current iteration element',
+  modelFilter: 'Model Filter',
+  nameFilter: 'Name Filter',
+  namePlace: 'Please input element name to search',
+  iterationList: 'Iterate Element List',
+  whenList: 'When the parent step exists',
+  thenList: ', You can select this element as',
+  last: ' carry on operation.',
+  paramTip:
+    'If temporary params or global params are needed, you can put {{params name}} in.',
+  name: 'Name',
+  nameMsg: 'Please input element name',
+  type: 'Type',
+  typePlace: 'Please choose element type',
+  deviceType: 'Common Type of mobile',
+  specType: 'Special Type',
+  point: 'coordinate（Support relative coordinates）',
+  poco: 'POCO（Only game element are supported）',
+  image: 'image',
+  webViewType: 'Common Type of WebView',
+  value: 'Value',
+  valuePlace: 'Please input element value',
+  model: 'Model',
+  modelPlace: 'Please choose model',
 };
 const suite = {
   name: 'Name',
@@ -1039,6 +1054,6 @@ export default {
     pubSteps,
     testcase,
     suite,
-    element
+    element,
   },
 };

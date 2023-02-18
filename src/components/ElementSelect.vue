@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { QuestionFilled } from '@element-plus/icons';
+import { useI18n } from 'vue-i18n';
 import axios from '../http/axios';
-import {useI18n} from "vue-i18n";
 
 const { t: $t } = useI18n();
 const props = defineProps({
@@ -116,9 +116,9 @@ onMounted(() => {
     :prop="'elements[' + index + ']'"
   >
     <el-card>
-      <span style="font-size: 14px; color: #99a9bf; margin-right: 10px"
-        >{{$t('element.modelFilter')}}</span
-      >
+      <span style="font-size: 14px; color: #99a9bf; margin-right: 10px">{{
+        $t('element.modelFilter')
+      }}</span>
       <el-select v-model="moduleId" size="small" @change="findByModule">
         <el-option
           v-for="item in moduleList"
@@ -130,9 +130,9 @@ onMounted(() => {
       </el-select>
 
       <div style="margin-top: 10px">
-        <span style="font-size: 14px; color: #99a9bf; margin-right: 10px"
-          >{{$t('element.nameFilter')}}</span
-        >
+        <span style="font-size: 14px; color: #99a9bf; margin-right: 10px">{{
+          $t('element.nameFilter')
+        }}</span>
         <el-select
           v-model="step.elements[index]"
           filterable
@@ -161,10 +161,15 @@ onMounted(() => {
               trigger="hover"
             >
               <p>
-                {{$t('element.whenList')}}
-                <strong style="color: #409eff">{{$t('element.iterationList')}}</strong>
-                {{$t('element.thenList')}}
-                <strong style="color: #409eff">{{$t('element.currentIteration')}}</strong>{{$t('element.last')}}
+                {{ $t('element.whenList') }}
+                <strong style="color: #409eff">{{
+                  $t('element.iterationList')
+                }}</strong>
+                {{ $t('element.thenList') }}
+                <strong style="color: #409eff">{{
+                  $t('element.currentIteration')
+                }}</strong
+                >{{ $t('element.last') }}
               </p>
               <template #reference>
                 <el-icon
