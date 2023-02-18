@@ -2,7 +2,9 @@
 import { ref, onMounted } from 'vue';
 import { QuestionFilled } from '@element-plus/icons';
 import axios from '../http/axios';
+import {useI18n} from "vue-i18n";
 
+const { t: $t } = useI18n();
 const props = defineProps({
   label: String,
   place: String,
@@ -48,7 +50,7 @@ const findByProjectIdAndEleType = (event, pageNum, pSize) => {
             if (props.step.platform === 1) {
               pageData.value.content.push({
                 id: null,
-                eleName: '当前迭代控件',
+                eleName: $t('element.currentIteration'),
                 eleType: 'androidIterator',
                 eleValue: '',
                 moduleId: 0,
@@ -58,7 +60,7 @@ const findByProjectIdAndEleType = (event, pageNum, pSize) => {
             if (props.step.platform === 2) {
               pageData.value.content.push({
                 id: null,
-                eleName: '当前迭代控件',
+                eleName: $t('element.currentIteration'),
                 eleType: 'iOSIterator',
                 eleValue: '',
                 moduleId: 0,
@@ -69,7 +71,7 @@ const findByProjectIdAndEleType = (event, pageNum, pSize) => {
           if (props.type === 'poco') {
             pageData.value.content.push({
               id: null,
-              eleName: '当前迭代控件',
+              eleName: $t('element.currentIteration'),
               eleType: 'pocoIterator',
               eleValue: '',
               moduleId: 0,
@@ -88,7 +90,7 @@ const getModuleList = () => {
     .then((resp) => {
       if (resp.code === 2000) {
         moduleList.value = resp.data;
-        moduleList.value.push({ id: 0, name: '无' });
+        moduleList.value.push({ id: 0, name: $t('common.null') });
         if (props.step.elements[props.index] != null) {
           moduleId.value = props.step.elements[props.index].moduleId;
         }
@@ -115,7 +117,7 @@ onMounted(() => {
   >
     <el-card>
       <span style="font-size: 14px; color: #99a9bf; margin-right: 10px"
-        >模块筛选</span
+        >{{$t('element.modelFilter')}}</span
       >
       <el-select v-model="moduleId" size="small" @change="findByModule">
         <el-option
@@ -129,7 +131,7 @@ onMounted(() => {
 
       <div style="margin-top: 10px">
         <span style="font-size: 14px; color: #99a9bf; margin-right: 10px"
-          >名称筛选</span
+          >{{$t('element.nameFilter')}}</span
         >
         <el-select
           v-model="step.elements[index]"
@@ -137,7 +139,7 @@ onMounted(() => {
           remote
           :remote-method="findByName"
           value-key="id"
-          placeholder="请输入控件名称筛选"
+          :placeholder="$t('element.namePlace')"
           @visible-change="findByProjectIdAndEleType"
         >
           <el-option
@@ -159,10 +161,10 @@ onMounted(() => {
               trigger="hover"
             >
               <p>
-                当父级步骤存在
-                <strong style="color: #409eff">迭代控件列表</strong>
-                时，可选择本控件作为
-                <strong style="color: #409eff">当前迭代控件</strong> 进行操作
+                {{$t('element.whenList')}}
+                <strong style="color: #409eff">{{$t('element.iterationList')}}</strong>
+                {{$t('element.thenList')}}
+                <strong style="color: #409eff">{{$t('element.currentIteration')}}</strong>{{$t('element.last')}}
               </p>
               <template #reference>
                 <el-icon

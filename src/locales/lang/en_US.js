@@ -1,6 +1,17 @@
 /**
  * EN language
  */
+const element = {
+  currentIteration:"Current iteration element",
+  modelFilter:"Model Filter",
+  nameFilter:"Name Filter",
+  namePlace:"Please input element name to search",
+  iterationList:"Iterate Element List",
+  whenList:"When the parent step exists",
+  thenList:", You can select this element as",
+  last:" carry on operation.",
+  paramTip:"If temporary params or global params are needed, you can put {{params name}} in."
+};
 const suite = {
   name: 'Name',
   namePlace: 'Please input suite name',
@@ -466,11 +477,11 @@ const jobsTS = {
   del: 'Delete this timed task?',
 };
 const loginTS = {
-  testPlatform: 'One-stop cloud-based real device testing platform',
+  testPlatform: 'Sonic cloud real machine platform',
   login: {
-    message: 'Register account/LDAP domain account login',
+    message: 'Registered account/LDAP account login',
     register: 'Registered account login',
-    LDAPLogin: 'LDAP domain account login',
+    LDAPLogin: 'LDAP account login',
   },
   user: {
     inputUserName: 'Please input the account',
@@ -1028,5 +1039,6 @@ export default {
     pubSteps,
     testcase,
     suite,
+    element
   },
 };

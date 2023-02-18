@@ -1,6 +1,17 @@
 /**
  * JP language
  */
+const element = {
+  currentIteration:"当前迭代控件",
+  modelFilter:"模块筛选",
+  nameFilter:"名称筛选",
+  namePlace:"请输入控件名称筛选",
+  iterationList:"迭代控件列表",
+  whenList:"当父级步骤存在",
+  thenList:"时，可选择本控件作为",
+  last:" 进行操作",
+  paramTip:"需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+};
 const suite = {
   name: '套件名称',
   namePlace: '请填写套件名称',
@@ -1006,5 +1017,6 @@ export default {
     pubSteps,
     testcase,
     suite,
+    element
   },
 };

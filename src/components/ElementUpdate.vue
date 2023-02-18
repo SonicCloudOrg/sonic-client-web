@@ -2,7 +2,9 @@
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import axios from '../http/axios';
+import {useI18n} from "vue-i18n";
 
+const { t: $t } = useI18n();
 const props = defineProps({
   projectId: Number,
   elementId: Number,
@@ -23,13 +25,13 @@ const beforeAvatarUpload = (file) => {
     return true;
   }
   ElMessage.error({
-    message: '文件格式有误！',
+    message: $t('dialog.suffixError'),
   });
   return false;
 };
 const limitOut = () => {
   ElMessage.error({
-    message: '只能添加一个文件！请先移除旧文件',
+    message: $t('androidRemoteTS.addOne'),
   });
 };
 const upload = (content) => {
@@ -81,7 +83,7 @@ const getModuleList = () => {
     .then((resp) => {
       if (resp.code === 2000) {
         moduleList.value = resp.data;
-        moduleList.value.push({ id: 0, name: '无' });
+        moduleList.value.push({ id: 0, name: $t('common.null') });
       }
     });
 };
@@ -100,7 +102,7 @@ onMounted(() => {
 <template>
   <el-alert
     style="margin-bottom: 10px"
-    title="需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+    :title="$t('element.paramTip')"
     type="info"
     show-icon
     close-text="Get!"
