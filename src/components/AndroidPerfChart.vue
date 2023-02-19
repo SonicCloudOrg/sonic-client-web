@@ -47,29 +47,22 @@ const props = defineProps({
   rid: String,
   cid: Number,
   did: Number,
-  sysPerf: Array,
-  procPerf: Array,
+  sysCpu: Array,
+  sysMem: Array,
+  sysNetwork: Array,
+  procCpu: Array,
+  procMem: Array,
+  procFps: Array,
+  procThread: Array,
 });
-const printSystem = () => {
-  printCpu();
-  printSingleCpu();
-  printMem();
-  printNetwork();
-};
-const printProcess = () => {
-  printPerfCpu();
-  printProcThread();
-  printPerfMem();
-  printProcFps();
-};
 const getNetworkDataGroup = () => {
   const result = [];
   const rx = [];
   const tx = [];
-  for (const i in props.sysPerf) {
-    for (const j in props.sysPerf[i].networkInfo) {
-      rx.push(props.sysPerf[i].networkInfo[j].rx);
-      tx.push(props.sysPerf[i].networkInfo[j].tx);
+  for (const i in props.sysNetwork) {
+    for (const j in props.sysNetwork[i]) {
+      rx.push(props.sysNetwork[i][j].rx);
+      tx.push(props.sysNetwork[i][j].tx);
       break;
     }
   }
@@ -91,15 +84,15 @@ const getNetworkDataGroup = () => {
 };
 const getCpuDataGroup = () => {
   const result = [];
-  for (const i in props.sysPerf) {
-    if (props.sysPerf[i].cpuInfo) {
-      for (const j in props.sysPerf[i].cpuInfo.cpu) {
+  if (props.sysCpu.length > 0) {
+    for (const i in props.sysCpu[0].cpu) {
+      if (i !== 'timeStamp') {
         result.push({
           type: 'line',
-          name: j,
-          data: props.sysPerf.map((obj) => {
-            if (obj.cpuInfo) {
-              return obj.cpuInfo.cpu[j];
+          name: i,
+          data: props.sysCpu.map((obj) => {
+            if (obj.cpu) {
+              return obj.cpu[i];
             }
             return 0;
           }),
@@ -108,59 +101,51 @@ const getCpuDataGroup = () => {
           boundaryGap: false,
         });
       }
-      break;
     }
   }
   return result;
 };
 const getCpuDataLegend = () => {
   const result = [];
-  for (const i in props.sysPerf) {
-    if (props.sysPerf[i].cpuInfo) {
-      for (const j in props.sysPerf[i].cpuInfo.cpu) {
-        result.push(j);
+  if (props.sysCpu.length > 0) {
+    for (const i in props.sysCpu[0].cpu) {
+      if (i !== 'timeStamp') {
+        result.push(i);
       }
-      break;
     }
   }
   return result;
 };
 const getCpuLegend = () => {
   const result = [];
-  for (const i in props.sysPerf) {
-    if (props.sysPerf[i].cpuInfo) {
-      for (const j in props.sysPerf[i].cpuInfo) {
-        if (j !== 'cpu') {
-          result.push(j);
-        }
+  if (props.sysCpu.length > 0) {
+    for (const i in props.sysCpu[0]) {
+      if (i !== 'cpu') {
+        result.push(i);
       }
-      break;
     }
   }
   return result;
 };
 const getCpuGroup = () => {
   const result = [];
-  for (const i in props.sysPerf) {
-    if (props.sysPerf[i].cpuInfo) {
-      for (const j in props.sysPerf[i].cpuInfo) {
-        if (j !== 'cpu') {
-          result.push({
-            type: 'line',
-            name: j,
-            data: props.sysPerf.map((obj) => {
-              if (obj.cpuInfo) {
-                return obj.cpuInfo[j].cpuUsage;
-              }
-              return 0;
-            }),
-            showSymbol: false,
-            areaStyle: {},
-            boundaryGap: false,
-          });
-        }
+  if (props.sysCpu.length > 0) {
+    for (const i in props.sysCpu[0]) {
+      if (i !== 'cpu') {
+        result.push({
+          type: 'line',
+          name: i,
+          data: props.sysCpu.map((obj) => {
+            if (obj[i]) {
+              return obj[i].cpuUsage;
+            }
+            return 0;
+          }),
+          showSymbol: false,
+          areaStyle: {},
+          boundaryGap: false,
+        });
       }
-      break;
     }
   }
   return result;
@@ -210,8 +195,8 @@ const printSingleCpu = () => {
     xAxis: {
       boundaryGap: false,
       type: 'category',
-      data: props.sysPerf.map((obj) => {
-        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      data: props.sysCpu.map((obj) => {
+        return moment(new Date(obj.cpu.timeStamp)).format('HH:mm:ss');
       }),
     },
     dataZoom: [
@@ -273,8 +258,8 @@ const printCpu = () => {
     xAxis: {
       boundaryGap: false,
       type: 'category',
-      data: props.sysPerf.map((obj) => {
-        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      data: props.sysCpu.map((obj) => {
+        return moment(new Date(obj.cpu.timeStamp)).format('HH:mm:ss');
       }),
     },
     dataZoom: [
@@ -338,8 +323,8 @@ const printMem = () => {
     xAxis: {
       boundaryGap: false,
       type: 'category',
-      data: props.sysPerf.map((obj) => {
-        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      data: props.sysMem.map((obj) => {
+        return moment(new Date(obj.timeStamp)).format('HH:mm:ss');
       }),
     },
     dataZoom: [
@@ -356,8 +341,8 @@ const printMem = () => {
       {
         name: 'Mem Buffers',
         type: 'line',
-        data: props.sysPerf.map((obj) => {
-          return obj.memInfo.memBuffers;
+        data: props.sysMem.map((obj) => {
+          return obj.memBuffers;
         }),
         showSymbol: false,
         boundaryGap: false,
@@ -365,8 +350,8 @@ const printMem = () => {
       {
         name: 'Mem Cached',
         type: 'line',
-        data: props.sysPerf.map((obj) => {
-          return obj.memInfo.memCached;
+        data: props.sysMem.map((obj) => {
+          return obj.memCached;
         }),
         showSymbol: false,
         boundaryGap: false,
@@ -374,8 +359,8 @@ const printMem = () => {
       {
         name: 'Mem Free',
         type: 'line',
-        data: props.sysPerf.map((obj) => {
-          return obj.memInfo.memFree;
+        data: props.sysMem.map((obj) => {
+          return obj.memFree;
         }),
         showSymbol: false,
         boundaryGap: false,
@@ -383,8 +368,8 @@ const printMem = () => {
       {
         name: 'Mem Total',
         type: 'line',
-        data: props.sysPerf.map((obj) => {
-          return obj.memInfo.memTotal;
+        data: props.sysMem.map((obj) => {
+          return obj.memTotal;
         }),
         showSymbol: false,
         boundaryGap: false,
@@ -392,8 +377,8 @@ const printMem = () => {
       {
         name: 'Swap Free',
         type: 'line',
-        data: props.sysPerf.map((obj) => {
-          return obj.memInfo.swapFree;
+        data: props.sysMem.map((obj) => {
+          return obj.swapFree;
         }),
         showSymbol: false,
         boundaryGap: false,
@@ -401,8 +386,8 @@ const printMem = () => {
       {
         name: 'Swap Total',
         type: 'line',
-        data: props.sysPerf.map((obj) => {
-          return obj.memInfo.swapTotal;
+        data: props.sysMem.map((obj) => {
+          return obj.swapTotal;
         }),
         showSymbol: false,
         boundaryGap: false,
@@ -445,8 +430,8 @@ const printProcFps = () => {
       },
     },
     xAxis: {
-      data: props.procPerf.map((obj) => {
-        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      data: props.procFps.map((obj) => {
+        return moment(new Date(obj.timeStamp)).format('HH:mm:ss');
       }),
     },
     dataZoom: [
@@ -462,7 +447,7 @@ const printProcFps = () => {
     series: [
       {
         type: 'line',
-        data: props.procPerf.map((obj) => {
+        data: props.procFps.map((obj) => {
           return obj.fps;
         }),
         showSymbol: false,
@@ -505,8 +490,8 @@ const printProcThread = () => {
       },
     },
     xAxis: {
-      data: props.procPerf.map((obj) => {
-        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      data: props.procThread.map((obj) => {
+        return moment(new Date(obj.timeStamp)).format('HH:mm:ss');
       }),
     },
     dataZoom: [
@@ -522,7 +507,7 @@ const printProcThread = () => {
     series: [
       {
         type: 'line',
-        data: props.procPerf.map((obj) => {
+        data: props.procThread.map((obj) => {
           return obj.threadCount;
         }),
         showSymbol: false,
@@ -565,8 +550,8 @@ const printNetwork = () => {
       },
     },
     xAxis: {
-      data: props.sysPerf.map((obj) => {
-        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      data: props.sysNetwork.map((obj) => {
+        return moment(new Date(obj.timeStamp)).format('HH:mm:ss');
       }),
     },
     dataZoom: [
@@ -619,8 +604,8 @@ const printPerfCpu = () => {
     xAxis: {
       boundaryGap: false,
       type: 'category',
-      data: props.procPerf.map((obj) => {
-        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      data: props.procCpu.map((obj) => {
+        return moment(new Date(obj.timeStamp)).format('HH:mm:ss');
       }),
     },
     dataZoom: [
@@ -636,7 +621,7 @@ const printPerfCpu = () => {
     series: [
       {
         type: 'line',
-        data: props.procPerf.map((obj) => {
+        data: props.procCpu.map((obj) => {
           return obj.cpuUtilization;
         }),
         showSymbol: false,
@@ -683,8 +668,8 @@ const printPerfMem = () => {
     xAxis: {
       boundaryGap: false,
       type: 'category',
-      data: props.procPerf.map((obj) => {
-        return moment(new Date(obj.timeStamp * 1000)).format('HH:mm:ss');
+      data: props.procMem.map((obj) => {
+        return moment(new Date(obj.timeStamp)).format('HH:mm:ss');
       }),
     },
     dataZoom: [
@@ -705,7 +690,7 @@ const printPerfMem = () => {
       {
         name: 'Phy RSS',
         type: 'line',
-        data: props.procPerf.map((obj) => {
+        data: props.procMem.map((obj) => {
           return obj.phyRSS;
         }),
         showSymbol: false,
@@ -714,7 +699,7 @@ const printPerfMem = () => {
       {
         name: 'VM RSS',
         type: 'line',
-        data: props.procPerf.map((obj) => {
+        data: props.procMem.map((obj) => {
           return obj.vmRSS;
         }),
         showSymbol: false,
@@ -723,7 +708,7 @@ const printPerfMem = () => {
       {
         name: 'Total PSS',
         type: 'line',
-        data: props.procPerf.map((obj) => {
+        data: props.procMem.map((obj) => {
           return obj.totalPSS;
         }),
         showSymbol: false,
@@ -734,8 +719,14 @@ const printPerfMem = () => {
   chart.setOption(option);
 };
 defineExpose({
-  printSystem,
-  printProcess,
+  printCpu,
+  printSingleCpu,
+  printMem,
+  printNetwork,
+  printPerfCpu,
+  printPerfMem,
+  printProcFps,
+  printProcThread,
 });
 const switchTab = (e) => {
   if (e.index == 1) {
@@ -809,7 +800,7 @@ const switchTab = (e) => {
           <el-card style="margin-top: 10px">
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysSingleCpuChart'"
-              v-loading="sysPerf.length === 0"
+              v-loading="sysCpu.length === 0"
               :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
@@ -820,7 +811,7 @@ const switchTab = (e) => {
           <el-card style="margin-top: 10px">
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysCpuChart'"
-              v-loading="sysPerf.length === 0"
+              v-loading="sysCpu.length === 0"
               :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
@@ -831,7 +822,7 @@ const switchTab = (e) => {
           <el-card style="margin-top: 10px">
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysMemChart'"
-              v-loading="sysPerf.length === 0"
+              v-loading="sysMem.length === 0"
               :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
@@ -842,7 +833,7 @@ const switchTab = (e) => {
           <el-card style="margin-top: 10px">
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysNetworkChart'"
-              v-loading="sysPerf.length === 0"
+              v-loading="sysNetwork.length === 0"
               :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
@@ -857,7 +848,7 @@ const switchTab = (e) => {
           <el-card style="margin-top: 10px">
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'perfCpuChart'"
-              v-loading="procPerf.length === 0"
+              v-loading="procCpu.length === 0"
               :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
@@ -868,7 +859,7 @@ const switchTab = (e) => {
           <el-card style="margin-top: 10px">
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'perfMemChart'"
-              v-loading="procPerf.length === 0"
+              v-loading="procMem.length === 0"
               :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
@@ -879,7 +870,7 @@ const switchTab = (e) => {
           <el-card style="margin-top: 10px">
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'sysFpsChart'"
-              v-loading="procPerf.length === 0"
+              v-loading="procFps.length === 0"
               :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"
@@ -890,7 +881,7 @@ const switchTab = (e) => {
           <el-card style="margin-top: 10px">
             <div
               :id="rid + '-' + cid + '-' + did + '-' + 'procThreadChart'"
-              v-loading="procPerf.length === 0"
+              v-loading="procThread.length === 0"
               :element-loading-text="$t('perf.emptyData')"
               element-loading-spinner="el-icon-box"
               style="width: 100%; height: 350px"

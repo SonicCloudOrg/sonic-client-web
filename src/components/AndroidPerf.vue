@@ -38,23 +38,56 @@ const stopPerfmon = () => {
   isStart.value = false;
 };
 const clearPerfmon = () => {
-  sysPerf.value = [];
-  procPerf.value = [];
+  sysCpu.value = [];
+  sysMem.value = [];
+  sysNetwork.value = [];
+  procCpu.value = [];
+  procMem.value = [];
+  procFps.value = [];
+  procThread.value = [];
 };
 const setData = (data) => {
   if (data.process) {
-    data.process.timeStamp = data.timeStamp;
-    procPerf.value.push(data.process);
-    androidPerfChart.value.printProcess();
+    if (data.process.cpuInfo) {
+      procCpu.value.push(data.process.cpuInfo);
+      androidPerfChart.value.printPerfCpu();
+    }
+    if (data.process.memInfo) {
+      procMem.value.push(data.process.memInfo);
+      androidPerfChart.value.printPerfMem();
+    }
+    if (data.process.fpsInfo) {
+      procFps.value.push(data.process.fpsInfo);
+      androidPerfChart.value.printProcFps();
+    }
+    if (data.process.threadInfo) {
+      procThread.value.push(data.process.threadInfo);
+      androidPerfChart.value.printProcThread();
+    }
   }
   if (data.system) {
-    data.system.timeStamp = data.timeStamp;
-    sysPerf.value.push(data.system);
-    androidPerfChart.value.printSystem();
+    if (data.system.cpuInfo) {
+      sysCpu.value.push(data.system.cpuInfo);
+      androidPerfChart.value.printCpu();
+      androidPerfChart.value.printSingleCpu();
+    }
+    if (data.system.memInfo) {
+      sysMem.value.push(data.system.memInfo);
+      androidPerfChart.value.printMem();
+    }
+    if (data.system.networkInfo) {
+      sysNetwork.value.push(data.system.networkInfo);
+      androidPerfChart.value.printNetwork();
+    }
   }
 };
-const sysPerf = ref([]);
-const procPerf = ref([]);
+const sysCpu = ref([]);
+const sysMem = ref([]);
+const sysNetwork = ref([]);
+const procCpu = ref([]);
+const procMem = ref([]);
+const procFps = ref([]);
+const procThread = ref([]);
 defineExpose({ setData });
 </script>
 
@@ -118,8 +151,13 @@ defineExpose({ setData });
       :cid="0"
       :rid="0"
       :did="0"
-      :sys-perf="sysPerf"
-      :proc-perf="procPerf"
+      :sys-cpu="sysCpu"
+      :sys-mem="sysMem"
+      :sys-network="sysNetwork"
+      :proc-cpu="procCpu"
+      :proc-mem="procMem"
+      :proc-fps="procFps"
+      :proc-thread="procThread"
     />
   </div>
 </template>

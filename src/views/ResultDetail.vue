@@ -136,7 +136,13 @@ const fps = ref([]);
 const disk = ref([]);
 const network = ref([]);
 const procPerf = ref([]);
-const sysPerf = ref([]);
+const sysCpu = ref([]);
+const sysMem = ref([]);
+const sysNetwork = ref([]);
+const procCpu = ref([]);
+const procMem = ref([]);
+const procFps = ref([]);
+const procThread = ref([]);
 const clearPerfmon = () => {
   cpu.value = [];
   mem.value = [];
@@ -144,8 +150,14 @@ const clearPerfmon = () => {
   fps.value = [];
   disk.value = [];
   network.value = [];
-  sysPerf.value = [];
   procPerf.value = [];
+  sysCpu.value = [];
+  sysMem.value = [];
+  sysNetwork.value = [];
+  procCpu.value = [];
+  procMem.value = [];
+  procFps.value = [];
+  procThread.value = [];
 };
 const getPerform = () => {
   axios
@@ -194,16 +206,39 @@ const getPerform = () => {
           iosPerfChartMap[key].printPerfMem();
         } else {
           if (r.process) {
-            r.process.timeStamp = r.timeStamp;
-            procPerf.value.push(r.process);
+            if (r.process.cpuInfo) {
+              procCpu.value.push(r.process.cpuInfo);
+            }
+            if (r.process.memInfo) {
+              procMem.value.push(r.process.memInfo);
+            }
+            if (r.process.fpsInfo) {
+              procFps.value.push(r.process.fpsInfo);
+            }
+            if (r.process.threadInfo) {
+              procThread.value.push(r.process.threadInfo);
+            }
           }
           if (r.system) {
-            r.system.timeStamp = r.timeStamp;
-            sysPerf.value.push(r.system);
+            if (r.system.cpuInfo) {
+              sysCpu.value.push(r.system.cpuInfo);
+            }
+            if (r.system.memInfo) {
+              sysMem.value.push(r.system.memInfo);
+            }
+            if (r.system.networkInfo) {
+              sysNetwork.value.push(r.system.networkInfo);
+            }
           }
           const key = `${route.params.resultId}-${caseId.value}-${deviceId.value}-androidPerfChart`;
-          androidPerfChartMap[key].printProcess();
-          androidPerfChartMap[key].printSystem();
+          androidPerfChartMap[key].printPerfCpu();
+          androidPerfChartMap[key].printPerfMem();
+          androidPerfChartMap[key].printProcFps();
+          androidPerfChartMap[key].printProcThread();
+          androidPerfChartMap[key].printCpu();
+          androidPerfChartMap[key].printSingleCpu();
+          androidPerfChartMap[key].printMem();
+          androidPerfChartMap[key].printNetwork();
         }
       }
     });
@@ -571,8 +606,13 @@ onUnmounted(() => {
                   :cid="c['case'].id"
                   :rid="route.params.resultId"
                   :did="d.id"
-                  :sys-perf="sysPerf"
-                  :proc-perf="procPerf"
+                  :sys-cpu="sysCpu"
+                  :sys-mem="sysMem"
+                  :sys-network="sysNetwork"
+                  :proc-cpu="procCpu"
+                  :proc-mem="procMem"
+                  :proc-fps="procFps"
+                  :proc-thread="procThread"
                 />
                 <i-o-s-perf-chart
                   v-if="d.platform === 2"
