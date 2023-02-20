@@ -11,7 +11,7 @@ const element = {
   thenList: ', You can select this element as',
   last: ' carry on operation.',
   paramTip:
-    'If temporary params or global params are needed, you can put {{params name}} in.',
+    'If temporary params/global params are needed, you can put double curly braces with params.',
   name: 'Name',
   nameMsg: 'Please input element name',
   type: 'Type',
