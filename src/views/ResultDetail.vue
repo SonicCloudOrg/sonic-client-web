@@ -42,6 +42,7 @@ const testCaseList = ref([]);
 const deviceList = ref([]);
 const caseId = ref(0);
 const deviceId = ref('');
+const lastDevice = ref({});
 const stepList = ref([]);
 const done = ref(false);
 const stepLoading = ref(false);
@@ -195,15 +196,7 @@ const getPerform = () => {
           if (r.type === 'process') {
             procPerf.value.push(r);
           }
-          const key = `${route.params.resultId}-${caseId.value}-${deviceId.value}-iosPerfChart`;
-          iosPerfChartMap[key].printCpu();
-          iosPerfChartMap[key].printMem();
-          iosPerfChartMap[key].printGpu();
-          iosPerfChartMap[key].printFps();
-          iosPerfChartMap[key].printDisk();
-          iosPerfChartMap[key].printNetwork();
-          iosPerfChartMap[key].printPerfCpu();
-          iosPerfChartMap[key].printPerfMem();
+          
         } else {
           if (r.process) {
             if (r.process.cpuInfo) {
@@ -230,6 +223,10 @@ const getPerform = () => {
               sysNetwork.value.push(r.system.networkInfo);
             }
           }
+        }
+      }
+
+      if (lastDevice.value.platform === 1)  {
           const key = `${route.params.resultId}-${caseId.value}-${deviceId.value}-androidPerfChart`;
           androidPerfChartMap[key].printPerfCpu();
           androidPerfChartMap[key].printPerfMem();
@@ -239,7 +236,16 @@ const getPerform = () => {
           androidPerfChartMap[key].printSingleCpu();
           androidPerfChartMap[key].printMem();
           androidPerfChartMap[key].printNetwork();
-        }
+        }else {
+          const key = `${route.params.resultId}-${caseId.value}-${deviceId.value}-iosPerfChart`;
+          iosPerfChartMap[key].printCpu();
+          iosPerfChartMap[key].printMem();
+          iosPerfChartMap[key].printGpu();
+          iosPerfChartMap[key].printFps();
+          iosPerfChartMap[key].printDisk();
+          iosPerfChartMap[key].printNetwork();
+          iosPerfChartMap[key].printPerfCpu();
+          iosPerfChartMap[key].printPerfMem();
       }
     });
 };
@@ -253,8 +259,10 @@ const setAndroidRef = (el, key) => {
     androidPerfChartMap[key] = el;
   }
 };
-const switchDevice = async (e) => {
+const switchDevice = async (tab, e) => {
   page = 1;
+  lastDevice.value =  deviceList.value[tab.index]
+  deviceId.value =  lastDevice.value.id
   done.value = false;
   stepList.value = [];
   type.value = 'log';
@@ -308,7 +316,8 @@ const getDeviceList = (ids) => {
             }
           }
           if (deviceList.value.length > 0) {
-            deviceId.value = `${deviceList.value[0].id}`;
+            lastDevice.value = deviceList.value[0]
+            deviceId.value = `${lastDevice.value.id}`;
             getStepList();
           }
         }
