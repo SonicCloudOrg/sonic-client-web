@@ -196,7 +196,6 @@ const getPerform = () => {
           if (r.type === 'process') {
             procPerf.value.push(r);
           }
-          
         } else {
           if (r.process) {
             if (r.process.cpuInfo) {
@@ -226,26 +225,26 @@ const getPerform = () => {
         }
       }
 
-      if (lastDevice.value.platform === 1)  {
-          const key = `${route.params.resultId}-${caseId.value}-${deviceId.value}-androidPerfChart`;
-          androidPerfChartMap[key].printPerfCpu();
-          androidPerfChartMap[key].printPerfMem();
-          androidPerfChartMap[key].printProcFps();
-          androidPerfChartMap[key].printProcThread();
-          androidPerfChartMap[key].printCpu();
-          androidPerfChartMap[key].printSingleCpu();
-          androidPerfChartMap[key].printMem();
-          androidPerfChartMap[key].printNetwork();
-        }else {
-          const key = `${route.params.resultId}-${caseId.value}-${deviceId.value}-iosPerfChart`;
-          iosPerfChartMap[key].printCpu();
-          iosPerfChartMap[key].printMem();
-          iosPerfChartMap[key].printGpu();
-          iosPerfChartMap[key].printFps();
-          iosPerfChartMap[key].printDisk();
-          iosPerfChartMap[key].printNetwork();
-          iosPerfChartMap[key].printPerfCpu();
-          iosPerfChartMap[key].printPerfMem();
+      if (lastDevice.value.platform === 1) {
+        const key = `${route.params.resultId}-${caseId.value}-${deviceId.value}-androidPerfChart`;
+        androidPerfChartMap[key].printPerfCpu();
+        androidPerfChartMap[key].printPerfMem();
+        androidPerfChartMap[key].printProcFps();
+        androidPerfChartMap[key].printProcThread();
+        androidPerfChartMap[key].printCpu();
+        androidPerfChartMap[key].printSingleCpu();
+        androidPerfChartMap[key].printMem();
+        androidPerfChartMap[key].printNetwork();
+      } else {
+        const key = `${route.params.resultId}-${caseId.value}-${deviceId.value}-iosPerfChart`;
+        iosPerfChartMap[key].printCpu();
+        iosPerfChartMap[key].printMem();
+        iosPerfChartMap[key].printGpu();
+        iosPerfChartMap[key].printFps();
+        iosPerfChartMap[key].printDisk();
+        iosPerfChartMap[key].printNetwork();
+        iosPerfChartMap[key].printPerfCpu();
+        iosPerfChartMap[key].printPerfMem();
       }
     });
 };
@@ -261,8 +260,8 @@ const setAndroidRef = (el, key) => {
 };
 const switchDevice = async (tab, e) => {
   page = 1;
-  lastDevice.value =  deviceList.value[tab.index]
-  deviceId.value =  lastDevice.value.id
+  lastDevice.value = deviceList.value[tab.index];
+  deviceId.value = lastDevice.value.id;
   done.value = false;
   stepList.value = [];
   type.value = 'log';
@@ -316,7 +315,7 @@ const getDeviceList = (ids) => {
             }
           }
           if (deviceList.value.length > 0) {
-            lastDevice.value = deviceList.value[0]
+            lastDevice.value = deviceList.value[0];
             deviceId.value = `${lastDevice.value.id}`;
             getStepList();
           }

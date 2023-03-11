@@ -55,31 +55,48 @@ const props = defineProps({
   procFps: Array,
   procThread: Array,
 });
-const getNetworkDataGroup = () => {
+
+const getNetworkTimeStamp = () => {
   const result = [];
-  const rx = [];
-  const tx = [];
-  for (const i in props.sysNetwork) {
-    for (const j in props.sysNetwork[i]) {
-      rx.push(props.sysNetwork[i][j].rx);
-      tx.push(props.sysNetwork[i][j].tx);
-      break;
+  if (props.sysNetwork.length > 0) {
+    for (const i in props.sysNetwork[0]) {
+      if (i) {
+        props.sysNetwork.map((obj) => {
+          result.push(moment(new Date(obj[i].timeStamp)).format('HH:mm:ss'));
+        });
+        break;
+      }
     }
   }
-  result.push({
-    type: 'line',
-    name: 'tx',
-    data: tx,
-    showSymbol: false,
-    boundaryGap: false,
-  });
-  result.push({
-    type: 'line',
-    name: 'rx',
-    data: rx,
-    showSymbol: false,
-    boundaryGap: false,
-  });
+  return result;
+};
+
+const getNetworkDataGroup = () => {
+  const result = [];
+  if (props.sysNetwork.length > 0) {
+    for (const i in props.sysNetwork[0]) {
+      const tx = [];
+      const rx = [];
+      props.sysNetwork.map((obj) => {
+        tx.push(obj[i].tx);
+        rx.push(obj[i].rx);
+      });
+      result.push({
+        type: 'line',
+        name: `${i}_tx`,
+        data: tx,
+        showSymbol: false,
+        boundaryGap: false,
+      });
+      result.push({
+        type: 'line',
+        name: `${i}_rx`,
+        data: rx,
+        showSymbol: false,
+        boundaryGap: false,
+      });
+    }
+  }
   return result;
 };
 const getCpuDataGroup = () => {
@@ -550,9 +567,7 @@ const printNetwork = () => {
       },
     },
     xAxis: {
-      data: props.sysNetwork.map((obj) => {
-        return moment(new Date(obj.timeStamp)).format('HH:mm:ss');
-      }),
+      data: getNetworkTimeStamp(),
     },
     dataZoom: [
       {

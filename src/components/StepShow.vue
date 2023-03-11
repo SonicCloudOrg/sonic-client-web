@@ -53,6 +53,17 @@ const getPublicStepInfo = (id) => {
     }
   });
 };
+
+const getEleResult = (s) => {
+  const ss = s.toUpperCase();
+  if (ss.indexOf('POCO') !== -1) {
+    return 'POCO';
+  }
+  if (ss.indexOf('WEBVIEW') !== -1) {
+    return 'WebView';
+  }
+  return '原生';
+};
 </script>
 
 <template>
@@ -249,7 +260,8 @@ const getPublicStepInfo = (id) => {
       step.stepType === 'isExistPocoEle'
     "
   >
-    <el-tag size="small" style="margin-right: 10px">判断控件元素是否存在</el-tag
+    <el-tag size="small" style="margin-right: 10px"
+      >判断{{ getEleResult(step.stepType) }}控件元素是否存在</el-tag
     >断言：
     <el-tag type="info" size="small" style="margin-right: 10px">{{
       step.elements[0]['eleName']
@@ -263,7 +275,7 @@ const getPublicStepInfo = (id) => {
       step.stepType === 'pocoClick'
     "
   >
-    <el-tag size="small">点击控件元素</el-tag>
+    <el-tag size="small">点击{{ getEleResult(step.stepType) }}控件元素</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
@@ -275,7 +287,7 @@ const getPublicStepInfo = (id) => {
       step.stepType === 'iteratorPocoElement'
     "
   >
-    <el-tag size="small">迭代控件</el-tag>
+    <el-tag size="small">迭代{{ getEleResult(step.stepType) }}控件</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
@@ -284,7 +296,10 @@ const getPublicStepInfo = (id) => {
   <span
     v-if="step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys'"
   >
-    <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
+    <el-tag size="small">{{ getEleResult(step.stepType) }}控件元素</el-tag>
+    <el-tag type="info" size="small" style="margin-left: 10px">{{
+      step.elements[0]['eleName']
+    }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
       >输入文本</el-tag
     >
@@ -311,7 +326,7 @@ const getPublicStepInfo = (id) => {
   <span
     v-if="step.stepType === 'longPress' || step.stepType === 'pocoLongPress'"
   >
-    <el-tag size="small">长按控件元素</el-tag>
+    <el-tag size="small">长按{{ getEleResult(step.stepType) }}控件元素</el-tag>
     <el-tag
       type="info"
       size="small"
@@ -323,7 +338,7 @@ const getPublicStepInfo = (id) => {
   <span v-if="step.stepType === 'clear' || step.stepType === 'webViewClear'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >清空输入框</el-tag
+      >清空{{ getEleResult(step.stepType) }}输入框</el-tag
     >
   </span>
   <span
@@ -333,7 +348,7 @@ const getPublicStepInfo = (id) => {
       step.stepType === 'getPocoTextValue'
     "
   >
-    <el-tag size="small">获取文本</el-tag>
+    <el-tag size="small">获取{{ getEleResult(step.stepType) }}文本</el-tag>
     <el-tag
       type="info"
       size="small"
@@ -349,7 +364,7 @@ const getPublicStepInfo = (id) => {
       step.stepType === 'getPocoText'
     "
   >
-    <el-tag size="small">验证文本</el-tag>
+    <el-tag size="small">验证{{ getEleResult(step.stepType) }}文本</el-tag>
     <el-tag
       type="info"
       size="small"
@@ -376,7 +391,9 @@ const getPublicStepInfo = (id) => {
       step.stepType === 'getPocoElementAttr'
     "
   >
-    <el-tag size="small" style="margin-right: 10px">验证元素属性</el-tag>
+    <el-tag size="small" style="margin-right: 10px"
+      >验证{{ getEleResult(step.stepType) }}元素属性</el-tag
+    >
     <el-tag
       type="info"
       size="small"
