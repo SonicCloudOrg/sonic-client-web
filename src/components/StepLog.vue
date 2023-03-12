@@ -2,6 +2,7 @@
 import { watch, nextTick, ref } from 'vue';
 import { Loading, CircleCheckFilled, CaretBottom } from '@element-plus/icons';
 import { useI18n } from 'vue-i18n';
+import CodeEditor from './CodeEditor.vue';
 
 const { t: $t } = useI18n();
 const props = defineProps({
@@ -134,14 +135,20 @@ const isPic = (s) => {
               >Script:
               <el-collapse style="margin: 5px 0">
                 <el-collapse-item>
-                  <template #title> {{ $t('steps.script') }} </template>
-                  <span
-                    v-html="
+                  <template #title>
+                    <span style="margin-left: 10px"
+                      >{{ $t('steps.script') }}
+                    </span></template
+                  >
+                  <CodeEditor
+                    :code="
                       scope.row.log.substring(
                         scope.row.log.indexOf('Script: <br>') + 12
                       )
                     "
-                  ></span>
+                    :disabled="true"
+                    :project-id="0"
+                  ></CodeEditor>
                 </el-collapse-item>
               </el-collapse>
             </span>

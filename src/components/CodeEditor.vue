@@ -179,7 +179,9 @@ const importAddFrom = (s) => {
   emit('update:language', s.scriptLanguage);
 };
 onMounted(() => {
-  getScriptList();
+  if (props.projectId !== 0) {
+    getScriptList();
+  }
 });
 </script>
 
