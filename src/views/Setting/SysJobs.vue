@@ -140,7 +140,7 @@ onMounted(() => {
       label-width="90px"
       label-position="left"
     >
-      <el-form-item :label="$t('jobsTS.cron')">
+      <el-form-item :label="$t('jobsTS.dialogVisible.cron')">
         <el-input v-model="edit.cron"></el-input>
       </el-form-item>
     </el-form>

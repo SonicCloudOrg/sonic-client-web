@@ -22,7 +22,7 @@ import { router } from '../router/index.js';
 
 let baseURL = '';
 if (process.env.NODE_ENV === 'development') {
-  baseURL = 'http://sonic.jtsh.top:53000/server/api';
+  baseURL = 'http://localhost:8094/api';
 }
 if (process.env.NODE_ENV === 'production') {
   baseURL = 'http://SONIC_SERVER_HOST:SONIC_SERVER_PORT/server/api';
