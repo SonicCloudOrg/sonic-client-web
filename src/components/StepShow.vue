@@ -84,26 +84,12 @@ const getNotes = (text, type) => {
       let cur = textArray[index++].trim();
       notes.push(cur.substring(prefix.length, cur.length).trim())
     }
+    return ': ' + notes.join(",");
   } else if (text.trim().substring(0, 2) === "/*" && type === 'Groovy' && text.indexOf("*/") !== -1) { //处理大片注释的情况
-    let cur = textArray[index].trim()
-    textArray[index] = cur.substring(2, cur.length); //不直接加是为了治理 /* */的情况
-    while (index < textArray.length) {
-      cur = textArray[index++].trim()
-      if (cur !== '') { //处理注释中间存在空行
-        notes.push(cur);
-      }
-      if (cur.substring(cur.length - 2, cur.length) === "*/") {
-        //切掉 */
-        if (cur.substring(0, cur.length - 2) === '') {
-          notes.pop()
-        } else {
-          notes[notes.length - 1] = cur.substring(0, cur.length - 2)
-        }
-        break
-      }
-    }
+    return ": " + text.substring(text.indexOf("/*") + 2, text.indexOf("*/")).split("\n").map(s => s.trim()).filter(s => s !== '').join(",");
+  } else {
+    return '';
   }
-  return ': ' + notes.join(",");
 }
 </script>
 
