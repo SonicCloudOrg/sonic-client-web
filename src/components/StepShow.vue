@@ -82,9 +82,9 @@ const getNotes = (text, type) => {
   if (text.trim().substring(0, prefix.length) === prefix) {
     while (index < textArray.length && textArray[index].trim().substring(0, prefix.length) === prefix) {
       let cur = textArray[index++].trim();
-      notes.push(cur.substring(2, cur.length).trim())
+      notes.push(cur.substring(prefix.length, cur.length).trim())
     }
-  } else if (text.trim().substring(0, 2) === "/*" && type === 'Groovy') { //处理大片注释的情况
+  } else if (text.trim().substring(0, 2) === "/*" && type === 'Groovy' && text.indexOf("*/")) { //处理大片注释的情况
     let cur = textArray[index].trim()
     textArray[index] = cur.substring(2, cur.length); //不直接加是为了治理 /* */的情况
     let flag = true;
