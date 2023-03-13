@@ -64,6 +64,52 @@ const getEleResult = (s) => {
   }
   return '原生';
 };
+
+const getNotes = (text, type) => {
+  const notes = [];
+  let textArray = text.split("\n");
+  let index = 0;
+  // 过滤掉前面空行
+  for (let i = 0; i < textArray.length; i++) {
+    if (textArray[i].trim() === '') {
+      index++;
+    } else {
+      break;
+    }
+  }
+  //获取前面的注释
+  const prefix = (type === 'Groovy' ? '//' : "#");
+  if (text.trim().substring(0, prefix.length) === prefix) {
+    while (index < textArray.length && textArray[index].trim().substring(0, prefix.length) === prefix) {
+      let cur = textArray[index++].trim();
+      notes.push(cur.substring(2, cur.length).trim())
+    }
+  } else if (text.trim().substring(0, 2) === "/*" && type === 'Groovy') { //处理大片注释的情况
+    let cur = textArray[index].trim()
+    textArray[index] = cur.substring(2, cur.length); //不直接加是为了治理 /* */的情况
+    let flag = true;
+    while (index < textArray.length) {
+      cur = textArray[index++].trim()
+      if (cur !== '') { //处理注释中间存在空行
+        notes.push(cur);
+      }
+      if (cur.substring(cur.length - 2, cur.length) === "*/") {
+        flag = false;
+        //切掉 */
+        if (cur.substring(0, cur.length - 2) === '') {
+          notes.pop()
+        } else {
+          notes[notes.length - 1] = cur.substring(0, cur.length - 2)
+        }
+        break
+      }
+    }
+    if (flag) {
+      return "";
+    }
+  }
+  return ': ' + notes.join(",");
+}
 </script>
 
 <template>
@@ -75,7 +121,7 @@ const getEleResult = (s) => {
       <el-collapse-item>
         <template #title>
           <el-tag size="small" type="warning" style="margin-right: 10px"
-            >运行自定义脚本</el-tag
+            >运行自定义脚本 {{ getNotes(step.content, step.text) }}</el-tag
           >
           点击展开/收起脚本编辑器
           <el-icon>
