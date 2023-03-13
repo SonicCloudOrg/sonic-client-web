@@ -17,16 +17,16 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ElMessage } from 'element-plus';
-import { useRoute } from 'vue-router';
-import { Edit } from '@element-plus/icons';
-import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
+import {ElMessage} from 'element-plus';
+import {useRoute} from 'vue-router';
+import {Edit} from '@element-plus/icons';
+import {useI18n} from 'vue-i18n';
+import {ref} from 'vue';
 import CodeEditor from './CodeEditor.vue';
 import axios from '../http/axios';
 import ChildStepListView from './ChildStepListView.vue';
 
-const { t: $t } = useI18n();
+const {t: $t} = useI18n();
 const route = useRoute();
 const props = defineProps({
   step: Object,
@@ -45,7 +45,7 @@ const summitStep = () => {
 };
 
 const getPublicStepInfo = (id) => {
-  axios.get('/controller/publicSteps', { params: { id } }).then((resp) => {
+  axios.get('/controller/publicSteps', {params: {id}}).then((resp) => {
     if (resp.code === 2000) {
       if (resp.data.steps) {
         childStep.value = resp.data.steps;
@@ -84,17 +84,15 @@ const getNotes = (text, type) => {
       let cur = textArray[index++].trim();
       notes.push(cur.substring(prefix.length, cur.length).trim())
     }
-  } else if (text.trim().substring(0, 2) === "/*" && type === 'Groovy' && text.indexOf("*/")) { //处理大片注释的情况
+  } else if (text.trim().substring(0, 2) === "/*" && type === 'Groovy' && text.indexOf("*/") > 0) { //处理大片注释的情况
     let cur = textArray[index].trim()
     textArray[index] = cur.substring(2, cur.length); //不直接加是为了治理 /* */的情况
-    let flag = true;
     while (index < textArray.length) {
       cur = textArray[index++].trim()
       if (cur !== '') { //处理注释中间存在空行
         notes.push(cur);
       }
       if (cur.substring(cur.length - 2, cur.length) === "*/") {
-        flag = false;
         //切掉 */
         if (cur.substring(0, cur.length - 2) === '') {
           notes.pop()
@@ -104,9 +102,6 @@ const getNotes = (text, type) => {
         break
       }
     }
-    if (flag) {
-      return "";
-    }
   }
   return ': ' + notes.join(",");
 }
@@ -114,28 +109,28 @@ const getNotes = (text, type) => {
 
 <template>
   <span
-    v-if="step.stepType === 'runScript'"
-    style="display: inline-block; margin-right: 10px; flex: 1; width: 70%"
+      v-if="step.stepType === 'runScript'"
+      style="display: inline-block; margin-right: 10px; flex: 1; width: 70%"
   >
     <el-collapse style="margin: 5px 0">
       <el-collapse-item>
         <template #title>
           <el-tag size="small" type="warning" style="margin-right: 10px"
-            >运行自定义脚本 {{ getNotes(step.content, step.text) }}</el-tag
+          >运行自定义脚本 {{ getNotes(step.content, step.text) }}</el-tag
           >
           点击展开/收起脚本编辑器
           <el-icon>
-            <Edit />
+            <Edit/>
           </el-icon>
         </template>
         <CodeEditor
-          v-model:code="step.content"
-          v-model:language="step.text"
-          :project-id="route.params.projectId"
-          :show-footer="true"
-          :show-tool-bar="true"
-          height="auto"
-          @save="summitStep"
+            v-model:code="step.content"
+            v-model:language="step.text"
+            :project-id="route.params.projectId"
+            :show-footer="true"
+            :show-tool-bar="true"
+            height="auto"
+            @save="summitStep"
         ></CodeEditor>
       </el-collapse-item>
     </el-collapse>
@@ -145,7 +140,7 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.conditionType === 2">
     <el-tag size="small" type="warning" style="margin-right: 10px"
-      >else if</el-tag
+    >else if</el-tag
     >
   </span>
   <span v-if="step.conditionType === 3">
@@ -153,7 +148,7 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.conditionType === 4">
     <el-tag size="small" type="warning" style="margin-right: 10px"
-      >while</el-tag
+    >while</el-tag
     >
   </span>
   <span v-if="step.stepType === 'siriCommand'">
@@ -203,47 +198,47 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'switchIgnoreMode'">
     <el-tag size="small" style="margin-right: 10px"
-      >切换忽略不重要视图模式</el-tag
+    >切换忽略不重要视图模式</el-tag
     >{{ step.content === 'true' ? '忽略' : '不忽略' }}
   </span>
   <span v-if="step.stepType === 'switchVisibleMode'">
     <el-tag size="small" style="margin-right: 10px"
-      >切换Invisible控件展示</el-tag
+    >切换Invisible控件展示</el-tag
     >{{ step.content === 'true' ? '显示' : '隐藏' }}
   </span>
   <span
-    v-if="
+      v-if="
       step.stepType === 'logElementAttr' ||
       step.stepType === 'logPocoElementAttr'
     "
   >
     <el-tag size="small">日志输出</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
-      step.elements[0]['eleName']
-    }}</el-tag>
+        step.elements[0]['eleName']
+      }}</el-tag>
     <el-tag size="small" style="margin: 0 10px">控件信息</el-tag>
     目标属性：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'tap'">
     <el-tag size="small">点击坐标</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
-      step.elements[0]['eleName']
-    }}</el-tag>
+        step.elements[0]['eleName']
+      }}</el-tag>
   </span>
   <span v-if="step.stepType === 'longPressPoint'">
     <el-tag size="small">长按坐标</el-tag>
     <el-tag
-      type="info"
-      size="small"
-      style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[0]['eleName'] }}</el-tag
+        type="info"
+        size="small"
+        style="margin-left: 10px; margin-right: 10px"
+    >{{ step.elements[0]['eleName'] }}</el-tag
     >
     {{ step.content }} ms
   </span>
   <span v-if="step.stepType === 'swipe'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >滑动拖拽到</el-tag
+    >滑动拖拽到</el-tag
     >
     <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
   </span>
@@ -257,13 +252,13 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'findElementInterval'">
     <el-tag size="small" style="margin-right: 10px"
-      >设置查找原生控件策略</el-tag
+    >设置查找原生控件策略</el-tag
     >
     重试次数：{{ step.content }} 重试间隔：{{ step.text }} ms
   </span>
   <span v-if="step.stepType === 'setDefaultFindPocoElementInterval'">
     <el-tag size="small" style="margin-right: 10px"
-      >设置查找POCO控件策略</el-tag
+    >设置查找POCO控件策略</el-tag
     >
     重试次数：{{ step.content }} 重试间隔：{{ step.text }} ms
   </span>
@@ -300,22 +295,22 @@ const getNotes = (text, type) => {
     Handle切换信息：{{ step.content }}
   </span>
   <span
-    v-if="
+      v-if="
       step.stepType === 'isExistEle' ||
       step.stepType === 'isExistWebViewEle' ||
       step.stepType === 'isExistPocoEle'
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >判断{{ getEleResult(step.stepType) }}控件元素是否存在</el-tag
+    >判断{{ getEleResult(step.stepType) }}控件元素是否存在</el-tag
     >断言：
     <el-tag type="info" size="small" style="margin-right: 10px">{{
-      step.elements[0]['eleName']
-    }}</el-tag>
+        step.elements[0]['eleName']
+      }}</el-tag>
     {{ step.content === 'true' ? '存在' : '不存在' }}
   </span>
   <span
-    v-if="
+      v-if="
       step.stepType === 'click' ||
       step.stepType === 'webViewClick' ||
       step.stepType === 'pocoClick'
@@ -323,11 +318,11 @@ const getNotes = (text, type) => {
   >
     <el-tag size="small">点击{{ getEleResult(step.stepType) }}控件元素</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
-      step.elements[0]['eleName']
-    }}</el-tag>
+        step.elements[0]['eleName']
+      }}</el-tag>
   </span>
   <span
-    v-if="
+      v-if="
       step.stepType === 'iteratorAndroidElement' ||
       step.stepType === 'iteratorIOSElement' ||
       step.stepType === 'iteratorPocoElement'
@@ -335,19 +330,19 @@ const getNotes = (text, type) => {
   >
     <el-tag size="small">迭代{{ getEleResult(step.stepType) }}控件</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
-      step.elements[0]['eleName']
-    }}</el-tag>
+        step.elements[0]['eleName']
+      }}</el-tag>
     <el-tag size="small" style="margin-left: 10px">子控件</el-tag>
   </span>
   <span
-    v-if="step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys'"
+      v-if="step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys'"
   >
     <el-tag size="small">{{ getEleResult(step.stepType) }}控件元素</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
-      step.elements[0]['eleName']
-    }}</el-tag>
+        step.elements[0]['eleName']
+      }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >输入文本</el-tag
+    >输入文本</el-tag
     >
     {{ step.content }}
   </span>
@@ -358,37 +353,37 @@ const getNotes = (text, type) => {
   <span v-if="step.stepType === 'sendKeysByActions'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >输入文本(Actions)</el-tag
+    >输入文本(Actions)</el-tag
     >
     {{ step.content }}
   </span>
   <span v-if="step.stepType === 'swipe2' || step.stepType === 'pocoSwipe'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >滑动拖拽到</el-tag
+    >滑动拖拽到</el-tag
     >
     <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
   </span>
   <span
-    v-if="step.stepType === 'longPress' || step.stepType === 'pocoLongPress'"
+      v-if="step.stepType === 'longPress' || step.stepType === 'pocoLongPress'"
   >
     <el-tag size="small">长按{{ getEleResult(step.stepType) }}控件元素</el-tag>
     <el-tag
-      type="info"
-      size="small"
-      style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[0]['eleName'] }}</el-tag
+        type="info"
+        size="small"
+        style="margin-left: 10px; margin-right: 10px"
+    >{{ step.elements[0]['eleName'] }}</el-tag
     >
     {{ step.content }} ms
   </span>
   <span v-if="step.stepType === 'clear' || step.stepType === 'webViewClear'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >清空{{ getEleResult(step.stepType) }}输入框</el-tag
+    >清空{{ getEleResult(step.stepType) }}输入框</el-tag
     >
   </span>
   <span
-    v-if="
+      v-if="
       step.stepType === 'getTextValue' ||
       step.stepType === 'getWebViewTextValue' ||
       step.stepType === 'getPocoTextValue'
@@ -396,15 +391,15 @@ const getNotes = (text, type) => {
   >
     <el-tag size="small">获取{{ getEleResult(step.stepType) }}文本</el-tag>
     <el-tag
-      type="info"
-      size="small"
-      style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[0]['eleName'] }}</el-tag
+        type="info"
+        size="small"
+        style="margin-left: 10px; margin-right: 10px"
+    >{{ step.elements[0]['eleName'] }}</el-tag
     >
     获取到变量：{{ step.content }}
   </span>
   <span
-    v-if="
+      v-if="
       step.stepType === 'getText' ||
       step.stepType === 'getWebViewText' ||
       step.stepType === 'getPocoText'
@@ -412,10 +407,10 @@ const getNotes = (text, type) => {
   >
     <el-tag size="small">验证{{ getEleResult(step.stepType) }}文本</el-tag>
     <el-tag
-      type="info"
-      size="small"
-      style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[0]['eleName'] }}</el-tag
+        type="info"
+        size="small"
+        style="margin-left: 10px; margin-right: 10px"
+    >{{ step.elements[0]['eleName'] }}</el-tag
     >
     期望值：{{ step.content }}
   </span>
@@ -432,19 +427,19 @@ const getNotes = (text, type) => {
     期望值：{{ step.content }}
   </span>
   <span
-    v-if="
+      v-if="
       step.stepType === 'getElementAttr' ||
       step.stepType === 'getPocoElementAttr'
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >验证{{ getEleResult(step.stepType) }}元素属性</el-tag
+    >验证{{ getEleResult(step.stepType) }}元素属性</el-tag
     >
     <el-tag
-      type="info"
-      size="small"
-      style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[0]['eleName'] }}</el-tag
+        type="info"
+        size="small"
+        style="margin-left: 10px; margin-right: 10px"
+    >{{ step.elements[0]['eleName'] }}</el-tag
     >
     断言：
     <el-tag size="small" style="margin-right: 10px">{{ step.text }}</el-tag>
@@ -490,10 +485,10 @@ const getNotes = (text, type) => {
   <span v-if="step.stepType === 'checkImage'">
     <el-tag size="small">检测</el-tag>
     <el-tag
-      type="info"
-      style="margin-left: 10px; margin-right: 10px"
-      size="small"
-      >{{ step.elements[0]['eleName'] }}</el-tag
+        type="info"
+        style="margin-left: 10px; margin-right: 10px"
+        size="small"
+    >{{ step.elements[0]['eleName'] }}</el-tag
     >
     <el-tag size="small" style="margin-right: 10px">图像相似度</el-tag>
     期望匹配率：{{ step.content }} %
@@ -501,10 +496,10 @@ const getNotes = (text, type) => {
   <span v-if="step.stepType === 'clickByImg'">
     <el-tag size="small">定位</el-tag>
     <el-tag
-      type="info"
-      size="small"
-      style="margin-left: 10px; margin-right: 10px"
-      >{{ step.elements[0]['eleName'] }}</el-tag
+        type="info"
+        size="small"
+        style="margin-left: 10px; margin-right: 10px"
+    >{{ step.elements[0]['eleName'] }}</el-tag
     ><el-tag size="small">并点击</el-tag>
   </span>
   <span v-if="step.stepType === 'readText'">
@@ -517,23 +512,23 @@ const getNotes = (text, type) => {
   <span v-if="step.stepType === 'publicStep'">
     <el-tag type="warning" size="small">使用公共步骤</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
-      step.content
-    }}</el-tag>
+        step.content
+      }}</el-tag>
     <el-popover placement="bottom" :width="700" trigger="click">
-      <child-step-list-view :steps="childStep" />
+      <child-step-list-view :steps="childStep"/>
       <template #reference>
         <el-button
-          style="margin-left: 10px"
-          size="mini"
-          @click="getPublicStepInfo(step.text)"
-          >{{ $t('publicStepTS.viewSteps') }}</el-button
+            style="margin-left: 10px"
+            size="mini"
+            @click="getPublicStepInfo(step.text)"
+        >{{ $t('publicStepTS.viewSteps') }}</el-button
         >
       </template>
     </el-popover>
   </span>
   <span v-if="step.stepType === 'monkey'">
     <el-tag style="margin-right: 10px" type="warning" size="small"
-      >随机事件测试</el-tag
+    >随机事件测试</el-tag
     >
     应用包名：{{ JSON.parse(step.content).packageName }}&nbsp;&nbsp;事件数：{{
       JSON.parse(step.content).pctNum
@@ -549,11 +544,11 @@ const getNotes = (text, type) => {
   </span>
   <span>
     <el-tag
-      v-if="step.conditionType !== 3 && step.conditionType !== 0"
-      size="small"
-      type="warning"
-      style="margin-left: 10px"
-      >无异常</el-tag
+        v-if="step.conditionType !== 3 && step.conditionType !== 0"
+        size="small"
+        type="warning"
+        style="margin-left: 10px"
+    >无异常</el-tag
     >
   </span>
 </template>
