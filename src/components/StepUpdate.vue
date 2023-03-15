@@ -316,6 +316,7 @@ const getStepInfo = (id) => {
         step.value.stepType === 'pause' ||
         step.value.stepType === 'stepHold' ||
         step.value.stepType === 'longPressPoint' ||
+        step.value.stepType === 'swipeByDefinedDirection' ||
         step.value.stepType === 'findElementInterval' ||
         step.value.stepType === 'setDefaultFindPocoElementInterval' ||
         step.value.stepType === 'setDefaultFindWebViewElementInterval' ||
@@ -405,6 +406,10 @@ const androidOptions = ref([
           {
             value: 'closeKeyboard',
             label: '关闭Sonic输入法',
+          },
+          {
+            value: 'swipeByDefinedDirection',
+            label: '从屏幕中央滑动距离',
           },
         ],
       },
@@ -571,6 +576,10 @@ const androidOptions = ref([
             label: '点击控件元素',
           },
           {
+            value: 'webElementScrollToView',
+            label: '滚动控件至顶部可见',
+          },
+          {
             value: 'webViewSendKeys',
             label: '输入文本',
           },
@@ -716,11 +725,6 @@ const androidOptions = ref([
         value: 'clickByImg',
         label: '图像定位并点击',
       },
-      {
-        value: 'readText',
-        label: '图像文字识别（暂时关闭）',
-        disabled: true,
-      },
     ],
   },
   {
@@ -738,11 +742,6 @@ const androidOptions = ref([
       {
         value: 'monkey',
         label: '随机事件',
-      },
-      {
-        value: 'traverse',
-        label: '遍历页面(暂未开放)',
-        disabled: true,
       },
       {
         value: 'pause',
@@ -795,6 +794,10 @@ const iOSOptions = ref([
           {
             value: 'sendKeyForce',
             label: '键盘输入',
+          },
+          {
+            value: 'swipeByDefinedDirection',
+            label: '从屏幕中央滑动距离',
           },
         ],
       },
@@ -1034,11 +1037,6 @@ const iOSOptions = ref([
         value: 'clickByImg',
         label: '图像定位并点击',
       },
-      {
-        value: 'readText',
-        label: '图像文字识别（暂时关闭）',
-        disabled: true,
-      },
     ],
   },
   {
@@ -1052,16 +1050,6 @@ const iOSOptions = ref([
       {
         value: 'runScript',
         label: '自定义脚本',
-      },
-      {
-        value: 'monkey',
-        label: '随机事件(暂未开放)',
-        disabled: true,
-      },
-      {
-        value: 'traverse',
-        label: '遍历页面(暂未开放)',
-        disabled: true,
       },
       {
         value: 'pause',
@@ -1599,6 +1587,31 @@ onMounted(() => {
         </el-form-item>
       </div>
 
+      <div v-if="step.stepType === 'swipeByDefinedDirection'">
+        <el-form-item
+          label="方向"
+          :rules="[
+            { required: true, message: '请选择方向', trigger: 'change' },
+          ]"
+          prop="text"
+        >
+          <el-select v-model="step.text" placeholder="请选择方向">
+            <el-option label="UP" value="up"></el-option>
+            <el-option label="DOWN" value="down"></el-option>
+            <el-option label="LEFT" value="left"></el-option>
+            <el-option label="RIGHT" value="right"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="滑动距离">
+          <el-input-number
+            v-model="step.content"
+            :min="1"
+            :step="10"
+          ></el-input-number>
+          px
+        </el-form-item>
+      </div>
+
       <div v-if="step.stepType === 'toWebView'">
         <el-form-item label="包名">
           <el-input
@@ -1732,6 +1745,17 @@ onMounted(() => {
             <el-option label="隐藏" value="false"></el-option>
           </el-select>
         </el-form-item>
+      </div>
+
+      <div v-if="step.stepType === 'webElementScrollToView'">
+        <element-select
+          label="控件元素"
+          place="请选择控件元素"
+          :index="0"
+          :project-id="projectId"
+          type="normal"
+          :step="step"
+        />
       </div>
 
       <div v-if="step.stepType === 'click' || step.stepType === 'webViewClick'">

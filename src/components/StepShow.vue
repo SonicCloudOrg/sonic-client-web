@@ -154,6 +154,24 @@ const getNotes = (text, type) => {
     <el-tag size="small" style="margin-right: 10px">发送Siri指令</el-tag
     >{{ step.content }}
   </span>
+  <span v-if="step.stepType === 'swipeByDefinedDirection'">
+    <el-tag size="small">设备屏幕中央向</el-tag>
+    <el-tag
+      type="info"
+      size="small"
+      style="margin-left: 10px; margin-right: 10px"
+      >{{ step.text.toUpperCase() }}</el-tag
+    >
+    <el-tag size="small" style="margin-right: 10px">滑动</el-tag>
+    {{ step.content }} px
+  </span>
+  <span v-if="step.stepType === 'webElementScrollToView'">
+    <el-tag size="small" style="margin-right: 10px">滚动控件</el-tag>
+    <el-tag type="info" size="small" style="margin-right: 10px">{{
+      step.elements[0]['eleName']
+    }}</el-tag>
+    <el-tag size="small">至顶部可见</el-tag>
+  </span>
   <span v-if="step.stepType === 'lock'">
     <el-tag size="small">锁定设备</el-tag>
   </span>
