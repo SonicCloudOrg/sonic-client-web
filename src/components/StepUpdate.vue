@@ -318,6 +318,7 @@ const getStepInfo = (id) => {
         step.value.stepType === 'longPressPoint' ||
         step.value.stepType === 'findElementInterval' ||
         step.value.stepType === 'setDefaultFindPocoElementInterval' ||
+        step.value.stepType === 'setDefaultFindWebViewElementInterval' ||
         step.value.stepType === 'longPress' ||
         step.value.stepType === 'checkImage'
       ) {
@@ -325,7 +326,8 @@ const getStepInfo = (id) => {
       }
       if (
         step.value.stepType === 'findElementInterval' ||
-        step.value.stepType === 'setDefaultFindPocoElementInterval'
+        step.value.stepType === 'setDefaultFindPocoElementInterval' ||
+        step.value.stepType === 'setDefaultFindWebViewElementInterval'
       ) {
         step.value.text = parseInt(step.value.text);
       }
@@ -548,6 +550,10 @@ const androidOptions = ref([
         label: 'WebView控件',
         value: 'webViewEle',
         children: [
+          {
+            value: 'setDefaultFindWebViewElementInterval',
+            label: '设置查找控件策略',
+          },
           {
             value: 'toWebView',
             label: '切换WebView',
@@ -2353,7 +2359,8 @@ onMounted(() => {
       <div
         v-if="
           step.stepType === 'findElementInterval' ||
-          step.stepType === 'setDefaultFindPocoElementInterval'
+          step.stepType === 'setDefaultFindPocoElementInterval' ||
+          step.stepType === 'setDefaultFindWebViewElementInterval'
         "
       >
         <el-form-item label="重试次数">
