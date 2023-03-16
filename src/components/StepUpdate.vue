@@ -45,6 +45,7 @@ const step = ref({
   conditionType: 0,
   content: '',
   error: 3,
+  disabled: 0
 });
 const activityList = ref([{ name: '' }]);
 const add = () => {
