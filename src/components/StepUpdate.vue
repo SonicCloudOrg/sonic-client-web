@@ -2110,6 +2110,7 @@ onMounted(() => {
             <el-option value="index"></el-option>
             <el-option value="label"></el-option>
             <el-option value="name"></el-option>
+            <el-option value="value"></el-option>
             <el-option value="rect"></el-option>
             <el-option value="selected"></el-option>
             <el-option value="type"></el-option>
@@ -2159,23 +2160,16 @@ onMounted(() => {
             label="属性"
             placeholder="请选择控件属性"
           >
+            <el-option value="value"></el-option>
             <el-option value="enabled"></el-option>
             <el-option value="visible"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
-          label="期望值"
-          prop="content"
-          :rules="{
-            required: true,
-            message: '断言不能为空',
-            trigger: 'change',
-          }"
-        >
-          <el-select v-model="step.content">
-            <el-option label="true" value="true"></el-option>
-            <el-option label="false" value="false"></el-option>
-          </el-select>
+        <el-form-item label="期望值" prop="content">
+          <el-input
+            v-model="step.content"
+            placeholder="请输入期望值"
+          ></el-input>
         </el-form-item>
       </div>
 

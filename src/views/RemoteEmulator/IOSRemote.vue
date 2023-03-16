@@ -272,6 +272,17 @@ const openApp = (pkg) => {
     })
   );
 };
+const killApp = (pkg) => {
+  websocket.send(
+    JSON.stringify({
+      type: 'kill',
+      pkg,
+    })
+  );
+  ElMessage.success({
+    message: $t('androidRemoteTS.code.killMsg'),
+  });
+};
 const refreshAppList = () => {
   appList.value = [];
   ElMessage.success({
@@ -1987,7 +1998,7 @@ function parseTimeout(time) {
                   :label="$t('androidRemoteTS.code.subversion')"
                   width="120"
                 ></el-table-column>
-                <el-table-column align="center" width="200">
+                <el-table-column align="center" width="260">
                   <template #header>
                     <el-input
                       v-model="filterAppText"
@@ -2002,6 +2013,13 @@ function parseTimeout(time) {
                       @click="openApp(scope.row.bundleId)"
                     >
                       {{ $t('androidRemoteTS.code.open') }}
+                    </el-button>
+                    <el-button
+                      size="mini"
+                      type="warning"
+                      @click="killApp(scope.row.bundleId)"
+                    >
+                      {{ $t('androidRemoteTS.code.kill') }}
                     </el-button>
                     <el-button
                       size="mini"
@@ -2778,6 +2796,14 @@ function parseTimeout(time) {
                                 @click="copy(elementDetail['label'])"
                               >
                                 <span>{{ elementDetail['label'] }}</span>
+                              </el-form-item>
+                              <el-form-item
+                                v-if="elementDetail['value']"
+                                label="value"
+                                style="cursor: pointer"
+                                @click="copy(elementDetail['value'])"
+                              >
+                                <span>{{ elementDetail['value'] }}</span>
                               </el-form-item>
                               <el-form-item
                                 :label="$t('androidRemoteTS.code.centerXY')"

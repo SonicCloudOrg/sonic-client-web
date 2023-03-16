@@ -782,6 +782,8 @@ const androidRemoteTS = {
     subversion: 'Subversion',
     nameSearch: 'Search by application name or package name',
     open: 'Open',
+    kill: 'Stop',
+    killMsg: 'Stop successful!',
     unInstall: 'Uninstall',
     packet: 'Network',
     startPacket: 'Start network packet capture',

@@ -762,6 +762,8 @@ const androidRemoteTS = {
     subversion: '子版本號',
     nameSearch: '輸入App名稱或Package名稱搜索',
     open: '打開',
+    kill: '停止',
+    killMsg: '停止成功！',
     unInstall: '卸載',
     packet: '網路抓包',
     startPacket: '開始抓包',
