@@ -89,7 +89,7 @@ onMounted(() => {
   <el-dialog
     v-model="dialogVisible"
     :title="$t('publicStepTS.info')"
-    width="750px"
+    width="70%"
   >
     <public-step-update
       v-if="dialogVisible"

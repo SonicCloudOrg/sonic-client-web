@@ -48,11 +48,33 @@ const props = defineProps({
       <el-card v-if="s.conditionType !== 0">
         <template #header>
           <step-show :step="s"></step-show>
+          <div style="float: right">
+            <el-switch
+              v-model="s.disabled"
+              :active-value="0"
+              :inactive-value="1"
+              active-color="#67C23A"
+              width="30"
+              size="large"
+              disabled
+            ></el-switch>
+          </div>
         </template>
         <child-step-list-view :steps="s['childSteps']" />
       </el-card>
       <div v-else style="display: flex; justify-content: space-between">
         <step-show :step="s"></step-show>
+        <div style="float: right">
+          <el-switch
+            v-model="s.disabled"
+            :active-value="0"
+            :inactive-value="1"
+            active-color="#67C23A"
+            width="30"
+            size="large"
+            disabled
+          ></el-switch>
+        </div>
       </div>
     </el-timeline-item>
   </el-timeline>

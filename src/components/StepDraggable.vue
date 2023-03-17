@@ -47,6 +47,22 @@ const emit = defineEmits([
   'remove',
   'copyStep',
 ]);
+const switchStep = (id, e) => {
+  axios
+    .get('/controller/steps/switchStep', {
+      params: {
+        id,
+        type: e,
+      },
+    })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        ElMessage.success({
+          message: resp.message,
+        });
+      }
+    });
+};
 const sortStep = (e) => {
   if (props.isEdit && props.steps[e.moved.newIndex].parentId === 0) {
     return;
@@ -130,8 +146,18 @@ const copyStep = (id) => {
           <template #header>
             <step-show :step="s"></step-show>
             <div style="float: right">
+              <el-switch
+                v-model="s.disabled"
+                :active-value="0"
+                :inactive-value="1"
+                active-color="#67C23A"
+                width="30"
+                size="large"
+                @change="switchStep(s.id, $event)"
+              ></el-switch>
               <el-button
                 circle
+                style="margin-left: 10px"
                 type="primary"
                 size="mini"
                 @click="addStep(s.id)"
@@ -207,8 +233,18 @@ const copyStep = (id) => {
         </el-card>
         <div v-else style="display: flex; justify-content: space-between">
           <step-show :step="s"></step-show>
-          <div style="float: right; flex: 0 0 185px; text-align: right">
+          <div style="float: right; flex: 0 0 205px; text-align: right">
+            <el-switch
+              v-model="s.disabled"
+              :active-value="0"
+              :inactive-value="1"
+              active-color="#67C23A"
+              width="30"
+              size="large"
+              @change="switchStep(s.id, $event)"
+            ></el-switch>
             <el-button
+              style="margin-left: 10px"
               circle
               type="primary"
               size="mini"
