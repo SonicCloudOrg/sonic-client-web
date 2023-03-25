@@ -35,6 +35,7 @@ const suite = {
   devicePlace:
     'Please select the devices. You can enter the model, remarks, name and serial number to filter',
   selectedCase: 'Selected Cases',
+  testSuiteGlobalParams: 'Extra parameters',
 };
 const testcase = {
   info: 'Case Info',
