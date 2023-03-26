@@ -23,6 +23,7 @@
         "less": "^4.1.2",
         "less-loader": "^10.2.0",
         "moment": "2.29.1",
+        "qs": "^6.11.1",
         "rollup-plugin-copy": "3.4.0",
         "vue": "3.2.14",
         "vue-clipboard3": "1.0.1",
