@@ -16,6 +16,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import axios from 'axios';
+import qs from 'qs';
 import { ElMessage } from 'element-plus';
 import { i18n, $tc } from '@/locales/setupI18n';
 import { router } from '../router/index.js';
@@ -33,6 +34,7 @@ $http.defaults.baseURL = baseURL;
 // $http.defaults.timeout = 20000;
 $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 $http.defaults.withCredentials = true;
+$http.defaults.paramsSerializer = (params) => qs.stringify(params, { arrayFormat: 'brackets' });
 
 $http.interceptors.request.use(
   (config) => {
