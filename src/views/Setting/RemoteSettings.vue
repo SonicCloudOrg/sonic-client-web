@@ -23,12 +23,20 @@ import { useI18n } from 'vue-i18n';
 
 const { t: $t } = useI18n();
 const remoteTimeout = ref(0);
+const inactiveTimeout = ref(0);
 
 const getRemoteTimeout = () => {
   axios.get('/controller/confList/getRemoteTimeout').then((resp) => {
     remoteTimeout.value = resp.data;
   });
 };
+
+const getinactiveTimeout = () => {
+  axios.get('/controller/confList/getInactiveTimeout').then((resp) => {
+    inactiveTimeout.value = resp.data;
+  });
+}
+
 
 const setRemoteTimeout = () => {
   axios
@@ -40,14 +48,38 @@ const setRemoteTimeout = () => {
     .then((resp) => {
       if (resp.code === 2000) {
         ElMessage.success({
-          message: resp.message,
+          message: '远控时间设置' + resp.message,
         });
       }
     });
 };
 
+
+const setinactiveTimeout = () => {
+  axios
+    .get('/controller/confList/setInactiveTimeout', {
+      params: {
+        timeout: inactiveTimeout.value,
+      },
+    })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        ElMessage.success({
+          message: '不活跃时间设置' + resp.message,
+        });
+      }
+    });
+};
+
+
+const setHandle = () => {
+  setinactiveTimeout();
+  setRemoteTimeout();
+}
+
 onMounted(() => {
   getRemoteTimeout();
+  getinactiveTimeout();
 });
 </script>
 
@@ -59,14 +91,27 @@ onMounted(() => {
       :closable="false"
       style="margin-bottom: 10px"
     />
+
     {{ $t('settingIndexTS.remote.text') }}
     <el-input-number v-model="remoteTimeout" :min="1" :max="9600" />
-    min
+    <div style="padding-top: 2%;">
+    <el-alert
+      :title="$t('settingIndexTS.remote.dead_alertMsg')"
+      type="info"
+      :closable="false"
+      style="margin-bottom: 10px"
+    />
+    {{ $t('settingIndexTS.remote.dead_text') }}
+    <el-input-number v-model="inactiveTimeout" :min="1" :max="9600" />
     <el-divider />
+    </div>
     <div style="text-align: center">
-      <el-button type="primary" size="small" @click="setRemoteTimeout">{{
+      <el-button type="primary" size="small" @click="setHandle">{{
         $t('form.save')
       }}</el-button>
     </div>
+
+
+
   </div>
 </template>

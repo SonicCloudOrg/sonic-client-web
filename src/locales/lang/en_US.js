@@ -891,6 +891,9 @@ const settingIndexTS = {
     alertMsg:
       'It is used to configure the maximum occupation time of remote control. After this time, the current occupation will be automatically released and restored to online. (Only the remote control is affected, and the equipment running the test is not affected)',
     text: 'Maximum occupation time of remote control: ',
+    dead_alertMsg:
+      'It is used to configure the time for remote control to release resources without operation. If the remote control user does not take any action beyond this time limit,the current occupation will be automatically released and restored to online(Only the remote control is affected, and the equipment running the test is not affected)',
+    dead_text: 'Maximum inactive time of remote control:',
   },
 };
 const resourceTS = {
