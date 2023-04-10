@@ -1,0 +1,348 @@
+#app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 14px !important;
+    color: #909399;
+}
+
+.login {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: #F2F6FC !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+html,
+body,
+#app,
+.el-container {
+    padding: 0px;
+    margin: 0 !important;
+    height: 100%;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.el-menu--horizontal > .el-sub-menu .el-sub-menu__title,
+.el-menu--horizontal > .el-menu-item.is-active {
+    border-bottom: 0px solid transparent !important;
+}
+
+.el-avatar {
+    background: transparent !important;
+}
+
+.el-menu-vertical-demo {
+    height: 100%
+}
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 230px;
+}
+
+.demo .el-switch__label {
+    position: absolute;
+    display: none;
+}
+
+.demo .el-switch__label--right {
+    top: 1px !important;
+    z-index: 1;
+    right: 13px !important;
+}
+
+.demo .el-switch__label--left {
+    top: 1px !important;
+    z-index: 1;
+    left: 2px !important;
+}
+
+.demo .el-switch__core {
+    height: 10px !important;
+    margin-right: 10px !important;
+}
+
+.demo .el-switch.is-checked .el-switch__core .el-switch__action {
+    top: -6px !important;
+    margin-left: -19.5px !important;
+    border: 2px solid #409EFF;
+    width: 17px !important;
+    height: 17px !important;
+}
+
+.demo .el-switch .el-switch__core .el-switch__action {
+    top: -6px !important;
+    margin-left: -4px !important;
+    border: 2px solid #ffd04b;
+    width: 17px !important;
+    height: 17px !important;
+}
+
+.device-form label {
+    color: #99a9bf;
+    font-size: 14px;
+    height: 30px;
+}
+
+.device-form .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 100%;
+    height: 30px;
+}
+
+.device-form .el-form-item__content {
+    font-size: 14px;
+    color: #606266;
+}
+
+.device-form .el-form-item__content * {
+    vertical-align: middle;
+}
+
+.device-form .el-form-item__content div {
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.device-radio .el-checkbox {
+    margin-right: 15px;
+}
+
+.device-radio .el-checkbox__label * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.device-radio-p {
+    margin-left: 15px
+}
+
+.device-radio-p .el-checkbox__label img {
+    vertical-align: middle;
+}
+
+.device-card-divider {
+    width: 98%;
+    margin: 15px auto 5px !important;
+}
+
+.device-card .el-card__header {
+    padding: 15px;
+    color: #606266;
+    line-height: 1.2;
+}
+
+.device-card-divider .el-divider__text {
+    color: #909399;
+}
+
+.element-table label {
+    color: #99a9bf;
+}
+
+.element-table .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+.element-table .el-form-item .el-form-item__content {
+    width: 0%;
+    word-wrap: break-word !important;
+}
+
+.demo-table-expand label {
+    color: #99a9bf;
+}
+
+.demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    display: flex;
+}
+
+.el-collapse-item__content{
+    padding-bottom:5px!important;
+}
+
+.filter-table-expand label {
+    color: #99a9bf;
+}
+
+.filter-table-expand .el-form-item {
+    margin-bottom: 0;
+}
+
+.filter-table-expand .el-form-item__content {
+    line-height: 1.2;
+}
+
+.el-page-header__content {
+    color: #909399 !important;
+}
+
+.demo-tree-scrollbar .el-scrollbar__wrap {
+    overflow-x: hidden;
+}
+
+.element-tree-scrollbar .el-scrollbar__wrap {
+    overflow-x: hidden;
+}
+
+.el-tree > .el-tree-node {
+    min-width: 100%;
+    display: inline-block;
+}
+
+#pressKey {
+    padding: 3px;
+    width: 100%;
+    margin-top: 10px;
+    margin-left: 2px;
+}
+
+#canvas, #scrcpy-video, #iosCap {
+    border: 3px solid #303133;
+    background-color: #303133;
+    border-radius: 20px;
+    cursor: url("img/pointer.png") 12 12, crosshair;
+}
+
+.divider .el-divider--horizontal {
+    margin: 8px 0;
+    background: 0 0;
+    border-top: 1px solid #e8eaec;
+}
+
+.divider {
+    padding: 10px 10px;
+}
+
+.el-dropdown-menu {
+    padding: 10px !important;
+}
+
+.el-form-item--small.el-form-item {
+    margin-bottom: 16px !important;
+}
+
+@-webkit-keyframes drag-shake {
+    0% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes drag-shake {
+    0% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0.7;
+    }
+}
+
+.shake {
+    -webkit-animation: drag-shake 0.7s infinite;
+    animation: drag-shake 0.7s infinite;
+    border: 2px dashed #909399;
+}
+
+.g-host {
+    background: rgba(242, 246, 252, 0.7);
+}
+
+.handle:hover {
+    cursor: move
+}
+
+.move {
+    border-radius: 10px;
+}
+
+.el-dialog,
+.el-card {
+    border-radius: 15px !important;
+}
+
+.el-cascader-menu__wrap.el-scrollbar__wrap {
+    height: 350px !important;
+}
+
+.el-select-dropdown__wrap {
+    max-height: 430px !important;
+}
+
+.el-table-filter__checkbox-group label.el-checkbox {
+    margin-bottom: 0px !important;
+}
+
+.project-table-expand label {
+    color: #99a9bf;
+}
+
+.project-table-expand .el-form-item {
+    display: flex;
+}
+
+.remote-tab {
+    height: 100% !important;
+    border: 1px solid #EBEEF5 !important;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.remote-tab .el-tabs__item {
+    border-bottom: 1px solid #EBEEF5 !important;
+    padding: 0 15px;
+    color: #606266 !important;
+}
+
+.remote-tab .el-tabs__item.is-active {
+    border-bottom: 1px solid #EBEEF5 !important;
+    padding: 0 15px;
+    color: #409EFF !important;
+}
+
+.remote-tab .el-tabs__content {
+    padding: 15px;
+    border-left: 1px solid #EBEEF5;
+}
+
+.remote-tab .el-tabs__header {
+    margin-right: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+.el-drawer__body {
+    overflow: auto;
+    padding: 20px 0 0 20px !important;
+}
+
+.refresh .el-switch__label {
+    color: #909399 !important;
+    font-size: 13px !important;
+}
+
+.refresh .el-switch__label.is-active {
+    color: #67C23A !important;
+    font-size: 13px !important;
+}

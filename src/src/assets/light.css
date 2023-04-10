@@ -1,0 +1,25 @@
+.sonic-light .el-header {
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.sonic-light .title {
+    color: #909399 !important;
+    white-space: nowrap
+}
+
+.sonic-light .project-name {
+    color: #606266;
+    font-size: 19px !important;
+    font-weight: 600;
+    text-align: center;
+    margin-left: 12px;
+}
+
+.sonic-light .demo .el-switch__label.is-active {
+    display: block;
+    color: #409EFF;
+}

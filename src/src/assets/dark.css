@@ -1,0 +1,34 @@
+.sonic-dark .el-header {
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ffffff;
+    background-color: #545c64 !important;
+}
+
+.sonic-dark .title {
+    color: #ffffff !important;
+    white-space: nowrap
+}
+
+.sonic-dark .about .el-divider__text {
+    background-color: #545c64 !important;
+}
+
+.sonic-dark .el-menu-vertical-demo {
+    border-right: 1px solid #606266 !important;
+}
+
+.sonic-dark .project-name {
+    color: #eee;
+    font-size: 19px !important;
+    font-weight: 600;
+    text-align: center;
+    margin-left: 12px;
+}
+
+.sonic-dark .demo .el-switch__label.is-active {
+    display: block;
+    color: #ffd04b;
+}
