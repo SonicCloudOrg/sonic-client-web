@@ -1667,7 +1667,7 @@ onMounted(() => {
   getDeviceById(route.params.deviceId);
   store.commit('autoChangeCollapse');
   getRemoteTimeout();
-  getinactiveTimeout();
+  getIdleTimeout();
   
   activeTime = new Date().getTime();
   window.document.onmousedown = (event) => {
@@ -1684,10 +1684,10 @@ const getRemoteTimeout = () => {
     }, 1000);
   });
 };
-const inactiveTimeout = ref(0);
-const getinactiveTimeout = () => {
-  axios.get('/controller/confList/getInactiveTimeout').then((resp) => {
-    inactiveTimeout.value = resp.data * 60 * 1000;
+const idleTimeout = ref(0);
+const getIdleTimeout = () => {
+  axios.get('/controller/confList/getIdleTimeout').then((resp) => {
+    idleTimeout.value = resp.data * 60 * 1000;
   });
 }
 // 判活全局监控,60s轮询
@@ -1695,9 +1695,7 @@ var activeTime = 0;
 const checkAlive = () => {
   setInterval(() => {
     const nowTime = new Date().getTime();
-    if (nowTime - activeTime > inactiveTimeout.value) {
-      console.log("不存活");
-      // 释放
+    if (nowTime - activeTime > idleTimeout.value) {
       close();
     }
   }, 60000);
