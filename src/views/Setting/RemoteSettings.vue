@@ -96,12 +96,12 @@ onMounted(() => {
     <el-input-number v-model="remoteTimeout" :min="1" :max="9600" />
     <div style="padding-top: 2%;">
     <el-alert
-      :title="$t('settingIndexTS.remote.dead_alertMsg')"
+      :title="$t('settingIndexTS.remote.idle_alertMsg')"
       type="info"
       :closable="false"
       style="margin-bottom: 10px"
     />
-    {{ $t('settingIndexTS.remote.dead_text') }}
+    {{ $t('settingIndexTS.remote.idle_text') }}
     <el-input-number v-model="idleTimeout" :min="1" :max="9600" />
     <el-divider />
     </div>
