@@ -8,7 +8,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <span>{{
+  <span style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden">{{
     device['nickName'] && device['nickName'].length > 0
       ? device['nickName']
       : device['chiName'] && device['chiName'].length > 0

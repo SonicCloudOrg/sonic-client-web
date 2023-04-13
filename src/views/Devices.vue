@@ -529,6 +529,7 @@ onUnmounted(() => {
                   display: flex;
                   align-items: center;
                   font-size: 16px;
+                  white-space: nowrap;
                   color: #909399;
                 "
                 >{{ $t('devices.avgTem') }}

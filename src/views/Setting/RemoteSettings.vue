@@ -23,12 +23,20 @@ import { useI18n } from 'vue-i18n';
 
 const { t: $t } = useI18n();
 const remoteTimeout = ref(0);
+const idleTimeout = ref(0);
 
 const getRemoteTimeout = () => {
   axios.get('/controller/confList/getRemoteTimeout').then((resp) => {
     remoteTimeout.value = resp.data;
   });
 };
+
+const getIdleTimeout = () => {
+  axios.get('/controller/confList/getIdleTimeout').then((resp) => {
+    idleTimeout.value = resp.data;
+  });
+}
+
 
 const setRemoteTimeout = () => {
   axios
@@ -46,8 +54,32 @@ const setRemoteTimeout = () => {
     });
 };
 
+
+const setIdleTimeout = () => {
+  axios
+    .get('/controller/confList/setIdleTimeout', {
+      params: {
+        timeout: idleTimeout.value,
+      },
+    })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        ElMessage.success({
+          message: resp.message,
+        });
+      }
+    });
+};
+
+
+const setHandle = () => {
+  setIdleTimeout();
+  setRemoteTimeout();
+}
+
 onMounted(() => {
   getRemoteTimeout();
+  getIdleTimeout();
 });
 </script>
 
@@ -59,14 +91,27 @@ onMounted(() => {
       :closable="false"
       style="margin-bottom: 10px"
     />
+
     {{ $t('settingIndexTS.remote.text') }}
     <el-input-number v-model="remoteTimeout" :min="1" :max="9600" />
-    min
+    <div style="padding-top: 2%;">
+    <el-alert
+      :title="$t('settingIndexTS.remote.idle_alertMsg')"
+      type="info"
+      :closable="false"
+      style="margin-bottom: 10px"
+    />
+    {{ $t('settingIndexTS.remote.idle_text') }}
+    <el-input-number v-model="idleTimeout" :min="1" :max="9600" />
     <el-divider />
+    </div>
     <div style="text-align: center">
-      <el-button type="primary" size="small" @click="setRemoteTimeout">{{
+      <el-button type="primary" size="small" @click="setHandle">{{
         $t('form.save')
       }}</el-button>
     </div>
+
+
+
   </div>
 </template>
