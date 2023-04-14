@@ -1658,6 +1658,7 @@ const getProjectList = () => {
     store.commit('saveProjectList', resp.data);
   });
 };
+let activeTime = 0;
 onMounted(() => {
   if (store.state.project.id) {
     project.value = store.state.project;
@@ -1668,11 +1669,10 @@ onMounted(() => {
   store.commit('autoChangeCollapse');
   getRemoteTimeout();
   getIdleTimeout();
-  
   activeTime = new Date().getTime();
   window.document.onmousedown = (event) => {
     activeTime = new Date().getTime();
-  }
+  };
   checkAlive();
 });
 const remoteTimeout = ref(0);
@@ -1689,9 +1689,8 @@ const getIdleTimeout = () => {
   axios.get('/controller/confList/getIdleTimeout').then((resp) => {
     idleTimeout.value = resp.data * 60 * 1000;
   });
-}
+};
 // 判活全局监控,60s轮询
-var activeTime = 0;
 const checkAlive = () => {
   setInterval(() => {
     const nowTime = new Date().getTime();
