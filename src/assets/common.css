@@ -346,3 +346,16 @@ body,
     color: #67C23A !important;
     font-size: 13px !important;
 }
+
+.remote-header {
+    margin-top: 15px;
+    margin-left: 20px;
+}
+
+.remote-header .el-page-header{
+    line-height: 16px;
+}
+
+.remote-header .el-page-header__left{
+    align-items: center;
+}

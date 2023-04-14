@@ -72,6 +72,7 @@ import { useI18n } from 'vue-i18n';
 import RenderDeviceName from '../../components/RenderDeviceName.vue';
 import PocoPane from '../../components/PocoPane.vue';
 import IOSPerf from '../../components/IOSPerf.vue';
+import RemotePageHeader from '../../components/RemotePageHeader.vue';
 
 const pocoPaneRef = ref(null);
 const iosPerfRef = ref(null);
@@ -1226,6 +1227,7 @@ const getProjectList = () => {
   });
 };
 let activeTime = 0;
+const idleCount = ref(0);
 onMounted(() => {
   if (store.state.project.id) {
     project.value = store.state.project;
@@ -1238,45 +1240,41 @@ onMounted(() => {
   getIdleTimeout();
   activeTime = new Date().getTime();
   window.document.onmousedown = (event) => {
+    idleCount.value = 0;
+    activeTime = new Date().getTime();
+  };
+  window.document.onmousemove = (event) => {
+    idleCount.value = 0;
     activeTime = new Date().getTime();
   };
   checkAlive();
 });
 const remoteTimeout = ref(0);
+const ticker = ref(0);
 const getRemoteTimeout = () => {
   axios.get('/controller/confList/getRemoteTimeout').then((resp) => {
-    remoteTimeout.value = resp.data * 60;
+    remoteTimeout.value = resp.data;
     setInterval(() => {
-      remoteTimeout.value -= 1;
+      ticker.value += 1;
     }, 1000);
   });
 };
 const idleTimeout = ref(0);
 const getIdleTimeout = () => {
   axios.get('/controller/confList/getIdleTimeout').then((resp) => {
-    idleTimeout.value = resp.data * 60 * 1000;
+    idleTimeout.value = resp.data;
   });
 };
 
 const checkAlive = () => {
   setInterval(() => {
+    idleCount.value++;
     const nowTime = new Date().getTime();
-    if (nowTime - activeTime > idleTimeout.value) {
+    if (nowTime - activeTime > idleTimeout.value * 60 * 1000) {
       close();
     }
-  }, 60000);
+  }, 1000);
 };
-function parseTimeout(time) {
-  let h = parseInt((time / 60 / 60) % 24);
-  h = h < 10 ? `0${h}` : h;
-  let m = parseInt((time / 60) % 60);
-  m = m < 10 ? `0${m}` : m;
-  let s = parseInt(time % 60);
-  s = s < 10 ? `0${s}` : s;
-  return `${h} ${$t('common.hour')} ${m} ${$t('common.min')} ${s} ${$t(
-    'common.sec'
-  )} `;
-}
 </script>
 
 <template>
@@ -1334,16 +1332,12 @@ function parseTimeout(time) {
       @flush="dialogElement = false"
     />
   </el-dialog>
-  <el-page-header
-    :content="
-      $t('routes.remoteControl') +
-      ' - ' +
-      $t('common.at') +
-      parseTimeout(remoteTimeout) +
-      $t('common.release')
-    "
-    style="margin-top: 15px; margin-left: 20px"
-    @back="close"
+  <remote-page-header
+    :ticker="ticker"
+    :idle-count="idleCount"
+    :remote-timeout="remoteTimeout"
+    :idle-timeout="idleTimeout"
+    @close="close"
   />
   <div style="padding: 20px">
     <el-row

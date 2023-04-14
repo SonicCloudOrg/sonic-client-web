@@ -325,7 +325,7 @@ const dialog = {
 };
 // 通用操作
 const common = {
-  release: 'the occupation will be automatically released',
+  release: 'It will be automatically unoccupied after timeout',
   releaseTip:
     'Are you sure you want to forcibly remove the occupation status of this device?',
   at: 'After ',
@@ -893,7 +893,7 @@ const settingIndexTS = {
     text: 'Maximum occupation time of remote control: ',
     idle_alertMsg:
       'It is used to configure the maximum idle time of remote control. If the remote control user does not take any action beyond this time limit,the current occupation will be automatically released and restored to online(Only the remote control is affected, and the equipment running the test is not affected)',
-    idle_text: 'Maximum idle time of remote control:',
+    idle_text: 'Maximum idle time of remote control: ',
   },
 };
 const resourceTS = {

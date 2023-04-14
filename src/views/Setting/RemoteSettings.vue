@@ -35,8 +35,7 @@ const getIdleTimeout = () => {
   axios.get('/controller/confList/getIdleTimeout').then((resp) => {
     idleTimeout.value = resp.data;
   });
-}
-
+};
 
 const setRemoteTimeout = () => {
   axios
@@ -54,7 +53,6 @@ const setRemoteTimeout = () => {
     });
 };
 
-
 const setIdleTimeout = () => {
   axios
     .get('/controller/confList/setIdleTimeout', {
@@ -70,12 +68,6 @@ const setIdleTimeout = () => {
       }
     });
 };
-
-
-const setHandle = () => {
-  setIdleTimeout();
-  setRemoteTimeout();
-}
 
 onMounted(() => {
   getRemoteTimeout();
@@ -93,25 +85,22 @@ onMounted(() => {
     />
 
     {{ $t('settingIndexTS.remote.text') }}
-    <el-input-number v-model="remoteTimeout" :min="1" :max="9600" />
-    <div style="padding-top: 2%;">
-    <el-alert
-      :title="$t('settingIndexTS.remote.idle_alertMsg')"
-      type="info"
-      :closable="false"
-      style="margin-bottom: 10px"
-    />
-    {{ $t('settingIndexTS.remote.idle_text') }}
-    <el-input-number v-model="idleTimeout" :min="1" :max="9600" />
-    <el-divider />
-    </div>
-    <div style="text-align: center">
-      <el-button type="primary" size="small" @click="setHandle">{{
+    <el-input-number v-model="remoteTimeout" :min="1" :max="9600" /> min
+    <el-button type="primary" size="small" @click="setRemoteTimeout">{{
+      $t('form.save')
+    }}</el-button>
+    <div style="padding-top: 2%">
+      <el-alert
+        :title="$t('settingIndexTS.remote.idle_alertMsg')"
+        type="info"
+        :closable="false"
+        style="margin-bottom: 10px"
+      />
+      {{ $t('settingIndexTS.remote.idle_text') }}
+      <el-input-number v-model="idleTimeout" :min="1" :max="9600" /> min
+      <el-button type="primary" size="small" @click="setIdleTimeout">{{
         $t('form.save')
       }}</el-button>
     </div>
-
-
-
   </div>
 </template>

@@ -34,7 +34,8 @@ $http.defaults.baseURL = baseURL;
 // $http.defaults.timeout = 20000;
 $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 $http.defaults.withCredentials = true;
-$http.defaults.paramsSerializer = (params) => qs.stringify(params, { arrayFormat: 'brackets' });
+$http.defaults.paramsSerializer = (params) =>
+  qs.stringify(params, { arrayFormat: 'brackets' });
 
 $http.interceptors.request.use(
   (config) => {

@@ -319,7 +319,7 @@ const dialog = {
 };
 // 通用操作
 const common = {
-  release: '后将自动解除占用',
+  release: 'タイムアウト後、自動的に空になります',
   releaseTip: '确定强制解除该设备占用状态吗？',
   at: '在 ',
   hour: '时',
