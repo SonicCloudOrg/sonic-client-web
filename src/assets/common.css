@@ -350,6 +350,7 @@ body,
 .remote-header {
     margin-top: 15px;
     margin-left: 20px;
+    margin-bottom: -10px;
 }
 
 .remote-header .el-page-header{
