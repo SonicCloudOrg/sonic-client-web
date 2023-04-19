@@ -363,6 +363,10 @@ const getNotes = (text, type) => {
     >
     {{ step.content }}
   </span>
+  <span v-if="step.stepType === 'setClipperByKeyboard'">
+    <el-tag size="small" style="margin-right: 10px">设置文本到剪切板</el-tag>
+    {{ step.content }}
+  </span>
   <span v-if="step.stepType === 'sendKeyForce'">
     <el-tag size="small" style="margin-right: 10px">输入法输入</el-tag>
     {{ step.content }}
@@ -413,6 +417,10 @@ const getNotes = (text, type) => {
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
+    获取到变量：{{ step.content }}
+  </span>
+  <span v-if="step.stepType === 'getClipperByKeyboard'">
+    <el-tag size="small">获取剪切板文本</el-tag>
     获取到变量：{{ step.content }}
   </span>
   <span

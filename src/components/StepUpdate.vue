@@ -389,6 +389,28 @@ const androidOptions = ref([
         ],
       },
       {
+        value: 'keyboard',
+        label: '输入法与剪切板',
+        children: [
+          {
+            value: 'sendKeyForce',
+            label: 'Sonic输入法输入',
+          },
+          {
+            value: 'closeKeyboard',
+            label: '关闭Sonic输入法',
+          },
+          {
+            value: 'setClipperByKeyboard',
+            label: '设置文本到剪切板',
+          },
+          {
+            value: 'getClipperByKeyboard',
+            label: '获取剪切板文本',
+          },
+        ],
+      },
+      {
         value: 'interaction',
         label: '特殊交互',
         children: [
@@ -399,14 +421,6 @@ const androidOptions = ref([
           {
             value: 'keyCodeSelf',
             label: '系统按键（自定义）',
-          },
-          {
-            value: 'sendKeyForce',
-            label: 'Sonic输入法输入',
-          },
-          {
-            value: 'closeKeyboard',
-            label: '关闭Sonic输入法',
           },
           {
             value: 'swipeByDefinedDirection',
@@ -1795,7 +1809,12 @@ onMounted(() => {
         </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'sendKeyForce'">
+      <div
+        v-if="
+          step.stepType === 'sendKeyForce' ||
+          step.stepType === 'setClipperByKeyboard'
+        "
+      >
         <el-alert
           show-icon
           style="margin-bottom: 10px"
@@ -1882,6 +1901,22 @@ onMounted(() => {
           type="normal"
           :step="step"
         />
+      </div>
+
+      <div v-if="step.stepType === 'getClipperByKeyboard'">
+        <el-alert
+          show-icon
+          style="margin-bottom: 10px"
+          close-text="Get!"
+          type="info"
+          title="TIPS: 可以将获取的文本放入临时变量中"
+        />
+        <el-form-item label="变量名">
+          <el-input
+            v-model="step.content"
+            placeholder="请输入变量名"
+          ></el-input>
+        </el-form-item>
       </div>
 
       <div

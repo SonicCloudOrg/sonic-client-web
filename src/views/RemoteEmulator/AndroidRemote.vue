@@ -734,6 +734,13 @@ const websocketOnmessage = (message) => {
       }
       break;
     }
+    case 'paste': {
+      paste.value = JSON.parse(message.data).detail;
+      ElMessage.success({
+        message: $t('IOSRemote.clipboard.text'),
+      });
+      break;
+    }
     case 'pushResult': {
       pushLoading.value = false;
       if (JSON.parse(message.data).status === 'success') {
@@ -878,6 +885,24 @@ const deleteInputHandle = () => {
     JSON.stringify({
       type: 'text',
       detail: 'CODE_AC_BACK',
+    })
+  );
+};
+const setPasteboard = (text) => {
+  websocket.send(
+    JSON.stringify({
+      type: 'setPasteboard',
+      detail: text,
+    })
+  );
+  ElMessage.success({
+    message: $t('IOSRemote.clipboard.SentSuccessfully'),
+  });
+};
+const getPasteboard = () => {
+  websocket.send(
+    JSON.stringify({
+      type: 'getPasteboard',
     })
   );
 };
@@ -2553,37 +2578,27 @@ const checkAlive = () => {
               <el-col :span="12" style="margin-top: 15px">
                 <el-card>
                   <template #header>
-                    <strong>{{ $t('androidRemoteTS.code.scanQRCode') }}</strong>
+                    <strong>{{ $t('IOSRemote.clipboard.operate') }}</strong>
                   </template>
-                  <el-alert
-                    :title="$t('androidRemoteTS.code.errTitle')"
-                    type="info"
-                    show-icon
-                    :closable="false"
-                  >
-                  </el-alert>
-                  <div style="text-align: center; margin-top: 20px">
-                    <el-upload
-                      drag
-                      action=""
-                      :with-credentials="true"
-                      :limit="1"
-                      :before-upload="beforeAvatarUpload"
-                      :on-exceed="limitOut"
-                      :http-request="uploadScan"
-                      list-type="picture"
+                  <el-input
+                    v-model="paste"
+                    :rows="10"
+                    show-word-limit
+                    clearable
+                    type="textarea"
+                    :placeholder="$t('IOSRemote.clipboard.inputText')"
+                  ></el-input>
+                  <div style="text-align: center; margin-top: 15px">
+                    <el-button
+                      size="mini"
+                      type="primary"
+                      @click="setPasteboard(paste)"
                     >
-                      <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">
-                        {{ $t('androidRemoteTS.code.messageThree') }}
-                        <em>{{ $t('devices.detail.uploadImg') }}</em>
-                      </div>
-                      <template #tip>
-                        <div class="el-upload__tip">
-                          {{ $t('androidRemoteTS.code.messageFour') }}
-                        </div>
-                      </template>
-                    </el-upload>
+                      {{ $t('IOSRemote.clipboard.send') }}
+                    </el-button>
+                    <el-button size="mini" type="primary" @click="getPasteboard"
+                      >{{ $t('IOSRemote.clipboard.getText') }}
+                    </el-button>
                   </div>
                 </el-card>
               </el-col>
@@ -2663,6 +2678,40 @@ const checkAlive = () => {
                             {{ $t('androidRemoteTS.code.installFile') }}
                           </el-button>
                         </a>
+                      </el-tab-pane>
+                      <el-tab-pane
+                        :label="$t('androidRemoteTS.code.scanQRCode')"
+                      >
+                        <el-alert
+                          :title="$t('androidRemoteTS.code.errTitle')"
+                          type="info"
+                          show-icon
+                          :closable="false"
+                        >
+                        </el-alert>
+                        <div style="text-align: center; margin-top: 10px">
+                          <el-upload
+                            drag
+                            action=""
+                            :with-credentials="true"
+                            :limit="1"
+                            :before-upload="beforeAvatarUpload"
+                            :on-exceed="limitOut"
+                            :http-request="uploadScan"
+                            list-type="picture"
+                          >
+                            <i class="el-icon-upload"></i>
+                            <div class="el-upload__text">
+                              {{ $t('androidRemoteTS.code.messageThree') }}
+                              <em>{{ $t('devices.detail.uploadImg') }}</em>
+                            </div>
+                            <template #tip>
+                              <div class="el-upload__tip">
+                                {{ $t('androidRemoteTS.code.messageFour') }}
+                              </div>
+                            </template>
+                          </el-upload>
+                        </div>
                       </el-tab-pane>
                     </el-tabs>
                   </div>

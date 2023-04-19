@@ -700,7 +700,7 @@ const printPerfMem = () => {
       top: '8%',
       data: ['Phy RSS', 'VM RSS', 'Total PSS'],
     },
-    yAxis: [{ name: `${$t('perf.memUsage')}(b)`, min: 0 }],
+    yAxis: [{ name: `${$t('perf.memUsage')}(kb)`, min: 0 }],
     series: [
       {
         name: 'Phy RSS',
