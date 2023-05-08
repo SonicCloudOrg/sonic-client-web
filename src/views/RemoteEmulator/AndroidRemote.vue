@@ -2824,7 +2824,7 @@ const checkAlive = () => {
                   <package-list
                     v-if="project !== null"
                     :projectId="project['id']"
-                    :platformType="'Android'"
+                    platformType="Android"
                     @select-package="selectPackage"
                   ></package-list>
                 </div>

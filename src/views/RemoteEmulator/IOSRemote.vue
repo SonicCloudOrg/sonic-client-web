@@ -1991,7 +1991,7 @@ const checkAlive = () => {
                   <package-list
                     v-if="project !== null"
                     :projectId="project['id']"
-                    :platformType="'ios'"
+                    platformType="iOS"
                     @select-package="selectPackage"
                   ></package-list>
                 </div>
