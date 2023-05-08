@@ -73,6 +73,7 @@ import RenderDeviceName from '../../components/RenderDeviceName.vue';
 import PocoPane from '../../components/PocoPane.vue';
 import IOSPerf from '../../components/IOSPerf.vue';
 import RemotePageHeader from '../../components/RemotePageHeader.vue';
+import PackageList from '@/components/PackageList.vue';
 
 const pocoPaneRef = ref(null);
 const iosPerfRef = ref(null);
@@ -374,6 +375,14 @@ const getImg = (name) => {
   }
   return result;
 };
+// 选中安装包列表中的item后响应事件
+const selectPackage = (val) => {
+  ElMessage.success({
+    message: $t('androidRemoteTS.startInstall'),
+  });
+  install(val)
+};
+const activeIntallTab = ref('pushInstallPane');
 watch(filterText, (newValue, oldValue) => {
   tree.value.filter(newValue);
 });
@@ -1887,13 +1896,14 @@ const checkAlive = () => {
             </el-row>
           </el-tab-pane>
           <el-tab-pane :label="$t('androidRemoteTS.code.app')" name="apps">
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-card shadow="hover">
-                  <template #header>
-                    <strong>{{ $t('IOSRemote.installIPA') }}</strong>
-                  </template>
-                  <div style="text-align: center">
+            <el-tabs type="border-card" stretch v-model="activeIntallTab">
+              <el-tab-pane name="pushInstallPane">
+                <template #label>
+                    <strong>{{
+                      $t('IOSRemote.installIPA')
+                    }}</strong>
+                </template>
+                <div style="text-align: center">
                     <el-upload
                       v-loading="uploadLoading"
                       drag
@@ -1916,26 +1926,15 @@ const checkAlive = () => {
                       </template>
                     </el-upload>
                   </div>
-                </el-card>
-              </el-col>
-              <el-col :span="12">
-                <el-card
-                  shadow="hover"
-                  class="url-install-box"
-                  :body-style="{
-                    position: 'absolute',
-                    top: '50%',
-                    width: '100%',
-                    paddingTop: '56px',
-                    paddingBottom: '0',
-                    boxSizing: 'border-box',
-                    transform: 'translateY(-50%)',
-                  }"
-                >
-                  <template #header>
-                    <strong>URL安装</strong>
-                  </template>
-                  <el-input
+              </el-tab-pane>
+
+              <el-tab-pane name="urlInstallPane">
+                <template #label>
+                    <strong>{{
+                      $t('androidRemoteTS.code.URLInstall')
+                    }}</strong>
+                </template>
+                <el-input
                     v-model="uploadUrl"
                     clearable
                     size="small"
@@ -1950,9 +1949,64 @@ const checkAlive = () => {
                       >{{ $t('androidRemoteTS.code.send') }}
                     </el-button>
                   </div>
-                </el-card>
-              </el-col>
-            </el-row>
+              </el-tab-pane>
+              <el-tab-pane name="linkInstallPane">
+                <template #label>
+                    <strong>{{
+                      $t('androidRemoteTS.code.linkInstall')
+                    }}</strong>
+                </template>
+                  <span style="color: #909399; margin-right: 10px">{{
+                  $t('androidRemoteTS.code.associatedProject')
+                }}</span>
+                <el-select
+                  v-model="project"
+                  size="mini"
+                  value-key="id"
+                  :placeholder="$t('androidRemoteTS.code.chooseProject')"
+                >
+                  <el-option
+                    v-for="item in store.state.projectList"
+                    :key="item.id"
+                    :value="item"
+                    :label="item['projectName']"
+                  >
+                    <div style="display: flex; align-items: center">
+                      <el-avatar
+                        style="margin-right: 10px"
+                        :size="32"
+                        :src="
+                          item['projectImg'].length > 0
+                            ? item['projectImg']
+                            : defaultLogo
+                        "
+                        shape="square"
+                      ></el-avatar>
+                      {{ item['projectName'] }}
+                    </div>
+                  </el-option>
+                </el-select>
+
+                <div v-if="project !== null">
+                  <package-list
+                    v-if="project !== null"
+                    :projectId="project['id']"
+                    platformType="iOS"
+                    @select-package="selectPackage"
+                  ></package-list>
+                </div>
+                <div v-else>
+                  <el-card style="height: 100%; margin-top: 20px">
+                    <el-result
+                    icon="info"
+                    :title="$t('androidRemoteTS.code.hintText')"
+                    :sub-title="$t('androidRemoteTS.code.hintAssociatedProject')">
+                    </el-result>
+                  </el-card>
+                </div>
+              </el-tab-pane>
+            </el-tabs>
+
             <el-card shadow="hover" style="margin-top: 15px">
               <el-table :data="currAppListPageData" border>
                 <el-table-column width="100" header-align="center">
