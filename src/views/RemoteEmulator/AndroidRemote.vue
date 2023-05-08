@@ -353,9 +353,6 @@ const selectPackage = (val) => {
 };
 // 三种安装包方式tab选中态
 const activeIntallTab = ref('pushInstallPane');
-const intallTabClick = (e) => {
-  activeIntallTab.value = e.props.name;
-}
 watch(filterText, (newValue, oldValue) => {
   tree.value.filter(newValue);
 });
@@ -2733,7 +2730,7 @@ const checkAlive = () => {
             </el-row>
           </el-tab-pane>
           <el-tab-pane :label="$t('androidRemoteTS.code.app')" name="apps">
-            <el-tabs type="border-card" stretch=true v-model="activeIntallTab" @tab-click="intallTabClick">
+            <el-tabs type="border-card" stretch v-model="activeIntallTab">
               <el-tab-pane name="pushInstallPane">
                 <template #label>
                     <strong>{{
