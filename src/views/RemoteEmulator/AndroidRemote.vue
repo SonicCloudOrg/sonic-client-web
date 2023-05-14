@@ -3761,9 +3761,26 @@ const checkAlive = () => {
                                 v-if="elementDetail['content-desc']"
                                 label="content-desc"
                                 style="cursor: pointer"
-                                @click="copy(elementDetail['content-desc'])"
                               >
-                                <span>{{ elementDetail['content-desc'] }}</span>
+                                <span @click="copy(elementDetail['content-desc'])">{{ elementDetail['content-desc'] }}</span>
+                                <el-icon
+                                  v-if="project && project['id']"
+                                  color="green"
+                                  size="16"
+                                  style="
+                                    vertical-align: middle;
+                                    margin-left: 10px;
+                                    cursor: pointer;
+                                  "
+                                  @click="
+                                    toAddElement(
+                                      'accessibilityId',
+                                      elementDetail['content-desc']
+                                    )
+                                  "
+                                >
+                                <Pointer />
+                                </el-icon>
                               </el-form-item>
                               <el-form-item
                                 label="package"
