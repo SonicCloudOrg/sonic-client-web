@@ -207,7 +207,7 @@ onMounted(() => {
       >{{ $t('form.save') }}
     </el-button>
     <el-button
-      v-if="isUpdate"
+      v-if="isUpdate && project.createBy===store.state.userInfo.id"
       type="danger"
       size="medium"
       icon="el-icon-delete"
