@@ -141,6 +141,13 @@ const getRoutes = () => [
         component: () => import('../views/Jobs.vue'),
         meta: { title: $tc('routes.timedTask') },
       },
+//llj：项目成员功能
+      {
+        path: 'Members',
+        name: 'Members',
+        component: () => import('../views/Members.vue'),
+        meta: { title: $tc('routes.membersProject') },
+      },
       {
         path: 'ProjectOption',
         name: 'ProjectOption',

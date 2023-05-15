@@ -441,8 +441,27 @@ const homeTS = {
     setting: 'Project Related Settings',
     mange: 'Module Manage',
     update: 'Version Manage',
+    member: 'Project Member',
   },
 };
+
+// 项目成员
+const proMemberTS = {
+  dialogVisible: {
+    addMember: 'Add Member',
+    inputParam: 'Input User Name',
+  },
+  pageData: {
+    memberId: 'Member ID',
+    memberName: 'Member Name',
+    memberRole: 'Member Role',
+    memberNoNull: 'User cannot be empty',
+    delMessage: 'Are you sure to delete the project member?',
+    createBy: 'Created By',
+    members: 'Member',
+  },
+};
+
 const jobsTS = {
   dialogVisible: {
     message: 'Timed job message',
@@ -1036,6 +1055,7 @@ export default {
     elements,
     globalParamsTs,
     homeTS,
+    proMemberTS,
     jobsTS,
     loginTS,
     modulesTS,
