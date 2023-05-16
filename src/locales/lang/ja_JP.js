@@ -515,6 +515,7 @@ const packagesTS = {
   downloadLink: '下载地址',
   copyUrl: '复制url',
   creatTime: '创建时间',
+  updateTime: '更新时间',
 };
 const projectIndexTS = {
   code: {
@@ -756,6 +757,8 @@ const androidRemoteTS = {
     apkFile: '将APK文件拖到此处，或',
     onlyAPKFile: '只能上传apk文件',
     URLInstall: 'URL安装',
+    linkInstall: '持续集成管理安装',
+    hintAssociatedProject: '该功能需要先从上方关联项目',
     hint: '请输入apk下载链接或本地路径',
     refresh: '刷新',
     appName: '应用名',
