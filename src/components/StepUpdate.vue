@@ -713,6 +713,10 @@ const androidOptions = ref([
             label: '断言验证(相等)',
           },
           {
+            value: 'assertNotEquals',
+            label: '断言验证(不相等)',
+          },
+          {
             value: 'assertTrue',
             label: '断言验证(包含)',
           },
@@ -1023,6 +1027,10 @@ const iOSOptions = ref([
           {
             value: 'assertEquals',
             label: '断言验证(相等)',
+          },
+          {
+            value: 'assertNotEquals',
+            label: '断言验证(不相等)',
           },
           {
             value: 'assertTrue',
@@ -2258,6 +2266,7 @@ onMounted(() => {
       <div
         v-if="
           step.stepType === 'assertEquals' ||
+          step.stepType === 'assertNotEquals' ||
           step.stepType === 'assertTrue' ||
           step.stepType === 'assertNotTrue'
         "

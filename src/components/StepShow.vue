@@ -478,6 +478,10 @@ const getNotes = (text, type) => {
     <el-tag type="warning" size="small">断言验证(相等)</el-tag>
     真实值：{{ step.text }} 期望值：{{ step.content }}
   </span>
+  <span v-if="step.stepType === 'assertNotEquals'">
+    <el-tag type="warning" size="small">断言验证(不相等)</el-tag>
+    真实值：{{ step.text }} 期望值：{{ step.content }}
+  </span>
   <span v-if="step.stepType === 'assertTrue'">
     <el-tag type="warning" size="small">断言验证(包含)</el-tag>
     真实值：{{ step.text }} 期望值：{{ step.content }}
