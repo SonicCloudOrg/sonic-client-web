@@ -329,7 +329,8 @@ const getStepInfo = (id) => {
       if (
         step.value.stepType === 'findElementInterval' ||
         step.value.stepType === 'setDefaultFindPocoElementInterval' ||
-        step.value.stepType === 'setDefaultFindWebViewElementInterval'
+        step.value.stepType === 'setDefaultFindWebViewElementInterval' ||
+        step.value.stepType === 'isExistEleNum'
       ) {
         step.value.text = parseInt(step.value.text);
       }
@@ -501,6 +502,10 @@ const androidOptions = ref([
           {
             value: 'isExistEle',
             label: '判断控件元素是否存在',
+          },
+          {
+            value: 'isExistEleNum',
+            label: '判断控件元素存在个数',
           },
           {
             value: 'click',
@@ -1694,6 +1699,43 @@ onMounted(() => {
             <el-option label="不存在" value="false"></el-option>
           </el-select>
         </el-form-item>
+      </div>
+
+      <div
+        v-if="
+          step.stepType === 'isExistEleNum' 
+        "
+      >
+        <element-select
+          label="控件元素"
+          place="请选择控件元素"
+          :index="0"
+          :project-id="projectId"
+          type="normal"
+          :step="step"
+        />
+        <div>
+          <el-form-item
+            label="验证个数"
+            :model="step"
+          >
+            <el-select v-model="step.content" prop="content">
+              <el-option label="大于" value=">"></el-option>
+              <el-option label="小于" value="<"></el-option>
+              <el-option label="等于" value="="></el-option>
+              <el-option label="大于等于" value=">="></el-option>
+              <el-option label="小于等于" value="<="></el-option>
+            </el-select>
+
+            <el-input-number
+                v-model="step.text"
+                placeholder="输入数量"
+                :min="0"
+                style="width: 150px; margin-left: 10px;"
+                prop="text" 
+              ></el-input-number>
+          </el-form-item>
+        </div>
       </div>
 
       <div
