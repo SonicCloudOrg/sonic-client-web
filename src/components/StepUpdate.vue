@@ -899,6 +899,10 @@ const iOSOptions = ref([
             label: '判断控件元素是否存在',
           },
           {
+            value: 'isExistEleNum',
+            label: '判断控件元素存在个数',
+          },
+          {
             value: 'click',
             label: '点击控件元素',
           },
