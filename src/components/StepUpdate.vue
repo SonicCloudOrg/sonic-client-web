@@ -330,7 +330,8 @@ const getStepInfo = (id) => {
         step.value.stepType === 'findElementInterval' ||
         step.value.stepType === 'setDefaultFindPocoElementInterval' ||
         step.value.stepType === 'setDefaultFindWebViewElementInterval' ||
-        step.value.stepType === 'isExistEleNum'
+        step.value.stepType === 'isExistEleNum' ||
+        step.value.stepType === 'isExistWebViewEleNum' 
       ) {
         step.value.text = parseInt(step.value.text);
       }
@@ -590,6 +591,10 @@ const androidOptions = ref([
           {
             value: 'isExistWebViewEle',
             label: '判断控件元素是否存在',
+          },
+          {
+            value: 'isExistWebViewEleNum',
+            label: '判断控件元素存在个数',
           },
           {
             value: 'webViewClick',
@@ -1703,7 +1708,8 @@ onMounted(() => {
 
       <div
         v-if="
-          step.stepType === 'isExistEleNum' 
+          step.stepType === 'isExistEleNum' ||
+          step.stepType === 'isExistWebViewEleNum' 
         "
       >
         <element-select
