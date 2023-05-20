@@ -329,7 +329,8 @@ const getNotes = (text, type) => {
   <span
     v-if="
     step.stepType === 'isExistEleNum' ||
-    step.stepType === 'isExistWebViewEleNum'
+    step.stepType === 'isExistWebViewEleNum' ||
+    step.stepType === 'isExistPocoEleNum'
     "
   >
     <el-tag size="small" style="margin-right: 10px"
