@@ -328,6 +328,22 @@ const getNotes = (text, type) => {
   </span>
   <span
     v-if="
+    step.stepType === 'isExistEleNum' ||
+    step.stepType === 'isExistWebViewEleNum' ||
+    step.stepType === 'isExistPocoEleNum'
+    "
+  >
+    <el-tag size="small" style="margin-right: 10px"
+      >判断{{ getEleResult(step.stepType) }}控件元素存在个数</el-tag
+    >断言：
+    <el-tag type="info" size="small" style="margin-right: 10px">{{
+      step.elements[0]['eleName']
+    }}</el-tag>
+    个数 {{ step.content }} {{ step.text }}
+  </span>
+
+  <span
+    v-if="
       step.stepType === 'click' ||
       step.stepType === 'webViewClick' ||
       step.stepType === 'pocoClick'
