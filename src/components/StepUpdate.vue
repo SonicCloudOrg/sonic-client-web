@@ -356,6 +356,14 @@ const getStepInfo = (id) => {
         monkey.value = JSON.parse(step.value.content);
         activityList.value = JSON.parse(step.value.text);
       }
+      if (
+        step.value.stepType === 'assertText' ||
+        step.value.stepType === 'assertWebViewText' || 
+        step.value.stepType === 'assertPocoText'
+      ) {
+        step.value.content = JSON.parse(step.value.content);
+        step.value.text = JSON.parse(step.value.text);
+      }
     });
 };
 const publicStepList = ref([]);
@@ -546,6 +554,10 @@ const androidOptions = ref([
             label: '验证文本',
           },
           {
+            value: 'assertText',
+            label: '断言文本',
+          },
+          {
             value: 'logElementAttr',
             label: '日志输出控件信息',
           },
@@ -620,6 +632,10 @@ const androidOptions = ref([
           {
             value: 'getWebViewText',
             label: '验证文本',
+          },
+          {
+            value: 'assertWebViewText',
+            label: '断言文本',
           },
           {
             value: 'getTitle',
@@ -698,6 +714,10 @@ const androidOptions = ref([
           {
             value: 'getPocoText',
             label: '验证文本',
+          },
+          {
+            value: 'assertPocoText',
+            label: '断言文本',
           },
           {
             value: 'logPocoElementAttr',
@@ -940,6 +960,10 @@ const iOSOptions = ref([
             label: '验证文本',
           },
           {
+            value: 'assertText',
+            label: '断言文本',
+          },
+          {
             value: 'logElementAttr',
             label: '日志输出控件信息',
           },
@@ -1026,6 +1050,10 @@ const iOSOptions = ref([
           {
             value: 'getPocoText',
             label: '验证文本',
+          },
+          {
+            value: 'assertPocoText',
+            label: '断言文本',
           },
           {
             value: 'logPocoElementAttr',
@@ -2099,6 +2127,7 @@ onMounted(() => {
         </el-form-item>
       </div>
 
+      <!--这里UI上还需要保留，用于在老版本升级上来之后，可以编辑用-->
       <div
         v-if="step.stepType === 'getText' || step.stepType === 'getWebViewText'"
       >
@@ -2118,6 +2147,7 @@ onMounted(() => {
         </el-form-item>
       </div>
 
+      <!--这里UI上还需要保留，用于在老版本升级上来之后，可以编辑用-->
       <div v-if="step.stepType === 'getPocoText'">
         <element-select
           label="控件元素"
@@ -2135,6 +2165,73 @@ onMounted(() => {
         </el-form-item>
       </div>
 
+      <!-- >2.5版本之后，增强类型的文本断言 -->
+      <div
+        v-if="step.stepType === 'assertText' || step.stepType === 'assertWebViewText'"
+      >
+        <element-select
+          label="控件元素"
+          place="请选择控件元素"
+          :index="0"
+          :project-id="projectId"
+          type="normal"
+          :step="step"
+        />
+        <el-form-item
+          label="断言类型"
+          prop="content"
+          :rules="{required: true, message: '断言类型不能为空', trigger: 'change'}"
+        >
+          <el-select v-model="step.content">
+            <el-option label="等于" value="equal"></el-option>
+            <el-option label="不等于" value="notEqual"></el-option>
+            <el-option label="包含" value="contain"></el-option>
+            <el-option label="不包含" value="notContain"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item 
+          label="期望值"
+          prop="text"
+          :rules="{required: true, message: '期望值不能为空', trigger: 'change'}">
+          <el-input
+            v-model="step.text"
+            placeholder="请输入期望值"
+          ></el-input>
+        </el-form-item>
+      </div>
+
+      <!-- >2.5版本之后，增强类型的文本断言 -->
+      <div v-if="step.stepType === 'assertPocoText'">
+        <element-select
+          label="控件元素"
+          place="请选择控件元素"
+          :index="0"
+          :project-id="projectId"
+          type="poco"
+          :step="step"
+        />
+        <el-form-item
+          label="断言类型"
+          prop="content"
+          :rules="{required: true, message: '断言类型不能为空', trigger: 'change'}"
+        >
+          <el-select v-model="step.content">
+            <el-option label="等于" value="equal"></el-option>
+            <el-option label="不等于" value="notEqual"></el-option>
+            <el-option label="包含" value="contain"></el-option>
+            <el-option label="不包含" value="notContain"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item 
+          label="期望值"
+          prop="text"
+          :rules="{required: true, message: '期望值不能为空', trigger: 'change'}">
+          <el-input
+            v-model="step.text"
+            placeholder="请输入期望值"
+          ></el-input>
+        </el-form-item>
+      </div>
       <div v-if="step.stepType === 'getTitle' || step.stepType === 'getUrl'">
         <el-form-item label="期望值">
           <el-input

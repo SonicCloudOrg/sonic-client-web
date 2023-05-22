@@ -54,6 +54,19 @@ const getPublicStepInfo = (id) => {
   });
 };
 
+const getAssertTextOpe = (s) => {
+  const ss = s.toUpperCase();
+  if (s === 'equal') {
+    return '等于';
+  } else if (s === 'notEqual') {
+    return '不等于';
+  } else if (s === 'contain') {
+    return '包含';
+  } else {
+    return '不包含';
+  }
+};
+
 const getEleResult = (s) => {
   const ss = s.toUpperCase();
   if (ss.indexOf('POCO') !== -1) {
@@ -439,6 +452,7 @@ const getNotes = (text, type) => {
     <el-tag size="small">获取剪切板文本</el-tag>
     获取到变量：{{ step.content }}
   </span>
+  <!--三个指令前端显示上保留，用于兼容老版本升级上来之后，依然能正常的显示和运行-->
   <span
     v-if="
       step.stepType === 'getText' ||
@@ -454,6 +468,23 @@ const getNotes = (text, type) => {
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
     期望值：{{ step.content }}
+  </span>
+    <!--大于2.5.0版本，增强的文本断言能力-->
+    <span
+    v-if="
+      step.stepType === 'assertText' ||
+      step.stepType === 'assertWebViewText' ||
+      step.stepType === 'assertPocoText'
+    "
+  >
+    <el-tag size="small">断言{{ getEleResult(step.stepType) }}文本</el-tag>
+    <el-tag
+      type="info"
+      size="small"
+      style="margin-left: 10px; margin-right: 10px"
+      >{{ step.elements[0]['eleName'] }}</el-tag
+    > 期望: 
+    <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{ getAssertTextOpe(step.content) }}</el-tag>{{ step.text }}
   </span>
   <span v-if="step.stepType === 'getTitle'">
     <el-tag size="small" style="margin-right: 10px">验证标题</el-tag>
