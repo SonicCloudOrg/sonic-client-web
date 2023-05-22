@@ -2109,14 +2109,14 @@ onMounted(() => {
 
       <!--这里UI上还需要保留，用于在老版本升级上来之后，可以编辑用-->
       <div
-        v-if="step.stepType === 'assertText' || step.stepType === 'assertWebViewText' || step.stepType === 'assertPocoText'" 
+        v-if="step.stepType === 'getText' || step.stepType === 'getWebViewText' || step.stepType === 'getPocoText'" 
       >
         <element-select
           label="控件元素"
           place="请选择控件元素"
           :index="0"
           :project-id="projectId"
-          :type="step.stepType === 'assertPocoText' ? 'poco' : 'normal'"
+          :type="step.stepType === 'getPocoText' ? 'poco' : 'normal'"
           :step="step"
         />
         <el-form-item label="期望值">
