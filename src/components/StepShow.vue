@@ -55,15 +55,17 @@ const getPublicStepInfo = (id) => {
 };
 
 const getAssertTextOpe = (s) => {
-  const ss = s.toUpperCase();
-  if (s === 'equal') {
-    return '等于';
-  } else if (s === 'notEqual') {
-    return '不等于';
-  } else if (s === 'contain') {
-    return '包含';
-  } else {
-    return '不包含';
+  switch (s) {
+    case 'equal':
+      return '等于';
+    case 'notEqual':
+      return '不等于';
+    case 'contain':
+      return '包含';
+    case 'notContain':
+      return '不包含';
+    default:
+      return '未知类型';
   }
 };
 
