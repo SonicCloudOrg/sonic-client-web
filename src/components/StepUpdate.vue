@@ -550,10 +550,6 @@ const androidOptions = ref([
             label: '获取文本',
           },
           {
-            value: 'getText',
-            label: '验证文本',
-          },
-          {
             value: 'assertText',
             label: '断言文本',
           },
@@ -628,10 +624,6 @@ const androidOptions = ref([
           {
             value: 'getWebViewTextValue',
             label: '获取文本',
-          },
-          {
-            value: 'getWebViewText',
-            label: '验证文本',
           },
           {
             value: 'assertWebViewText',
@@ -710,10 +702,6 @@ const androidOptions = ref([
           {
             value: 'getPocoTextValue',
             label: '获取文本',
-          },
-          {
-            value: 'getPocoText',
-            label: '验证文本',
           },
           {
             value: 'assertPocoText',
@@ -954,10 +942,6 @@ const iOSOptions = ref([
           {
             value: 'getTextValue',
             label: '获取文本',
-          },
-          {
-            value: 'getText',
-            label: '验证文本',
           },
           {
             value: 'assertText',
