@@ -101,6 +101,7 @@ const directionStatus = {
 };
 let moveX = 0;
 let moveY = 0;
+const depth = ref(50);
 const isFixTouch = false;
 const isPress = false;
 let loop = null;
@@ -1181,6 +1182,7 @@ const getElement = () => {
       type: 'debug',
       detail: 'tree',
       needImg: oldBlob == null,
+      depth: depth.value
     })
   );
 };
@@ -2558,15 +2560,24 @@ const checkAlive = () => {
                       margin-bottom: 15px;
                       display: flex;
                       align-items: center;
-                      justify-content: space-between;
                     "
                   >
+                    <span
+                        style="
+                        margin-right: 10px;
+                        color: #909399;
+                        font-size: 14px;
+                      "
+                    >{{ $t('IOSRemote.depth') }}: </span
+                    >
+                    <el-input-number size="mini" v-model="depth" :min="1" :max="60"/>
                     <el-button
                       type="primary"
                       size="mini"
                       :loading="elementLoading"
                       :disabled="isDriverFinish === false"
                       @click="getElement"
+                      style="margin-left: 10px"
                     >
                       <el-icon :size="12" style="vertical-align: middle">
                         <Search />

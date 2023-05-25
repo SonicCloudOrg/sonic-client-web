@@ -322,7 +322,8 @@ const getStepInfo = (id) => {
         step.value.stepType === 'setDefaultFindPocoElementInterval' ||
         step.value.stepType === 'setDefaultFindWebViewElementInterval' ||
         step.value.stepType === 'longPress' ||
-        step.value.stepType === 'checkImage'
+        step.value.stepType === 'checkImage' ||
+          step.value.stepType === 'setSnapshotMaxDepth'
       ) {
         step.value.content = parseInt(step.value.content);
       }
@@ -358,7 +359,7 @@ const getStepInfo = (id) => {
       }
       if (
         step.value.stepType === 'assertText' ||
-        step.value.stepType === 'assertWebViewText' || 
+        step.value.stepType === 'assertWebViewText' ||
         step.value.stepType === 'assertPocoText'
       ) {
         step.value.content = JSON.parse(step.value.content);
@@ -955,6 +956,10 @@ const iOSOptions = ref([
             value: 'iteratorIOSElement',
             label: '迭代控件列表',
           },
+          {
+            value: 'setSnapshotMaxDepth',
+            label: '设置控件获取最大遍历深度',
+          },
         ],
       },
       {
@@ -1508,7 +1513,7 @@ onMounted(() => {
                 placeholder="输入数量"
                 :min="0"
                 style="width: 150px; margin-left: 10px;"
-                prop="text" 
+                prop="text"
               ></el-input-number>
           </el-form-item>
         </div>
@@ -1763,7 +1768,7 @@ onMounted(() => {
       <div
         v-if="
           step.stepType === 'isExistEleNum' ||
-          step.stepType === 'isExistWebViewEleNum' 
+          step.stepType === 'isExistWebViewEleNum'
         "
       >
         <element-select
@@ -1792,7 +1797,7 @@ onMounted(() => {
                 placeholder="输入数量"
                 :min="0"
                 style="width: 150px; margin-left: 10px;"
-                prop="text" 
+                prop="text"
               ></el-input-number>
           </el-form-item>
         </div>
@@ -1983,6 +1988,16 @@ onMounted(() => {
         />
       </div>
 
+      <div v-if="step.stepType === 'setSnapshotMaxDepth'">
+        <el-form-item label="最大深度">
+          <el-input-number
+              v-model="step.content"
+              :min="1"
+              :max="60"
+          ></el-input-number>
+        </el-form-item>
+      </div>
+
       <div v-if="step.stepType === 'longPress'">
         <element-select
           label="控件元素"
@@ -2109,7 +2124,7 @@ onMounted(() => {
 
       <!--这里UI上还需要保留，用于在老版本升级上来之后，可以编辑用-->
       <div
-        v-if="step.stepType === 'getText' || step.stepType === 'getWebViewText' || step.stepType === 'getPocoText'" 
+        v-if="step.stepType === 'getText' || step.stepType === 'getWebViewText' || step.stepType === 'getPocoText'"
       >
         <element-select
           label="控件元素"
@@ -2129,7 +2144,7 @@ onMounted(() => {
 
       <!-- >2.5版本之后，增强类型的文本断言 -->
       <div
-        v-if="step.stepType === 'assertText' || step.stepType === 'assertWebViewText' || step.stepType === 'assertPocoText'" 
+        v-if="step.stepType === 'assertText' || step.stepType === 'assertWebViewText' || step.stepType === 'assertPocoText'"
       >
         <element-select
           label="控件元素"
@@ -2151,7 +2166,7 @@ onMounted(() => {
             <el-option label="不包含" value="notContain"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item 
+        <el-form-item
           label="期望值"
           prop="text"
           :rules="{required: true, message: '期望值不能为空', trigger: 'change'}">

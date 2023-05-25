@@ -485,7 +485,7 @@ const getNotes = (text, type) => {
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
-    > 期望: 
+    > 期望:
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{ getAssertTextOpe(step.content) }}</el-tag>{{ step.text }}
   </span>
   <span v-if="step.stepType === 'getTitle'">
@@ -619,6 +619,10 @@ const getNotes = (text, type) => {
   <span v-if="step.stepType === 'pause'">
     <el-tag size="small" style="margin-right: 5px">强制等待</el-tag>
     等待 {{ step.content }} ms
+  </span>
+  <span v-if="step.stepType === 'setSnapshotMaxDepth'">
+    <el-tag size="small" style="margin-right: 5px">设置控件获取最大遍历深度</el-tag>
+    最大 {{ step.content }} 层
   </span>
   <span>
     <el-tag

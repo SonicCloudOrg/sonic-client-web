@@ -963,6 +963,7 @@ const usersTS = {
   },
 };
 const IOSRemote = {
+  depth: "Snapshot Max Depth",
   driverStatus: {
     success: 'Init WebDriverAgent successful!',
     fail: 'Init WebDriverAgent failed!',
