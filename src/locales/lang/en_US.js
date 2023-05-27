@@ -4,7 +4,7 @@
 const element = {
   currentIteration: 'Current iteration element',
   modelFilter: 'Model Filter',
-  nameFilter: 'Name Filter',
+  nameFilter: 'Selected Element',
   namePlace: 'Please input element name to search',
   iterationList: 'Iterate Element List',
   whenList: 'When the parent step exists',

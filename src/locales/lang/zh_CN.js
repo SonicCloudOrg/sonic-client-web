@@ -4,8 +4,8 @@
 const element = {
   currentIteration: '当前迭代控件',
   modelFilter: '模块筛选',
-  nameFilter: '名称筛选',
-  namePlace: '请输入控件名称筛选',
+  nameFilter: '已选控件',
+  namePlace: '可输入控件名称筛选',
   iterationList: '迭代控件列表',
   whenList: '当父级步骤存在',
   thenList: '时，可选择本控件作为',

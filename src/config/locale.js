@@ -39,7 +39,7 @@ export const localeList = [
   },
   {
     text: 'English',
-    building: true,
+    building: false,
     event: LOCALE.EN_US,
   },
   {

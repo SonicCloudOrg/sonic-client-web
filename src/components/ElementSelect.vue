@@ -115,33 +115,36 @@ onMounted(() => {
     :rules="[{ required: true, message: place, trigger: 'change' }]"
     :prop="'elements[' + index + ']'"
   >
-    <el-card>
-      <span style="font-size: 14px; color: #99a9bf; margin-right: 10px">{{
-        $t('element.modelFilter')
-      }}</span>
-      <el-select v-model="moduleId" size="small" @change="findByModule">
-        <el-option
-          v-for="item in moduleList"
-          :key="item.name"
-          :value="item.id"
-          :label="item.name"
-        >
-        </el-option>
-      </el-select>
-
-      <div style="margin-top: 10px">
-        <span style="font-size: 14px; color: #99a9bf; margin-right: 10px">{{
-          $t('element.nameFilter')
-        }}</span>
+      <div>
         <el-select
           v-model="step.elements[index]"
           filterable
+          style="width: 100%"
           remote
           :remote-method="findByName"
           value-key="id"
           :placeholder="$t('element.namePlace')"
           @visible-change="findByProjectIdAndEleType"
         >
+          <template #prefix>
+<span style="font-size: 14px; color: #99a9bf; margin:0 10px">{{
+    $t('element.nameFilter')
+  }}</span>
+          </template>
+          <div style="display: flex;justify-content: center;align-items: center;margin: 5px 0">
+          <span style="font-size: 14px; color: #99a9bf; margin:0 10px">{{
+              $t('element.modelFilter')
+            }}</span>
+          <el-select v-model="moduleId" size="small" @change="findByModule">
+            <el-option
+                v-for="item in moduleList"
+                :key="item.name"
+                :value="item.id"
+                :label="item.name"
+            >
+            </el-option>
+          </el-select>
+          </div>
           <el-option
             v-for="item in pageData['content']"
             v-if="pageData['content'] !== null"
@@ -195,6 +198,5 @@ onMounted(() => {
           </div>
         </el-select>
       </div>
-    </el-card>
   </el-form-item>
 </template>
