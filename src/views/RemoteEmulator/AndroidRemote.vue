@@ -1694,9 +1694,26 @@ const getProjectList = () => {
     store.commit('saveProjectList', resp.data);
   });
 };
-let activeTime = 0;
-const idleCount = ref(0);
-onMounted(() => {
+/**
+ * 刷新不闪退-判断页面是否刷新
+ */
+function sleep(time){
+ return new Promise(function(resolve){
+ setTimeout(resolve, time);
+ });
+}
+const judgeLoad = async () => {
+  if(window.name == ""){
+  // 首次加载;
+   mountedHandle();
+   window.name = "isReload"; 
+   }else if(window.name == "isReload"){
+  // 页面被刷新;
+   await sleep(1500);
+   mountedHandle();
+  }
+}
+const mountedHandle = () =>{
   if (store.state.project.id) {
     project.value = store.state.project;
   } else {
@@ -1704,6 +1721,11 @@ onMounted(() => {
   }
   getDeviceById(route.params.deviceId);
   store.commit('autoChangeCollapse');
+}
+let activeTime = 0;
+const idleCount = ref(0);
+onMounted(() => {
+  judgeLoad();
   getRemoteTimeout();
   getIdleTimeout();
   activeTime = new Date().getTime();
