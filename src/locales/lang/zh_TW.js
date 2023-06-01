@@ -33,6 +33,7 @@ const suite = {
   interval: '采集间隔',
   devicePlace: '请选择测试设备，可输入型号、备注、中文名称、序列号筛选',
   selectedCase: '已选用例',
+  testSuiteGlobalParams: '附加参数',
 };
 const testcase = {
   info: '用例信息',

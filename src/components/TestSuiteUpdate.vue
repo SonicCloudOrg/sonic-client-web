@@ -73,6 +73,10 @@ const testSuite = ref({
   devices: [],
   testCases: [],
 });
+const paramEditor = ref({
+  idx: 0,
+  data: {},
+});
 const deviceData = ref([]);
 const deviceDataBack = ref([]);
 const getDevice = () => {
@@ -416,6 +420,68 @@ onMounted(() => {
           ></pageable>
         </el-tab-pane>
       </el-tabs>
+    </el-form-item>
+    <el-form-item prop="testSuitesGlobalParams" :label="$t('suite.testSuiteGlobalParams')">
+      <el-table :data="testSuite.testSuitesGlobalParams" style="width: 100%" max-height="250" size="small">
+        <el-table-column :label="$t('globalParamsTs.paramsList.name')" width="240" prop="paramsKey"/>
+        <el-table-column :label="$t('globalParamsTs.paramsList.value')" prop="paramsValue"/>
+        <el-table-column align="right">
+          <template #header>
+            <el-button size="small" 
+            @click="paramEditor.data = {}; paramEditor.idx = 1 + testSuite.testSuitesGlobalParams.length"
+            >{{$t('globalParamsTs.addGlobalParams')}}</el-button>
+          </template>
+          <template #default="scope">
+            <el-button size="small"
+              @click="paramEditor.data = { ...scope.row }; paramEditor.idx = 1 + scope.$index"
+            >{{ $t('common.edit') }}
+            </el-button>
+            <el-button size="small" type="danger"
+              @click="testSuite.testSuitesGlobalParams.splice(scope.$index, 1)"
+            >{{ $t('common.delete') }}
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+        <el-dialog v-model="paramEditor.idx" :title="$t('globalParamsTs.dialogVisible.info')" width="600px">
+        <el-form size="small" :model="paramEditor.data" class="demo-table-expand" label-width="90px" label-position="left">
+          <el-form-item
+            prop="paramsKey"
+            :label="$t('globalParamsTs.dialogVisible.keyName')"
+            :rules="{
+              required: true,
+              message: $t('globalParamsTs.dialogVisible.keyNameMessage'),
+              trigger: 'blur',
+            }"
+          >
+            <el-input
+              v-model="paramEditor.data.paramsKey"
+              :placeholder="$t('globalParamsTs.dialogVisible.inputName')"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            prop="paramsValue"
+            :label="$t('globalParamsTs.dialogVisible.valueName')"
+            :rules="{
+              required: true,
+              message: $t('globalParamsTs.dialogVisible.valueNameMessage'),
+              trigger: 'blur',
+            }"
+          >
+            <el-input
+              v-model="paramEditor.data.paramsValue"
+              :placeholder="$t('globalParamsTs.dialogVisible.inputValue')"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <div style="text-align: center">
+          <el-button size="small" type="primary"
+            @click="testSuite.testSuitesGlobalParams.splice(paramEditor.idx - 1, 1, paramEditor.data); paramEditor.idx = 0"
+          >{{
+            $t('form.confirm')
+          }}</el-button>
+        </div>
+      </el-dialog>
     </el-form-item>
   </el-form>
 
