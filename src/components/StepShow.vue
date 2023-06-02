@@ -417,7 +417,7 @@ const getNotes = (text, type) => {
     <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
   </span>
   <span
-    v-if="step.stepType === 'longPress' || step.stepType === 'pocoLongPress'"
+    v-if="step.stepType === 'longPress' || step.stepType === 'pocoLongPress' || step.stepType === 'webViewLongPress'"
   >
     <el-tag size="small">长按{{ getEleResult(step.stepType) }}控件元素</el-tag>
     <el-tag

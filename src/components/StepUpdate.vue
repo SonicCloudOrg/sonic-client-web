@@ -323,7 +323,8 @@ const getStepInfo = (id) => {
         step.value.stepType === 'setDefaultFindWebViewElementInterval' ||
         step.value.stepType === 'longPress' ||
         step.value.stepType === 'checkImage' ||
-          step.value.stepType === 'setSnapshotMaxDepth'
+        step.value.stepType === 'setSnapshotMaxDepth' || 
+        step.value.stepType === 'webViewLongPress'
       ) {
         step.value.content = parseInt(step.value.content);
       }
@@ -609,6 +610,10 @@ const androidOptions = ref([
           {
             value: 'webViewClick',
             label: '点击控件元素',
+          },
+          {
+            value: 'webViewLongPress',
+            label: '长按控件元素',
           },
           {
             value: 'webElementScrollToView',
@@ -1998,7 +2003,7 @@ onMounted(() => {
         </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'longPress'">
+      <div v-if="step.stepType === 'longPress' || step.stepType === 'webViewLongPress'">
         <element-select
           label="控件元素"
           place="请选择控件元素"
