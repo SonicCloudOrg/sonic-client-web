@@ -402,7 +402,7 @@ const getNotes = (text, type) => {
     <el-tag size="small" style="margin-right: 10px">输入法输入</el-tag>
     {{ step.content }}
   </span>
-  <span v-if="step.stepType === 'sendKeysByActions'">
+  <span v-if="step.stepType === 'sendKeysByActions' || step.stepType === 'webViewSendKeysByActions'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
       >输入文本(Actions)</el-tag

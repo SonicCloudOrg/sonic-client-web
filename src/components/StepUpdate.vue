@@ -619,6 +619,10 @@ const androidOptions = ref([
             label: '输入文本',
           },
           {
+            value: 'webViewSendKeysByActions',
+            label: '输入文本(Actions)',
+          },
+          {
             value: 'webViewClear',
             label: '清空输入框',
           },
@@ -923,6 +927,10 @@ const iOSOptions = ref([
           {
             value: 'sendKeys',
             label: '输入文本',
+          },
+          {
+            value: 'sendKeysByActions',
+            label: '输入文本(Actions)',
           },
           {
             value: 'swipe2',
@@ -1901,7 +1909,7 @@ onMounted(() => {
 
       <div
         v-if="
-          step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys'
+          step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys' || step.stepType === 'webViewSendKeysByActions'
         "
       >
         <el-alert
@@ -1951,7 +1959,7 @@ onMounted(() => {
         >
           <template #title>
             <div>
-              TIPS: 使用Android Driver在Flutter页面输入文本时使用此方式。
+              TIPS: 在Flutter页面输入文本时使用此方式。
             </div>
             <div>需要临时变量或全局变量时，可以添加{{ 变量名 }}的形式。</div>
           </template>
