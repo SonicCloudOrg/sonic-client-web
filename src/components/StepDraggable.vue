@@ -119,33 +119,133 @@ const copyStep = (id) => {
 </script>
 
 <template>
-  <el-timeline v-if="steps.length > 0">
-    <VueDraggableNext
-      tag="div"
-      :list="steps"
-      handle=".handle"
-      animation="200"
-      force-fallback="true"
-      fallback-class="shake"
-      ghost-class="g-host"
-      chosen-class="move"
-      @change="sortStep"
-    >
-      <el-timeline-item
-        v-for="(s, index) in steps"
-        :key="index"
-        :timestamp="$t('steps.step') + (index + 1)"
-        placement="top"
-        :type="
-          s['error'] === 1 ? 'primary' : s['error'] === 2 ? 'warning' : 'danger'
-        "
-        style="padding-bottom: 0px !important"
-        :hollow="true"
+  <el-scrollbar style="height: 100%">
+    <el-timeline v-if="steps.length > 0" class="stepsTimeline">
+      <VueDraggableNext
+        tag="div"
+        :list="steps"
+        handle=".handle"
+        animation="200"
+        force-fallback="true"
+        fallback-class="shake"
+        ghost-class="g-host"
+        chosen-class="move"
+        @change="sortStep"
       >
-        <el-card v-if="s.conditionType !== 0">
-          <template #header>
+        <el-timeline-item
+          v-for="(s, index) in steps"
+          :key="index"
+          :timestamp="$t('steps.step') + (index + 1)"
+          placement="top"
+          :type="
+            s['error'] === 1
+              ? 'primary'
+              : s['error'] === 2
+              ? 'warning'
+              : 'danger'
+          "
+          style="padding-bottom: 0px !important"
+          :hollow="true"
+        >
+          <el-card v-if="s.conditionType !== 0">
+            <template #header>
+              <step-show :step="s"></step-show>
+              <div style="float: right">
+                <el-switch
+                  v-model="s.disabled"
+                  :active-value="0"
+                  :inactive-value="1"
+                  active-color="#67C23A"
+                  width="30"
+                  size="large"
+                  @change="switchStep(s.id, $event)"
+                ></el-switch>
+                <el-button
+                  circle
+                  style="margin-left: 10px"
+                  type="primary"
+                  size="mini"
+                  @click="addStep(s.id)"
+                >
+                  <el-icon :size="13" style="vertical-align: middle">
+                    <DocumentAdd />
+                  </el-icon>
+                </el-button>
+                <el-button
+                  circle
+                  type="primary"
+                  size="mini"
+                  @click="editStep(s.id, s.parentId)"
+                >
+                  <el-icon :size="13" style="vertical-align: middle">
+                    <Edit />
+                  </el-icon>
+                </el-button>
+                <el-button
+                  circle
+                  type="primary"
+                  size="mini"
+                  @click="copyStep(s.id)"
+                >
+                  <el-icon :size="13" style="vertical-align: middle">
+                    <CopyDocument />
+                  </el-icon>
+                </el-button>
+                <el-button class="handle" circle size="mini">
+                  <el-icon :size="13" style="vertical-align: middle">
+                    <Rank />
+                  </el-icon>
+                </el-button>
+                <el-button
+                  v-if="isEdit"
+                  circle
+                  size="mini"
+                  @click="remove(index)"
+                >
+                  <el-icon :size="13" style="vertical-align: middle">
+                    <Minus />
+                  </el-icon>
+                </el-button>
+                <el-popconfirm
+                  v-else
+                  style="margin-left: 10px"
+                  :confirm-button-text="$t('form.confirm')"
+                  :cancel-button-text="$t('form.cancel')"
+                  icon="el-icon-warning"
+                  icon-color="red"
+                  :title="$t('steps.remove')"
+                  @confirm="deleteStep(s.id)"
+                >
+                  <template #reference>
+                    <el-button circle type="danger" size="mini">
+                      <el-icon :size="13" style="vertical-align: middle">
+                        <Delete />
+                      </el-icon>
+                    </el-button>
+                  </template>
+                </el-popconfirm>
+              </div>
+            </template>
+            <step-draggable
+              :steps="s['childSteps']"
+              @setParent="setParent"
+              @addStep="addStep"
+              @flush="emit('flush')"
+              @editStep="editStep"
+              @deleteStep="deleteStep"
+              @copyStep="copyStep"
+            />
+          </el-card>
+          <div v-else style="display: flex; justify-content: space-between">
             <step-show :step="s"></step-show>
-            <div style="float: right">
+            <div
+              style="
+                float: right;
+                flex: 0 0 205px;
+                text-align: right;
+                margin-right: 12px;
+              "
+            >
               <el-switch
                 v-model="s.disabled"
                 :active-value="0"
@@ -156,21 +256,11 @@ const copyStep = (id) => {
                 @change="switchStep(s.id, $event)"
               ></el-switch>
               <el-button
-                circle
                 style="margin-left: 10px"
-                type="primary"
-                size="mini"
-                @click="addStep(s.id)"
-              >
-                <el-icon :size="13" style="vertical-align: middle">
-                  <DocumentAdd />
-                </el-icon>
-              </el-button>
-              <el-button
                 circle
                 type="primary"
                 size="mini"
-                @click="editStep(s.id, s.parentId)"
+                @click="editStep(s.id, 0)"
               >
                 <el-icon :size="13" style="vertical-align: middle">
                   <Edit />
@@ -220,82 +310,16 @@ const copyStep = (id) => {
                 </template>
               </el-popconfirm>
             </div>
-          </template>
-          <step-draggable
-            :steps="s['childSteps']"
-            @setParent="setParent"
-            @addStep="addStep"
-            @flush="emit('flush')"
-            @editStep="editStep"
-            @deleteStep="deleteStep"
-            @copyStep="copyStep"
-          />
-        </el-card>
-        <div v-else style="display: flex; justify-content: space-between">
-          <step-show :step="s"></step-show>
-          <div style="float: right; flex: 0 0 205px; text-align: right">
-            <el-switch
-              v-model="s.disabled"
-              :active-value="0"
-              :inactive-value="1"
-              active-color="#67C23A"
-              width="30"
-              size="large"
-              @change="switchStep(s.id, $event)"
-            ></el-switch>
-            <el-button
-              style="margin-left: 10px"
-              circle
-              type="primary"
-              size="mini"
-              @click="editStep(s.id, 0)"
-            >
-              <el-icon :size="13" style="vertical-align: middle">
-                <Edit />
-              </el-icon>
-            </el-button>
-            <el-button
-              circle
-              type="primary"
-              size="mini"
-              @click="copyStep(s.id)"
-            >
-              <el-icon :size="13" style="vertical-align: middle">
-                <CopyDocument />
-              </el-icon>
-            </el-button>
-            <el-button class="handle" circle size="mini">
-              <el-icon :size="13" style="vertical-align: middle">
-                <Rank />
-              </el-icon>
-            </el-button>
-            <el-button v-if="isEdit" circle size="mini" @click="remove(index)">
-              <el-icon :size="13" style="vertical-align: middle">
-                <Minus />
-              </el-icon>
-            </el-button>
-            <el-popconfirm
-              v-else
-              style="margin-left: 10px"
-              :confirm-button-text="$t('form.confirm')"
-              :cancel-button-text="$t('form.cancel')"
-              icon="el-icon-warning"
-              icon-color="red"
-              :title="$t('steps.remove')"
-              @confirm="deleteStep(s.id)"
-            >
-              <template #reference>
-                <el-button circle type="danger" size="mini">
-                  <el-icon :size="13" style="vertical-align: middle">
-                    <Delete />
-                  </el-icon>
-                </el-button>
-              </template>
-            </el-popconfirm>
           </div>
-        </div>
-      </el-timeline-item>
-    </VueDraggableNext>
-  </el-timeline>
-  <el-empty v-else :description="$t('steps.empty')"></el-empty>
+        </el-timeline-item>
+      </VueDraggableNext>
+    </el-timeline>
+    <el-empty v-else :description="$t('steps.empty')"></el-empty>
+  </el-scrollbar>
 </template>
+
+<style>
+.stepsTimeline {
+  max-height: 75vh;
+}
+</style>
