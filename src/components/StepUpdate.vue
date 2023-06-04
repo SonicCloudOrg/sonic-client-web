@@ -292,6 +292,10 @@ const summitStep = () => {
     }
   });
 };
+// 当前步骤类型，是否需要展示ByActions的 alert 提示
+const shouldShowByActionsTip = (stepType) => {
+  return stepType === 'sendKeysByActions' || stepType === 'webViewSendKeysByActions';
+}
 const getPublicStepList = () => {
   axios
     .get('/controller/publicSteps/findNameByProjectId', {
@@ -619,6 +623,10 @@ const androidOptions = ref([
             label: '输入文本',
           },
           {
+            value: 'webViewSendKeysByActions',
+            label: '输入文本(Actions)',
+          },
+          {
             value: 'webViewClear',
             label: '清空输入框',
           },
@@ -923,6 +931,10 @@ const iOSOptions = ref([
           {
             value: 'sendKeys',
             label: '输入文本',
+          },
+          {
+            value: 'sendKeysByActions',
+            label: '输入文本(Actions)',
           },
           {
             value: 'swipe2',
@@ -1901,7 +1913,7 @@ onMounted(() => {
 
       <div
         v-if="
-          step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys'
+          step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys' || step.stepType === 'sendKeysByActions' || step.stepType === 'webViewSendKeysByActions'
         "
       >
         <el-alert
@@ -1909,8 +1921,14 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"
-        />
+        >
+          <template #title>
+            <div v-if="shouldShowByActionsTip(step.stepType)">
+              TIPS: 在文本框需要先获取焦点，才能进行输入时，使用此方式。
+            </div>
+            <div>需要临时变量或全局变量时，可以添加&#123;&#123; 变量名 &#125;&#125;的形式。</div>
+          </template>
+        </el-alert>
         <element-select
           label="控件元素"
           place="请选择控件元素"
@@ -1936,33 +1954,6 @@ onMounted(() => {
           close-text="Get!"
           type="info"
           title="TIPS: 本功能需要先唤醒系统键盘。需要临时变量或全局变量时，可以添加{{变量名}}的形式。"
-        />
-        <el-form-item label="输入值">
-          <el-input v-model="step.content" placeholder="请输入值"></el-input>
-        </el-form-item>
-      </div>
-
-      <div v-if="step.stepType === 'sendKeysByActions'">
-        <el-alert
-          show-icon
-          style="margin-bottom: 10px"
-          close-text="Get!"
-          type="info"
-        >
-          <template #title>
-            <div>
-              TIPS: 使用Android Driver在Flutter页面输入文本时使用此方式。
-            </div>
-            <div>需要临时变量或全局变量时，可以添加{{ 变量名 }}的形式。</div>
-          </template>
-        </el-alert>
-        <element-select
-          label="控件元素"
-          place="请选择控件元素"
-          :index="0"
-          :project-id="projectId"
-          type="normal"
-          :step="step"
         />
         <el-form-item label="输入值">
           <el-input v-model="step.content" placeholder="请输入值"></el-input>
