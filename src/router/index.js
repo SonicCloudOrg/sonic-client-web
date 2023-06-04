@@ -148,6 +148,12 @@ const getRoutes = () => [
         meta: { title: $tc('routes.projectSetting') },
       },
       {
+        path: 'ProjectAlertRobots',
+        name: 'ProjectAlertRobots',
+        component: () => import('../views/ProjectAlertRobots.vue'),
+        meta: { title: $tc('routes.ProjectAlertRobots') },
+      },
+      {
         path: 'ProjectIndex',
         name: 'ProjectIndex',
         component: () => import('../views/ProjectIndex.vue'),
@@ -195,6 +201,12 @@ const getRoutes = () => [
         name: 'RemoteSettings',
         component: () => import('../views/Setting/RemoteSettings.vue'),
         meta: { title: $tc('routes.remoteSettings') },
+      },
+      {
+        path: 'SysAlertRobots',
+        name: 'SysAlertRobots',
+        component: () => import('../views/Setting/SysAlertRobots.vue'),
+        meta: { title: $tc('routes.sysAlertRobots') },
       },
     ],
   },

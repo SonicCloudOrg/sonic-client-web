@@ -140,6 +140,12 @@ const project = {
   deleteConfirmMsg: 'Are you sure to delete this project?',
   deleteConfirmMsgDes:
     'All information contained in the project will be deleted!',
+  alertConfig: 'Alert Config',
+  ui: {
+    globalRobot: 'Enable global robot in this project',
+    testsuiteDefaultAlertRobotIds:
+      'Default send testsuite notice to all available robots',
+  },
 };
 const perf = {
   select:
@@ -171,6 +177,45 @@ const robot = {
   robotTokenPlaceholder: 'Please input the WebHook of the group robot',
   robotSecret: 'Secret',
   robotSecretPlaceholder: '(Optional) Please input the key of the group robot',
+  id: 'ID',
+  projectId: 'Project',
+  projectIdPlaceholder:
+    '(Optional) keep it blank to make this robot global available',
+  name: 'Name',
+  robotNamePlaceholder: 'Please input a short name for this robot',
+  scene: 'Scene',
+  template: 'Template',
+  muteRule: 'Mute When',
+  sceneList: {
+    testsuite: 'Testsuite Report',
+    summary: 'Project Daily Summary',
+    agent: 'Device Agent Event',
+  },
+  scenePlaceholder: 'Please select notice scene',
+  consts: {
+    nomute: 'Never',
+    mute: 'Allways mute',
+    muteWeekend: 'Mute at weekend',
+    muteNonworktime: 'Mute at night',
+    muteNoerr: 'Mute when all test cases passed',
+    muteWeekendNoerr: 'Mute when all test cases passed at weekend',
+    muteNonworktimeNoerr: 'Mute when all test cases passed at night',
+    defaultTemplate: 'Default template',
+    customTemplate: 'Custom template',
+    customMute: 'Custom rule',
+    anyProject: 'Global',
+  },
+  ui: {
+    add: 'Add',
+    addOrEdit: 'Add/Edit',
+    commonMuteRules: 'Common mute rules',
+    custom: 'Custom',
+    defaultTemplate: 'Reset',
+    botPlaceholder:
+      'please select robots, keep it blank to prevent send notice',
+    delMessage: 'Are you sure to delete the robot?',
+    globalRobot: 'Global Robot',
+  },
 };
 const agent = {
   hub: {
@@ -194,6 +239,10 @@ const agent = {
     highTempTime: 'High temperature timeout',
     rule: 'Agent name cannot be empty',
     namePlaceholder: 'Please input the Agent name',
+  },
+  ui: {
+    alertRobotIds: 'Robot',
+    defaultAlertRobotIds: 'Send agent notice to all available robots',
   },
 };
 const devices = {
@@ -364,6 +413,8 @@ const routes = {
   sysJobs: 'System Jobs',
   remoteSettings: 'Remote Settings',
   scripts: 'Scripts Template Manage',
+  projectAlertRobots: 'Notice Robots',
+  sysAlertRobots: 'Notice Robots',
 };
 const setting = {
   title: 'Manage Center',
@@ -638,6 +689,10 @@ const testSuitesTS = {
   run: 'Run',
   delMessage:
     'Delete this test suite? The test cases under the suite will be moved out of the suite',
+  ui: {
+    alertRobotIds: 'Robot',
+    defaultAlertRobotIds: 'Follow project testsuite notice settings',
+  },
 };
 const versionsTS = {
   name: 'Name',
@@ -889,6 +944,7 @@ const settingIndexTS = {
     systemCon: 'System Configuration',
     scheduled: 'System timed tasks',
     remoteSettings: 'Remote Settings',
+    sysAlertRobots: 'Notice Robots',
   },
   remote: {
     alertMsg:

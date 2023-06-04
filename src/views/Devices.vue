@@ -127,15 +127,6 @@ const agentList = ref([]);
 const formatHighTemp = (value) => {
   return `${value} ℃`;
 };
-const robotList = [
-  { name: '钉钉群机器人', value: 1, img: 'DingTalk' },
-  { name: '企业微信机器人', value: 2, img: 'WeChat' },
-  { name: '飞书群机器人', value: 3, img: 'FeiShu' },
-  { name: '友空间机器人', value: 4, img: 'You' },
-  { name: 'Telegram Bot', value: 5, img: 'Telegram' },
-  { name: 'LINE Notify', value: 6, img: 'LineNotify' },
-  { name: 'Slack Bot', value: 7, img: 'SlackBot' },
-];
 const dialogAgent = ref(false);
 const dialogHub = ref(false);
 const updateAgentForm = ref(null);
@@ -167,7 +158,8 @@ const agent = ref({
   highTempTime: 15,
   robotSecret: '',
   robotToken: '',
-  robotType: 1,
+  robotType: -1,
+  alertRobotIds: null,
 });
 const editAgent = async (
   id,
@@ -176,7 +168,8 @@ const editAgent = async (
   highTempTime,
   robotType,
   robotToken,
-  robotSecret
+  robotSecret,
+  alertRobotIds,
 ) => {
   agent.value = {
     id,
@@ -186,6 +179,7 @@ const editAgent = async (
     robotType,
     robotToken,
     robotSecret,
+    alertRobotIds,
   };
   await openAgent();
 };
@@ -436,6 +430,20 @@ const findTemper = () => {
       clearInterval(timer.value);
     });
 };
+const robotData = ref([]);
+const getAlertRobots = () => {
+  axios
+    .get('/controller/alertRobotsAdmin/listAll', {
+      params: {
+        scene: 'agent',
+      },
+    })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        robotData.value = resp.data;
+      }
+    });
+};
 const switchTabs = (e) => {
   refreshNow('switch');
 };
@@ -474,6 +482,7 @@ const laterTimer = ref(null);
 onMounted(() => {
   getFilterOption();
   refresh();
+  getAlertRobots();
   if (isFlush.value === '1') {
     if (currentTab.value === 'device') {
       laterTimer.value = setInterval(refresh, 1500);
@@ -903,7 +912,8 @@ onUnmounted(() => {
                   scope.row.highTempTime,
                   scope.row.robotType,
                   scope.row.robotToken,
-                  scope.row.robotSecret
+                  scope.row.robotSecret,
+                  scope.row.alertRobotIds
                 )
               "
             >
@@ -1001,43 +1011,30 @@ onUnmounted(() => {
         />
         <span style="margin-left: 10px">min</span>
       </el-form-item>
-      <el-form-item :label="$t('robot.robotType')">
-        <el-select
-          v-model="agent.robotType"
-          style="width: 100%"
-          :placeholder="$t('robot.robotTypePlaceholder')"
-        >
-          <el-option
-            v-for="item in robotList"
-            :key="item.name"
-            :value="item.value"
-            :label="item.name"
-            :disabled="item['disabled']"
+      <el-form-item prop="alertRobotIds" :label="$t('agent.ui.alertRobotIds')">
+        <span>{{ $t('agent.ui.defaultAlertRobotIds') }}</span>
+        <el-switch
+          v-model="agent.alertRobotIds"
+          class="mb-2"
+          :inactive-value="[]"
+          :active-value="null"
+        />
+        <template v-if="agent.alertRobotIds != null">
+          <el-select
+            v-model="agent.alertRobotIds"
+            multiple
+            clearable
+            style="width: 100%"
+            :placeholder="$t('robot.ui.botPlaceholder')"
           >
-            <div style="display: flex; align-items: center">
-              <el-avatar
-                style="margin-right: 10px"
-                :size="30"
-                :src="getImg(item.img)"
-                shape="square"
-              ></el-avatar>
-              {{ item.name }}
-            </div>
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item :label="$t('robot.robotToken')" prop="robotToken">
-        <el-input
-          v-model="agent.robotToken"
-          :placeholder="$t('robot.robotTokenPlaceholder')"
-        ></el-input>
-      </el-form-item>
-      <el-form-item :label="$t('robot.robotSecret')" prop="robotSecret">
-        <el-input
-          v-model="agent.robotSecret"
-          :placeholder="$t('robot.robotSecretPlaceholder')"
-          type="password"
-        ></el-input>
+            <el-option
+              v-for="item in robotData"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option
+          ></el-select>
+        </template>
       </el-form-item>
     </el-form>
     <div style="text-align: center">
