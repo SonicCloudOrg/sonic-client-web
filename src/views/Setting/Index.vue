@@ -69,6 +69,10 @@ onMounted(() => {
             <i class="el-icon-mobile-phone"></i
             >{{ $t('settingIndexTS.center.remoteSettings') }}
           </el-menu-item>
+          <el-menu-item :index="'/Setting/SysAlertRobots'">
+            <i class="el-icon-close-notification"></i
+            >{{ $t('settingIndexTS.center.sysAlertRobots') }}
+          </el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-aside>

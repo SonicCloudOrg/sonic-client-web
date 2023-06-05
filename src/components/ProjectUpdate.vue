@@ -17,38 +17,31 @@ const project = ref({
   id: null,
   projectName: '',
   projectDes: '',
-  robotType: 1,
+  robotType: -1,
   robotToken: '',
   robotSecret: '',
   projectImg: '',
+  globalRobot: true,
+  testsuiteAlertRobotIds: null,
 });
 const projectUpdateForm = ref(null);
 const dialogDel = ref(false);
 const img = import.meta.globEager('./../assets/img/*');
-const getImg = (name) => {
-  let result;
-  if (name === 'meizu') {
-    name = 'Meizu';
-  }
-  if (name === 'LENOVO') {
-    name = 'Lenovo';
-  }
-  try {
-    result = img[`./../assets/img/${name}.jpg`].default;
-  } catch {
-    result = img['./../assets/img/unName.jpg'].default;
-  }
-  return result;
+const robotData = ref([]);
+const getAlertRobots = () => {
+  axios
+    .get('/controller/alertRobots/listAll', {
+      params: {
+        projectId: route.params.projectId,
+        scene: 'testsuite',
+      },
+    })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        robotData.value = resp.data;
+      }
+    });
 };
-const robotList = [
-  { name: '钉钉群机器人', value: 1, img: 'DingTalk' },
-  { name: '企业微信机器人', value: 2, img: 'WeChat' },
-  { name: '飞书群机器人', value: 3, img: 'FeiShu' },
-  { name: '友空间机器人', value: 4, img: 'You' },
-  { name: 'Telegram Bot', value: 5, img: 'Telegram' },
-  { name: 'LINE Notify', value: 6, img: 'LineNotify' },
-  { name: 'Slack Bot', value: 7, img: 'SlackBot' },
-];
 const beforeAvatarUpload = (file) => {
   if (file.name.endsWith('.jpg') || file.name.endsWith('.png')) {
     return true;
@@ -118,6 +111,7 @@ onMounted(() => {
   if (props.isUpdate) {
     project.value = JSON.parse(JSON.stringify(store.state.project));
   }
+  getAlertRobots();
 });
 </script>
 
@@ -163,43 +157,32 @@ onMounted(() => {
         :placeholder="$t('project.desPlace')"
       ></el-input>
     </el-form-item>
-    <el-form-item :label="$t('robot.robotType')">
-      <el-select
-        v-model="project.robotType"
-        style="width: 100%"
-        :placeholder="$t('robot.robotTypePlaceholder')"
-      >
-        <el-option
-          v-for="item in robotList"
-          :key="item.name"
-          :value="item.value"
-          :label="item.name"
-          :disabled="item['disabled']"
-        >
-          <div style="display: flex; align-items: center">
-            <el-avatar
-              style="margin-right: 10px"
-              :size="30"
-              :src="getImg(item.img)"
-              shape="square"
-            ></el-avatar>
-            {{ item.name }}
-          </div>
-        </el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item :label="$t('robot.robotToken')" prop="robotToken">
-      <el-input
-        v-model="project.robotToken"
-        :placeholder="$t('robot.robotTokenPlaceholder')"
-      ></el-input>
-    </el-form-item>
-    <el-form-item :label="$t('robot.robotSecret')" prop="robotSecret">
-      <el-input
-        v-model="project.robotSecret"
-        :placeholder="$t('robot.robotSecretPlaceholder')"
-        type="password"
-      ></el-input>
+    <el-form-item :label="$t('project.alertConfig')" prop="globalRobot">
+      <span>{{ $t('project.ui.globalRobot') }}</span>
+      <el-switch v-model="project.globalRobot" class="mb-2" />
+      <br />
+      <span>{{ $t('project.ui.testsuiteDefaultAlertRobotIds') }}</span
+      ><el-switch
+        v-model="project.testsuiteAlertRobotIds"
+        class="mb-2"
+        :inactive-value="[]"
+        :active-value="null"
+      />
+      <template v-if="project.testsuiteAlertRobotIds != null">
+        <el-select
+          v-model="project.testsuiteAlertRobotIds"
+          multiple
+          clearable
+          style="width: 100%"
+          :placeholder="$t('robot.ui.botPlaceholder')"
+          ><el-option
+            v-for="item in robotData"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          ></el-option
+        ></el-select>
+      </template>
     </el-form-item>
   </el-form>
   <div style="text-align: center">

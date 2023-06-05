@@ -159,6 +159,12 @@ onMounted(() => {
           >
             <i class="el-icon-key"></i>{{ $t('routes.projectSetting') }}
           </el-menu-item>
+          <el-menu-item
+            :index="'/Home/' + route.params.projectId + '/ProjectAlertRobots'"
+          >
+            <i class="el-icon-close-notification"></i
+            >{{ $t('routes.projectAlertRobots') }}
+          </el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-aside>

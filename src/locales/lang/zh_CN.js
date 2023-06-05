@@ -134,6 +134,16 @@ const project = {
   delete: '删除项目',
   deleteConfirmMsg: '确定删除这个项目吗？',
   deleteConfirmMsgDes: '项目包含的所有信息将一并删除！',
+  alertConfig: '通知选项',
+  consts: {
+    useSysDefault: '使用本项目及后台管理配置的全部机器人',
+  },
+  ui: {
+    customRobots: '自定义',
+    useSysDefault: '恢复系统默认设置',
+    globalRobot: '启用公共机器人',
+    testsuiteDefaultAlertRobotIds: '测试套件默认通知所有机器人',
+  },
 };
 const perf = {
   select: '(可选) 点此可指定监听应用Process性能',
@@ -158,12 +168,53 @@ const script = {
   deleteMsg: '确定删除该脚本模板吗？',
 };
 const robot = {
-  robotType: '机器人类型',
+  robotType: '类型',
   robotTypePlaceholder: '请选择机器人类型',
   robotToken: 'WebHook',
   robotTokenPlaceholder: '请输入群机器人的WebHook',
   robotSecret: 'Secret',
   robotSecretPlaceholder: '（可选）请输入群机器人的密钥',
+  id: 'ID',
+  projectId: '所属项目',
+  projectIdPlaceholder: '（可选）请选择机器人绑定的项目ID，留空为公共机器人',
+  name: '配置名称',
+  robotNamePlaceholder: '请输入机器人简称',
+  scene: '使用场景',
+  template: '消息模板',
+  muteRule: '静默条件',
+  sceneList: {
+    testsuite: '测试套件',
+    summary: '项目日/周报',
+    agent: '设备Agent',
+  },
+  scenePlaceholder: '请选择机器人的使用场景',
+  consts: {
+    nomute: '从不静默',
+    mute: '始终静默',
+    muteWeekend: '周末不通知',
+    muteNonworktime: '晚间不通知',
+    muteNoerr: '全部通过无需通知',
+    muteWeekendNoerr: '周末全全部通过无需通知',
+    muteNonworktimeNoerr: '晚间全部通过无需通知',
+    defaultTemplate: '默认',
+    customTemplate: '自定义',
+    customMute: '自定义',
+    anyProject: '公共',
+  },
+  ui: {
+    add: '新增',
+    addOrEdit: '新增/编辑',
+    commonMuteRules: '参考配置',
+    custom: '自定义',
+    defaultTemplate: '重设为自动',
+    botPlaceholder: '请选择，留空可停用通知',
+    delMessage: '确定删除该机器人吗？',
+    globalRobot: '公共机器人',
+  },
+  validate: {
+    nameNoNull: '配置名称称不能为空',
+    robotTokenNoNull: 'Webhook不能为空',
+  },
 };
 const agent = {
   hub: {
@@ -187,6 +238,10 @@ const agent = {
     highTempTime: '高温超时',
     rule: 'Agent名称不能为空',
     namePlaceholder: '请输入Agent名称',
+  },
+  ui: {
+    alertRobotIds: '通知选项',
+    defaultAlertRobotIds: '通知所有机器人',
   },
 };
 const devices = {
@@ -355,6 +410,8 @@ const routes = {
   sysJobs: '系统定时任务',
   remoteSettings: '远程控制配置',
   scripts: '脚本模板',
+  projectAlertRobots: '通知机器人',
+  sysAlertRobots: '通知机器人',
 };
 const setting = {
   title: '后台管理中心',
@@ -623,6 +680,10 @@ const testSuitesTS = {
   associatedCase: '关联用例',
   run: '运行',
   delMessage: '确定删除该测试套件吗？套件下的用例将移出该套件',
+  ui: {
+    alertRobotIds: '通知选项',
+    defaultAlertRobotIds: '使用项目默认设置',
+  },
 };
 const versionsTS = {
   name: '名称',
@@ -864,6 +925,7 @@ const settingIndexTS = {
     systemCon: '系统配置',
     scheduled: '系统定时任务',
     remoteSettings: '远程控制配置',
+    sysAlertRobots: '通知机器人',
   },
   remote: {
     alertMsg:
