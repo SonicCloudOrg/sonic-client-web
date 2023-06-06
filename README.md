@@ -71,7 +71,7 @@ docker build -t sonicorg/sonic-client-web .
 
 ## Deployment mode
 
-### Docker Mode (NO RECOMMENDED)
+### Docker Mode
 
 > [Click Here!](https://hub.docker.com/repository/docker/sonicorg/sonic-client-web)
 
