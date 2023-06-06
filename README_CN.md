@@ -71,10 +71,8 @@ docker build -t sonicorg/sonic-client-web .
 
 ## 部署模式
 
-### Docker模式（不推荐）
+### Docker模式
 
-> 建议仅在测试的时候使用，镜像包含nginx服务器
->
 > [Click Here!](https://hub.docker.com/repository/docker/sonicorg/sonic-client-web)
 
 ### dist 模式
