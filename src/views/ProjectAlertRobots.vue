@@ -104,7 +104,7 @@ onMounted(() => {
     </el-table-column>
     <el-table-column :label="$t('robot.muteRule')" align="center"
       ><template #default="scope">
-        <el-tag v-if="!scope.row.muteRule" type="info">{{
+        <el-tag v-if="!scope.row.muteRule" size="small" type="info">{{
           $t('robot.consts.nomute')
         }}</el-tag>
         <el-popover v-else trigger="hover" width="auto">
@@ -112,14 +112,16 @@ onMounted(() => {
             <pre>{{ scope.row.muteRule }}</pre>
           </template>
           <template #reference>
-            <el-tag>{{ $t('robot.consts.customTemplate') }}</el-tag>
+            <el-tag size="small">{{
+              $t('robot.consts.customTemplate')
+            }}</el-tag>
           </template>
         </el-popover>
       </template>
     </el-table-column>
     <el-table-column :label="$t('robot.template')" align="center"
       ><template #default="scope">
-        <el-tag v-if="!scope.row.template" type="info">{{
+        <el-tag v-if="!scope.row.template" size="small" type="info">{{
           $t('robot.consts.defaultTemplate')
         }}</el-tag
         ><el-popover v-else trigger="hover" width="auto">
@@ -127,7 +129,9 @@ onMounted(() => {
             <pre>{{ scope.row.template }}</pre>
           </template>
           <template #reference>
-            <el-tag>{{ $t('robot.consts.customTemplate') }}</el-tag>
+            <el-tag size="small">{{
+              $t('robot.consts.customTemplate')
+            }}</el-tag>
           </template>
         </el-popover>
       </template>

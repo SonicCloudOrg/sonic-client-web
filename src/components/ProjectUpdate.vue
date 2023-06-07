@@ -158,16 +158,23 @@ onMounted(() => {
       ></el-input>
     </el-form-item>
     <el-form-item :label="$t('project.alertConfig')" prop="globalRobot">
-      <span>{{ $t('project.ui.globalRobot') }}</span>
-      <el-switch v-model="project.globalRobot" class="mb-2" />
-      <br />
-      <span>{{ $t('project.ui.testsuiteDefaultAlertRobotIds') }}</span
-      ><el-switch
-        v-model="project.testsuiteAlertRobotIds"
-        class="mb-2"
-        :inactive-value="[]"
-        :active-value="null"
-      />
+      <div style="display: flex; align-items: center">
+        <el-switch v-model="project.globalRobot" class="mb-2" />
+        <span style="margin-left: 10px">{{
+          $t('project.ui.globalRobot')
+        }}</span>
+      </div>
+      <div style="display: flex; align-items: center">
+        <el-switch
+          v-model="project.testsuiteAlertRobotIds"
+          class="mb-2"
+          :inactive-value="[]"
+          :active-value="null"
+        />
+        <span style="margin-left: 10px">{{
+          $t('project.ui.testsuiteDefaultAlertRobotIds')
+        }}</span>
+      </div>
       <template v-if="project.testsuiteAlertRobotIds != null">
         <el-select
           v-model="project.testsuiteAlertRobotIds"

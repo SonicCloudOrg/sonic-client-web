@@ -436,13 +436,19 @@ onMounted(() => {
     <el-form-item
       prop="alertRobotIds"
       :label="$t('testSuitesTS.ui.alertRobotIds')"
-      ><span>{{ $t('testSuitesTS.ui.defaultAlertRobotIds') }}</span>
-      <el-switch
-        v-model="testSuite.alertRobotIds"
-        class="mb-2"
-        :inactive-value="[]"
-        :active-value="null"
-      /><template v-if="testSuite.alertRobotIds != null">
+    >
+      <div style="display: flex; align-items: center">
+        <el-switch
+          v-model="testSuite.alertRobotIds"
+          class="mb-2"
+          :inactive-value="[]"
+          :active-value="null"
+        />
+        <span style="margin-left: 10px">{{
+          $t('testSuitesTS.ui.defaultAlertRobotIds')
+        }}</span>
+      </div>
+      <template v-if="testSuite.alertRobotIds != null">
         <el-select
           v-model="testSuite.alertRobotIds"
           multiple

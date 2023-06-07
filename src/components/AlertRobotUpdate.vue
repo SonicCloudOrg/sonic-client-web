@@ -215,7 +215,9 @@ export default {
           v-model="updateFormModel.muteRule"
           :placeholder="$t('robot.robotSecretPlaceholder')"
         ></el-input>
-        <el-tag v-else type="info">{{ $t('robot.consts.nomute') }}</el-tag>
+        <el-tag v-else type="info" size="small" style="margin-right: 10px">{{
+          $t('robot.consts.nomute')
+        }}</el-tag>
         <el-dropdown
           size="small"
           split-button
@@ -269,7 +271,7 @@ export default {
           type="textarea"
           rows="8"
         ></el-input>
-        <el-tag v-else type="info">{{
+        <el-tag v-else type="info" size="small" style="margin-right: 10px">{{
           $t('robot.consts.defaultTemplate')
         }}</el-tag>
         <el-button
