@@ -140,13 +140,13 @@ const openHub = () => {
 };
 watch(dialogAgent, (newValue, oldValue) => {
   if (!newValue) {
-    agent.value = {
-      id: 0,
-      name: '',
-      highTemp: 45,
-      highTempTime: 15,
-      robotSecret: '',
-      robotToken: '',
+  agent.value = {
+    id: 0,
+    name: '',
+    highTemp: 45,
+    highTempTime: 15,
+    robotSecret: '',
+    robotToken: '',
       robotType: 1,
     };
   }
@@ -1012,12 +1012,15 @@ onUnmounted(() => {
         <span style="margin-left: 10px">min</span>
       </el-form-item>
       <el-form-item prop="alertRobotIds" :label="$t('agent.ui.alertRobotIds')">
-        <span>{{ $t('agent.ui.defaultAlertRobotIds') }}</span>
-        <el-switch
-          v-model="agent.alertRobotIds"
+        <el-checkbox
+        :label="$t('agent.ui.defaultAlertRobotIds')"
+          :checked="agent.alertRobotIds == null"
           class="mb-2"
-          :inactive-value="[]"
-          :active-value="null"
+          @change="
+            (auto) => {
+              agent.alertRobotIds = auto ? null : [];
+            }
+          "
         />
         <template v-if="agent.alertRobotIds != null">
           <el-select
