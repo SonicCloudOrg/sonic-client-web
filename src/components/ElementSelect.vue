@@ -115,88 +115,107 @@ onMounted(() => {
     :rules="[{ required: true, message: place, trigger: 'change' }]"
     :prop="'elements[' + index + ']'"
   >
-      <div>
-        <el-select
-          v-model="step.elements[index]"
-          filterable
-          style="width: 100%"
-          remote
-          :remote-method="findByName"
-          value-key="id"
-          :placeholder="$t('element.namePlace')"
-          @visible-change="findByProjectIdAndEleType"
-        >
-          <template #prefix>
-<span style="font-size: 14px; color: #99a9bf; margin:0 10px">{{
-    $t('element.nameFilter')
-  }}</span>
-          </template>
-          <div style="display: flex;justify-content: center;align-items: center;margin: 5px 0">
-          <span style="font-size: 14px; color: #99a9bf; margin:0 10px">{{
-              $t('element.modelFilter')
-            }}</span>
-          <el-select v-model="moduleId" size="small" @change="findByModule">
-            <el-option
+    <div>
+      <el-select
+        v-model="step.elements[index]"
+        filterable
+        style="width: 100%"
+        value-key="id"
+        :placeholder="$t('element.namePlace')"
+        @visible-change="findByProjectIdAndEleType"
+      >
+        <template #prefix>
+          <span style="font-size: 14px; color: #99a9bf; margin: 0 10px">{{
+            $t('element.nameFilter')
+          }}</span>
+        </template>
+        <template #empty>
+          <div style="text-align: center; margin: 5px 0">
+            <el-select v-model="moduleId" size="small" @change="findByModule">
+              <el-option
                 v-for="item in moduleList"
                 :key="item.name"
                 :value="item.id"
                 :label="item.name"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <el-empty />
+        </template>
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 5px 0;
+          "
+        >
+          <span style="font-size: 14px; color: #99a9bf; margin: 0 10px">{{
+            $t('element.modelFilter')
+          }}</span>
+          <el-select v-model="moduleId" size="small" @change="findByModule">
+            <el-option
+              v-for="item in moduleList"
+              :key="item.name"
+              :value="item.id"
+              :label="item.name"
             >
             </el-option>
           </el-select>
-          </div>
-          <el-option
-            v-for="item in pageData['content']"
-            v-if="pageData['content'] !== null"
-            :key="item.id"
-            :label="item['eleName']"
-            :value="item"
+        </div>
+        <el-option
+          v-for="item in pageData['content']"
+          v-if="pageData['content'] !== null"
+          :key="item.id"
+          :label="item['eleName']"
+          :value="item"
+        >
+          <span>{{ item['eleName'] }}</span>
+          <el-popover
+            v-if="
+              item.eleType === 'androidIterator' ||
+              item.eleType === 'pocoIterator' ||
+              item.eleType === 'iOSIterator'
+            "
+            placement="right"
+            :width="300"
+            trigger="hover"
           >
-            <span>{{ item['eleName'] }}</span>
-            <el-popover
-              v-if="
-                item.eleType === 'androidIterator' ||
-                item.eleType === 'pocoIterator' ||
-                item.eleType === 'iOSIterator'
-              "
-              placement="right"
-              :width="300"
-              trigger="hover"
-            >
-              <p>
-                {{ $t('element.whenList') }}
-                <strong style="color: #409eff">{{
-                  $t('element.iterationList')
-                }}</strong>
-                {{ $t('element.thenList') }}
-                <strong style="color: #409eff">{{
-                  $t('element.currentIteration')
-                }}</strong
-                >{{ $t('element.last') }}
-              </p>
-              <template #reference>
-                <el-icon
-                  :size="15"
-                  style="vertical-align: middle; margin-left: 5px"
-                >
-                  <QuestionFilled />
-                </el-icon>
-              </template>
-            </el-popover>
-          </el-option>
-          <div style="text-align: center; margin-top: 5px">
-            <el-pagination
-              v-model:current-page="currentPage"
-              small
-              layout="prev, pager, next"
-              hide-on-single-page
-              :total="pageData['totalElements']"
-              :page-size="pageSize"
-              @current-change="findByProjectIdAndEleType(true, $event)"
-            >
-            </el-pagination>
-          </div>
-        </el-select>
-      </div>
+            <p>
+              {{ $t('element.whenList') }}
+              <strong style="color: #409eff">{{
+                $t('element.iterationList')
+              }}</strong>
+              {{ $t('element.thenList') }}
+              <strong style="color: #409eff">{{
+                $t('element.currentIteration')
+              }}</strong
+              >{{ $t('element.last') }}
+            </p>
+            <template #reference>
+              <el-icon
+                :size="15"
+                style="vertical-align: middle; margin-left: 5px"
+              >
+                <QuestionFilled />
+              </el-icon>
+            </template>
+          </el-popover>
+        </el-option>
+        <div style="text-align: center; margin-top: 5px">
+          <el-pagination
+            v-model:current-page="currentPage"
+            small
+            layout="prev, pager, next"
+            hide-on-single-page
+            :total="pageData['totalElements']"
+            :page-size="pageSize"
+            @current-change="findByProjectIdAndEleType(true, $event)"
+          >
+          </el-pagination>
+        </div>
+      </el-select>
+    </div>
   </el-form-item>
 </template>
