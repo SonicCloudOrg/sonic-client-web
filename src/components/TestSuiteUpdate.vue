@@ -72,6 +72,7 @@ const testSuite = ref({
   projectId: route.params.projectId,
   devices: [],
   testCases: [],
+  alertRobotIds: null,
 });
 const deviceData = ref([]);
 const deviceDataBack = ref([]);
@@ -139,7 +140,6 @@ const removeFromPublic = (e) => {
 const getSource = () => {
   getDevice();
   getTestCaseList();
-  getAlertRobots();
 };
 const emit = defineEmits(['flush']);
 const summit = () => {
@@ -186,6 +186,7 @@ onMounted(() => {
   if (props.suiteId !== 0) {
     getSuiteInfo(props.suiteId);
   }
+  getAlertRobots();
 });
 </script>
 
