@@ -831,7 +831,8 @@ const androidRemoteTS = {
     onlyAPKFile: 'Only upload apk files',
     URLInstall: 'Install via URL',
     linkInstall: 'Install via Jenkins Plugin Upload',
-    hintAssociatedProject: 'This feature requires first associating the project from above',
+    hintAssociatedProject:
+      'This feature requires first associating the project from above',
     hint: 'Please input apk download link or local path',
     refresh: 'Refresh',
     appName: 'APP Name',
@@ -1019,7 +1020,7 @@ const usersTS = {
   },
 };
 const IOSRemote = {
-  depth: "Snapshot Max Depth",
+  depth: 'Snapshot Max Depth',
   driverStatus: {
     success: 'Init WebDriverAgent successful!',
     fail: 'Init WebDriverAgent failed!',

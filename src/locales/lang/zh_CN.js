@@ -1000,7 +1000,7 @@ const usersTS = {
   },
 };
 const IOSRemote = {
-  depth: "最大遍历深度",
+  depth: '最大遍历深度',
   driverStatus: {
     success: '初始化 WebDriverAgent 完成！',
     fail: '初始化 WebDriverAgent 失败！',

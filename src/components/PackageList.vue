@@ -102,12 +102,8 @@ onMounted(() => {
       </template>
     </el-table-column>
     <!--分支名称列，支持筛选-->>
-    <el-table-column
-      min-width="120"
-      prop="branch"
-      align="center"
-    >
-    <template #header>
+    <el-table-column min-width="120" prop="branch" align="center">
+      <template #header>
         <el-input
           v-model="branch"
           size="mini"

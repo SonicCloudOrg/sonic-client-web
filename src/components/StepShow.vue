@@ -343,9 +343,9 @@ const getNotes = (text, type) => {
   </span>
   <span
     v-if="
-    step.stepType === 'isExistEleNum' ||
-    step.stepType === 'isExistWebViewEleNum' ||
-    step.stepType === 'isExistPocoEleNum'
+      step.stepType === 'isExistEleNum' ||
+      step.stepType === 'isExistWebViewEleNum' ||
+      step.stepType === 'isExistPocoEleNum'
     "
   >
     <el-tag size="small" style="margin-right: 10px"
@@ -402,9 +402,16 @@ const getNotes = (text, type) => {
     <el-tag size="small" style="margin-right: 10px">输入法输入</el-tag>
     {{ step.content }}
   </span>
-  <span v-if="step.stepType === 'sendKeysByActions' || step.stepType === 'webViewSendKeysByActions'">
+  <span
+    v-if="
+      step.stepType === 'sendKeysByActions' ||
+      step.stepType === 'webViewSendKeysByActions'
+    "
+  >
     <el-tag size="small">{{ getEleResult(step.stepType) }}控件元素</el-tag>
-    <el-tag type="info" size="small" style="margin-left: 10px">{{ step.elements[0]['eleName'] }}</el-tag>
+    <el-tag type="info" size="small" style="margin-left: 10px">{{
+      step.elements[0]['eleName']
+    }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
       >输入文本(Actions)</el-tag
     >
@@ -472,8 +479,8 @@ const getNotes = (text, type) => {
     >
     期望值：{{ step.content }}
   </span>
-    <!--大于2.5.0版本，增强的文本断言能力-->
-    <span
+  <!--大于2.5.0版本，增强的文本断言能力-->
+  <span
     v-if="
       step.stepType === 'assertText' ||
       step.stepType === 'assertWebViewText' ||
@@ -486,8 +493,12 @@ const getNotes = (text, type) => {
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
-    > 期望:
-    <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{ getAssertTextOpe(step.content) }}</el-tag>{{ step.text }}
+    >
+    期望:
+    <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
+      getAssertTextOpe(step.content)
+    }}</el-tag
+    >{{ step.text }}
   </span>
   <span v-if="step.stepType === 'getTitle'">
     <el-tag size="small" style="margin-right: 10px">验证标题</el-tag>
@@ -622,7 +633,9 @@ const getNotes = (text, type) => {
     等待 {{ step.content }} ms
   </span>
   <span v-if="step.stepType === 'setSnapshotMaxDepth'">
-    <el-tag size="small" style="margin-right: 5px">设置控件获取最大遍历深度</el-tag>
+    <el-tag size="small" style="margin-right: 5px"
+      >设置控件获取最大遍历深度</el-tag
+    >
     最大 {{ step.content }} 层
   </span>
   <span>

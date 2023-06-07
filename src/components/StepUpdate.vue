@@ -294,8 +294,10 @@ const summitStep = () => {
 };
 // 当前步骤类型，是否需要展示ByActions的 alert 提示
 const shouldShowByActionsTip = (stepType) => {
-  return stepType === 'sendKeysByActions' || stepType === 'webViewSendKeysByActions';
-}
+  return (
+    stepType === 'sendKeysByActions' || stepType === 'webViewSendKeysByActions'
+  );
+};
 const getPublicStepList = () => {
   axios
     .get('/controller/publicSteps/findNameByProjectId', {
@@ -327,7 +329,7 @@ const getStepInfo = (id) => {
         step.value.stepType === 'setDefaultFindWebViewElementInterval' ||
         step.value.stepType === 'longPress' ||
         step.value.stepType === 'checkImage' ||
-          step.value.stepType === 'setSnapshotMaxDepth'
+        step.value.stepType === 'setSnapshotMaxDepth'
       ) {
         step.value.content = parseInt(step.value.content);
       }
@@ -1508,10 +1510,7 @@ onMounted(() => {
           :step="step"
         />
         <div>
-          <el-form-item
-            label="验证个数"
-            :model="step"
-          >
+          <el-form-item label="验证个数" :model="step">
             <el-select v-model="step.content" prop="content">
               <el-option label="大于" value=">"></el-option>
               <el-option label="小于" value="<"></el-option>
@@ -1521,12 +1520,12 @@ onMounted(() => {
             </el-select>
 
             <el-input-number
-                v-model="step.text"
-                placeholder="输入数量"
-                :min="0"
-                style="width: 150px; margin-left: 10px;"
-                prop="text"
-              ></el-input-number>
+              v-model="step.text"
+              placeholder="输入数量"
+              :min="0"
+              style="width: 150px; margin-left: 10px"
+              prop="text"
+            ></el-input-number>
           </el-form-item>
         </div>
       </div>
@@ -1792,10 +1791,7 @@ onMounted(() => {
           :step="step"
         />
         <div>
-          <el-form-item
-            label="验证个数"
-            :model="step"
-          >
+          <el-form-item label="验证个数" :model="step">
             <el-select v-model="step.content" prop="content">
               <el-option label="大于" value=">"></el-option>
               <el-option label="小于" value="<"></el-option>
@@ -1805,12 +1801,12 @@ onMounted(() => {
             </el-select>
 
             <el-input-number
-                v-model="step.text"
-                placeholder="输入数量"
-                :min="0"
-                style="width: 150px; margin-left: 10px;"
-                prop="text"
-              ></el-input-number>
+              v-model="step.text"
+              placeholder="输入数量"
+              :min="0"
+              style="width: 150px; margin-left: 10px"
+              prop="text"
+            ></el-input-number>
           </el-form-item>
         </div>
       </div>
@@ -1913,7 +1909,10 @@ onMounted(() => {
 
       <div
         v-if="
-          step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys' || step.stepType === 'sendKeysByActions' || step.stepType === 'webViewSendKeysByActions'
+          step.stepType === 'sendKeys' ||
+          step.stepType === 'webViewSendKeys' ||
+          step.stepType === 'sendKeysByActions' ||
+          step.stepType === 'webViewSendKeysByActions'
         "
       >
         <el-alert
@@ -1926,7 +1925,10 @@ onMounted(() => {
             <div v-if="shouldShowByActionsTip(step.stepType)">
               TIPS: 在文本框需要先获取焦点，才能进行输入时，使用此方式。
             </div>
-            <div>需要临时变量或全局变量时，可以添加&#123;&#123; 变量名 &#125;&#125;的形式。</div>
+            <div>
+              需要临时变量或全局变量时，可以添加&#123;&#123; 变量名
+              &#125;&#125;的形式。
+            </div>
           </template>
         </el-alert>
         <element-select
@@ -1982,9 +1984,9 @@ onMounted(() => {
       <div v-if="step.stepType === 'setSnapshotMaxDepth'">
         <el-form-item label="最大深度">
           <el-input-number
-              v-model="step.content"
-              :min="1"
-              :max="60"
+            v-model="step.content"
+            :min="1"
+            :max="60"
           ></el-input-number>
         </el-form-item>
       </div>
@@ -2115,7 +2117,11 @@ onMounted(() => {
 
       <!--这里UI上还需要保留，用于在老版本升级上来之后，可以编辑用-->
       <div
-        v-if="step.stepType === 'getText' || step.stepType === 'getWebViewText' || step.stepType === 'getPocoText'"
+        v-if="
+          step.stepType === 'getText' ||
+          step.stepType === 'getWebViewText' ||
+          step.stepType === 'getPocoText'
+        "
       >
         <element-select
           label="控件元素"
@@ -2135,7 +2141,11 @@ onMounted(() => {
 
       <!-- >2.5版本之后，增强类型的文本断言 -->
       <div
-        v-if="step.stepType === 'assertText' || step.stepType === 'assertWebViewText' || step.stepType === 'assertPocoText'"
+        v-if="
+          step.stepType === 'assertText' ||
+          step.stepType === 'assertWebViewText' ||
+          step.stepType === 'assertPocoText'
+        "
       >
         <element-select
           label="控件元素"
@@ -2148,7 +2158,11 @@ onMounted(() => {
         <el-form-item
           label="断言类型"
           prop="content"
-          :rules="{required: true, message: '断言类型不能为空', trigger: 'change'}"
+          :rules="{
+            required: true,
+            message: '断言类型不能为空',
+            trigger: 'change',
+          }"
         >
           <el-select v-model="step.content">
             <el-option label="等于" value="equal"></el-option>
@@ -2160,11 +2174,13 @@ onMounted(() => {
         <el-form-item
           label="期望值"
           prop="text"
-          :rules="{required: true, message: '期望值不能为空', trigger: 'change'}">
-          <el-input
-            v-model="step.text"
-            placeholder="请输入期望值"
-          ></el-input>
+          :rules="{
+            required: true,
+            message: '期望值不能为空',
+            trigger: 'change',
+          }"
+        >
+          <el-input v-model="step.text" placeholder="请输入期望值"></el-input>
         </el-form-item>
       </div>
       <div v-if="step.stepType === 'getTitle' || step.stepType === 'getUrl'">

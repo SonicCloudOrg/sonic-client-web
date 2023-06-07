@@ -27,7 +27,10 @@ const props = defineProps({
 </script>
 
 <template>
-  <el-timeline v-if="steps!==null && steps.length > 0" style="padding: 10px 0 10px 20px">
+  <el-timeline
+    v-if="steps !== null && steps.length > 0"
+    style="padding: 10px 0 10px 20px"
+  >
     <el-timeline-item
       v-for="(s, index) in steps"
       :key="index"

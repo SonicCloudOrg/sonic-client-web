@@ -69,11 +69,11 @@ import {
   InfoFilled,
 } from '@element-plus/icons';
 import { useI18n } from 'vue-i18n';
+import PackageList from '@/components/PackageList.vue';
 import RenderDeviceName from '../../components/RenderDeviceName.vue';
 import PocoPane from '../../components/PocoPane.vue';
 import IOSPerf from '../../components/IOSPerf.vue';
 import RemotePageHeader from '../../components/RemotePageHeader.vue';
-import PackageList from '@/components/PackageList.vue';
 
 const pocoPaneRef = ref(null);
 const iosPerfRef = ref(null);
@@ -381,7 +381,7 @@ const selectPackage = (val) => {
   ElMessage.success({
     message: $t('androidRemoteTS.startInstall'),
   });
-  install(val)
+  install(val);
 };
 const activeIntallTab = ref('pushInstallPane');
 watch(filterText, (newValue, oldValue) => {
@@ -1182,7 +1182,7 @@ const getElement = () => {
       type: 'debug',
       detail: 'tree',
       needImg: oldBlob == null,
-      depth: depth.value
+      depth: depth.value,
     })
   );
 };
@@ -1898,67 +1898,61 @@ const checkAlive = () => {
             </el-row>
           </el-tab-pane>
           <el-tab-pane :label="$t('androidRemoteTS.code.app')" name="apps">
-            <el-tabs type="border-card" stretch v-model="activeIntallTab">
+            <el-tabs v-model="activeIntallTab" type="border-card" stretch>
               <el-tab-pane name="pushInstallPane">
                 <template #label>
-                    <strong>{{
-                      $t('IOSRemote.installIPA')
-                    }}</strong>
+                  <strong>{{ $t('IOSRemote.installIPA') }}</strong>
                 </template>
                 <div style="text-align: center">
-                    <el-upload
-                      v-loading="uploadLoading"
-                      drag
-                      action=""
-                      :with-credentials="true"
-                      :limit="1"
-                      :before-upload="beforeAvatarUpload2"
-                      :on-exceed="limitOut"
-                      :http-request="uploadPackage"
-                    >
-                      <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">
-                        {{ $t('IOSRemote.moveIPA')
-                        }}<em>{{ $t('devices.detail.uploadImg') }}</em>
+                  <el-upload
+                    v-loading="uploadLoading"
+                    drag
+                    action=""
+                    :with-credentials="true"
+                    :limit="1"
+                    :before-upload="beforeAvatarUpload2"
+                    :on-exceed="limitOut"
+                    :http-request="uploadPackage"
+                  >
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">
+                      {{ $t('IOSRemote.moveIPA')
+                      }}<em>{{ $t('devices.detail.uploadImg') }}</em>
+                    </div>
+                    <template #tip>
+                      <div class="el-upload__tip">
+                        {{ $t('IOSRemote.onlyIPAFile') }}
                       </div>
-                      <template #tip>
-                        <div class="el-upload__tip">
-                          {{ $t('IOSRemote.onlyIPAFile') }}
-                        </div>
-                      </template>
-                    </el-upload>
-                  </div>
+                    </template>
+                  </el-upload>
+                </div>
               </el-tab-pane>
 
               <el-tab-pane name="urlInstallPane">
                 <template #label>
-                    <strong>{{
-                      $t('androidRemoteTS.code.URLInstall')
-                    }}</strong>
+                  <strong>{{ $t('androidRemoteTS.code.URLInstall') }}</strong>
                 </template>
                 <el-input
-                    v-model="uploadUrl"
-                    clearable
-                    size="small"
-                    :placeholder="$t('IOSRemote.pleaseIPAFilePath')"
-                  ></el-input>
-                  <div style="text-align: center; margin-top: 20px">
-                    <el-button
-                      size="mini"
-                      type="primary"
-                      :disabled="uploadUrl.length === 0"
-                      @click="install(uploadUrl)"
-                      >{{ $t('androidRemoteTS.code.send') }}
-                    </el-button>
-                  </div>
+                  v-model="uploadUrl"
+                  clearable
+                  size="small"
+                  :placeholder="$t('IOSRemote.pleaseIPAFilePath')"
+                ></el-input>
+                <div style="text-align: center; margin-top: 20px">
+                  <el-button
+                    size="mini"
+                    type="primary"
+                    :disabled="uploadUrl.length === 0"
+                    @click="install(uploadUrl)"
+                    >{{ $t('androidRemoteTS.code.send') }}
+                  </el-button>
+                </div>
               </el-tab-pane>
               <el-tab-pane name="linkInstallPane">
                 <template #label>
-                    <strong>{{
-                      $t('androidRemoteTS.code.linkInstall')
-                    }}</strong>
+                  <strong>{{ $t('androidRemoteTS.code.linkInstall') }}</strong>
                 </template>
-                  <span style="color: #909399; margin-right: 10px">{{
+                <span style="color: #909399; margin-right: 10px">{{
                   $t('androidRemoteTS.code.associatedProject')
                 }}</span>
                 <el-select
@@ -1992,17 +1986,20 @@ const checkAlive = () => {
                 <div v-if="project !== null">
                   <package-list
                     v-if="project !== null"
-                    :projectId="project['id']"
-                    platformType="iOS"
+                    :project-id="project['id']"
+                    platform-type="iOS"
                     @select-package="selectPackage"
                   ></package-list>
                 </div>
                 <div v-else>
                   <el-card style="height: 100%; margin-top: 20px">
                     <el-result
-                    icon="info"
-                    :title="$t('androidRemoteTS.code.hintText')"
-                    :sub-title="$t('androidRemoteTS.code.hintAssociatedProject')">
+                      icon="info"
+                      :title="$t('androidRemoteTS.code.hintText')"
+                      :sub-title="
+                        $t('androidRemoteTS.code.hintAssociatedProject')
+                      "
+                    >
                     </el-result>
                   </el-card>
                 </div>
@@ -2563,21 +2560,26 @@ const checkAlive = () => {
                     "
                   >
                     <span
-                        style="
+                      style="
                         margin-right: 10px;
                         color: #909399;
                         font-size: 14px;
                       "
-                    >{{ $t('IOSRemote.depth') }}: </span
-                    >
-                    <el-input-number size="mini" v-model="depth" :min="1" :max="60"/>
+                      >{{ $t('IOSRemote.depth') }}:
+                    </span>
+                    <el-input-number
+                      v-model="depth"
+                      size="mini"
+                      :min="1"
+                      :max="60"
+                    />
                     <el-button
                       type="primary"
                       size="mini"
                       :loading="elementLoading"
                       :disabled="isDriverFinish === false"
-                      @click="getElement"
                       style="margin-left: 10px"
+                      @click="getElement"
                     >
                       <el-icon :size="12" style="vertical-align: middle">
                         <Search />

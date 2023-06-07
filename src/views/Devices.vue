@@ -169,7 +169,7 @@ const editAgent = async (
   robotType,
   robotToken,
   robotSecret,
-  alertRobotIds,
+  alertRobotIds
 ) => {
   agent.value = {
     id,

@@ -349,7 +349,7 @@ const selectPackage = (val) => {
   ElMessage.success({
     message: $t('androidRemoteTS.startInstall'),
   });
-  install(val)
+  install(val);
 };
 // 三种安装包方式tab选中态
 const activeIntallTab = ref('pushInstallPane');
@@ -2730,66 +2730,60 @@ const checkAlive = () => {
             </el-row>
           </el-tab-pane>
           <el-tab-pane :label="$t('androidRemoteTS.code.app')" name="apps">
-            <el-tabs type="border-card" stretch v-model="activeIntallTab">
+            <el-tabs v-model="activeIntallTab" type="border-card" stretch>
               <el-tab-pane name="pushInstallPane">
                 <template #label>
-                    <strong>{{
-                      $t('androidRemoteTS.code.pushInstall')
-                    }}</strong>
+                  <strong>{{ $t('androidRemoteTS.code.pushInstall') }}</strong>
                 </template>
                 <div style="text-align: center">
-                    <el-upload
-                      v-loading="uploadLoading"
-                      drag
-                      action=""
-                      :with-credentials="true"
-                      :limit="1"
-                      :before-upload="beforeAvatarUpload2"
-                      :on-exceed="limitOut"
-                      :http-request="uploadPackage"
-                    >
-                      <i class="el-icon-upload"></i>
-                      <div class="el-upload__text">
-                        {{ $t('androidRemoteTS.code.apkFile') }}
-                        <em>{{ $t('devices.detail.uploadImg') }}</em>
+                  <el-upload
+                    v-loading="uploadLoading"
+                    drag
+                    action=""
+                    :with-credentials="true"
+                    :limit="1"
+                    :before-upload="beforeAvatarUpload2"
+                    :on-exceed="limitOut"
+                    :http-request="uploadPackage"
+                  >
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">
+                      {{ $t('androidRemoteTS.code.apkFile') }}
+                      <em>{{ $t('devices.detail.uploadImg') }}</em>
+                    </div>
+                    <template #tip>
+                      <div class="el-upload__tip">
+                        {{ $t('androidRemoteTS.code.onlyAPKFile') }}
                       </div>
-                      <template #tip>
-                        <div class="el-upload__tip">
-                          {{ $t('androidRemoteTS.code.onlyAPKFile') }}
-                        </div>
-                      </template>
-                    </el-upload>
+                    </template>
+                  </el-upload>
                 </div>
               </el-tab-pane>
               <el-tab-pane name="urlInstallPane">
                 <template #label>
-                    <strong>{{
-                      $t('androidRemoteTS.code.URLInstall')
-                    }}</strong>
+                  <strong>{{ $t('androidRemoteTS.code.URLInstall') }}</strong>
                 </template>
                 <el-input
-                    v-model="uploadUrl"
-                    clearable
-                    size="small"
-                    :placeholder="$t('androidRemoteTS.code.hint')"
-                  ></el-input>
-                  <div style="text-align: center; margin-top: 20px">
-                    <el-button
-                      size="mini"
-                      type="primary"
-                      :disabled="uploadUrl.length === 0"
-                      @click="install(uploadUrl)"
-                      >{{ $t('androidRemoteTS.code.send') }}
-                    </el-button>
-                  </div>
+                  v-model="uploadUrl"
+                  clearable
+                  size="small"
+                  :placeholder="$t('androidRemoteTS.code.hint')"
+                ></el-input>
+                <div style="text-align: center; margin-top: 20px">
+                  <el-button
+                    size="mini"
+                    type="primary"
+                    :disabled="uploadUrl.length === 0"
+                    @click="install(uploadUrl)"
+                    >{{ $t('androidRemoteTS.code.send') }}
+                  </el-button>
+                </div>
               </el-tab-pane>
               <el-tab-pane name="linkInstallPane">
                 <template #label>
-                    <strong>{{
-                      $t('androidRemoteTS.code.linkInstall')
-                    }}</strong>
+                  <strong>{{ $t('androidRemoteTS.code.linkInstall') }}</strong>
                 </template>
-                  <span style="color: #909399; margin-right: 10px">{{
+                <span style="color: #909399; margin-right: 10px">{{
                   $t('androidRemoteTS.code.associatedProject')
                 }}</span>
                 <el-select
@@ -2823,17 +2817,20 @@ const checkAlive = () => {
                 <div v-if="project !== null">
                   <package-list
                     v-if="project !== null"
-                    :projectId="project['id']"
-                    platformType="Android"
+                    :project-id="project['id']"
+                    platform-type="Android"
                     @select-package="selectPackage"
                   ></package-list>
                 </div>
                 <div v-else>
                   <el-card style="height: 100%; margin-top: 20px">
                     <el-result
-                    icon="info"
-                    :title="$t('androidRemoteTS.code.hintText')"
-                    :sub-title="$t('androidRemoteTS.code.hintAssociatedProject')">
+                      icon="info"
+                      :title="$t('androidRemoteTS.code.hintText')"
+                      :sub-title="
+                        $t('androidRemoteTS.code.hintAssociatedProject')
+                      "
+                    >
                     </el-result>
                   </el-card>
                 </div>
@@ -3762,7 +3759,10 @@ const checkAlive = () => {
                                 label="content-desc"
                                 style="cursor: pointer"
                               >
-                                <span @click="copy(elementDetail['content-desc'])">{{ elementDetail['content-desc'] }}</span>
+                                <span
+                                  @click="copy(elementDetail['content-desc'])"
+                                  >{{ elementDetail['content-desc'] }}</span
+                                >
                                 <el-icon
                                   v-if="project && project['id']"
                                   color="green"
@@ -3779,7 +3779,7 @@ const checkAlive = () => {
                                     )
                                   "
                                 >
-                                <Pointer />
+                                  <Pointer />
                                 </el-icon>
                               </el-form-item>
                               <el-form-item
