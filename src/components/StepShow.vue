@@ -638,6 +638,13 @@ const getNotes = (text, type) => {
     >
     最大 {{ step.content }} 层
   </span>
+  <span v-if="step.stepType === 'scrollToEle'">
+    <el-tag size="small"
+      >{{step.text}}滚动到{{ getEleResult(step.stepType) }}控件元素</el-tag
+    >
+    <el-tag type="info" size="small" style="margin-left: 10px; margin-right: 10px">{{ step.elements[0]['eleName'] }}</el-tag>
+    最多尝试{{step.content}}次
+  </span>
   <span>
     <el-tag
       v-if="step.conditionType !== 3 && step.conditionType !== 0"
