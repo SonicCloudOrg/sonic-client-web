@@ -140,13 +140,13 @@ const openHub = () => {
 };
 watch(dialogAgent, (newValue, oldValue) => {
   if (!newValue) {
-  agent.value = {
-    id: 0,
-    name: '',
-    highTemp: 45,
-    highTempTime: 15,
-    robotSecret: '',
-    robotToken: '',
+    agent.value = {
+      id: 0,
+      name: '',
+      highTemp: 45,
+      highTempTime: 15,
+      robotSecret: '',
+      robotToken: '',
       robotType: 1,
     };
   }
@@ -1013,7 +1013,7 @@ onUnmounted(() => {
       </el-form-item>
       <el-form-item prop="alertRobotIds" :label="$t('agent.ui.alertRobotIds')">
         <el-checkbox
-        :label="$t('agent.ui.defaultAlertRobotIds')"
+          :label="$t('agent.ui.defaultAlertRobotIds')"
           :checked="agent.alertRobotIds == null"
           class="mb-2"
           @change="

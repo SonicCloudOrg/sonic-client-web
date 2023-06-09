@@ -121,7 +121,6 @@ onMounted(() => {
         filterable
         style="width: 100%"
         value-key="id"
-        :placeholder="$t('element.namePlace')"
         @visible-change="findByProjectIdAndEleType"
       >
         <template #prefix>
@@ -130,39 +129,55 @@ onMounted(() => {
           }}</span>
         </template>
         <template #empty>
-          <div style="text-align: center; margin: 5px 0">
-            <el-select v-model="moduleId" size="small" @change="findByModule">
-              <el-option
-                v-for="item in moduleList"
-                :key="item.name"
-                :value="item.id"
-                :label="item.name"
-              >
-              </el-option>
-            </el-select>
+          <div style="text-align: center; margin: 5px">
+            <el-input
+              v-model="name"
+              :placeholder="$t('element.namePlace')"
+              @input="findByName"
+            >
+              <template #prepend>
+                <el-select
+                  v-model="moduleId"
+                  style="width: 115px"
+                  size="small"
+                  @change="findByModule"
+                >
+                  <el-option
+                    v-for="item in moduleList"
+                    :key="item.name"
+                    :value="item.id"
+                    :label="item.name"
+                  >
+                  </el-option>
+                </el-select>
+              </template>
+            </el-input>
           </div>
           <el-empty />
         </template>
-        <div
-          style="
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 5px 0;
-          "
-        >
-          <span style="font-size: 14px; color: #99a9bf; margin: 0 10px">{{
-            $t('element.modelFilter')
-          }}</span>
-          <el-select v-model="moduleId" size="small" @change="findByModule">
-            <el-option
-              v-for="item in moduleList"
-              :key="item.name"
-              :value="item.id"
-              :label="item.name"
-            >
-            </el-option>
-          </el-select>
+        <div style="text-align: center; margin: 5px">
+          <el-input
+            v-model="name"
+            :placeholder="$t('element.namePlace')"
+            @input="findByName"
+          >
+            <template #prepend>
+              <el-select
+                v-model="moduleId"
+                style="width: 115px"
+                size="small"
+                @change="findByModule"
+              >
+                <el-option
+                  v-for="item in moduleList"
+                  :key="item.name"
+                  :value="item.id"
+                  :label="item.name"
+                >
+                </el-option>
+              </el-select>
+            </template>
+          </el-input>
         </div>
         <el-option
           v-for="item in pageData['content']"
