@@ -66,7 +66,7 @@ const robotList = [
   { name: 'Telegram Bot', value: 5, img: 'Telegram' },
   { name: 'LINE Notify', value: 6, img: 'LineNotify' },
   { name: 'Slack Bot', value: 7, img: 'SlackBot' },
-  { name: 'Webhook', value: 8, img: '' },
+  { name: '自定义机器人', value: 8, img: '' },
 ];
 const sceneList = [
   { name: 'robot.sceneList.testsuite', value: 'testsuite' },

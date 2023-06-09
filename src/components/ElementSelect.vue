@@ -118,7 +118,6 @@ onMounted(() => {
     <div>
       <el-select
         v-model="step.elements[index]"
-        filterable
         style="width: 100%"
         value-key="id"
         @visible-change="findByProjectIdAndEleType"
