@@ -329,7 +329,8 @@ const getStepInfo = (id) => {
         step.value.stepType === 'setDefaultFindWebViewElementInterval' ||
         step.value.stepType === 'longPress' ||
         step.value.stepType === 'checkImage' ||
-        step.value.stepType === 'setSnapshotMaxDepth'
+        step.value.stepType === 'setSnapshotMaxDepth' ||
+        step.value.stepType === 'scrollToEle'
       ) {
         step.value.content = parseInt(step.value.content);
       }
@@ -539,6 +540,10 @@ const androidOptions = ref([
           {
             value: 'swipe2',
             label: '拖拽控件元素',
+          },
+          {
+            value: 'scrollToEle',
+            label: '滚动到控件元素',
           },
           {
             value: 'longPress',
@@ -941,6 +946,10 @@ const iOSOptions = ref([
           {
             value: 'swipe2',
             label: '拖拽控件元素',
+          },
+          {
+            value: 'scrollToEle',
+            label: '滚动到控件元素',
           },
           {
             value: 'longPress',
@@ -1979,6 +1988,50 @@ onMounted(() => {
           type="normal"
           :step="step"
         />
+      </div>
+
+      <div v-if="step.stepType === 'scrollToEle'">
+        <el-alert
+          show-icon
+          style="margin-bottom: 10px"
+          close-text="Get!"
+          type="info"
+          title="TIPS: 长列表的场景下，可通过该方法连续滚动，尝试让目标元素可见"
+        />
+        <element-select
+          label="目标控件"
+          place="请选择控件元素"
+          :index="0"
+          :project-id="projectId"
+          type="normal"
+          :step="step"
+        />
+        <el-form-item
+          label="滚动方向"
+          prop="content"
+          :rules="{
+            required: true,
+            message: '滚动方向不能为空',
+            trigger: 'change',
+          }"
+        >
+          <el-select v-model="step.text">
+            <el-option label="向下" value="down"></el-option>
+            <el-option label="向上" value="up"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="最多滚动"
+          prop="text"
+          :rules="{
+            required: true,
+            message: '滚动次数不能为空',
+            trigger: 'change',
+          }"
+        >
+          <el-input-number v-model="step.content" :min="1" :step="1"></el-input-number>
+          <span style="margin-left: 10px">次</span>
+        </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'setSnapshotMaxDepth'">
