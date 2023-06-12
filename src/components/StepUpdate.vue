@@ -2021,7 +2021,7 @@ onMounted(() => {
           </el-select>
         </el-form-item>
         <el-form-item
-          label="滚动次数"
+          label="最多滚动"
           prop="text"
           :rules="{
             required: true,
@@ -2030,6 +2030,7 @@ onMounted(() => {
           }"
         >
           <el-input-number v-model="step.content" :min="1" :step="1"></el-input-number>
+          <span style="margin-left: 10px">次</span>
         </el-form-item>
       </div>
 
