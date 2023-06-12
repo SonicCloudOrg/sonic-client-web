@@ -2016,8 +2016,8 @@ onMounted(() => {
           }"
         >
           <el-select v-model="step.text">
-            <el-option label="向下" value="向下"></el-option>
-            <el-option label="向上" value="向上"></el-option>
+            <el-option label="向下" value="down"></el-option>
+            <el-option label="向上" value="up"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
