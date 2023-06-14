@@ -78,7 +78,7 @@ const getScrollToDire = (direction) => {
     default:
       return '未知滚动方向类型';
   }
-}
+};
 const getEleResult = (s) => {
   const ss = s.toUpperCase();
   if (ss.indexOf('POCO') !== -1) {
@@ -650,10 +650,17 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'scrollToEle'">
     <el-tag size="small"
-      >{{getScrollToDire(step.text)}}滚动到{{ getEleResult(step.stepType) }}控件元素</el-tag
+      >{{ getScrollToDire(step.text) }}滚动到{{
+        getEleResult(step.stepType)
+      }}控件元素</el-tag
     >
-    <el-tag type="info" size="small" style="margin-left: 10px; margin-right: 10px">{{ step.elements[0]['eleName'] }}</el-tag>
-    最多尝试{{step.content}}次
+    <el-tag
+      type="info"
+      size="small"
+      style="margin-left: 10px; margin-right: 10px"
+      >{{ step.elements[0]['eleName'] }}</el-tag
+    >
+    最多尝试{{ step.content }}次
   </span>
   <span>
     <el-tag

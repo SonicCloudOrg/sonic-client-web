@@ -2033,7 +2033,11 @@ onMounted(() => {
             trigger: 'change',
           }"
         >
-          <el-input-number v-model="step.content" :min="1" :step="1"></el-input-number>
+          <el-input-number
+            v-model="step.content"
+            :min="1"
+            :step="1"
+          ></el-input-number>
           <span style="margin-left: 10px">次</span>
         </el-form-item>
       </div>
@@ -2705,7 +2709,12 @@ onMounted(() => {
                   <el-table-column>
                     <template #default="scope">
                       <el-popover
-                          :disabled="step.platform===2 && (scope.row.name ==='isOpenH5Listener' || scope.row.name ==='isOpenActivityListener' || scope.row.name ==='isOpenNetworkListener')"
+                        :disabled="
+                          step.platform === 2 &&
+                          (scope.row.name === 'isOpenH5Listener' ||
+                            scope.row.name === 'isOpenActivityListener' ||
+                            scope.row.name === 'isOpenNetworkListener')
+                        "
                         placement="top"
                         :width="200"
                         trigger="hover"
@@ -2728,9 +2737,14 @@ onMounted(() => {
                         :step="10"
                       ></el-input-number>
                       <el-switch
-                          :disabled="step.platform===2 && (scope.row.name ==='isOpenH5Listener' || scope.row.name ==='isOpenActivityListener' || scope.row.name ==='isOpenNetworkListener')"
                         v-else
                         v-model="scope.row.value"
+                        :disabled="
+                          step.platform === 2 &&
+                          (scope.row.name === 'isOpenH5Listener' ||
+                            scope.row.name === 'isOpenActivityListener' ||
+                            scope.row.name === 'isOpenNetworkListener')
+                        "
                         active-color="#13ce66"
                         inactive-color="#ff4949"
                       >
@@ -2739,7 +2753,7 @@ onMounted(() => {
                   </el-table-column>
                 </el-table>
               </el-tab-pane>
-              <el-tab-pane label="Activity黑名单" v-if="step.platform===1">
+              <el-tab-pane v-if="step.platform === 1" label="Activity黑名单">
                 <el-table :data="activityList" border :show-header="false">
                   <el-table-column>
                     <template #default="scope">
