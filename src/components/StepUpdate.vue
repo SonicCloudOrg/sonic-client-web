@@ -148,20 +148,20 @@ const monkey = ref({
       value: 5,
     },
     {
-      name: 'isOpenH5Listener',
-      value: true,
-    },
-    {
       name: 'isOpenPackageListener',
       value: true,
     },
     {
+      name: 'isOpenH5Listener',
+      value: false,
+    },
+    {
       name: 'isOpenActivityListener',
-      value: true,
+      value: false,
     },
     {
       name: 'isOpenNetworkListener',
-      value: true,
+      value: false,
     },
   ],
 });
@@ -188,23 +188,23 @@ const monkeyOptions = {
   },
   navEvent: {
     label: '系统导航事件权重',
-    des: '随机开关WIFI',
-  },
-  isOpenH5Listener: {
-    label: 'H5页面监听器',
-    des: '检测是否长时间停留在H5页面',
+    des: '安卓：随机开关WIFI；iOS：后台运行当前应用',
   },
   isOpenPackageListener: {
     label: '应用包名监听器',
-    des: '检测当前应用是否为被测应用',
+    des: '检测当前应用是否为被测应用，为否时将重新拉起被测应用',
+  },
+  isOpenH5Listener: {
+    label: 'H5页面监听器 (Android Only)',
+    des: '检测是否长时间停留在H5页面 (Android Only)',
   },
   isOpenActivityListener: {
-    label: '黑名单Activity监听器',
-    des: '检测当前Activity是否在黑名单内',
+    label: '黑名单Activity监听器 (Android Only)',
+    des: '检测当前Activity是否在黑名单内 (Android Only)',
   },
   isOpenNetworkListener: {
-    label: '网络状态监听器',
-    des: '检测设备是否处于飞行模式和WIFI网络',
+    label: '网络状态监听器 (Android Only)',
+    des: '检测设备是否处于飞行模式和WIFI网络 (Android Only)',
   },
 };
 const stepForm = ref(null);
@@ -1134,6 +1134,10 @@ const iOSOptions = ref([
         label: '自定义脚本',
       },
       {
+        value: 'monkey',
+        label: '随机事件',
+      },
+      {
         value: 'pause',
         label: '强制等待',
       },
@@ -1235,7 +1239,7 @@ onMounted(() => {
           prop="content"
         >
           <el-select
-            v-if="platform === 1"
+            v-if="step.platform === 1"
             v-model="step.content"
             placeholder="请选择系统按键"
           >
@@ -1260,7 +1264,7 @@ onMounted(() => {
             </el-option-group>
           </el-select>
           <el-select
-            v-if="platform === 2"
+            v-if="step.platform === 2"
             v-model="step.content"
             placeholder="请选择系统按键"
           >
@@ -2701,6 +2705,7 @@ onMounted(() => {
                   <el-table-column>
                     <template #default="scope">
                       <el-popover
+                          :disabled="step.platform===2 && (scope.row.name ==='isOpenH5Listener' || scope.row.name ==='isOpenActivityListener' || scope.row.name ==='isOpenNetworkListener')"
                         placement="top"
                         :width="200"
                         trigger="hover"
@@ -2723,6 +2728,7 @@ onMounted(() => {
                         :step="10"
                       ></el-input-number>
                       <el-switch
+                          :disabled="step.platform===2 && (scope.row.name ==='isOpenH5Listener' || scope.row.name ==='isOpenActivityListener' || scope.row.name ==='isOpenNetworkListener')"
                         v-else
                         v-model="scope.row.value"
                         active-color="#13ce66"
@@ -2733,7 +2739,7 @@ onMounted(() => {
                   </el-table-column>
                 </el-table>
               </el-tab-pane>
-              <el-tab-pane label="Activity黑名单">
+              <el-tab-pane label="Activity黑名单" v-if="step.platform===1">
                 <el-table :data="activityList" border :show-header="false">
                   <el-table-column>
                     <template #default="scope">
