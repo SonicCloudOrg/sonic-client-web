@@ -1290,7 +1290,7 @@ onMounted(() => {
           <el-select v-model="step.content" placeholder="请选择触控模式">
             <el-option value="SONIC_APK"></el-option>
             <el-option value="ADB"></el-option>
-            <el-option value="UIAUTOMATOR2"></el-option>
+            <el-option value="APPIUM_UIAUTOMATOR2_SERVER"></el-option>
           </el-select>
         </el-form-item>
       </div>
