@@ -554,6 +554,10 @@ const androidOptions = ref([
             label: '清空输入框',
           },
           {
+            value: 'obtainElementAttr',
+            label: '获取控件属性',
+          },
+          {
             value: 'getElementAttr',
             label: '验证控件属性',
           },
@@ -710,6 +714,10 @@ const androidOptions = ref([
           {
             value: 'closePocoDriver',
             label: '关闭PocoDriver',
+          },
+          {
+            value: 'obtainPocoElementAttr',
+            label: '获取控件属性',
           },
           {
             value: 'getPocoElementAttr',
@@ -960,6 +968,10 @@ const iOSOptions = ref([
             label: '清空输入框',
           },
           {
+            value: 'obtainElementAttr',
+            label: '获取控件属性',
+          },
+          {
             value: 'getElementAttr',
             label: '验证控件属性',
           },
@@ -1050,6 +1062,10 @@ const iOSOptions = ref([
           {
             value: 'closePocoDriver',
             label: '关闭PocoDriver',
+          },
+          {
+            value: 'obtainPocoElementAttr',
+            label: '获取控件属性',
           },
           {
             value: 'getPocoElementAttr',
@@ -2367,7 +2383,15 @@ onMounted(() => {
         </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'getElementAttr'">
+      <div v-if="step.stepType === 'getElementAttr' || step.stepType === 'obtainElementAttr'">
+        <el-alert
+          v-show="step.stepType === 'obtainElementAttr'"
+          show-icon
+          style="margin-bottom: 10px"
+          close-text="Get!"
+          type="info"
+          title="TIPS: 可以将获取的控件属性放入临时变量中"
+        />
         <element-select
           label="控件元素"
           place="请选择控件元素"
@@ -2431,15 +2455,33 @@ onMounted(() => {
             <el-option value="visible"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="期望值" prop="content">
+        <el-form-item 
+          v-if="step.stepType === 'getElementAttr'"
+          label="期望值" prop="content">
           <el-input
             v-model="step.content"
             placeholder="请输入期望值"
           ></el-input>
         </el-form-item>
+        <el-form-item 
+          v-else
+          label="变量名" prop="content">
+          <el-input
+            v-model="step.content"
+            placeholder="请输入变量名"
+          ></el-input>
+        </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'getPocoElementAttr'">
+      <div v-if="step.stepType === 'getPocoElementAttr' || step.stepType === 'obtainPocoElementAttr'">
+        <el-alert
+          v-show="step.stepType === 'obtainPocoElementAttr'"
+          show-icon
+          style="margin-bottom: 10px"
+          close-text="Get!"
+          type="info"
+          title="TIPS: 可以将获取的控件属性放入临时变量中"
+        />
         <element-select
           label="控件元素"
           place="请选择控件元素"
@@ -2481,10 +2523,20 @@ onMounted(() => {
             <el-option value="clickable"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="期望值" prop="content">
+        <el-form-item 
+          v-if="step.stepType === 'getPocoElementAttr'"
+          label="期望值" prop="content">
           <el-input
             v-model="step.content"
             placeholder="请输入期望值"
+          ></el-input>
+        </el-form-item>
+        <el-form-item 
+          v-else
+          label="变量名" prop="content">
+          <el-input
+            v-model="step.content"
+            placeholder="请输入变量名"
           ></el-input>
         </el-form-item>
       </div>

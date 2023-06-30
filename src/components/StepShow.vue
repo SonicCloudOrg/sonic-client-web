@@ -468,6 +468,21 @@ const getNotes = (text, type) => {
     >
     获取到变量：{{ step.content }}
   </span>
+  <span
+    v-if="
+      step.stepType === 'obtainElementAttr' ||
+      step.stepType === 'obtainPocoElementAttr'
+    "
+  >
+    <el-tag size="small">获取{{ getEleResult(step.stepType) }}控件属性</el-tag>
+    <el-tag
+      type="info"
+      size="small"
+      style="margin-left: 10px; margin-right: 10px"
+      >{{ step.elements[0]['eleName'] }}</el-tag
+    >
+    的 {{ step.text }} 属性到变量：{{ step.content }}
+  </span>
   <span v-if="step.stepType === 'getClipperByKeyboard'">
     <el-tag size="small">获取剪切板文本</el-tag>
     获取到变量：{{ step.content }}
