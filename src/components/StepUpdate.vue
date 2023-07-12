@@ -491,6 +491,10 @@ const androidOptions = ref([
         value: 'appReset',
         label: '清空App内存缓存',
       },
+      {
+        value: 'appAutoGrantPermissions',
+        label: '自动授权App权限',
+      },
     ],
   },
   {
@@ -1716,6 +1720,30 @@ onMounted(() => {
           <el-input
             v-model="step.text"
             placeholder="请输入清空应用的App包名"
+          ></el-input>
+        </el-form-item>
+      </div>
+
+      <div v-if="step.stepType === 'appAutoGrantPermissions'">
+        <el-alert
+          show-icon
+          style="margin-bottom: 10px"
+          close-text="Get!"
+          type="info"
+          title="TIPS: 传递Android应用的App包名，该步骤可实现自动授权被测App所需要的所有权限，作用等价于Appium启动参数中的autoGrantPermissions"
+        />
+        <el-form-item
+          prop="text"
+          label="授权应用"
+          :rules="{
+            required: true,
+            message: '包名不能为空',
+            trigger: 'blur',
+          }"
+        >
+          <el-input
+            v-model="step.text"
+            placeholder="请输入自动授权应用的App包名"
           ></el-input>
         </el-form-item>
       </div>
