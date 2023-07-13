@@ -493,7 +493,7 @@ const androidOptions = ref([
       },
       {
         value: 'appAutoGrantPermissions',
-        label: '自动授权App权限',
+        label: '自动授权应用权限',
       },
     ],
   },
@@ -1730,7 +1730,7 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 传递Android应用的App包名，该步骤可实现自动授权被测App所需要的所有权限，作用等价于Appium启动参数中的autoGrantPermissions"
+          title="TIPS: 传递Android应用的App包名，该步骤可实现自动授权被测App所需要的所有权限"
         />
         <el-form-item
           prop="text"
@@ -1743,7 +1743,7 @@ onMounted(() => {
         >
           <el-input
             v-model="step.text"
-            placeholder="请输入自动授权应用的App包名"
+            placeholder="请输入自动授权应用权限的App包名"
           ></el-input>
         </el-form-item>
       </div>

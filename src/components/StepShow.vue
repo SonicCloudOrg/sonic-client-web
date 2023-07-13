@@ -329,7 +329,7 @@ const getNotes = (text, type) => {
     清空应用 {{ step.text }} 缓存内存
   </span>
   <span v-if="step.stepType === 'appAutoGrantPermissions'">
-    <el-tag size="small" style="margin-right: 10px">自动授权应用</el-tag>
+    <el-tag size="small" style="margin-right: 10px">自动授权应用权限</el-tag>
     授权应用 {{ step.text }} 所声明的权限
   </span>
   <span v-if="step.stepType === 'toWebView'">
