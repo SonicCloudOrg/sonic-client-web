@@ -1730,7 +1730,7 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 传递Android应用的App包名，该步骤可实现自动授权被测App所需要的所有权限"
+          title="TIPS: 传递Android应用的App包名，该步骤可实现自动授权目标App所需要的所有权限"
         />
         <el-form-item
           prop="text"
