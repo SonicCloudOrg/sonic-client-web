@@ -396,7 +396,7 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'appReset'">
     <el-tag size="small" style="margin-right: 10px">{{
-      $t('stepDetail.app.emptyCache')
+      $t('stepDetail.label.androidOptions.app.appReset')
     }}</el-tag>
     {{ $t('stepDetail.app.empty') }} {{ step.text }}
     {{ $t('stepDetail.bufferMemory') }}

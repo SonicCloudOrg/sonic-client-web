@@ -1449,13 +1449,13 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'keyCode'">
         <el-form-item
-          :label="$t('stepDetail.label.androidOptions.interaction.keyCode')"
+          :label="$t('stepDetail.label.androidOptions.system.interaction.keyCode')"
           :rules="[
             {
               required: true,
               message:
                 $t('stepDetail.msg.select') +
-                $t('stepDetail.label.androidOptions.interaction.keyCode'),
+                $t('stepDetail.label.androidOptions.system.interaction.keyCode'),
               trigger: 'change',
             },
           ]"
@@ -1466,7 +1466,7 @@ onMounted(() => {
             v-model="step.content"
             :placeholder="
               $t('stepDetail.msg.select') +
-              $t('stepDetail.label.androidOptions.interaction.keyCode')
+              $t('stepDetail.label.androidOptions.system.interaction.keyCode')
             "
           >
             <el-option-group :label="$t('stepDetail.commonKeys')">
@@ -1494,7 +1494,7 @@ onMounted(() => {
             v-model="step.content"
             :placeholder="
               $t('stepDetail.msg.select') +
-              $t('stepDetail.label.androidOptions.interaction.keyCode')
+              $t('stepDetail.label.androidOptions.system.interaction.keyCode')
             "
           >
             <el-option value="home"></el-option>
@@ -1531,10 +1531,10 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'tap'">
         <element-select
-          :label="$t('stepDetail.label.androidOptions.coordinate.self')"
+          :label="$t('stepDetail.label.androidOptions.element.coordinate.self')"
           :place="
             $t('stepDetail.msg.select') +
-            $t('stepDetail.label.androidOptions.coordinate.self')
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
           "
           :index="0"
           :project-id="projectId"
@@ -1545,10 +1545,10 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'longPressPoint'">
         <element-select
-          :label="$t('stepDetail.label.androidOptions.coordinate.self')"
+          :label="$t('stepDetail.label.androidOptions.element.coordinate.self')"
           :place="
             $t('stepDetail.msg.select') +
-            $t('stepDetail.label.androidOptions.coordinate.self')
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
           "
           :index="0"
           :project-id="projectId"
@@ -1570,7 +1570,7 @@ onMounted(() => {
           :label="$t('stepDetail.fromControl')"
           :place="
             $t('stepDetail.msg.select') +
-            $t('stepDetail.label.androidOptions.coordinate.self')
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
           "
           :index="0"
           :project-id="projectId"
@@ -1581,7 +1581,7 @@ onMounted(() => {
           :label="$t('stepDetail.dragTo')"
           :place="
             $t('stepDetail.msg.select') +
-            $t('stepDetail.label.androidOptions.coordinate.self')
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
           "
           :index="1"
           :project-id="projectId"
@@ -1625,7 +1625,7 @@ onMounted(() => {
           :label="$t('stepDetail.fromControl')"
           :place="
             $t('stepDetail.msg.select') +
-            $t('stepDetail.label.androidOptions.coordinate.self')
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
           "
           :index="0"
           :project-id="projectId"
@@ -1636,7 +1636,7 @@ onMounted(() => {
           :label="$t('stepDetail.dragTo')"
           :place="
             $t('stepDetail.msg.select') +
-            $t('stepDetail.label.androidOptions.coordinate.self')
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
           "
           :index="1"
           :project-id="projectId"
