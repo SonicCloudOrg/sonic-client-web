@@ -1578,7 +1578,7 @@ const stepDetail = {
   status: 'Status',
   stepInterval: 'Step Interval',
   stepType: 'Step Type',
-  screenCenter: 'Screen Center',
+  screenCenter: 'From Screen Center to',
   stepTypeInput: 'Please Enter Step Type',
   sendSiriCmd: 'Send SIRI Command',
   set: {
@@ -1617,7 +1617,7 @@ const stepDetail = {
   text: 'Text',
   textIdentifyInImage: 'Text Idetify In Image',
   times: 'times',
-  topVisable: 'Top Visable',
+  topVisible: 'Top Visible',
   turnLeft: 'Turn Screen Left',
   turnRight: 'Turn Screen Right',
   targetAttr: 'Target Attribute',

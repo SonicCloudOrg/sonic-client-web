@@ -1578,7 +1578,7 @@ const stepDetail = {
   text: '文本',
   textIdentifyInImage: '图像文字识别',
   times: '次',
-  topVisable: '至顶部可见',
+  topVisible: '至顶部可见',
   usePublicSteps: '使用公共步骤',
   unknownScrollSideType: '未知滚动方向类型',
   upwards: '向上',

@@ -140,7 +140,7 @@ const getNotes = (text, type) => {
       <el-collapse-item>
         <template #title>
           <el-tag size="small" type="warning" style="margin-right: 10px"
-            >{{$t('stepDetail.runSelfDefinedScript')}} {{ getNotes(step.content, step.text) }}</el-tag
+            >{{$t('stepDetail.runSelfDefinedScript') + getNotes(step.content, step.text) }}</el-tag
           >
           {{$t('stepDetail.click.expandOrCollapse')}}
           <el-icon>
@@ -195,7 +195,7 @@ const getNotes = (text, type) => {
     <el-tag type="info" size="small" style="margin-right: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    <el-tag size="small">{{$t('stepDetail.topVisable')}}</el-tag>
+    <el-tag size="small">{{$t('stepDetail.topVisible')}}</el-tag>
   </span>
   <span v-if="step.stepType === 'lock'">
     <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.rotateDevice.lock')}}</el-tag>
@@ -217,7 +217,7 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'switchTouchMode'">
     <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.set.touchMode')}}</el-tag
-    >{{$t('stepDetail.set.to')}}：{{ step.content }} {{$t('stepDetail.mode')}}
+    >{{$t('stepDetail.set.to') + ":" + step.content + $t('stepDetail.mode')}}
   </span>
   <span v-if="step.stepType === 'keyCode' || step.stepType === 'keyCodeSelf'">
     <el-tag size="small">{{$t('stepDetail.pressSys')}}{{ step.content }}{{$t('stepDetail.key')}}</el-tag>
