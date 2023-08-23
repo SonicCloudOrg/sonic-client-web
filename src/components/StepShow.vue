@@ -139,10 +139,11 @@ const getNotes = (text, type) => {
     <el-collapse style="margin: 5px 0">
       <el-collapse-item>
         <template #title>
-          <el-tag size="small" type="warning" style="margin-right: 10px"
-            >{{$t('stepDetail.runSelfDefinedScript') + getNotes(step.content, step.text) }}</el-tag
-          >
-          {{$t('stepDetail.click.expandOrCollapse')}}
+          <el-tag size="small" type="warning" style="margin-right: 10px">{{
+            $t('stepDetail.runSelfDefinedScript') +
+            getNotes(step.content, step.text)
+          }}</el-tag>
+          {{ $t('stepDetail.click.expandOrCollapse') }}
           <el-icon>
             <Edit />
           </el-icon>
@@ -176,11 +177,13 @@ const getNotes = (text, type) => {
     >
   </span>
   <span v-if="step.stepType === 'siriCommand'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.sendSiriCmd')}}</el-tag
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.sendSiriCmd')
+    }}</el-tag
     >{{ step.content }}
   </span>
   <span v-if="step.stepType === 'swipeByDefinedDirection'">
-    <el-tag size="small">{{$t('stepDetail.screenCenter')}}</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.screenCenter') }}</el-tag>
     <el-tag
       type="info"
       size="small"
@@ -191,62 +194,107 @@ const getNotes = (text, type) => {
     {{ step.content }} px
   </span>
   <span v-if="step.stepType === 'webElementScrollToView'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.scrollControl')}}</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.scrollControl')
+    }}</el-tag>
     <el-tag type="info" size="small" style="margin-right: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    <el-tag size="small">{{$t('stepDetail.topVisible')}}</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.topVisible') }}</el-tag>
   </span>
   <span v-if="step.stepType === 'lock'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.rotateDevice.lock')}}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.rotateDevice.lock')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'closeKeyboard'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.keyboard.closeKeyboard')}}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.keyboard.closeKeyboard')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'unLock'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.rotateDevice.unlock')}}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.rotateDevice.unlock')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'screenSub'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.rotateDevice.screenSub')}}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.rotateDevice.screenSub')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'screenAdd'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.rotateDevice.screenAdd')}}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.rotateDevice.screenAdd')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'screenAbort'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.rotateDevice.screenAbort')}}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.rotateDevice.screenAbort')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'switchTouchMode'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.set.touchMode')}}</el-tag
-    >{{$t('stepDetail.set.to') + ":" + step.content + $t('stepDetail.mode')}}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.set.touchMode')
+    }}</el-tag
+    >{{ $t('stepDetail.set.to') + ':' + step.content + $t('stepDetail.mode') }}
   </span>
   <span v-if="step.stepType === 'keyCode' || step.stepType === 'keyCodeSelf'">
-    <el-tag size="small">{{$t('stepDetail.pressSys')}}{{ step.content }}{{$t('stepDetail.key')}}</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.pressSys') }}{{ step.content
+      }}{{ $t('stepDetail.key') }}</el-tag
+    >
   </span>
   <span v-if="step.stepType === 'airPlaneMode'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.switch.planeMode')}}</el-tag
-    >{{ step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')}} 
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.network.airPlaneMode')
+    }}</el-tag
+    >{{
+      step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')
+    }}
   </span>
   <span v-if="step.stepType === 'wifiMode'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.switch.wifiMode')}}</el-tag
-    >{{ step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')}}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.network.wifiMode')
+    }}</el-tag
+    >{{
+      step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')
+    }}
   </span>
   <span v-if="step.stepType === 'locationMode'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.switch.locationMode')}}</el-tag
-    >{{ step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')}}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.network.locationMode')
+    }}</el-tag
+    >{{
+      step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')
+    }}
   </span>
   <span v-if="step.stepType === 'switchWindowMode'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.switch.windowMode')}}</el-tag
-    >{{ step.content === 'true' ? $t('stepDetail.multiWindowMode') : $t('stepDetail.singleWindowMode') }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.element.switchWindowMode')
+    }}</el-tag
+    >{{
+      step.content === 'true'
+        ? $t('stepDetail.multiWindowMode')
+        : $t('stepDetail.singleWindowMode')
+    }}
   </span>
   <span v-if="step.stepType === 'switchIgnoreMode'">
-    <el-tag size="small" style="margin-right: 10px"
-      >{{$t('stepDetail.switch.ignoreMode')}}</el-tag
-    >{{ step.content === 'true' ? $t('stepDetail.verify.ignore')  : $t('stepDetail.verify.notIgnore') }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.element.switchIgnoreMode')
+    }}</el-tag
+    >{{
+      step.content === 'true'
+        ? $t('stepDetail.verify.ignore')
+        : $t('stepDetail.verify.notIgnore')
+    }}
   </span>
   <span v-if="step.stepType === 'switchVisibleMode'">
-    <el-tag size="small" style="margin-right: 10px"
-      >{{$t('stepDetail.switch.invisiableControl')}}</el-tag
-    >{{ step.content === 'true' ? $t('stepDetail.display')  : $t('stepDetail.hide') }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.element.switchVisibleMode')
+    }}</el-tag
+    >{{
+      step.content === 'true' ? $t('stepDetail.display') : $t('stepDetail.hide')
+    }}
   </span>
   <span
     v-if="
@@ -254,21 +302,23 @@ const getNotes = (text, type) => {
       step.stepType === 'logPocoElementAttr'
     "
   >
-    <el-tag size="small">{{$t('stepDetail.logOutput')}}</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.logOutput') }}</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    <el-tag size="small" style="margin: 0 10px">{{$t('stepDetail.control.info')}}</el-tag>
-    {{$t('stepDetail.targetAttr')}}：{{ step.text }}
+    <el-tag size="small" style="margin: 0 10px">{{
+      $t('stepDetail.control.info')
+    }}</el-tag>
+    {{ $t('stepDetail.targetAttr') }}：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'tap'">
-    <el-tag size="small">{{$t('stepDetail.click.coordinate')}}</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.click.coordinate') }}</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
   </span>
   <span v-if="step.stepType === 'longPressPoint'">
-    <el-tag size="small">{{$t('stepDetail.pressCoordinate')}}</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.pressCoordinate') }}</el-tag>
     <el-tag
       type="info"
       size="small"
@@ -279,18 +329,22 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'swipe'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
-    <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >{{$t('stepDetail.dragTo')}}</el-tag
-    >
+    <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
+      $t('stepDetail.dragTo')
+    }}</el-tag>
     <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
   </span>
   <span v-if="step.stepType === 'setPasteboard'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.set.clipboardText')}}</el-tag>
-    {{$t('stepDetail.text')}}：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.set.clipboardText')
+    }}</el-tag>
+    {{ $t('stepDetail.text') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'getPasteboard'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.getClipboardText')}}</el-tag>
-    {{$t('stepDetail.getToVariable')}}：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.getClipboardText')
+    }}</el-tag>
+    {{ $t('stepDetail.getToVariable') }}：{{ step.content }}
   </span>
   <span
     v-if="
@@ -300,45 +354,71 @@ const getNotes = (text, type) => {
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >{{$t('stepDetail.set.search')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.control.strategy')}}</el-tag
+      >{{ $t('stepDetail.set.search') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.strategy') }}</el-tag
     >
-    {{$t('stepDetail.retries')}}：{{ step.content }} {{$t('stepDetail.retriesInterval')}}：{{ step.text }} ms
+    {{ $t('stepDetail.retries') }}：{{ step.content }}
+    {{ $t('stepDetail.retriesInterval') }}：{{ step.text }} ms
   </span>
   <span v-if="step.stepType === 'openApp'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.label.androidOptions.app.openApp')}}</el-tag>
-    {{$t('stepDetail.app.pkg')}}：{{ step.text }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.app.openApp')
+    }}</el-tag>
+    {{ $t('stepDetail.app.pkg') }}：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'terminate'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.label.androidOptions.app.terminate')}}</el-tag>
-    {{$t('stepDetail.app.pkg')}}：{{ step.text }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.app.terminate')
+    }}</el-tag>
+    {{ $t('stepDetail.app.pkg') }}：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'install'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.label.androidOptions.app.install')}}</el-tag>
-    {{ step.content === '2' ? $t('stepDetail.app.installFromPkglist') : $t('stepDetail.app.path') + step.text }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.app.install')
+    }}</el-tag>
+    {{
+      step.content === '2'
+        ? $t('stepDetail.app.installFromPkglist')
+        : $t('stepDetail.app.path') + step.text
+    }}
   </span>
   <span v-if="step.stepType === 'uninstall'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.label.androidOptions.app.uninstall')}}</el-tag>
-    {{$t('stepDetail.app.pkg')}}：{{ step.text }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.app.uninstall')
+    }}</el-tag>
+    $t('stepDetail.app.pkg')：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'runBack'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.label.iOSOptions.app.runBack')}}</el-tag>
-    {{$t('stepDetail.label.iOSOptions.app.runBack')}} {{ step.content }} ms
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.iOSOptions.app.runBack')
+    }}</el-tag>
+    {{ $t('stepDetail.label.iOSOptions.app.runBack') }} {{ step.content }} ms
   </span>
   <span v-if="step.stepType === 'appReset'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.app.emptyCache')}}</el-tag>
-    {{$t('stepDetail.app.empty')}} {{ step.text }} {{$t('stepDetail.bufferMemory')}}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.app.emptyCache')
+    }}</el-tag>
+    {{ $t('stepDetail.app.empty') }} {{ step.text }}
+    {{ $t('stepDetail.bufferMemory') }}
   </span>
   <span v-if="step.stepType === 'appAutoGrantPermissions'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.label.androidOptions.app.appAutoGrantPermissions')}}</el-tag>
-    {{$t('stepDetail.app.authorize')}} {{ step.text }} {{$t('stepDetail.declearedRights')}}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.app.appAutoGrantPermissions')
+    }}</el-tag>
+    {{ $t('stepDetail.app.authorize') }} {{ step.text }}
+    {{ $t('stepDetail.declearedRights') }}
   </span>
   <span v-if="step.stepType === 'toWebView'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.switch.webview')}}</el-tag>
-    {{$t('stepDetail.webviewName')}}：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.switch.webview')
+    }}</el-tag>
+    {{ $t('stepDetail.webviewName') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'toHandle'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.switch.handler')}}</el-tag>
-    {{$t('stepDetail.handleSwitchInfo')}}：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.switch.handler')
+    }}</el-tag>
+    {{ $t('stepDetail.handleSwitchInfo') }}：{{ step.content }}
   </span>
   <span
     v-if="
@@ -348,12 +428,19 @@ const getNotes = (text, type) => {
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >{{$t('stepDetail.judge')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.label.androidOptions.element.uiEle.isExistEle')}}</el-tag
-    >{{$t('stepDetail.assert')}}：
+      >{{ $t('stepDetail.judge') }}{{ getEleResult(step.stepType)
+      }}{{
+        $t('stepDetail.label.androidOptions.element.uiEle.isExistEle')
+      }}</el-tag
+    >{{ $t('stepDetail.assert') }}：
     <el-tag type="info" size="small" style="margin-right: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    {{ step.content === 'true' ? $t('stepDetail.verify.existed') : $t('stepDetail.verify.notExisted') }}
+    {{
+      step.content === 'true'
+        ? $t('stepDetail.verify.existed')
+        : $t('stepDetail.verify.notExisted')
+    }}
   </span>
   <span
     v-if="
@@ -363,12 +450,15 @@ const getNotes = (text, type) => {
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >{{$t('stepDetail.judge')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.label.androidOptions.element.uiEle.isExistEleNum')}}</el-tag
-    >{{$t('stepDetail.assert')}}：
+      >{{ $t('stepDetail.judge') }}{{ getEleResult(step.stepType)
+      }}{{
+        $t('stepDetail.label.androidOptions.element.uiEle.isExistEleNum')
+      }}</el-tag
+    >{{ $t('stepDetail.assert') }}：
     <el-tag type="info" size="small" style="margin-right: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    {{$t('stepDetail.number')}} {{ step.content }} {{ step.text }}
+    {{ $t('stepDetail.number') }} {{ step.content }} {{ step.text }}
   </span>
 
   <span
@@ -378,7 +468,10 @@ const getNotes = (text, type) => {
       step.stepType === 'pocoClick'
     "
   >
-    <el-tag size="small">{{$t('stepDetail.click.action')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.control.element')}}</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.click.action') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.element') }}</el-tag
+    >
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
@@ -390,30 +483,42 @@ const getNotes = (text, type) => {
       step.stepType === 'iteratorPocoElement'
     "
   >
-    <el-tag size="small">{{$t('stepDetail.iterate')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.control.name')}}</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.iterate') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.name') }}</el-tag
+    >
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    <el-tag size="small" style="margin-left: 10px">{{$t('stepDetail.control.subControl')}}</el-tag>
+    <el-tag size="small" style="margin-left: 10px">{{
+      $t('stepDetail.control.subControl')
+    }}</el-tag>
   </span>
   <span
     v-if="step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys'"
   >
-    <el-tag size="small">{{ getEleResult(step.stepType) }}{{$t('stepDetail.control.element')}}</el-tag>
+    <el-tag size="small"
+      >{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.element') }}</el-tag
+    >
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >{{$t('stepDetail.enterText')}}</el-tag
-    >
+    <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
+      $t('stepDetail.enterText')
+    }}</el-tag>
     {{ step.content }}
   </span>
   <span v-if="step.stepType === 'setClipperByKeyboard'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.set.textToClipboard')}}</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.set.textToClipboard')
+    }}</el-tag>
     {{ step.content }}
   </span>
   <span v-if="step.stepType === 'sendKeyForce'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.inputMethod')}}</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.inputMethod')
+    }}</el-tag>
     {{ step.content }}
   </span>
   <span
@@ -422,26 +527,32 @@ const getNotes = (text, type) => {
       step.stepType === 'webViewSendKeysByActions'
     "
   >
-    <el-tag size="small">{{ getEleResult(step.stepType) }}{{$t('stepDetail.control.element')}}</el-tag>
+    <el-tag size="small"
+      >{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.element') }}</el-tag
+    >
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >{{$t('stepDetail.enterText')}}(Actions)</el-tag
+      >{{ $t('stepDetail.enterText') }}(Actions)</el-tag
     >
     {{ step.content }}
   </span>
   <span v-if="step.stepType === 'swipe2' || step.stepType === 'pocoSwipe'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
-    <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >{{$t('stepDetail.dragTo')}}</el-tag
-    >
+    <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
+      $t('stepDetail.dragTo')
+    }}</el-tag>
     <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
   </span>
   <span
     v-if="step.stepType === 'longPress' || step.stepType === 'pocoLongPress'"
   >
-    <el-tag size="small">{{$t('stepDetail.longPress')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.control.element')}}</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.longPress') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.element') }}</el-tag
+    >
     <el-tag
       type="info"
       size="small"
@@ -453,7 +564,8 @@ const getNotes = (text, type) => {
   <span v-if="step.stepType === 'clear' || step.stepType === 'webViewClear'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >{{$t('stepDetail.empty')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.inputBox')}}</el-tag
+      >{{ $t('stepDetail.empty') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.inputBox') }}</el-tag
     >
   </span>
   <span
@@ -463,14 +575,17 @@ const getNotes = (text, type) => {
       step.stepType === 'getPocoTextValue'
     "
   >
-    <el-tag size="small">{{$t('stepDetail.get')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.text')}}</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.get') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.text') }}</el-tag
+    >
     <el-tag
       type="info"
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    {{$t('stepDetail.getToVariable')}}：{{ step.content }}
+    {{ $t('stepDetail.getToVariable') }}：{{ step.content }}
   </span>
   <span
     v-if="
@@ -478,18 +593,22 @@ const getNotes = (text, type) => {
       step.stepType === 'obtainPocoElementAttr'
     "
   >
-    <el-tag size="small">{{$t('stepDetail.get')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.control.attribute')}}</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.get') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.attribute') }}</el-tag
+    >
     <el-tag
       type="info"
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    {{$t('stepDetail.its')}} {{ step.text }} {{$t('stepDetail.attributeToVariable')}}：{{ step.content }}
+    {{ $t('stepDetail.its') }} {{ step.text }}
+    {{ $t('stepDetail.attributeToVariable') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'getClipperByKeyboard'">
-    <el-tag size="small">{{$t('stepDetail.getClipboardText')}}</el-tag>
-    {{$t('stepDetail.getToVariable')}}：{{ step.content }}
+    <el-tag size="small">{{ $t('stepDetail.getClipboardText') }}</el-tag>
+    {{ $t('stepDetail.getToVariable') }}：{{ step.content }}
   </span>
   <!--三个指令前端显示上保留，用于兼容老版本升级上来之后，依然能正常的显示和运行-->
   <span
@@ -499,14 +618,17 @@ const getNotes = (text, type) => {
       step.stepType === 'getPocoText'
     "
   >
-    <el-tag size="small">{{$t('stepDetail.verify.verify')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.text')}}</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.verify.verify') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.text') }}</el-tag
+    >
     <el-tag
       type="info"
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    {{$t('stepDetail.verify.expectedValue')}}：{{ step.content }}
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <!--大于2.5.0版本，增强的文本断言能力-->
   <span
@@ -516,30 +638,39 @@ const getNotes = (text, type) => {
       step.stepType === 'assertPocoText'
     "
   >
-    <el-tag size="small">{{$t('stepDetail.verify.assert')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.verify.text')}}</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.verify.assert') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.verify.text') }}</el-tag
+    >
     <el-tag
       type="info"
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    {{$t('stepDetail.verify.expectation')}}:
+    {{ $t('stepDetail.verify.expectation') }}:
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
       getAssertTextOpe(step.content)
     }}</el-tag
     >{{ step.text }}
   </span>
   <span v-if="step.stepType === 'getTitle'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.verify.title')}}</el-tag>
-    {{$t('stepDetail.verify.expectedValue')}}：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.verify.title')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'getUrl'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.verify.url')}}</el-tag>
-    {{$t('stepDetail.verify.expectedValue')}}：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.verify.url')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'getActivity'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.verify.activity')}}</el-tag>
-    {{$t('stepDetail.verify.expectedValue')}}：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.verify.activity')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span
     v-if="
@@ -548,7 +679,8 @@ const getNotes = (text, type) => {
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >{{$t('stepDetail.verify.verify')}}{{ getEleResult(step.stepType) }}{{$t('stepDetail.elementAttribute')}}</el-tag
+      >{{ $t('stepDetail.verify.verify') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.elementAttribute') }}</el-tag
     >
     <el-tag
       type="info"
@@ -556,80 +688,112 @@ const getNotes = (text, type) => {
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    {{$t('stepDetail.verify.assert')}}：
+    {{ $t('stepDetail.verify.assert') }}：
     <el-tag size="small" style="margin-right: 10px">{{ step.text }}</el-tag>
-    {{$t('stepDetail.verify.expectedValue')}}：
+    {{ $t('stepDetail.verify.expectedValue') }}：
     <el-tag size="small" style="margin-right: 10px">{{ step.content }}</el-tag>
   </span>
   <span v-if="step.stepType === 'setTheRealPositionOfTheWindow'">
-    <el-tag type="warning" size="small">{{$t('stepDetail.set.offset')}}</el-tag>
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.set.offset')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'assertEquals'">
-    <el-tag type="warning" size="small">{{$t('stepDetail.verify.equalTo')}}</el-tag>
-    {{$t('stepDetail.verify.actualValue')}}：{{ step.text }} {{$t('stepDetail.verify.expectedValue')}}：{{ step.content }}
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.verify.equalTo')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.actualValue') }}：{{ step.text }}
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'assertNotEquals'">
-    <el-tag type="warning" size="small">{{$t('stepDetail.verify.notEqual')}}</el-tag>
-    {{$t('stepDetail.verify.actualValue')}}：{{ step.text }} {{$t('stepDetail.verify.expectedValue')}}：{{ step.content }}
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.verify.notEqual')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.actualValue') }}：{{ step.text }}
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'assertTrue'">
-    <el-tag type="warning" size="small">{{$t('stepDetail.verify.contain')}}</el-tag>
-    {{$t('stepDetail.verify.actualValue')}}：{{ step.text }} {{$t('stepDetail.verify.expectedValue')}}：{{ step.content }}
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.verify.contain')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.actualValue') }}：{{ step.text }}
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'assertNotTrue'">
-    <el-tag type="warning" size="small">{{$t('stepDetail.verify.notContain')}}</el-tag>
-    {{$t('stepDetail.verify.actualValue')}}：{{ step.text }} {{$t('stepDetail.verify.expectedValue')}}：{{ step.content }}
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.verify.notContain')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.actualValue') }}：{{ step.text }}
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'stepScreen'">
-    <el-tag size="small">{{$t('stepDetail.getScreenshot')}}</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.getScreenshot') }}</el-tag>
   </span>
   <span v-if="step.stepType === 'webViewRefresh'">
-    <el-tag size="small">{{$t('stepDetail.refreshPage')}}</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.refreshPage') }}</el-tag>
   </span>
   <span v-if="step.stepType === 'webViewBack'">
-    <el-tag size="small">{{$t('stepDetail.rollbackPage')}}</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.rollbackPage') }}</el-tag>
   </span>
   <span v-if="step.stepType === 'startPocoDriver'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.poco.startPocoDriver')}}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.poco.startPocoDriver')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'closePocoDriver'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.poco.closePocoDriver')}}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.poco.closePocoDriver')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'freezeSource'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.element.poco.frezzeSource')}}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.element.poco.frezzeSource')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'thawSource'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.element.poco.thawSource')}}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.element.poco.thawSource')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'checkImage'">
-    <el-tag size="small">{{$t('stepDetail.detect')}}</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.detect') }}</el-tag>
     <el-tag
       type="info"
       style="margin-left: 10px; margin-right: 10px"
       size="small"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.imageSimilarity')}}</el-tag>
-    {{$t('stepDetail.expectedMatchRatio')}}：{{ step.content }} %
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.imageSimilarity')
+    }}</el-tag>
+    {{ $t('stepDetail.expectedMatchRatio') }}：{{ step.content }} %
   </span>
   <span v-if="step.stepType === 'clickByImg'">
-    <el-tag size="small">{{$t('stepDetail.localization')}}</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.localization') }}</el-tag>
     <el-tag
       type="info"
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
-    ><el-tag size="small">{{$t('stepDetail.andClick')}}</el-tag>
+    ><el-tag size="small">{{ $t('stepDetail.andClick') }}</el-tag>
   </span>
   <span v-if="step.stepType === 'readText'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.textIdentifyInImage')}}</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.textIdentifyInImage')
+    }}</el-tag>
     <el-tag size="small" type="info" style="margin-right: 10px">
-      {{ step.content === 'chi_sim' ? $t('stepDetail.language.simplifiedChinese') : $t('stepDetail.language.english') }}</el-tag
+      {{
+        step.content === 'chi_sim'
+          ? $t('stepDetail.language.simplifiedChinese')
+          : $t('stepDetail.language.english')
+      }}</el-tag
     >
-    {{$t('stepDetail.verify.expectContain')}}：{{ step.text }}
+    {{ $t('stepDetail.verify.expectContain') }}：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'publicStep'">
-    <el-tag type="warning" size="small">{{$t('stepDetail.usePublicSteps')}}</el-tag>
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.usePublicSteps')
+    }}</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.content
     }}</el-tag>
@@ -646,32 +810,38 @@ const getNotes = (text, type) => {
     </el-popover>
   </span>
   <span v-if="step.stepType === 'monkey'">
-    <el-tag style="margin-right: 10px" type="warning" size="small"
-      >{{$t('stepDetail.randomEventsTest')}}</el-tag
-    >
-    {{$t('stepDetail.app.pkg')}}：{{ JSON.parse(step.content).packageName }}&nbsp;&nbsp;{{$t('stepDetail.eventsNum')}}：{{
+    <el-tag style="margin-right: 10px" type="warning" size="small">{{
+      $t('stepDetail.randomEventsTest')
+    }}</el-tag>
+    {{ $t('stepDetail.app.pkg') }}：{{
+      JSON.parse(step.content).packageName
+    }}&nbsp;&nbsp;{{ $t('stepDetail.eventsNum') }}：{{
       JSON.parse(step.content).pctNum
     }}
   </span>
   <span v-if="step.stepType === 'stepHold'">
-    <el-tag size="small" style="margin-right: 5px">{{$t('stepDetail.set.stepsInterval')}}</el-tag>
-   {{$t('stepDetail.stepInterval')}} {{ step.content }} ms
+    <el-tag size="small" style="margin-right: 5px">{{
+      $t('stepDetail.set.stepsInterval')
+    }}</el-tag>
+    {{ $t('stepDetail.stepInterval') }} {{ step.content }} ms
   </span>
   <span v-if="step.stepType === 'pause'">
-    <el-tag size="small" style="margin-right: 5px">{{$t('stepDetail.forceWait')}}</el-tag>
-    {{$t('stepDetail.wait')}} {{ step.content }} ms
+    <el-tag size="small" style="margin-right: 5px">{{
+      $t('stepDetail.forceWait')
+    }}</el-tag>
+    {{ $t('stepDetail.wait') }} {{ step.content }} ms
   </span>
   <span v-if="step.stepType === 'setSnapshotMaxDepth'">
-    <el-tag size="small" style="margin-right: 5px"
-      >{{$t('stepDetail.set.maxControlTraverseDepth')}}</el-tag
-    >
-    {{$t('stepDetail.max')}} {{ step.content }} {{$t('stepDetail.layer')}}
+    <el-tag size="small" style="margin-right: 5px">{{
+      $t('stepDetail.set.maxControlTraverseDepth')
+    }}</el-tag>
+    {{ $t('stepDetail.max') }} {{ step.content }} {{ $t('stepDetail.layer') }}
   </span>
   <span v-if="step.stepType === 'scrollToEle'">
     <el-tag size="small"
-      >{{ getScrollToDire(step.text) }}{{$t('stepDetail.scrollTo')}}{{
-        getEleResult(step.stepType)
-      }}{{$t('stepDetail.control.element')}}</el-tag
+      >{{ getScrollToDire(step.text) }}{{ $t('stepDetail.scrollTo')
+      }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.element') }}</el-tag
     >
     <el-tag
       type="info"
@@ -679,7 +849,8 @@ const getNotes = (text, type) => {
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    {{$t('stepDetail.maxTries')}}{{ step.content }}{{$t('stepDetail.times')}}
+    {{ $t('stepDetail.maxTries') }}{{ step.content
+    }}{{ $t('stepDetail.times') }}
   </span>
   <span>
     <el-tag
@@ -687,7 +858,7 @@ const getNotes = (text, type) => {
       size="small"
       type="warning"
       style="margin-left: 10px"
-      >{{$t('stepDetail.noException')}}</el-tag
+      >{{ $t('stepDetail.noException') }}</el-tag
     >
   </span>
 </template>

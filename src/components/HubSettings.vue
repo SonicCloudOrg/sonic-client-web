@@ -317,14 +317,14 @@ onMounted(() => {
                 size="mini"
                 @click="hubControl(i + 1 + j * 5, 'up')"
               >
-                $t('agent.hub.poweron')
+                {{$t('agent.hub.poweron')}}
               </el-button>
               <el-button
                 type="danger"
                 size="mini"
                 @click="hubControl(i + 1 + j * 5, 'down')"
               >
-                $t('agent.hub.poweroff')
+                {{$t('agent.hub.poweroff')}}
               </el-button>
             </div>
           </el-card>

@@ -1596,12 +1596,6 @@ const stepDetail = {
   swipe: 'Swipe',
   switch: {
     handler: 'Switch Handler',
-    planeMode: 'Switch Plane Mode',
-    wifiMode: 'Switch WIFI Mode',
-    locationMode: 'Switch Location Service',
-    windowMode: 'Switch Window Mode',
-    ignoreMode: 'Switch ignore non-critical view Mode',
-    invisiableControl: 'Switch invisable control disoplay',
     webview: 'Switch Webview',
     mode: 'Switch Mode',
     display: 'Switch Display',

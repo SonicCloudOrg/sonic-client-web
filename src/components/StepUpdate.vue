@@ -19,10 +19,10 @@
 import { onMounted, ref } from 'vue';
 import { Tickets, QuestionFilled } from '@element-plus/icons';
 import { ElMessage } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 import ElementSelect from './ElementSelect.vue';
 import GlobalParamsSelect from './GlobalParamsSelect.vue';
 import axios from '../http/axios';
-import { useI18n } from 'vue-i18n';
 
 const { t: $t } = useI18n();
 
@@ -390,23 +390,33 @@ const androidOptions = ref([
         children: [
           {
             value: 'lock',
-            label: $t('stepDetail.label.androidOptions.system.rotateDevice.lock'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.rotateDevice.lock'
+            ),
           },
           {
             value: 'unLock',
-            label: $t('stepDetail.label.androidOptions.system.rotateDevice.unlock'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.rotateDevice.unlock'
+            ),
           },
           {
             value: 'screenSub',
-            label: $t('stepDetail.label.androidOptions.system.rotateDevice.screenSub'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.rotateDevice.screenSub'
+            ),
           },
           {
             value: 'screenAdd',
-            label: $t('stepDetail.label.androidOptions.system.rotateDevice.screenAdd'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.rotateDevice.screenAdd'
+            ),
           },
           {
             value: 'screenAbort',
-            label: $t('stepDetail.label.androidOptions.system.rotateDevice.screenAbort'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.rotateDevice.screenAbort'
+            ),
           },
         ],
       },
@@ -416,19 +426,27 @@ const androidOptions = ref([
         children: [
           {
             value: 'sendKeyForce',
-            label: $t('stepDetail.label.androidOptions.system.keyboard.sendKeyForce'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.keyboard.sendKeyForce'
+            ),
           },
           {
             value: 'closeKeyboard',
-            label: $t('stepDetail.label.androidOptions.system.keyboard.closeKeyboard'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.keyboard.closeKeyboard'
+            ),
           },
           {
             value: 'setClipperByKeyboard',
-            label: $t('stepDetail.label.androidOptions.system.keyboard.setClipperByKeyboard'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.keyboard.setClipperByKeyboard'
+            ),
           },
           {
             value: 'getClipperByKeyboard',
-            label: $t('stepDetail.label.androidOptions.system.keyboard.getClipperByKeyboard'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.keyboard.getClipperByKeyboard'
+            ),
           },
         ],
       },
@@ -438,15 +456,21 @@ const androidOptions = ref([
         children: [
           {
             value: 'keyCode',
-            label: $t('stepDetail.label.androidOptions.system.interaction.keyCode'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.interaction.keyCode'
+            ),
           },
           {
             value: 'keyCodeSelf',
-            label: $t('stepDetail.label.androidOptions.system.interaction.keyCodeSelf'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.interaction.keyCodeSelf'
+            ),
           },
           {
             value: 'swipeByDefinedDirection',
-            label: $t('stepDetail.label.androidOptions.system.interaction.swipeByDefinedDirection'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.interaction.swipeByDefinedDirection'
+            ),
           },
         ],
       },
@@ -456,15 +480,21 @@ const androidOptions = ref([
         children: [
           {
             value: 'airPlaneMode',
-            label: $t('stepDetail.label.androidOptions.system.network.airPlaneMode'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.network.airPlaneMode'
+            ),
           },
           {
             value: 'wifiMode',
-            label: $t('stepDetail.label.androidOptions.system.network.wifiMode'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.network.wifiMode'
+            ),
           },
           {
             value: 'locationMode',
-            label: $t('stepDetail.label.androidOptions.system.network.locationMode'),
+            label: $t(
+              'stepDetail.label.androidOptions.system.network.locationMode'
+            ),
           },
         ],
       },
@@ -496,7 +526,9 @@ const androidOptions = ref([
       },
       {
         value: 'appAutoGrantPermissions',
-        label: $t('stepDetail.label.androidOptions.app.appAutoGrantPermissions'),
+        label: $t(
+          'stepDetail.label.androidOptions.app.appAutoGrantPermissions'
+        ),
       },
     ],
   },
@@ -510,27 +542,39 @@ const androidOptions = ref([
         children: [
           {
             value: 'findElementInterval',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.findElementInterval'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.findElementInterval'
+            ),
           },
           {
             value: 'switchWindowMode',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.switchWindowMode'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.switchWindowMode'
+            ),
           },
           {
             value: 'switchVisibleMode',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.switchVisibleMode'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.switchVisibleMode'
+            ),
           },
           {
             value: 'switchIgnoreMode',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.switchIgnoreMode'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.switchIgnoreMode'
+            ),
           },
           {
             value: 'isExistEle',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.isExistEle'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.isExistEle'
+            ),
           },
           {
             value: 'isExistEleNum',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.isExistEleNum'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.isExistEleNum'
+            ),
           },
           {
             value: 'click',
@@ -542,7 +586,9 @@ const androidOptions = ref([
           },
           {
             value: 'sendKeysByActions',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.sendKeysByActions'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.sendKeysByActions'
+            ),
           },
           {
             value: 'swipe2',
@@ -550,11 +596,15 @@ const androidOptions = ref([
           },
           {
             value: 'scrollToEle',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.scrollToEle'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.scrollToEle'
+            ),
           },
           {
             value: 'longPress',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.longPress'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.longPress'
+            ),
           },
           {
             value: 'clear',
@@ -562,27 +612,39 @@ const androidOptions = ref([
           },
           {
             value: 'obtainElementAttr',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.obtainElementAttr'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.obtainElementAttr'
+            ),
           },
           {
             value: 'getElementAttr',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.getElementAttr'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.getElementAttr'
+            ),
           },
           {
             value: 'getTextValue',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.getTextValue'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.getTextValue'
+            ),
           },
           {
             value: 'assertText',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.assertText'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.assertText'
+            ),
           },
           {
             value: 'logElementAttr',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.logElementAttr'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.logElementAttr'
+            ),
           },
           {
             value: 'iteratorAndroidElement',
-            label: $t('stepDetail.label.androidOptions.element.uiEle.iteratorAndroidElement'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.iteratorAndroidElement'
+            ),
           },
         ],
       },
@@ -596,11 +658,15 @@ const androidOptions = ref([
           },
           {
             value: 'longPressPoint',
-            label: $t('stepDetail.label.androidOptions.element.coordinate.longPressPoint'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.coordinate.longPressPoint'
+            ),
           },
           {
             value: 'swipe',
-            label: $t('stepDetail.label.androidOptions.element.coordinate.swipe'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.coordinate.swipe'
+            ),
           },
         ],
       },
@@ -610,55 +676,81 @@ const androidOptions = ref([
         children: [
           {
             value: 'setDefaultFindWebViewElementInterval',
-            label: $t('stepDetail.label.androidOptions.element.webView.setDefaultFindWebViewElementInterval'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.setDefaultFindWebViewElementInterval'
+            ),
           },
           {
             value: 'toWebView',
-            label: $t('stepDetail.label.androidOptions.element.webView.toWebView'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.toWebView'
+            ),
           },
           {
             value: 'toHandle',
-            label: $t('stepDetail.label.androidOptions.element.webView.toHandle'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.toHandle'
+            ),
           },
           {
             value: 'isExistWebViewEle',
-            label: $t('stepDetail.label.androidOptions.element.webView.isExistWebViewEle'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.isExistWebViewEle'
+            ),
           },
           {
             value: 'isExistWebViewEleNum',
-            label: $t('stepDetail.label.androidOptions.element.webView.isExistWebViewEleNum'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.isExistWebViewEleNum'
+            ),
           },
           {
             value: 'webViewClick',
-            label: $t('stepDetail.label.androidOptions.element.webView.webViewClick'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewClick'
+            ),
           },
           {
             value: 'webElementScrollToView',
-            label: $t('stepDetail.label.androidOptions.element.webView.webElementScrollToView'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webElementScrollToView'
+            ),
           },
           {
             value: 'webViewSendKeys',
-            label: $t('stepDetail.label.androidOptions.element.webView.webViewSendKeys'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewSendKeys'
+            ),
           },
           {
             value: 'webViewSendKeysByActions',
-            label: $t('stepDetail.label.androidOptions.element.webView.webViewSendKeysByActions'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewSendKeysByActions'
+            ),
           },
           {
             value: 'webViewClear',
-            label: $t('stepDetail.label.androidOptions.element.webView.webViewClear'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewClear'
+            ),
           },
           {
             value: 'getWebViewTextValue',
-            label: $t('stepDetail.label.androidOptions.element.webView.getWebViewTextValue'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.getWebViewTextValue'
+            ),
           },
           {
             value: 'assertWebViewText',
-            label: $t('stepDetail.label.androidOptions.element.webView.assertWebViewText'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.assertWebViewText'
+            ),
           },
           {
             value: 'getTitle',
-            label: $t('stepDetail.label.androidOptions.element.webView.getTitle'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.getTitle'
+            ),
           },
           {
             value: 'getUrl',
@@ -666,11 +758,15 @@ const androidOptions = ref([
           },
           {
             value: 'webViewRefresh',
-            label: $t('stepDetail.label.androidOptions.element.webView.webViewRefresh'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewRefresh'
+            ),
           },
           {
             value: 'webViewBack',
-            label: $t('stepDetail.label.androidOptions.element.webView.webViewBack'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewBack'
+            ),
           },
         ],
       },
@@ -680,23 +776,33 @@ const androidOptions = ref([
         children: [
           {
             value: 'startPocoDriver',
-            label: $t('stepDetail.label.androidOptions.element.poco.startPocoDriver'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.startPocoDriver'
+            ),
           },
           {
             value: 'setDefaultFindPocoElementInterval',
-            label: $t('stepDetail.label.androidOptions.element.poco.setDefaultFindPocoElementInterval'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.setDefaultFindPocoElementInterval'
+            ),
           },
           {
             value: 'setTheRealPositionOfTheWindow',
-            label: $t('stepDetail.label.androidOptions.element.poco.setTheRealPositionOfTheWindow'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.setTheRealPositionOfTheWindow'
+            ),
           },
           {
             value: 'isExistPocoEle',
-            label: $t('stepDetail.label.androidOptions.element.poco.isExistPocoEle'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.isExistPocoEle'
+            ),
           },
           {
             value: 'isExistPocoEleNum',
-            label: $t('stepDetail.label.androidOptions.element.poco.isExistPocoEleNum'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.isExistPocoEleNum'
+            ),
           },
           {
             value: 'pocoClick',
@@ -704,7 +810,9 @@ const androidOptions = ref([
           },
           {
             value: 'pocoLongPress',
-            label: $t('stepDetail.label.androidOptions.element.poco.pocoLongPress'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.pocoLongPress'
+            ),
           },
           {
             value: 'pocoSwipe',
@@ -712,39 +820,57 @@ const androidOptions = ref([
           },
           {
             value: 'freezeSource',
-            label: $t('stepDetail.label.androidOptions.element.poco.freezeSource'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.freezeSource'
+            ),
           },
           {
             value: 'thawSource',
-            label: $t('stepDetail.label.androidOptions.element.poco.thawSource'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.thawSource'
+            ),
           },
           {
             value: 'closePocoDriver',
-            label: $t('stepDetail.label.androidOptions.element.poco.closePocoDriver'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.closePocoDriver'
+            ),
           },
           {
             value: 'obtainPocoElementAttr',
-            label: $t('stepDetail.label.androidOptions.element.poco.obtainPocoElementAttr'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.obtainPocoElementAttr'
+            ),
           },
           {
             value: 'getPocoElementAttr',
-            label: $t('stepDetail.label.androidOptions.element.poco.getPocoElementAttr'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.getPocoElementAttr'
+            ),
           },
           {
             value: 'getPocoTextValue',
-            label: $t('stepDetail.label.androidOptions.element.poco.getPocoTextValue'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.getPocoTextValue'
+            ),
           },
           {
             value: 'assertPocoText',
-            label: $t('stepDetail.label.androidOptions.element.poco.assertPocoText'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.assertPocoText'
+            ),
           },
           {
             value: 'logPocoElementAttr',
-            label: $t('stepDetail.label.androidOptions.element.poco.logPocoElementAttr'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.logPocoElementAttr'
+            ),
           },
           {
             value: 'iteratorPocoElement',
-            label: $t('stepDetail.label.androidOptions.element.poco.iteratorPocoElement'),
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.iteratorPocoElement'
+            ),
           },
         ],
       },
@@ -764,19 +890,27 @@ const androidOptions = ref([
         children: [
           {
             value: 'assertEquals',
-            label: $t('stepDetail.label.androidOptions.check.assert.assertEquals'),
+            label: $t(
+              'stepDetail.label.androidOptions.check.assert.assertEquals'
+            ),
           },
           {
             value: 'assertNotEquals',
-            label: $t('stepDetail.label.androidOptions.check.assert.assertNotEquals'),
+            label: $t(
+              'stepDetail.label.androidOptions.check.assert.assertNotEquals'
+            ),
           },
           {
             value: 'assertTrue',
-            label: $t('stepDetail.label.androidOptions.check.assert.assertTrue'),
+            label: $t(
+              'stepDetail.label.androidOptions.check.assert.assertTrue'
+            ),
           },
           {
             value: 'assertNotTrue',
-            label: $t('stepDetail.label.androidOptions.check.assert.assertNotTrue'),
+            label: $t(
+              'stepDetail.label.androidOptions.check.assert.assertNotTrue'
+            ),
           },
         ],
       },
@@ -862,15 +996,21 @@ const iOSOptions = ref([
         children: [
           {
             value: 'siriCommand',
-            label: $t('stepDetail.label.iOSOptions.system.specaction.siriCommand'),
+            label: $t(
+              'stepDetail.label.iOSOptions.system.specaction.siriCommand'
+            ),
           },
           {
             value: 'sendKeyForce',
-            label: $t('stepDetail.label.iOSOptions.system.specaction.sendKeyForce'),
+            label: $t(
+              'stepDetail.label.iOSOptions.system.specaction.sendKeyForce'
+            ),
           },
           {
             value: 'swipeByDefinedDirection',
-            label: $t('stepDetail.label.iOSOptions.system.specaction.swipeByDefinedDirection'),
+            label: $t(
+              'stepDetail.label.iOSOptions.system.specaction.swipeByDefinedDirection'
+            ),
           },
         ],
       },
@@ -890,11 +1030,15 @@ const iOSOptions = ref([
         children: [
           {
             value: 'setPasteboard',
-            label: $t('stepDetail.label.iOSOptions.system.pasteboard.setPasteboard'),
+            label: $t(
+              'stepDetail.label.iOSOptions.system.pasteboard.setPasteboard'
+            ),
           },
           {
             value: 'getPasteboard',
-            label: $t('stepDetail.label.iOSOptions.system.pasteboard.getPasteboard'),
+            label: $t(
+              'stepDetail.label.iOSOptions.system.pasteboard.getPasteboard'
+            ),
           },
         ],
       },
@@ -936,7 +1080,9 @@ const iOSOptions = ref([
         children: [
           {
             value: 'findElementInterval',
-            label: $t('stepDetail.label.iOSOptions.element.xcEle.findElementInterval'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.findElementInterval'
+            ),
           },
           {
             value: 'isExistEle',
@@ -944,7 +1090,9 @@ const iOSOptions = ref([
           },
           {
             value: 'isExistEleNum',
-            label: $t('stepDetail.label.iOSOptions.element.xcEle.isExistEleNum'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.isExistEleNum'
+            ),
           },
           {
             value: 'click',
@@ -956,7 +1104,9 @@ const iOSOptions = ref([
           },
           {
             value: 'sendKeysByActions',
-            label: $t('stepDetail.label.iOSOptions.element.xcEle.sendKeysByActions'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.sendKeysByActions'
+            ),
           },
           {
             value: 'swipe2',
@@ -976,11 +1126,15 @@ const iOSOptions = ref([
           },
           {
             value: 'obtainElementAttr',
-            label: $t('stepDetail.label.iOSOptions.element.xcEle.obtainElementAttr'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.obtainElementAttr'
+            ),
           },
           {
             value: 'getElementAttr',
-            label: $t('stepDetail.label.iOSOptions.element.xcEle.getElementAttr'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.getElementAttr'
+            ),
           },
           {
             value: 'getTextValue',
@@ -992,15 +1146,21 @@ const iOSOptions = ref([
           },
           {
             value: 'logElementAttr',
-            label: $t('stepDetail.label.iOSOptions.element.xcEle.logElementAttr'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.logElementAttr'
+            ),
           },
           {
             value: 'iteratorIOSElement',
-            label: $t('stepDetail.label.iOSOptions.element.xcEle.iteratorIOSElement'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.iteratorIOSElement'
+            ),
           },
           {
             value: 'setSnapshotMaxDepth',
-            label: $t('stepDetail.label.iOSOptions.element.xcEle.setSnapshotMaxDepth'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.setSnapshotMaxDepth'
+            ),
           },
         ],
       },
@@ -1014,7 +1174,9 @@ const iOSOptions = ref([
           },
           {
             value: 'longPressPoint',
-            label: $t('stepDetail.label.iOSOptions.element.coordinate.longPressPoint'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.coordinate.longPressPoint'
+            ),
           },
           {
             value: 'swipe',
@@ -1028,23 +1190,33 @@ const iOSOptions = ref([
         children: [
           {
             value: 'startPocoDriver',
-            label: $t('stepDetail.label.iOSOptions.element.poco.startPocoDriver'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.startPocoDriver'
+            ),
           },
           {
             value: 'setDefaultFindPocoElementInterval',
-            label: $t('stepDetail.label.iOSOptions.element.poco.setDefaultFindPocoElementInterval'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.setDefaultFindPocoElementInterval'
+            ),
           },
           {
             value: 'setTheRealPositionOfTheWindow',
-            label: $t('stepDetail.label.iOSOptions.element.poco.setTheRealPositionOfTheWindow'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.setTheRealPositionOfTheWindow'
+            ),
           },
           {
             value: 'isExistPocoEle',
-            label: $t('stepDetail.label.iOSOptions.element.poco.isExistPocoEle'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.isExistPocoEle'
+            ),
           },
           {
             value: 'isExistPocoEleNum',
-            label: $t('stepDetail.label.iOSOptions.element.poco.isExistPocoEleNum'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.isExistPocoEleNum'
+            ),
           },
           {
             value: 'pocoClick',
@@ -1068,31 +1240,45 @@ const iOSOptions = ref([
           },
           {
             value: 'closePocoDriver',
-            label: $t('stepDetail.label.iOSOptions.element.poco.closePocoDriver'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.closePocoDriver'
+            ),
           },
           {
             value: 'obtainPocoElementAttr',
-            label: $t('stepDetail.label.iOSOptions.element.poco.obtainPocoElementAttr'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.obtainPocoElementAttr'
+            ),
           },
           {
             value: 'getPocoElementAttr',
-            label: $t('stepDetail.label.iOSOptions.element.poco.getPocoElementAttr'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.getPocoElementAttr'
+            ),
           },
           {
             value: 'getPocoTextValue',
-            label: $t('stepDetail.label.iOSOptions.element.poco.getPocoTextValue'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.getPocoTextValue'
+            ),
           },
           {
             value: 'assertPocoText',
-            label: $t('stepDetail.label.iOSOptions.element.poco.assertPocoText'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.assertPocoText'
+            ),
           },
           {
             value: 'logPocoElementAttr',
-            label: $t('stepDetail.label.iOSOptions.element.poco.logPocoElementAttr'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.logPocoElementAttr'
+            ),
           },
           {
             value: 'iteratorPocoElement',
-            label: $t('stepDetail.label.iOSOptions.element.poco.iteratorPocoElement'),
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.iteratorPocoElement'
+            ),
           },
         ],
       },
@@ -1112,7 +1298,9 @@ const iOSOptions = ref([
           },
           {
             value: 'assertNotEquals',
-            label: $t('stepDetail.label.iOSOptions.check.assert.assertNotEquals'),
+            label: $t(
+              'stepDetail.label.iOSOptions.check.assert.assertNotEquals'
+            ),
           },
           {
             value: 'assertTrue',
@@ -1240,15 +1428,21 @@ onMounted(() => {
     <div v-if="step.conditionType !== 3">
       <div v-if="step.stepType === 'keyCodeSelf'">
         <el-form-item
-      :label="$t('stepDetail.keyCode')" 
+          :label="$t('stepDetail.keyCode')"
           :rules="[
-            { required: true, message: $t('stepDetail.msg.select') + $t('stepDetail.keyCode'), trigger: 'blur' },
+            {
+              required: true,
+              message: $t('stepDetail.msg.select') + $t('stepDetail.keyCode'),
+              trigger: 'blur',
+            },
           ]"
           prop="content"
         >
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.keyCode')"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.keyCode')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -1257,14 +1451,23 @@ onMounted(() => {
         <el-form-item
           :label="$t('stepDetail.label.androidOptions.interaction.keyCode')"
           :rules="[
-            { required: true, message: $t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.interaction.keyCode'), trigger: 'change' },
+            {
+              required: true,
+              message:
+                $t('stepDetail.msg.select') +
+                $t('stepDetail.label.androidOptions.interaction.keyCode'),
+              trigger: 'change',
+            },
           ]"
           prop="content"
         >
           <el-select
             v-if="step.platform === 1"
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.interaction.keyCode')"
+            :placeholder="
+              $t('stepDetail.msg.select') +
+              $t('stepDetail.label.androidOptions.interaction.keyCode')
+            "
           >
             <el-option-group :label="$t('stepDetail.commonKeys')">
               <el-option value="HOME"></el-option>
@@ -1289,7 +1492,10 @@ onMounted(() => {
           <el-select
             v-if="step.platform === 2"
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.interaction.keyCode')"
+            :placeholder="
+              $t('stepDetail.msg.select') +
+              $t('stepDetail.label.androidOptions.interaction.keyCode')
+            "
           >
             <el-option value="home"></el-option>
             <el-option value="volume up"></el-option>
@@ -1310,7 +1516,12 @@ onMounted(() => {
           ]"
           prop="content"
         >
-          <el-select v-model="step.content" :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.touchMode')">
+          <el-select
+            v-model="step.content"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.touchMode')
+            "
+          >
             <el-option value="SONIC_APK"></el-option>
             <el-option value="ADB"></el-option>
             <el-option value="APPIUM_UIAUTOMATOR2_SERVER"></el-option>
@@ -1321,7 +1532,10 @@ onMounted(() => {
       <div v-if="step.stepType === 'tap'">
         <element-select
           :label="$t('stepDetail.label.androidOptions.coordinate.self')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.coordinate.self')
+          "
           :index="0"
           :project-id="projectId"
           type="point"
@@ -1332,7 +1546,10 @@ onMounted(() => {
       <div v-if="step.stepType === 'longPressPoint'">
         <element-select
           :label="$t('stepDetail.label.androidOptions.coordinate.self')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.coordinate.self')
+          "
           :index="0"
           :project-id="projectId"
           type="point"
@@ -1351,7 +1568,10 @@ onMounted(() => {
       <div v-if="step.stepType === 'swipe'">
         <element-select
           :label="$t('stepDetail.fromControl')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.coordinate.self')
+          "
           :index="0"
           :project-id="projectId"
           type="point"
@@ -1359,7 +1579,10 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.dragTo')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.coordinate.self')
+          "
           :index="1"
           :project-id="projectId"
           type="point"
@@ -1378,10 +1601,10 @@ onMounted(() => {
         />
       </div>
 
-<div v-if="step.stepType === 'pocoLongPress'">
+      <div v-if="step.stepType === 'pocoLongPress'">
         <element-select
           :label="$t('stepDetail.pocoControl')"
-          :place="$t('stepDetail.msg.select')+ $t('stepDetail.pocoControl')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.pocoControl')"
           :index="0"
           :project-id="projectId"
           type="poco"
@@ -1400,7 +1623,10 @@ onMounted(() => {
       <div v-if="step.stepType === 'pocoSwipe'">
         <element-select
           :label="$t('stepDetail.fromControl')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.coordinate.self')
+          "
           :index="0"
           :project-id="projectId"
           type="poco"
@@ -1408,7 +1634,10 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.dragTo')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.coordinate.self')
+          "
           :index="1"
           :project-id="projectId"
           type="poco"
@@ -1465,7 +1694,7 @@ onMounted(() => {
         >
           <el-input
             v-model="offsets.offsetWidth"
-            :placeholder= "$t('stepDetail.msg.input') + offsetWidth"
+            :placeholder="$t('stepDetail.msg.input') + offsetWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -1507,7 +1736,7 @@ onMounted(() => {
         >
           <el-input
             v-model="offsets.windowHeight"
-            :placeholder= "$t('stepDetail.msg.input') + windowHeight"
+            :placeholder="$t('stepDetail.msg.input') + windowHeight"
           ></el-input>
         </el-form-item>
       </div>
@@ -1526,13 +1755,20 @@ onMounted(() => {
           prop="content"
           :rules="{
             required: true,
-            message: $t('stepDetail.verify.assert') + $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.verify.assert') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option :label="$t('stepDetail.verify.existed')" value="true"></el-option>
-            <el-option :label="$t('stepDetail.verify.notExisted')" value="false"></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.existed')"
+              value="true"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.notExisted')"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
       </div>
@@ -1549,11 +1785,26 @@ onMounted(() => {
         <div>
           <el-form-item :label="$t('stepDetail.verify.num')" :model="step">
             <el-select v-model="step.content" prop="content">
-              <el-option :label="$t('stepDetail.verify.greaterThan')" value=">"></el-option>
-              <el-option :label="$t('stepDetail.verify.lessThan')" value="<"></el-option>
-              <el-option :label="$t('stepDetail.verify.equalTo')" value="="></el-option>
-              <el-option :label="$t('stepDetail.verify.notLessThan')" value=">="></el-option>
-              <el-option :label="$t('stepDetail.verify.notGreaterThan')" value="<="></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.greaterThan')"
+                value=">"
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.lessThan')"
+                value="<"
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.equalTo')"
+                value="="
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.notLessThan')"
+                value=">="
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.notGreaterThan')"
+                value="<="
+              ></el-option>
             </el-select>
 
             <el-input-number
@@ -1566,7 +1817,6 @@ onMounted(() => {
           </el-form-item>
         </div>
       </div>
-
 
       <div v-if="step.stepType === 'openApp'">
         <el-alert
@@ -1629,13 +1879,20 @@ onMounted(() => {
           prop="content"
           :rules="{
             required: true,
-            message: $t('stepDetail.installation') + $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.installation') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option :label="$t('stepDetail.msg.installDefine')" :value="1"></el-option>
-            <el-option :label="$t('stepDetail.msg.installList')" :value="2"></el-option>
+            <el-option
+              :label="$t('stepDetail.msg.installDefine')"
+              :value="1"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.msg.installList')"
+              :value="2"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
@@ -1661,7 +1918,11 @@ onMounted(() => {
           type="info"
           :title="$t('stepDetail.msgTips.install')"
         />
-        <el-form-item v-if="step.content === 2" prop="text" :label="$t('stepDetail.app.branchName')">
+        <el-form-item
+          v-if="step.content === 2"
+          prop="text"
+          :label="$t('stepDetail.app.branchName')"
+        >
           <el-input
             v-model="step.text"
             :placeholder="$t('stepDetail.msg.branchName')"
@@ -1682,7 +1943,7 @@ onMounted(() => {
           :label="$t('stepDetail.label.androidOptions.app.uninstall')"
           :rules="{
             required: true,
-            message: $t('stepDetail.app.pkg')+ $t('stepDetail.msg.notBeEmpty'),
+            message: $t('stepDetail.app.pkg') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
@@ -1728,7 +1989,6 @@ onMounted(() => {
         </el-form-item>
       </div>
 
-
       <div v-if="step.stepType === 'appAutoGrantPermissions'">
         <el-alert
           show-icon
@@ -1757,11 +2017,18 @@ onMounted(() => {
         <el-form-item
           :label="$t('stepDetail.side')"
           :rules="[
-            { required: true, message: $t('stepDetail.msg.select') + $t('stepDetail.side'), trigger: 'change' },
+            {
+              required: true,
+              message: $t('stepDetail.msg.select') + $t('stepDetail.side'),
+              trigger: 'change',
+            },
           ]"
           prop="text"
         >
-          <el-select v-model="step.text" :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.side')">
+          <el-select
+            v-model="step.text"
+            :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.side')"
+          >
             <el-option label="UP" value="up"></el-option>
             <el-option label="DOWN" value="down"></el-option>
             <el-option label="LEFT" value="left"></el-option>
@@ -1817,7 +2084,9 @@ onMounted(() => {
       >
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -1828,13 +2097,20 @@ onMounted(() => {
           prop="content"
           :rules="{
             required: true,
-            message: $t('stepDetail.verify.assert') + $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.verify.assert') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option :label="$t('stepDetail.verify.existed')" value="true"></el-option>
-            <el-option :label="$t('stepDetail.verify.notExisted')" value="false"></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.existed')"
+              value="true"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.notExisted')"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
       </div>
@@ -1847,7 +2123,9 @@ onMounted(() => {
       >
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -1856,11 +2134,26 @@ onMounted(() => {
         <div>
           <el-form-item :label="$t('stepDetail.verify.num')" :model="step">
             <el-select v-model="step.content" prop="content">
-              <el-option :label="$t('stepDetail.verify.greaterThan')" value=">"></el-option>
-              <el-option :label="$t('stepDetail.verify.lessThan')" value="<"></el-option>
-              <el-option :label="$t('stepDetail.verify.equalTo')" value="="></el-option>
-              <el-option :label="$t('stepDetail.verify.notLessThan')" value=">="></el-option>
-              <el-option :label="$t('stepDetail.verify.notGreaterThan')" value="<="></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.greaterThan')"
+                value=">"
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.lessThan')"
+                value="<"
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.equalTo')"
+                value="="
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.notLessThan')"
+                value=">="
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.notGreaterThan')"
+                value="<="
+              ></el-option>
             </el-select>
 
             <el-input-number
@@ -1886,13 +2179,16 @@ onMounted(() => {
           prop="content"
           :rules="{
             required: true,
-            message: $t('stepDetail.status')+ $t('stepDetail.msg.notBeEmpty'),
+            message: $t('stepDetail.status') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
             <el-option :label="$t('stepDetail.open')" value="true"></el-option>
-            <el-option :label="$t('stepDetail.verify.close')" value="false"></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.close')"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
       </div>
@@ -1908,8 +2204,14 @@ onMounted(() => {
           }"
         >
           <el-select v-model="step.content">
-            <el-option :label="$t('stepDetail.multiWindowMode')" value="true"></el-option>
-            <el-option :label="$t('stepDetail.singleWindowMode')" value="false"></el-option>
+            <el-option
+              :label="$t('stepDetail.multiWindowMode')"
+              value="true"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.singleWindowMode')"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
       </div>
@@ -1925,8 +2227,14 @@ onMounted(() => {
           }"
         >
           <el-select v-model="step.content">
-            <el-option :label="$t('stepDetail.verify.ignore')" value="true"></el-option>
-            <el-option :label="$t('stepDetail.verrify.notIgnore')" value="false"></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.ignore')"
+              value="true"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verrify.notIgnore')"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
       </div>
@@ -1942,7 +2250,10 @@ onMounted(() => {
           }"
         >
           <el-select v-model="step.content">
-            <el-option :label="$t('stepDetail.display')" value="true"></el-option>
+            <el-option
+              :label="$t('stepDetail.display')"
+              value="true"
+            ></el-option>
             <el-option :label="$t('stepDetail.hide')" value="false"></el-option>
           </el-select>
         </el-form-item>
@@ -1951,7 +2262,9 @@ onMounted(() => {
       <div v-if="step.stepType === 'webElementScrollToView'">
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -1962,7 +2275,9 @@ onMounted(() => {
       <div v-if="step.stepType === 'click' || step.stepType === 'webViewClick'">
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -1986,23 +2301,28 @@ onMounted(() => {
         >
           <template #title>
             <div v-if="shouldShowByActionsTip(step.stepType)">
-              {{$t('stepDetail.msgTips.focus')}}
+              {{ $t('stepDetail.msgTips.focus') }}
             </div>
             <div>
-              {{$t('stepDetail.msgTips.variable')}}
+              {{ $t('stepDetail.msgTips.variable') }}
             </div>
           </template>
         </el-alert>
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
           :step="step"
         />
         <el-form-item :label="$t('stepDetail.inputValue')">
-          <el-input v-model="step.content" :placeholder="$t('stepDetail.inputValue')"></el-input>
+          <el-input
+            v-model="step.content"
+            :placeholder="$t('stepDetail.inputValue')"
+          ></el-input>
         </el-form-item>
       </div>
 
@@ -2020,14 +2340,19 @@ onMounted(() => {
           :title="$t('stepDetail.msgTips.sysKey')"
         />
         <el-form-item :label="$t('stepDetail.inputValue')">
-          <el-input v-model="step.content" :placeholder="$t('stepDetail.msg.inputValue')"></el-input>
+          <el-input
+            v-model="step.content"
+            :placeholder="$t('stepDetail.msg.inputValue')"
+          ></el-input>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'swipe2'">
         <element-select
           :label="$t('stepDetail.fromControl')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -2035,7 +2360,9 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.dragTo')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="1"
           :project-id="projectId"
           type="normal"
@@ -2053,7 +2380,9 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.targetControl')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -2064,12 +2393,17 @@ onMounted(() => {
           prop="content"
           :rules="{
             required: true,
-            message: $t('stepDetail.scrollOrientation') + $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.scrollOrientation') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.text">
-            <el-option :label="$t('stepDetail.downwards')" value="down"></el-option>
+            <el-option
+              :label="$t('stepDetail.downwards')"
+              value="down"
+            ></el-option>
             <el-option :label="$t('stepDetail.upwards')" value="up"></el-option>
           </el-select>
         </el-form-item>
@@ -2078,7 +2412,8 @@ onMounted(() => {
           prop="text"
           :rules="{
             required: true,
-            message: $t('stepDetail.scrollNum') + $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.scrollNum') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
@@ -2100,10 +2435,12 @@ onMounted(() => {
           ></el-input-number>
         </el-form-item>
       </div>
-       <div v-if="step.stepType === 'longPress'">
+      <div v-if="step.stepType === 'longPress'">
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -2122,7 +2459,9 @@ onMounted(() => {
       <div v-if="step.stepType === 'clear' || step.stepType === 'webViewClear'">
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -2141,7 +2480,9 @@ onMounted(() => {
         <el-form-item :label="$t('stepDetail.variableName')">
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.variableName')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2161,7 +2502,9 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -2170,7 +2513,9 @@ onMounted(() => {
         <el-form-item :label="$t('stepDetail.variableName')">
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.variableName')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2185,7 +2530,9 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="poco"
@@ -2194,7 +2541,9 @@ onMounted(() => {
         <el-form-item :label="$t('stepDetail.variableName')">
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.variableName')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2203,7 +2552,9 @@ onMounted(() => {
         <el-form-item :label="$t('stepDetail.textInfo')">
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.set.textInfo')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.set.textInfo')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2219,7 +2570,9 @@ onMounted(() => {
         <el-form-item :label="$t('stepDetail.variableName')">
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.variableName')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2234,7 +2587,9 @@ onMounted(() => {
       >
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           :type="step.stepType === 'getPocoText' ? 'poco' : 'normal'"
@@ -2243,7 +2598,9 @@ onMounted(() => {
         <el-form-item :label="$t('stepDetail.verify.expectedValue')">
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2258,7 +2615,9 @@ onMounted(() => {
       >
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           :type="step.stepType === 'assertPocoText' ? 'poco' : 'normal'"
@@ -2269,15 +2628,29 @@ onMounted(() => {
           prop="content"
           :rules="{
             required: true,
-            message: $t('stepDetail.verify.assertType')+ $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.verify.assertType') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option :label="$t('stepDetail.verify.equalTo')" value="equal"></el-option>
-            <el-option :label="$t('stepDetail.verify.notEqual')" value="notEqual"></el-option>
-            <el-option :label="$t('stepDetail.verify.contain')" value="contain"></el-option>
-            <el-option :label="$t('stepDetail.verify.notContain')" value="notContain"></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.equalTo')"
+              value="equal"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.notEqual')"
+              value="notEqual"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.contain')"
+              value="contain"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.notContain')"
+              value="notContain"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
@@ -2285,18 +2658,27 @@ onMounted(() => {
           prop="text"
           :rules="{
             required: true,
-            message: $t('stepDetail.verify.expectedValue') + $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.verify.expectedValue') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
-          <el-input v-model="step.text" :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')"></el-input>
+          <el-input
+            v-model="step.text"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
+          ></el-input>
         </el-form-item>
       </div>
       <div v-if="step.stepType === 'getTitle' || step.stepType === 'getUrl'">
         <el-form-item :label="$t('stepDetail.verify.expectedValue')">
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2325,7 +2707,9 @@ onMounted(() => {
       >
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           :type="step.stepType === 'logElementAttr' ? 'normal' : 'poco'"
@@ -2335,7 +2719,9 @@ onMounted(() => {
           :label="$t('stepDetail.control.attribute')"
           :rules="{
             required: true,
-            message: $t('stepDetail.control.attribute') + $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.control.attribute') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
@@ -2414,7 +2800,12 @@ onMounted(() => {
         </el-form-item>
       </div>
 
-     <div v-if="step.stepType === 'getElementAttr' || step.stepType === 'obtainElementAttr'">
+      <div
+        v-if="
+          step.stepType === 'getElementAttr' ||
+          step.stepType === 'obtainElementAttr'
+        "
+      >
         <el-alert
           v-show="step.stepType === 'obtainElementAttr'"
           show-icon
@@ -2425,7 +2816,9 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -2436,7 +2829,9 @@ onMounted(() => {
           prop="text"
           :rules="{
             required: true,
-            message: $t('stepDetail.control.attribute') + $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.control.attribute') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
@@ -2444,7 +2839,9 @@ onMounted(() => {
             v-if="step.platform === 1"
             v-model="step.text"
             :label="$t('stepDetail.attribute')"
-            :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.control.attribute')"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.control.attribute')
+            "
           >
             <el-option value="class"></el-option>
             <el-option value="password"></el-option>
@@ -2470,7 +2867,9 @@ onMounted(() => {
             v-else
             v-model="step.text"
             :label="$t('stepDetail.attribute')"
-            :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.control.attribute')"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.control.attribute')
+            "
           >
             <el-option value="UID"></el-option>
             <el-option value="accessibilityContainer"></el-option>
@@ -2486,25 +2885,38 @@ onMounted(() => {
             <el-option value="visible"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item 
+        <el-form-item
           v-if="step.stepType === 'getElementAttr'"
-          :label="$t('stepDetail.verify.expectedValue')" prop="content">
+          :label="$t('stepDetail.verify.expectedValue')"
+          prop="content"
+        >
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
           ></el-input>
         </el-form-item>
-        <el-form-item 
+        <el-form-item
           v-else
-          :label="$t('stepDetail.variableName')" prop="content">
+          :label="$t('stepDetail.variableName')"
+          prop="content"
+        >
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.variableName')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'getPocoElementAttr' || step.stepType === 'obtainPocoElementAttr'">
+      <div
+        v-if="
+          step.stepType === 'getPocoElementAttr' ||
+          step.stepType === 'obtainPocoElementAttr'
+        "
+      >
         <el-alert
           v-show="step.stepType === 'obtainPocoElementAttr'"
           show-icon
@@ -2514,8 +2926,10 @@ onMounted(() => {
           :title="$t('stepDetail.msgTips.controlAttribute')"
         />
         <element-select
-         :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="poco"
@@ -2526,14 +2940,18 @@ onMounted(() => {
           prop="text"
           :rules="{
             required: true,
-            message: $t('stepDetail.control.attribute') + $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.control.attribute') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select
             v-model="step.text"
             :label="$t('stepDetail.attribute')"
-            :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.control.attribute')"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.control.attribute')
+            "
           >
             <el-option value="layer"></el-option>
             <el-option value="name"></el-option>
@@ -2554,20 +2972,28 @@ onMounted(() => {
             <el-option value="clickable"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item 
+        <el-form-item
           v-if="step.stepType === 'getPocoElementAttr'"
-        :label="$t('stepDetail.verify.expectedValue')" prop="content">
+          :label="$t('stepDetail.verify.expectedValue')"
+          prop="content"
+        >
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
           ></el-input>
         </el-form-item>
-        <el-form-item 
+        <el-form-item
           v-else
-          :label="$t('stepDetail.variableName')" prop="content">
+          :label="$t('stepDetail.variableName')"
+          prop="content"
+        >
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.variableName')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2594,20 +3020,27 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-       :title="$t('stepDetail.msgTips.verify')"
+          :title="$t('stepDetail.msgTips.verify')"
         />
         <el-form-item :label="$t('stepDetail.verify.actualValue')">
-          <el-input v-model="step.text" :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.verify.actualValue')"></el-input>
+          <el-input
+            v-model="step.text"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.actualValue')
+            "
+          ></el-input>
         </el-form-item>
         <el-form-item :label="$t('stepDetail.verify.expectedValue')">
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
           ></el-input>
         </el-form-item>
       </div>
 
-     <div v-if="step.stepType === 'clickByImg'">
+      <div v-if="step.stepType === 'clickByImg'">
         <el-alert
           show-icon
           style="margin-bottom: 10px"
@@ -2617,7 +3050,9 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.control.screenshot')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.screenshot')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.screenshot')
+          "
           :index="0"
           :project-id="projectId"
           type="image"
@@ -2638,13 +3073,25 @@ onMounted(() => {
           :label="$t('stepDetail.identifyLanguages')"
           :rules="{
             required: true,
-            message: $t('stepDetail.language.type') + $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.language.type') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
-          <el-select v-model="step.content" :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.identifyLanguages')">
-            <el-option :label="$t('stepDetail.language.simplifiedChinese')" value="chi_sim"></el-option>
-            <el-option :label="$t('stepDetail.language.english')" value="eng"></el-option>
+          <el-select
+            v-model="step.content"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.identifyLanguages')
+            "
+          >
+            <el-option
+              :label="$t('stepDetail.language.simplifiedChinese')"
+              value="chi_sim"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.language.english')"
+              value="eng"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
@@ -2652,7 +3099,9 @@ onMounted(() => {
           :label="$t('stepDetail.verify.expectedText')"
           :rules="{
             required: true,
-            message: $t('stepDetail.verify.expectedText') + $t('stepDetail.msg.notBeEmpty'),
+            message:
+              $t('stepDetail.verify.expectedText') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
@@ -2695,7 +3144,9 @@ onMounted(() => {
         >
           <el-select
             v-model="step.text"
-            :placeholder="$t('stepDetail.msg.select') + $t('routes.publicSteps')"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('routes.publicSteps')
+            "
             :no-data-text="$t('stepDetail.msg.publicStep')"
           >
             <el-option
@@ -2774,7 +3225,9 @@ onMounted(() => {
               v-model="monkey.packageName"
               size="small"
               type="text"
-              :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.testPkgName')"
+              :placeholder="
+                $t('stepDetail.msg.input') + $t('stepDetail.testPkgName')
+              "
             ></el-input>
           </el-form-item>
           <el-form-item :label="$t('stepDetail.eventsNum')">
@@ -2786,7 +3239,10 @@ onMounted(() => {
               :step="10"
             ></el-input-number>
           </el-form-item>
-          <el-form-item style="margin-top: 10px" :label="$t('stepDetail.eventConfigure')">
+          <el-form-item
+            style="margin-top: 10px"
+            :label="$t('stepDetail.eventConfigure')"
+          >
             <el-tabs type="border-card" stretch>
               <el-tab-pane :label="$t('stepDetail.detailConfigure')">
                 <el-table :data="monkey.options" border :show-header="false">
@@ -2837,7 +3293,10 @@ onMounted(() => {
                   </el-table-column>
                 </el-table>
               </el-tab-pane>
-              <el-tab-pane v-if="step.platform === 1" :label="$t('stepDetail.activityBlacklist')">
+              <el-tab-pane
+                v-if="step.platform === 1"
+                :label="$t('stepDetail.activityBlacklist')"
+              >
                 <el-table :data="activityList" border :show-header="false">
                   <el-table-column>
                     <template #default="scope">
@@ -2853,13 +3312,15 @@ onMounted(() => {
                         type="danger"
                         size="mini"
                         @click="delObj(scope.row)"
-                        >{{$t('stepDetail.delete')}}
+                        >{{ $t('stepDetail.delete') }}
                       </el-button>
                     </template>
                   </el-table-column>
                 </el-table>
                 <div style="text-align: center; margin-top: 10px">
-                  <el-button size="mini" @click="add()">{{$t('stepDetail.new')}}</el-button>
+                  <el-button size="mini" @click="add()">{{
+                    $t('stepDetail.new')
+                  }}</el-button>
                 </div>
               </el-tab-pane>
             </el-tabs>
@@ -2876,12 +3337,12 @@ onMounted(() => {
         >
           <template #title>
             <span
-              >{{$t('stepDetail.msgTips.reference')}}
+              >{{ $t('stepDetail.msgTips.reference') }}
               <a
                 href="https://sonic-cloud.cn/document?tag=runScript"
                 target="_blank"
               >
-                {{$t('stepDetail.userDoc')}}
+                {{ $t('stepDetail.userDoc') }}
               </a>
             </span>
           </template>
@@ -2903,7 +3364,9 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -2922,7 +3385,9 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.control.element')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="poco"
@@ -2935,7 +3400,9 @@ onMounted(() => {
     <el-form-item :label="$t('stepDetail.logic.process')">
       <el-select
         v-model="step.conditionType"
-        :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.logic.condition')"
+        :placeholder="
+          $t('stepDetail.msg.select') + $t('stepDetail.logic.condition')
+        "
         :disabled="
           step.stepType === 'iteratorAndroidElement' ||
           step.stepType === 'iteratorIOSElement' ||
@@ -2955,22 +3422,22 @@ onMounted(() => {
         :width="300"
         trigger="hover"
       >
-        <p>{{$t('stepDetail.logic.msgProcess')}}</p>
+        <p>{{ $t('stepDetail.logic.msgProcess') }}</p>
         <div>
           <strong style="color: #409eff">if：</strong
-          >{{$t('stepDetail.logic.msgSubStep')}}
+          >{{ $t('stepDetail.logic.msgSubStep') }}
         </div>
         <div>
           <strong style="color: #e6a23c">eles if：</strong
-          >{{$t('stepDetail.logic.msgIf')}}
+          >{{ $t('stepDetail.logic.msgIf') }}
         </div>
         <div>
           <strong style="color: #f56c6c">else：</strong
-          >{{$t('stepDetail.logic.msgFailure')}}
+          >{{ $t('stepDetail.logic.msgFailure') }}
         </div>
         <div>
           <strong style="color: #67c23a">while：</strong
-          >{{$t('stepDetail.logic.msgRepeat')}}
+          >{{ $t('stepDetail.logic.msgRepeat') }}
         </div>
         <template #reference>
           <el-icon :size="18" style="vertical-align: middle; margin-left: 10px">
@@ -2982,10 +3449,24 @@ onMounted(() => {
 
     <div v-if="step.conditionType === 0">
       <el-form-item :label="$t('stepDetail.exception.process')">
-        <el-select v-model="step.error" :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.exception.process')">
-          <el-option :label="$t('stepDetail.exception.ignore')" :value="1"></el-option>
-          <el-option :label="$t('stepDetail.exception.warning')" :value="2"></el-option>
-          <el-option :label="$t('stepDetail.exception.interrupt')" :value="3"></el-option>
+        <el-select
+          v-model="step.error"
+          :placeholder="
+            $t('stepDetail.msg.select') + $t('stepDetail.exception.process')
+          "
+        >
+          <el-option
+            :label="$t('stepDetail.exception.ignore')"
+            :value="1"
+          ></el-option>
+          <el-option
+            :label="$t('stepDetail.exception.warning')"
+            :value="2"
+          ></el-option>
+          <el-option
+            :label="$t('stepDetail.exception.interrupt')"
+            :value="3"
+          ></el-option>
         </el-select>
         <el-popover
           placement="right-start"
@@ -2993,18 +3474,24 @@ onMounted(() => {
           :width="300"
           trigger="hover"
         >
-          <p>{{$t('stepDetail.exception.msgException')}}</p>
+          <p>{{ $t('stepDetail.exception.msgException') }}</p>
           <div>
-            <strong style="color: #409eff">{{$t('stepDetail.exception.ignore')}}</strong
-            >{{$t('stepDetail.exception.msgContinue')}}
+            <strong style="color: #409eff">{{
+              $t('stepDetail.exception.ignore')
+            }}</strong
+            >{{ $t('stepDetail.exception.msgContinue') }}
           </div>
           <div>
-            <strong style="color: #e6a23c">{{$t('stepDetail.exception.warning')}}</strong
-            >{{$t('stepDetail.exception.msgWarning')}}
+            <strong style="color: #e6a23c">{{
+              $t('stepDetail.exception.warning')
+            }}</strong
+            >{{ $t('stepDetail.exception.msgWarning') }}
           </div>
           <div>
-            <strong style="color: #f56c6c">{{$t('stepDetail.exception.interrupt')}}</strong
-            >{{$t('stepDetail.exception.msgInterrupt')}}
+            <strong style="color: #f56c6c">{{
+              $t('stepDetail.exception.interrupt')
+            }}</strong
+            >{{ $t('stepDetail.exception.msgInterrupt') }}
           </div>
           <template #reference>
             <el-icon
@@ -3020,6 +3507,8 @@ onMounted(() => {
   </el-form>
 
   <div style="text-align: center; margin-top: 20px">
-    <el-button size="small" type="primary" @click="summitStep">{{$t('stepDetail.submit')}}</el-button>
+    <el-button size="small" type="primary" @click="summitStep">{{
+      $t('stepDetail.submit')
+    }}</el-button>
   </div>
 </template>

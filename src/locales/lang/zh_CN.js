@@ -1560,8 +1560,6 @@ const stepDetail = {
   swipe: '滑动',
   switch: {
     handler: '切换句柄',
-    ignoreMode: '切换忽略不重要视图模式',
-    invisiableControl: '切换Invisible控件展示',
     webview: '切换webview',
     mode: '切换模式',
     display: '切换显示',
