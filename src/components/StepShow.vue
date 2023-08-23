@@ -176,7 +176,7 @@ const getNotes = (text, type) => {
     >
   </span>
   <span v-if="step.stepType === 'siriCommand'">
-    <el-tag size="small" style="margin-right: 10px">$t('stepDetail.sendSiriCmd')</el-tag
+    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.sendSiriCmd')}}</el-tag
     >{{ step.content }}
   </span>
   <span v-if="step.stepType === 'swipeByDefinedDirection'">
@@ -198,10 +198,10 @@ const getNotes = (text, type) => {
     <el-tag size="small">{{$t('stepDetail.topVisable')}}</el-tag>
   </span>
   <span v-if="step.stepType === 'lock'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.rotateDevice.loc')}}</el-tag>
+    <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.rotateDevice.lock')}}</el-tag>
   </span>
   <span v-if="step.stepType === 'closeKeyboard'">
-    <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.keyboard.closeKeyboar')}}</el-tag>
+    <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.keyboard.closeKeyboard')}}</el-tag>
   </span>
   <span v-if="step.stepType === 'unLock'">
     <el-tag size="small">{{$t('stepDetail.label.androidOptions.system.rotateDevice.unlock')}}</el-tag>
@@ -224,19 +224,19 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'airPlaneMode'">
     <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.switch.planeMode')}}</el-tag
-    >{{ step.content === 'true' ? $t('stepDetail.opens') : $t('stepDetail.close')}} 
+    >{{ step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')}} 
   </span>
   <span v-if="step.stepType === 'wifiMode'">
     <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.switch.wifiMode')}}</el-tag
-    >{{ step.content === 'true' ? $t('stepDetail.opens') : $t('stepDetail.close')}}
+    >{{ step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')}}
   </span>
   <span v-if="step.stepType === 'locationMode'">
     <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.switch.locationMode')}}</el-tag
-    >{{ step.content === 'true' ? $t('stepDetail.opens') : $t('stepDetail.close')}}
+    >{{ step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')}}
   </span>
   <span v-if="step.stepType === 'switchWindowMode'">
     <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.switch.windowMode')}}</el-tag
-    >{{ step.content === 'true' ? $t('stepDetail.multiWindoeMode') : $t('stepDetail.singleWindoeMode') }}
+    >{{ step.content === 'true' ? $t('stepDetail.multiWindowMode') : $t('stepDetail.singleWindowMode') }}
   </span>
   <span v-if="step.stepType === 'switchIgnoreMode'">
     <el-tag size="small" style="margin-right: 10px"
@@ -305,11 +305,11 @@ const getNotes = (text, type) => {
     {{$t('stepDetail.retries')}}：{{ step.content }} {{$t('stepDetail.retriesInterval')}}：{{ step.text }} ms
   </span>
   <span v-if="step.stepType === 'openApp'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.app.open')}}</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.label.androidOptions.app.openApp')}}</el-tag>
     {{$t('stepDetail.app.pkg')}}：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'terminate'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.app.terminate')}}</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.label.androidOptions.app.terminate')}}</el-tag>
     {{$t('stepDetail.app.pkg')}}：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'install'">
@@ -317,7 +317,7 @@ const getNotes = (text, type) => {
     {{ step.content === '2' ? $t('stepDetail.app.installFromPkglist') : $t('stepDetail.app.path') + step.text }}
   </span>
   <span v-if="step.stepType === 'uninstall'">
-    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.label.androidOptions.app.uninstal')}}</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{$t('stepDetail.label.androidOptions.app.uninstall')}}</el-tag>
     {{$t('stepDetail.app.pkg')}}：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'runBack'">

@@ -1255,16 +1255,16 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'keyCode'">
         <el-form-item
-          :label="$t('stepDetai.label.androidOptions.interaction.keyCode')"
+          :label="$t('stepDetail.label.androidOptions.interaction.keyCode')"
           :rules="[
-            { required: true, message: $t('stepDetail.msg.select') + $t('stepDetai.label.androidOptions.interaction.keyCode'), trigger: 'change' },
+            { required: true, message: $t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.interaction.keyCode'), trigger: 'change' },
           ]"
           prop="content"
         >
           <el-select
             v-if="step.platform === 1"
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.select') + $t('stepDetai.label.androidOptions.interaction.keyCode')"
+            :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.interaction.keyCode')"
           >
             <el-option-group :label="$t('stepDetail.commonKeys')">
               <el-option value="HOME"></el-option>
@@ -1289,11 +1289,11 @@ onMounted(() => {
           <el-select
             v-if="step.platform === 2"
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.select') + $t('stepDetai.label.androidOptions.interaction.keyCode')"
+            :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.interaction.keyCode')"
           >
             <el-option value="home"></el-option>
-            <el-option value="volumeup"></el-option>
-            <el-option value="volumedown"></el-option>
+            <el-option value="volume up"></el-option>
+            <el-option value="volume down"></el-option>
           </el-select>
         </el-form-item>
       </div>
@@ -1320,8 +1320,8 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'tap'">
         <element-select
-          :label="$t('stepDetai.label.androidOptions.coordinate.self')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetai.label.androidOptions.coordinate.self')"
+          :label="$t('stepDetail.label.androidOptions.coordinate.self')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
           :index="0"
           :project-id="projectId"
           type="point"
@@ -1331,8 +1331,8 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'longPressPoint'">
         <element-select
-          :label="$t('stepDetai.label.androidOptions.coordinate.self')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetai.label.androidOptions.coordinate.self')"
+          :label="$t('stepDetail.label.androidOptions.coordinate.self')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
           :index="0"
           :project-id="projectId"
           type="point"
@@ -1351,7 +1351,7 @@ onMounted(() => {
       <div v-if="step.stepType === 'swipe'">
         <element-select
           :label="$t('stepDetail.fromControl')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetai.label.androidOptions.coordinate.self')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
           :index="0"
           :project-id="projectId"
           type="point"
@@ -1359,7 +1359,7 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.dragTo')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetai.label.androidOptions.coordinate.self')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
           :index="1"
           :project-id="projectId"
           type="point"
@@ -1400,7 +1400,7 @@ onMounted(() => {
       <div v-if="step.stepType === 'pocoSwipe'">
         <element-select
           :label="$t('stepDetail.fromControl')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetai.label.androidOptions.coordinate.self')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
           :index="0"
           :project-id="projectId"
           type="poco"
@@ -1408,7 +1408,7 @@ onMounted(() => {
         />
         <element-select
           :label="$t('stepDetail.dragTo')"
-          :place="$t('stepDetail.msg.select') + $t('stepDetai.label.androidOptions.coordinate.self')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.label.androidOptions.coordinate.self')"
           :index="1"
           :project-id="projectId"
           type="poco"
@@ -1547,7 +1547,7 @@ onMounted(() => {
           :step="step"
         />
         <div>
-          <el-form-item :label="$t('stepDetail.cerify.num')" :model="step">
+          <el-form-item :label="$t('stepDetail.verify.num')" :model="step">
             <el-select v-model="step.content" prop="content">
               <el-option :label="$t('stepDetail.verify.greaterThan')" value=">"></el-option>
               <el-option :label="$t('stepDetail.verify.lessThan')" value="<"></el-option>
@@ -1679,7 +1679,7 @@ onMounted(() => {
         />
         <el-form-item
           prop="text"
-          :label="$t('stepDetail.label.androidOptions.app.uninstal')"
+          :label="$t('stepDetail.label.androidOptions.app.uninstall')"
           :rules="{
             required: true,
             message: $t('stepDetail.app.pkg')+ $t('stepDetail.msg.notBeEmpty'),
@@ -1989,7 +1989,7 @@ onMounted(() => {
               {{$t('stepDetail.msgTips.focus')}}
             </div>
             <div>
-              {{$t('stepDetail.msg.variable')}}
+              {{$t('stepDetail.msgTips.variable')}}
             </div>
           </template>
         </el-alert>
@@ -2332,7 +2332,7 @@ onMounted(() => {
           :step="step"
         />
         <el-form-item
-          :label="$t('stepDetail.verify.control.attribute')"
+          :label="$t('stepDetail.control.attribute')"
           :rules="{
             required: true,
             message: $t('stepDetail.control.attribute') + $t('stepDetail.msg.notBeEmpty'),
@@ -2685,7 +2685,7 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'publicStep'">
         <el-form-item
-          :label="$t('stepDetail.publicStep')"
+          :label="$t('stepDetail.label.iOSOptions.spec.publicStep')"
           prop="text"
           :rules="{
             required: true,

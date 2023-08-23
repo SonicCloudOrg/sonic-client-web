@@ -1315,7 +1315,7 @@ const stepDetail = {
           getTextValue: '获取文本',
           assertText: '断言文本',
           logElementAttr: '日志输出控件信息',
-          iteratorAndroidElement: '迭代控件列表',
+          iteratorIOSElement: '迭代控件列表',
           setSnapshotMaxDepth: '设置控件获取最大遍历深度',
         },
         coordinate: {

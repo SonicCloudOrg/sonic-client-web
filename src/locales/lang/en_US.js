@@ -1399,7 +1399,7 @@ const stepDetail = {
           getTextValue: 'Gey Text',
           assertText: 'Assert Text',
           logElementAttr: 'Log Element Info Output',
-          iteratorAndroidElement: 'Iterator Element List',
+          iteratorIOSElement: 'Iterator Element List',
           setSnapshotMaxDepth: 'Set Snapshot Max Depth',
         },
         coordinate: {
