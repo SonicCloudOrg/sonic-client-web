@@ -1431,8 +1431,7 @@ const stepDetail = {
     table: 'TIPS: 长列表的场景下，可通过该方法连续滚动，尝试让目标元素可见',
     text: 'TIPS: 可以将获取的文本放入临时变量中',
     controlAttribute: 'TIPS: 可以将获取的控件属性放入临时变量中',
-    verify:
-      'TIPS: 可使用[变量名]将全局变量或临时变量插入，验证时将替换该内容为变量值',
+    verify: 'TIPS: 将全局变量或临时变量插入，验证时将替换该内容为变量值',
     order: 'TIPS: 默认按顺序使用SIFT特征匹配、AKAZE特征匹配和模板匹配算法',
     language:
       'TIPS: 默认语言包只有简体中文和英文，需要额外添加可以咨询管理员。',
@@ -1511,6 +1510,7 @@ const stepDetail = {
   textIdentifyInImage: '图像文字识别',
   times: '次',
   topVisible: '至顶部可见',
+  use: '使用',
   usePublicSteps: '使用公共步骤',
   unknownScrollSideType: '未知滚动方向类型',
   upwards: '向上',

@@ -1432,7 +1432,7 @@ onMounted(() => {
           :rules="[
             {
               required: true,
-              message: $t('stepDetail.msg.select') + $t('stepDetail.keyCode'),
+              message: $t('stepDetail.msg.input') + $t('stepDetail.keyCode'),
               trigger: 'blur',
             },
           ]"
@@ -1440,22 +1440,24 @@ onMounted(() => {
         >
           <el-input
             v-model="step.content"
-            :placeholder="
-              $t('stepDetail.msg.select') + $t('stepDetail.keyCode')
-            "
+            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.keyCode')"
           ></el-input>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'keyCode'">
         <el-form-item
-          :label="$t('stepDetail.label.androidOptions.system.interaction.keyCode')"
+          :label="
+            $t('stepDetail.label.androidOptions.system.interaction.keyCode')
+          "
           :rules="[
             {
               required: true,
               message:
                 $t('stepDetail.msg.select') +
-                $t('stepDetail.label.androidOptions.system.interaction.keyCode'),
+                $t(
+                  'stepDetail.label.androidOptions.system.interaction.keyCode'
+                ),
               trigger: 'change',
             },
           ]"
@@ -2052,7 +2054,7 @@ onMounted(() => {
             :placeholder="$t('stepDetail.msg.webviewPkgName')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="$t('stepDetail.processName')">
+        <el-form-item :label="$t('stepDetail.processName')">
           <el-input
             v-model="step.text"
             :placeholder="$t('stepDetail.msg.processName')"
@@ -2071,7 +2073,7 @@ onMounted(() => {
         <el-form-item :label="$t('stepDetail.handleInfo')">
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.titleInput')"
+            :placeholder="$t('stepDetail.msg.titleInput')"
           ></el-input>
         </el-form-item>
       </div>
@@ -2186,7 +2188,7 @@ onMounted(() => {
           <el-select v-model="step.content">
             <el-option :label="$t('stepDetail.open')" value="true"></el-option>
             <el-option
-              :label="$t('stepDetail.verify.close')"
+              :label="$t('stepDetail.close')"
               value="false"
             ></el-option>
           </el-select>
@@ -2232,7 +2234,7 @@ onMounted(() => {
               value="true"
             ></el-option>
             <el-option
-              :label="$t('stepDetail.verrify.notIgnore')"
+              :label="$t('stepDetail.verify.notIgnore')"
               value="false"
             ></el-option>
           </el-select>
@@ -2342,7 +2344,7 @@ onMounted(() => {
         <el-form-item :label="$t('stepDetail.inputValue')">
           <el-input
             v-model="step.content"
-            :placeholder="$t('stepDetail.msg.inputValue')"
+            :placeholder="$t('stepDetail.inputValue')"
           ></el-input>
         </el-form-item>
       </div>
@@ -3020,7 +3022,7 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          :title="$t('stepDetail.msgTips.verify')"
+          :title="`${$t('stepDetail.use')} &#123;&#123;${$t('stepDetail.variableName')}&#125;&#125; ${$t('stepDetail.msgTips.verify')}`"
         />
         <el-form-item :label="$t('stepDetail.verify.actualValue')">
           <el-input
