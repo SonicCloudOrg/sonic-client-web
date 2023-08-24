@@ -1148,12 +1148,9 @@ const stepDetail = {
   empty: '清空',
   enterText: '输入文本',
   eventsNum: '事件数',
-  forceWait: '强制等待',
   fromControl: '从控件',
   gameEngine: '游戏引擎',
   get: '获取',
-  getClipboardText: '获取剪切板文本',
-  getScreenshot: '获取截图',
   getToVariable: '提取至变量',
   handleSwitchInfo: '句柄切换信息',
   handleInfo: 'handle信息',
@@ -1485,7 +1482,7 @@ const stepDetail = {
     select: '请选择',
   },
   msgTips: {
-    variable: 'TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式',
+    variable: 'TIPS: 需要临时变量或全局变量时，可以添加',
     install:
       'TIPS: 需要先接入Jenkins插件，并确认安装包管理有对应安装包。多个符合条件的安装包优先选择最新的安装。',
     tab: 'TIPS: Handle相当于页面的Tab，切换WebView后找不到页面可以尝试切换Handle',
@@ -1493,12 +1490,12 @@ const stepDetail = {
       'TIPS: 传递Android应用的App包名，该步骤可实现自动授权目标App所需要的所有权限',
     focus: 'TIPS: 在文本框需要先获取焦点，才能进行输入时，使用此方式。',
     sysKey:
-      'TIPS: 本功能需要先唤醒系统键盘。需要临时变量或全局变量时，可以添加{{变量名}}的形式。',
+      'TIPS: 本功能需要先唤醒系统键盘。需要临时变量或全局变量时，可以添加', 
     table: 'TIPS: 长列表的场景下，可通过该方法连续滚动，尝试让目标元素可见',
     text: 'TIPS: 可以将获取的文本放入临时变量中',
     controlAttribute: 'TIPS: 可以将获取的控件属性放入临时变量中',
     verify:
-      'TIPS: 可使用{{变量名}}将全局变量或临时变量插入，验证时将替换该内容为变量值',
+      'TIPS: 可使用[变量名]将全局变量或临时变量插入，验证时将替换该内容为变量值',
     order: 'TIPS: 默认按顺序使用SIFT特征匹配、AKAZE特征匹配和模板匹配算法',
     language:
       'TIPS: 默认语言包只有简体中文和英文，需要额外添加可以咨询管理员。',

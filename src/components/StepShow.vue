@@ -336,13 +336,13 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'setPasteboard'">
     <el-tag size="small" style="margin-right: 10px">{{
-      $t('stepDetail.set.clipboardText')
+      $t('stepDetail.label.androidOptions.system.keyboard.setClipperByKeyboard')
     }}</el-tag>
     {{ $t('stepDetail.text') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'getPasteboard'">
     <el-tag size="small" style="margin-right: 10px">{{
-      $t('stepDetail.getClipboardText')
+      $t('stepDetail.label.androidOptions.system.keyboard.getClipperByKeyboard')
     }}</el-tag>
     {{ $t('stepDetail.getToVariable') }}：{{ step.content }}
   </span>
@@ -607,7 +607,9 @@ const getNotes = (text, type) => {
     {{ $t('stepDetail.attributeToVariable') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'getClipperByKeyboard'">
-    <el-tag size="small">{{ $t('stepDetail.getClipboardText') }}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.keyboard.getClipperByKeyboard')
+    }}</el-tag>
     {{ $t('stepDetail.getToVariable') }}：{{ step.content }}
   </span>
   <!--三个指令前端显示上保留，用于兼容老版本升级上来之后，依然能正常的显示和运行-->
@@ -727,7 +729,9 @@ const getNotes = (text, type) => {
     {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'stepScreen'">
-    <el-tag size="small">{{ $t('stepDetail.getScreenshot') }}</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.img.stepScreen')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'webViewRefresh'">
     <el-tag size="small">{{ $t('stepDetail.refreshPage') }}</el-tag>
@@ -827,7 +831,7 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'pause'">
     <el-tag size="small" style="margin-right: 5px">{{
-      $t('stepDetail.forceWait')
+      $t('stepDetail.label.androidOptions.spec.pause')
     }}</el-tag>
     {{ $t('stepDetail.wait') }} {{ step.content }} ms
   </span>
