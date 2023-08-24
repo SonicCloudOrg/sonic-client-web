@@ -1057,6 +1057,7 @@ const IOSRemote = {
     '点击开始抓包后，Wifi设置手动代理，连接右上角对应的ip与端口，即可开启抓包',
   filterClassOrName: '输入class或name进行过滤',
   predicate: 'Predicate推荐',
+  classChain: 'classChain推荐',
   noRecommend: '暂无推荐语法',
 };
 export default {
