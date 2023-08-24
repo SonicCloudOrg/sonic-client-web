@@ -386,7 +386,7 @@ const getNotes = (text, type) => {
     <el-tag size="small" style="margin-right: 10px">{{
       $t('stepDetail.label.androidOptions.app.uninstall')
     }}</el-tag>
-    $t('stepDetail.app.pkg')：{{ step.text }}
+    $t('stepDetail.app.pkg'):{{ step.text }}
   </span>
   <span v-if="step.stepType === 'runBack'">
     <el-tag size="small" style="margin-right: 10px">{{

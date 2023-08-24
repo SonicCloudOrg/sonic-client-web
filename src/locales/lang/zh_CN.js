@@ -1094,7 +1094,7 @@ const stepDetail = {
     action: '点击',
     coordinate: '点击坐标',
     target: '点击目标',
-    openOrClose: '点击展开/收起脚本编辑器',
+    expandOrCollapse: '点击展开/收起脚本编辑器',
   },
   close: '关闭',
   control: {
