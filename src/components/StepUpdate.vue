@@ -19,9 +19,12 @@
 import { onMounted, ref } from 'vue';
 import { Tickets, QuestionFilled } from '@element-plus/icons';
 import { ElMessage } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 import ElementSelect from './ElementSelect.vue';
 import GlobalParamsSelect from './GlobalParamsSelect.vue';
 import axios from '../http/axios';
+
+const { t: $t } = useI18n();
 
 const props = defineProps({
   projectId: Number,
@@ -167,44 +170,44 @@ const monkey = ref({
 });
 const monkeyOptions = {
   sleepTime: {
-    label: '用户操作时延',
-    des: '指定事件间的时延，单位ms',
+    label: $t('stepDetail.label.monkeyOptions.sleepTime'),
+    des: $t('stepDetail.des.monkeyOptions.sleepTime'),
   },
   tapEvent: {
-    label: '轻触事件权重',
-    des: '随机坐标轻触',
+    label: $t('stepDetail.label.monkeyOptions.tapEvent'),
+    des: $t('stepDetail.des.monkeyOptions.tapEvent'),
   },
   longPressEvent: {
-    label: '长按事件权重',
-    des: '随机坐标长按1～3秒',
+    label: $t('stepDetail.label.monkeyOptions.longPressEvent'),
+    des: $t('stepDetail.des.monkeyOptions.longPressEvent'),
   },
   swipeEvent: {
-    label: '滑动事件权重',
-    des: '随机两个坐标滑动',
+    label: $t('stepDetail.label.monkeyOptions.swipeEvent'),
+    des: $t('stepDetail.des.monkeyOptions.swipeEvent'),
   },
   systemEvent: {
-    label: '物理按键事件权重',
-    des: 'Home、返回键等等',
+    label: $t('stepDetail.label.monkeyOptions.systemEvent'),
+    des: $t('stepDetail.des.monkeyOptions.systemEvent'),
   },
   navEvent: {
-    label: '系统导航事件权重',
-    des: '安卓：随机开关WIFI；iOS：后台运行当前应用',
+    label: $t('stepDetail.label.monkeyOptions.navEvent'),
+    des: $t('stepDetail.des.monkeyOptions.navEvent'),
   },
   isOpenPackageListener: {
-    label: '应用包名监听器',
-    des: '检测当前应用是否为被测应用，为否时将重新拉起被测应用',
+    label: $t('stepDetail.label.monkeyOptions.isOpenPackageListener'),
+    des: $t('stepDetail.des.monkeyOptions.isOpenPackageListener'),
   },
   isOpenH5Listener: {
-    label: 'H5页面监听器 (Android Only)',
-    des: '检测是否长时间停留在H5页面 (Android Only)',
+    label: $t('stepDetail.label.monkeyOptions.isOpenH5Listener'),
+    des: $t('stepDetail.des.monkeyOptions.isOpenH5Listener'),
   },
   isOpenActivityListener: {
-    label: '黑名单Activity监听器 (Android Only)',
-    des: '检测当前Activity是否在黑名单内 (Android Only)',
+    label: $t('stepDetail.label.monkeyOptions.isOpenActivityListener'),
+    des: $t('stepDetail.des.monkeyOptions.isOpenActivityListener'),
   },
   isOpenNetworkListener: {
-    label: '网络状态监听器 (Android Only)',
-    des: '检测设备是否处于飞行模式和WIFI网络 (Android Only)',
+    label: $t('stepDetail.label.monkeyOptions.isOpenNetworkListener'),
+    des: $t('stepDetail.des.monkeyOptions.isOpenNetworkListener'),
   },
 };
 const stepForm = ref(null);
@@ -378,798 +381,986 @@ const publicStepList = ref([]);
 const options = ref([]);
 const androidOptions = ref([
   {
-    label: '设备操作',
+    label: $t('stepDetail.label.androidOptions.system.self'),
     value: 'system',
     children: [
       {
         value: 'rotateDevice',
-        label: '屏幕交互',
+        label: $t('stepDetail.label.androidOptions.system.rotateDevice.self'),
         children: [
           {
             value: 'lock',
-            label: '锁定屏幕',
+            label: $t(
+              'stepDetail.label.androidOptions.system.rotateDevice.lock'
+            ),
           },
           {
             value: 'unLock',
-            label: '解锁屏幕',
+            label: $t(
+              'stepDetail.label.androidOptions.system.rotateDevice.unlock'
+            ),
           },
           {
             value: 'screenSub',
-            label: '左转屏幕',
+            label: $t(
+              'stepDetail.label.androidOptions.system.rotateDevice.screenSub'
+            ),
           },
           {
             value: 'screenAdd',
-            label: '右转屏幕',
+            label: $t(
+              'stepDetail.label.androidOptions.system.rotateDevice.screenAdd'
+            ),
           },
           {
             value: 'screenAbort',
-            label: '关闭自动旋转',
+            label: $t(
+              'stepDetail.label.androidOptions.system.rotateDevice.screenAbort'
+            ),
           },
         ],
       },
       {
         value: 'keyboard',
-        label: '输入法与剪切板',
+        label: $t('stepDetail.label.androidOptions.system.keyboard.self'),
         children: [
           {
             value: 'sendKeyForce',
-            label: 'Sonic输入法输入',
+            label: $t(
+              'stepDetail.label.androidOptions.system.keyboard.sendKeyForce'
+            ),
           },
           {
             value: 'closeKeyboard',
-            label: '关闭Sonic输入法',
+            label: $t(
+              'stepDetail.label.androidOptions.system.keyboard.closeKeyboard'
+            ),
           },
           {
             value: 'setClipperByKeyboard',
-            label: '设置文本到剪切板',
+            label: $t(
+              'stepDetail.label.androidOptions.system.keyboard.setClipperByKeyboard'
+            ),
           },
           {
             value: 'getClipperByKeyboard',
-            label: '获取剪切板文本',
+            label: $t(
+              'stepDetail.label.androidOptions.system.keyboard.getClipperByKeyboard'
+            ),
           },
         ],
       },
       {
         value: 'interaction',
-        label: '特殊交互',
+        label: $t('stepDetail.label.androidOptions.system.interaction.self'),
         children: [
           {
             value: 'keyCode',
-            label: '系统按键',
+            label: $t(
+              'stepDetail.label.androidOptions.system.interaction.keyCode'
+            ),
           },
           {
             value: 'keyCodeSelf',
-            label: '系统按键（自定义）',
+            label: $t(
+              'stepDetail.label.androidOptions.system.interaction.keyCodeSelf'
+            ),
           },
           {
             value: 'swipeByDefinedDirection',
-            label: '从屏幕中央滑动距离',
+            label: $t(
+              'stepDetail.label.androidOptions.system.interaction.swipeByDefinedDirection'
+            ),
           },
         ],
       },
       {
         value: 'netWork',
-        label: '网络相关',
+        label: $t('stepDetail.label.androidOptions.system.network.self'),
         children: [
           {
             value: 'airPlaneMode',
-            label: '切换飞行模式',
+            label: $t(
+              'stepDetail.label.androidOptions.system.network.airPlaneMode'
+            ),
           },
           {
             value: 'wifiMode',
-            label: '切换WIFI模式',
+            label: $t(
+              'stepDetail.label.androidOptions.system.network.wifiMode'
+            ),
           },
           {
             value: 'locationMode',
-            label: '切换位置服务',
+            label: $t(
+              'stepDetail.label.androidOptions.system.network.locationMode'
+            ),
           },
         ],
       },
     ],
   },
   {
-    label: '应用操作',
+    label: $t('stepDetail.label.androidOptions.app.self'),
     value: 'app',
     children: [
       {
         value: 'openApp',
-        label: '打开应用',
+        label: $t('stepDetail.label.androidOptions.app.openApp'),
       },
       {
         value: 'terminate',
-        label: '终止应用',
+        label: $t('stepDetail.label.androidOptions.app.terminate'),
       },
       {
         value: 'install',
-        label: '安装应用',
+        label: $t('stepDetail.label.androidOptions.app.install'),
       },
       {
         value: 'uninstall',
-        label: '卸载应用',
+        label: $t('stepDetail.label.androidOptions.app.uninstall'),
       },
       {
         value: 'appReset',
-        label: '清空App内存缓存',
+        label: $t('stepDetail.label.androidOptions.app.appReset'),
       },
       {
         value: 'appAutoGrantPermissions',
-        label: '自动授权应用权限',
+        label: $t(
+          'stepDetail.label.androidOptions.app.appAutoGrantPermissions'
+        ),
       },
     ],
   },
   {
-    label: '控件元素操作',
+    label: $t('stepDetail.label.androidOptions.element.self'),
     value: 'element',
     children: [
       {
-        label: '安卓原生控件',
+        label: $t('stepDetail.label.androidOptions.element.uiEle.self'),
         value: 'uiEle',
         children: [
           {
             value: 'findElementInterval',
-            label: '设置查找控件策略',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.findElementInterval'
+            ),
           },
           {
             value: 'switchWindowMode',
-            label: '切换窗口模式',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.switchWindowMode'
+            ),
           },
           {
             value: 'switchVisibleMode',
-            label: '切换Invisible控件展示',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.switchVisibleMode'
+            ),
           },
           {
             value: 'switchIgnoreMode',
-            label: '切换忽略不重要视图模式',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.switchIgnoreMode'
+            ),
           },
           {
             value: 'isExistEle',
-            label: '判断控件元素是否存在',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.isExistEle'
+            ),
           },
           {
             value: 'isExistEleNum',
-            label: '判断控件元素存在个数',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.isExistEleNum'
+            ),
           },
           {
             value: 'click',
-            label: '点击控件元素',
+            label: $t('stepDetail.label.androidOptions.element.uiEle.click'),
           },
           {
             value: 'sendKeys',
-            label: '输入文本',
+            label: $t('stepDetail.label.androidOptions.element.uiEle.sendKeys'),
           },
           {
             value: 'sendKeysByActions',
-            label: '输入文本(Actions)',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.sendKeysByActions'
+            ),
           },
           {
             value: 'swipe2',
-            label: '拖拽控件元素',
+            label: $t('stepDetail.label.androidOptions.element.uiEle.swipe2'),
           },
           {
             value: 'scrollToEle',
-            label: '滚动到控件元素',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.scrollToEle'
+            ),
           },
           {
             value: 'longPress',
-            label: '长按控件元素',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.longPress'
+            ),
           },
           {
             value: 'clear',
-            label: '清空输入框',
+            label: $t('stepDetail.label.androidOptions.element.uiEle.clear'),
           },
           {
             value: 'obtainElementAttr',
-            label: '获取控件属性',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.obtainElementAttr'
+            ),
           },
           {
             value: 'getElementAttr',
-            label: '验证控件属性',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.getElementAttr'
+            ),
           },
           {
             value: 'getTextValue',
-            label: '获取文本',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.getTextValue'
+            ),
           },
           {
             value: 'assertText',
-            label: '断言文本',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.assertText'
+            ),
           },
           {
             value: 'logElementAttr',
-            label: '日志输出控件信息',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.logElementAttr'
+            ),
           },
           {
             value: 'iteratorAndroidElement',
-            label: '迭代控件列表',
+            label: $t(
+              'stepDetail.label.androidOptions.element.uiEle.iteratorAndroidElement'
+            ),
           },
         ],
       },
       {
-        label: '坐标控件',
+        label: $t('stepDetail.label.androidOptions.element.coordinate.self'),
         value: 'pointEle',
         children: [
           {
             value: 'tap',
-            label: '点击坐标',
+            label: $t('stepDetail.label.androidOptions.element.coordinate.tap'),
           },
           {
             value: 'longPressPoint',
-            label: '长按坐标',
+            label: $t(
+              'stepDetail.label.androidOptions.element.coordinate.longPressPoint'
+            ),
           },
           {
             value: 'swipe',
-            label: '滑动拖拽',
+            label: $t(
+              'stepDetail.label.androidOptions.element.coordinate.swipe'
+            ),
           },
         ],
       },
       {
-        label: 'WebView控件',
+        label: $t('stepDetail.label.androidOptions.element.webView.self'),
         value: 'webViewEle',
         children: [
           {
             value: 'setDefaultFindWebViewElementInterval',
-            label: '设置查找控件策略',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.setDefaultFindWebViewElementInterval'
+            ),
           },
           {
             value: 'toWebView',
-            label: '切换WebView',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.toWebView'
+            ),
           },
           {
             value: 'toHandle',
-            label: '切换Handle',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.toHandle'
+            ),
           },
           {
             value: 'isExistWebViewEle',
-            label: '判断控件元素是否存在',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.isExistWebViewEle'
+            ),
           },
           {
             value: 'isExistWebViewEleNum',
-            label: '判断控件元素存在个数',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.isExistWebViewEleNum'
+            ),
           },
           {
             value: 'webViewClick',
-            label: '点击控件元素',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewClick'
+            ),
           },
           {
             value: 'webElementScrollToView',
-            label: '滚动控件至顶部可见',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webElementScrollToView'
+            ),
           },
           {
             value: 'webViewSendKeys',
-            label: '输入文本',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewSendKeys'
+            ),
           },
           {
             value: 'webViewSendKeysByActions',
-            label: '输入文本(Actions)',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewSendKeysByActions'
+            ),
           },
           {
             value: 'webViewClear',
-            label: '清空输入框',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewClear'
+            ),
           },
           {
             value: 'getWebViewTextValue',
-            label: '获取文本',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.getWebViewTextValue'
+            ),
           },
           {
             value: 'assertWebViewText',
-            label: '断言文本',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.assertWebViewText'
+            ),
           },
           {
             value: 'getTitle',
-            label: '验证标题',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.getTitle'
+            ),
           },
           {
             value: 'getUrl',
-            label: '验证网址',
+            label: $t('stepDetail.label.androidOptions.element.webView.getUrl'),
           },
           {
             value: 'webViewRefresh',
-            label: '刷新页面',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewRefresh'
+            ),
           },
           {
             value: 'webViewBack',
-            label: '回退页面',
+            label: $t(
+              'stepDetail.label.androidOptions.element.webView.webViewBack'
+            ),
           },
         ],
       },
       {
-        label: 'POCO控件',
+        label: $t('stepDetail.label.androidOptions.element.poco.self'),
         value: 'pocoEle',
         children: [
           {
             value: 'startPocoDriver',
-            label: '启动PocoDriver',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.startPocoDriver'
+            ),
           },
           {
             value: 'setDefaultFindPocoElementInterval',
-            label: '设置查找控件策略',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.setDefaultFindPocoElementInterval'
+            ),
           },
           {
             value: 'setTheRealPositionOfTheWindow',
-            label: '设置偏移量',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.setTheRealPositionOfTheWindow'
+            ),
           },
           {
             value: 'isExistPocoEle',
-            label: '判断控件元素是否存在',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.isExistPocoEle'
+            ),
           },
           {
             value: 'isExistPocoEleNum',
-            label: '判断控件元素存在个数',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.isExistPocoEleNum'
+            ),
           },
           {
             value: 'pocoClick',
-            label: '点击控件元素',
+            label: $t('stepDetail.label.androidOptions.element.poco.pocoClick'),
           },
           {
             value: 'pocoLongPress',
-            label: '长按控件元素',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.pocoLongPress'
+            ),
           },
           {
             value: 'pocoSwipe',
-            label: '拖拽控件元素',
+            label: $t('stepDetail.label.androidOptions.element.poco.pocoSwipe'),
           },
           {
             value: 'freezeSource',
-            label: '冻结控件树',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.freezeSource'
+            ),
           },
           {
             value: 'thawSource',
-            label: '解冻控件树',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.thawSource'
+            ),
           },
           {
             value: 'closePocoDriver',
-            label: '关闭PocoDriver',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.closePocoDriver'
+            ),
           },
           {
             value: 'obtainPocoElementAttr',
-            label: '获取控件属性',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.obtainPocoElementAttr'
+            ),
           },
           {
             value: 'getPocoElementAttr',
-            label: '验证控件属性',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.getPocoElementAttr'
+            ),
           },
           {
             value: 'getPocoTextValue',
-            label: '获取文本',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.getPocoTextValue'
+            ),
           },
           {
             value: 'assertPocoText',
-            label: '断言文本',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.assertPocoText'
+            ),
           },
           {
             value: 'logPocoElementAttr',
-            label: '日志输出控件信息',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.logPocoElementAttr'
+            ),
           },
           {
             value: 'iteratorPocoElement',
-            label: '迭代控件列表',
+            label: $t(
+              'stepDetail.label.androidOptions.element.poco.iteratorPocoElement'
+            ),
           },
         ],
       },
     ],
   },
   {
-    label: '验证操作',
+    label: $t('stepDetail.label.androidOptions.check.self'),
     value: 'check',
     children: [
       {
         value: 'getActivity',
-        label: '验证Activity',
+        label: $t('stepDetail.label.androidOptions.check.getActivity'),
       },
       {
         value: 'assert',
-        label: '自定义断言',
+        label: $t('stepDetail.label.androidOptions.check.assert.self'),
         children: [
           {
             value: 'assertEquals',
-            label: '断言验证(相等)',
+            label: $t(
+              'stepDetail.label.androidOptions.check.assert.assertEquals'
+            ),
           },
           {
             value: 'assertNotEquals',
-            label: '断言验证(不相等)',
+            label: $t(
+              'stepDetail.label.androidOptions.check.assert.assertNotEquals'
+            ),
           },
           {
             value: 'assertTrue',
-            label: '断言验证(包含)',
+            label: $t(
+              'stepDetail.label.androidOptions.check.assert.assertTrue'
+            ),
           },
           {
             value: 'assertNotTrue',
-            label: '断言验证(不包含)',
+            label: $t(
+              'stepDetail.label.androidOptions.check.assert.assertNotTrue'
+            ),
           },
         ],
       },
     ],
   },
   {
-    label: '图像操作',
+    label: $t('stepDetail.label.androidOptions.img.self'),
     value: 'img',
     children: [
       {
         value: 'stepScreen',
-        label: '获取截图',
+        label: $t('stepDetail.label.androidOptions.img.stepScreen'),
       },
       {
         value: 'checkImage',
-        label: '检测图像相似度',
+        label: $t('stepDetail.label.androidOptions.img.checkImage'),
       },
       {
         value: 'clickByImg',
-        label: '图像定位并点击',
+        label: $t('stepDetail.label.androidOptions.img.clickByImg'),
       },
     ],
   },
   {
-    label: '特殊操作',
+    label: $t('stepDetail.label.androidOptions.spec.self'),
     value: 'spec',
     children: [
       {
         value: 'publicStep',
-        label: '公共步骤',
+        label: $t('stepDetail.label.androidOptions.spec.publicStep'),
       },
       {
         value: 'runScript',
-        label: '自定义脚本',
+        label: $t('stepDetail.label.androidOptions.spec.runScript'),
       },
       {
         value: 'monkey',
-        label: '随机事件',
+        label: $t('stepDetail.label.androidOptions.spec.monkey'),
       },
       {
         value: 'pause',
-        label: '强制等待',
+        label: $t('stepDetail.label.androidOptions.spec.pause'),
       },
     ],
   },
   {
-    label: '运行设置',
+    label: $t('stepDetail.label.androidOptions.settings.self'),
     value: 'settings',
     children: [
       {
         value: 'stepHold',
-        label: '步骤间隔设置',
+        label: $t('stepDetail.label.androidOptions.settings.stepHold'),
       },
       {
         value: 'switchTouchMode',
-        label: '触控模式设置',
+        label: $t('stepDetail.label.androidOptions.settings.switchTouchMode'),
       },
     ],
   },
 ]);
 const iOSOptions = ref([
   {
-    label: '设备操作',
+    label: $t('stepDetail.label.iOSOptions.system.self'),
     value: 'system',
     children: [
       {
         value: 'rotateDevice',
-        label: '屏幕交互',
+        label: $t('stepDetail.label.iOSOptions.system.rotateDevice.self'),
         children: [
           {
             value: 'lock',
-            label: '锁定屏幕',
+            label: $t('stepDetail.label.iOSOptions.system.rotateDevice.lock'),
           },
           {
             value: 'unLock',
-            label: '解锁屏幕',
+            label: $t('stepDetail.label.iOSOptions.system.rotateDevice.unlock'),
           },
         ],
       },
       {
         value: 'specaction',
-        label: '特殊交互',
+        label: $t('stepDetail.label.iOSOptions.system.specaction.self'),
         children: [
           {
             value: 'siriCommand',
-            label: 'Siri指令',
+            label: $t(
+              'stepDetail.label.iOSOptions.system.specaction.siriCommand'
+            ),
           },
           {
             value: 'sendKeyForce',
-            label: '键盘输入',
+            label: $t(
+              'stepDetail.label.iOSOptions.system.specaction.sendKeyForce'
+            ),
           },
           {
             value: 'swipeByDefinedDirection',
-            label: '从屏幕中央滑动距离',
+            label: $t(
+              'stepDetail.label.iOSOptions.system.specaction.swipeByDefinedDirection'
+            ),
           },
         ],
       },
       {
         value: 'interaction',
-        label: '物理交互',
+        label: $t('stepDetail.label.iOSOptions.system.interaction.self'),
         children: [
           {
             value: 'keyCode',
-            label: '系统按键',
+            label: $t('stepDetail.label.iOSOptions.system.interaction.keyCode'),
           },
         ],
       },
       {
         value: 'pasteboard',
-        label: '剪切板管理',
+        label: $t('stepDetail.label.iOSOptions.system.pasteboard.self'),
         children: [
           {
             value: 'setPasteboard',
-            label: '设置文本',
+            label: $t(
+              'stepDetail.label.iOSOptions.system.pasteboard.setPasteboard'
+            ),
           },
           {
             value: 'getPasteboard',
-            label: '获取文本',
+            label: $t(
+              'stepDetail.label.iOSOptions.system.pasteboard.getPasteboard'
+            ),
           },
         ],
       },
     ],
   },
   {
-    label: '应用操作',
+    label: $t('stepDetail.label.iOSOptions.app.self'),
     value: 'app',
     children: [
       {
         value: 'openApp',
-        label: '打开应用',
+        label: $t('stepDetail.label.iOSOptions.app.openApp'),
       },
       {
         value: 'terminate',
-        label: '终止应用',
+        label: $t('stepDetail.label.iOSOptions.app.terminate'),
       },
       {
         value: 'install',
-        label: '安装应用',
+        label: $t('stepDetail.label.iOSOptions.app.install'),
       },
       {
         value: 'uninstall',
-        label: '卸载应用',
+        label: $t('stepDetail.label.iOSOptions.app.uninstall'),
       },
       {
         value: 'runBack',
-        label: '后台运行应用',
+        label: $t('stepDetail.label.iOSOptions.app.runBack'),
       },
     ],
   },
   {
-    label: '控件元素操作',
+    label: $t('stepDetail.label.iOSOptions.element.self'),
     value: 'element',
     children: [
       {
-        label: 'iOS原生控件',
+        label: $t('stepDetail.label.iOSOptions.element.xcEle.self'),
         value: 'xcEle',
         children: [
           {
             value: 'findElementInterval',
-            label: '设置查找控件策略',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.findElementInterval'
+            ),
           },
           {
             value: 'isExistEle',
-            label: '判断控件元素是否存在',
+            label: $t('stepDetail.label.iOSOptions.element.xcEle.isExistEle'),
           },
           {
             value: 'isExistEleNum',
-            label: '判断控件元素存在个数',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.isExistEleNum'
+            ),
           },
           {
             value: 'click',
-            label: '点击控件元素',
+            label: $t('stepDetail.label.iOSOptions.element.xcEle.click'),
           },
           {
             value: 'sendKeys',
-            label: '输入文本',
+            label: $t('stepDetail.label.iOSOptions.element.xcEle.sendKeys'),
           },
           {
             value: 'sendKeysByActions',
-            label: '输入文本(Actions)',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.sendKeysByActions'
+            ),
           },
           {
             value: 'swipe2',
-            label: '拖拽控件元素',
+            label: $t('stepDetail.label.iOSOptions.element.xcEle.swipe2'),
           },
           {
             value: 'scrollToEle',
-            label: '滚动到控件元素',
+            label: $t('stepDetail.label.iOSOptions.element.xcEle.scrollToEle'),
           },
           {
             value: 'longPress',
-            label: '长按控件元素',
+            label: $t('stepDetail.label.iOSOptions.element.xcEle.longPress'),
           },
           {
             value: 'clear',
-            label: '清空输入框',
+            label: $t('stepDetail.label.iOSOptions.element.xcEle.clear'),
           },
           {
             value: 'obtainElementAttr',
-            label: '获取控件属性',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.obtainElementAttr'
+            ),
           },
           {
             value: 'getElementAttr',
-            label: '验证控件属性',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.getElementAttr'
+            ),
           },
           {
             value: 'getTextValue',
-            label: '获取文本',
+            label: $t('stepDetail.label.iOSOptions.element.xcEle.getTextValue'),
           },
           {
             value: 'assertText',
-            label: '断言文本',
+            label: $t('stepDetail.label.iOSOptions.element.xcEle.assertText'),
           },
           {
             value: 'logElementAttr',
-            label: '日志输出控件信息',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.logElementAttr'
+            ),
           },
           {
             value: 'iteratorIOSElement',
-            label: '迭代控件列表',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.iteratorIOSElement'
+            ),
           },
           {
             value: 'setSnapshotMaxDepth',
-            label: '设置控件获取最大遍历深度',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.xcEle.setSnapshotMaxDepth'
+            ),
           },
         ],
       },
       {
-        label: '坐标控件',
+        label: $t('stepDetail.label.iOSOptions.element.coordinate.self'),
         value: 'pointEle',
         children: [
           {
             value: 'tap',
-            label: '点击坐标',
+            label: $t('stepDetail.label.iOSOptions.element.coordinate.tap'),
           },
           {
             value: 'longPressPoint',
-            label: '长按坐标',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.coordinate.longPressPoint'
+            ),
           },
           {
             value: 'swipe',
-            label: '滑动拖拽',
+            label: $t('stepDetail.label.iOSOptions.element.coordinate.swipe'),
           },
         ],
       },
       {
-        label: 'POCO控件',
+        label: $t('stepDetail.label.iOSOptions.element.poco.self'),
         value: 'pocoEle',
         children: [
           {
             value: 'startPocoDriver',
-            label: '启动PocoDriver',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.startPocoDriver'
+            ),
           },
           {
             value: 'setDefaultFindPocoElementInterval',
-            label: '设置查找控件策略',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.setDefaultFindPocoElementInterval'
+            ),
           },
           {
             value: 'setTheRealPositionOfTheWindow',
-            label: '设置偏移量',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.setTheRealPositionOfTheWindow'
+            ),
           },
           {
             value: 'isExistPocoEle',
-            label: '判断控件元素是否存在',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.isExistPocoEle'
+            ),
           },
           {
             value: 'isExistPocoEleNum',
-            label: '判断控件元素存在个数',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.isExistPocoEleNum'
+            ),
           },
           {
             value: 'pocoClick',
-            label: '点击控件元素',
+            label: $t('stepDetail.label.iOSOptions.element.poco.pocoClick'),
           },
           {
             value: 'pocoLongPress',
-            label: '长按控件元素',
+            label: $t('stepDetail.label.iOSOptions.element.poco.pocoLongPress'),
           },
           {
             value: 'pocoSwipe',
-            label: '拖拽控件元素',
+            label: $t('stepDetail.label.iOSOptions.element.poco.pocoSwipe'),
           },
           {
             value: 'freezeSource',
-            label: '冻结控件树',
+            label: $t('stepDetail.label.iOSOptions.element.poco.freezeSource'),
           },
           {
             value: 'thawSource',
-            label: '解冻控件树',
+            label: $t('stepDetail.label.iOSOptions.element.poco.thawSource'),
           },
           {
             value: 'closePocoDriver',
-            label: '关闭PocoDriver',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.closePocoDriver'
+            ),
           },
           {
             value: 'obtainPocoElementAttr',
-            label: '获取控件属性',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.obtainPocoElementAttr'
+            ),
           },
           {
             value: 'getPocoElementAttr',
-            label: '验证控件属性',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.getPocoElementAttr'
+            ),
           },
           {
             value: 'getPocoTextValue',
-            label: '获取文本',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.getPocoTextValue'
+            ),
           },
           {
             value: 'assertPocoText',
-            label: '断言文本',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.assertPocoText'
+            ),
           },
           {
             value: 'logPocoElementAttr',
-            label: '日志输出控件信息',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.logPocoElementAttr'
+            ),
           },
           {
             value: 'iteratorPocoElement',
-            label: '迭代控件列表',
+            label: $t(
+              'stepDetail.label.iOSOptions.element.poco.iteratorPocoElement'
+            ),
           },
         ],
       },
     ],
   },
   {
-    label: '验证操作',
+    label: $t('stepDetail.label.iOSOptions.check.self'),
     value: 'check',
     children: [
       {
         value: 'assert',
-        label: '自定义断言',
+        label: $t('stepDetail.label.iOSOptions.check.assert.self'),
         children: [
           {
             value: 'assertEquals',
-            label: '断言验证(相等)',
+            label: $t('stepDetail.label.iOSOptions.check.assert.assertEquals'),
           },
           {
             value: 'assertNotEquals',
-            label: '断言验证(不相等)',
+            label: $t(
+              'stepDetail.label.iOSOptions.check.assert.assertNotEquals'
+            ),
           },
           {
             value: 'assertTrue',
-            label: '断言验证(包含)',
+            label: $t('stepDetail.label.iOSOptions.check.assert.assertTrue'),
           },
           {
             value: 'assertNotTrue',
-            label: '断言验证(不包含)',
+            label: $t('stepDetail.label.iOSOptions.check.assert.assertNotTrue'),
           },
         ],
       },
     ],
   },
   {
-    label: '图像操作',
+    label: $t('stepDetail.label.iOSOptions.img.self'),
     value: 'img',
     children: [
       {
         value: 'stepScreen',
-        label: '获取截图',
+        label: $t('stepDetail.label.iOSOptions.img.stepScreen'),
       },
       {
         value: 'checkImage',
-        label: '检测图像相似度',
+        label: $t('stepDetail.label.iOSOptions.img.checkImage'),
       },
       {
         value: 'clickByImg',
-        label: '图像定位并点击',
+        label: $t('stepDetail.label.iOSOptions.img.clickByImg'),
       },
     ],
   },
   {
-    label: '特殊操作',
+    label: $t('stepDetail.label.iOSOptions.spec.self'),
     value: 'spec',
     children: [
       {
         value: 'publicStep',
-        label: '公共步骤',
+        label: $t('stepDetail.label.iOSOptions.spec.publicStep'),
       },
       {
         value: 'runScript',
-        label: '自定义脚本',
+        label: $t('stepDetail.label.iOSOptions.spec.runScript'),
       },
       {
         value: 'monkey',
-        label: '随机事件',
+        label: $t('stepDetail.label.iOSOptions.spec.monkey'),
       },
       {
         value: 'pause',
-        label: '强制等待',
+        label: $t('stepDetail.label.iOSOptions.spec.pause'),
       },
     ],
   },
   {
-    label: '运行设置',
+    label: $t('stepDetail.label.iOSOptions.settings.self'),
     value: 'settings',
     children: [
       {
         value: 'stepHold',
-        label: '步骤间隔设置',
+        label: $t('stepDetail.label.iOSOptions.settings.stepHold'),
       },
     ],
   },
@@ -1203,10 +1394,10 @@ onMounted(() => {
     <div v-if="step.conditionType !== 3">
       <el-form-item
         prop="stepType"
-        label="步骤类型"
+        :label="$t('stepDetail.stepType')"
         :rules="{
           required: true,
-          message: '请填写步骤类型',
+          message: $t('stepDetail.stepTypeInput'),
           trigger: 'change',
         }"
       >
@@ -1215,7 +1406,7 @@ onMounted(() => {
           filterable
           style="width: 100%"
           size="small"
-          placeholder="请填写步骤类型"
+          :placeholder="$t('stepDetail.stepTypeInput')"
           :options="options"
           :props="{ emitPath: false, expandTrigger: 'hover' }"
           @change="changeType"
@@ -1237,39 +1428,56 @@ onMounted(() => {
     <div v-if="step.conditionType !== 3">
       <div v-if="step.stepType === 'keyCodeSelf'">
         <el-form-item
-          label="按键Code"
+          :label="$t('stepDetail.keyCode')"
           :rules="[
-            { required: true, message: '请输入按键Code', trigger: 'blur' },
+            {
+              required: true,
+              message: $t('stepDetail.msg.input') + $t('stepDetail.keyCode'),
+              trigger: 'blur',
+            },
           ]"
           prop="content"
         >
           <el-input
             v-model="step.content"
-            placeholder="请输入按键Code"
+            :placeholder="$t('stepDetail.msg.input') + $t('stepDetail.keyCode')"
           ></el-input>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'keyCode'">
         <el-form-item
-          label="系统按键"
+          :label="
+            $t('stepDetail.label.androidOptions.system.interaction.keyCode')
+          "
           :rules="[
-            { required: true, message: '请选择系统按键', trigger: 'change' },
+            {
+              required: true,
+              message:
+                $t('stepDetail.msg.select') +
+                $t(
+                  'stepDetail.label.androidOptions.system.interaction.keyCode'
+                ),
+              trigger: 'change',
+            },
           ]"
           prop="content"
         >
           <el-select
             v-if="step.platform === 1"
             v-model="step.content"
-            placeholder="请选择系统按键"
+            :placeholder="
+              $t('stepDetail.msg.select') +
+              $t('stepDetail.label.androidOptions.system.interaction.keyCode')
+            "
           >
-            <el-option-group label="常用按键">
+            <el-option-group :label="$t('stepDetail.commonKey')">
               <el-option value="HOME"></el-option>
               <el-option value="BACK"></el-option>
               <el-option value="MENU"></el-option>
               <el-option value="APP_SWITCH"></el-option>
             </el-option-group>
-            <el-option-group label="其他">
+            <el-option-group :label="$t('stepDetail.others')">
               <el-option value="ENTER"></el-option>
               <el-option value="DEL"></el-option>
               <el-option value="BRIGHTNESS_DOWN"></el-option>
@@ -1286,28 +1494,36 @@ onMounted(() => {
           <el-select
             v-if="step.platform === 2"
             v-model="step.content"
-            placeholder="请选择系统按键"
+            :placeholder="
+              $t('stepDetail.msg.select') +
+              $t('stepDetail.label.androidOptions.system.interaction.keyCode')
+            "
           >
             <el-option value="home"></el-option>
-            <el-option value="volumeup"></el-option>
-            <el-option value="volumedown"></el-option>
+            <el-option value="volume up"></el-option>
+            <el-option value="volume down"></el-option>
           </el-select>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'switchTouchMode'">
         <el-form-item
-          label="触控模式"
+          :label="$t('stepDetail.touchMode')"
           :rules="[
             {
               required: true,
-              message: '请选择触控模式，默认为APK触控',
+              message: $t('stepDetail.msg.touch'),
               trigger: 'change',
             },
           ]"
           prop="content"
         >
-          <el-select v-model="step.content" placeholder="请选择触控模式">
+          <el-select
+            v-model="step.content"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.touchMode')
+            "
+          >
             <el-option value="SONIC_APK"></el-option>
             <el-option value="ADB"></el-option>
             <el-option value="APPIUM_UIAUTOMATOR2_SERVER"></el-option>
@@ -1317,8 +1533,11 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'tap'">
         <element-select
-          label="坐标控件"
-          place="请选择坐标控件元素"
+          :label="$t('stepDetail.label.androidOptions.element.coordinate.self')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
+          "
           :index="0"
           :project-id="projectId"
           type="point"
@@ -1328,14 +1547,17 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'longPressPoint'">
         <element-select
-          label="坐标控件"
-          place="请选择坐标控件元素"
+          :label="$t('stepDetail.label.androidOptions.element.coordinate.self')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
+          "
           :index="0"
           :project-id="projectId"
           type="point"
           :step="step"
         />
-        <el-form-item label="长按时间">
+        <el-form-item :label="$t('stepDetail.pressTime')">
           <el-input-number
             v-model="step.content"
             :min="100"
@@ -1347,16 +1569,22 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'swipe'">
         <element-select
-          label="从控件"
-          place="请选择坐标控件元素"
+          :label="$t('stepDetail.fromControl')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
+          "
           :index="0"
           :project-id="projectId"
           type="point"
           :step="step"
         />
         <element-select
-          label="拖拽到"
-          place="请选择坐标控件元素"
+          :label="$t('stepDetail.dragTo')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
+          "
           :index="1"
           :project-id="projectId"
           type="point"
@@ -1366,8 +1594,8 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'pocoClick'">
         <element-select
-          label="POCO控件"
-          place="请选择POCO控件元素"
+          :label="$t('stepDetail.pocoControl')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.pocoControl')"
           :index="0"
           :project-id="projectId"
           type="poco"
@@ -1377,14 +1605,14 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'pocoLongPress'">
         <element-select
-          label="POCO控件"
-          place="请选择POCO控件元素"
+          :label="$t('stepDetail.pocoControl')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.pocoControl')"
           :index="0"
           :project-id="projectId"
           type="poco"
           :step="step"
         />
-        <el-form-item label="长按时间">
+        <el-form-item :label="$t('stepDetail.pressTime')">
           <el-input-number
             v-model="step.content"
             :min="100"
@@ -1396,16 +1624,22 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'pocoSwipe'">
         <element-select
-          label="从控件"
-          place="请选择坐标控件元素"
+          :label="$t('stepDetail.fromControl')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
+          "
           :index="0"
           :project-id="projectId"
           type="poco"
           :step="step"
         />
         <element-select
-          label="拖拽到"
-          place="请选择坐标控件元素"
+          :label="$t('stepDetail.dragTo')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
+          "
           :index="1"
           :project-id="projectId"
           type="poco"
@@ -1415,11 +1649,11 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'startPocoDriver'">
         <el-form-item
-          label="游戏引擎"
+          :label="$t('stepDetail.gameEngine')"
           prop="content"
           :rules="{
             required: true,
-            message: '引擎不能为空',
+            message: $t('stepDetail.engine') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
@@ -1434,11 +1668,11 @@ onMounted(() => {
           </el-select>
         </el-form-item>
         <el-form-item
-          label="通信端口"
+          :label="$t('stepDetail.communicationPort')"
           prop="text"
           :rules="{
             required: true,
-            message: '端口不能为空',
+            message: $t('stepDetail.port') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
@@ -1456,13 +1690,13 @@ onMounted(() => {
           label-width="120"
           :rules="{
             required: true,
-            message: 'offsetWidth不能为空',
+            message: 'offsetWidth' + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
           <el-input
             v-model="offsets.offsetWidth"
-            placeholder="请输入offsetWidth"
+            :placeholder="$t('stepDetail.msg.input') + offsetWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -1470,13 +1704,13 @@ onMounted(() => {
           label-width="120"
           :rules="{
             required: true,
-            message: 'offsetHeight不能为空',
+            message: 'offsetHeight' + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
           <el-input
             v-model="offsets.offsetHeight"
-            placeholder="请输入offsetHeight"
+            :placeholder="$t('stepDetail.msg.input') + offsetHeight"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -1484,13 +1718,13 @@ onMounted(() => {
           label-width="120"
           :rules="{
             required: true,
-            message: 'windowWidth不能为空',
+            message: 'windowWidth' + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
           <el-input
             v-model="offsets.windowWidth"
-            placeholder="请输入windowWidth"
+            :placeholder="$t('stepDetail.msg.input') + windowWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -1498,64 +1732,86 @@ onMounted(() => {
           label-width="120"
           :rules="{
             required: true,
-            message: 'windowHeight不能为空',
+            message: 'windowHeight' + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
           <el-input
             v-model="offsets.windowHeight"
-            placeholder="请输入windowHeight"
+            :placeholder="$t('stepDetail.msg.input') + windowHeight"
           ></el-input>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'isExistPocoEle'">
         <element-select
-          label="POCO控件"
-          place="请选择POCO控件元素"
+          :label="$t('stepDetail.pocoControl')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.pocoControl')"
           :index="0"
           :project-id="projectId"
           type="poco"
           :step="step"
         />
         <el-form-item
-          label="存在与否"
+          :label="$t('stepDetail.verify.existedOrNot')"
           prop="content"
           :rules="{
             required: true,
-            message: '断言不能为空',
+            message:
+              $t('stepDetail.verify.assert') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option label="存在" value="true"></el-option>
-            <el-option label="不存在" value="false"></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.existed')"
+              value="true"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.notExisted')"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'isExistPocoEleNum'">
         <element-select
-          label="POCO控件"
-          place="请选择POCO控件元素"
+          :label="$t('stepDetail.pocoControl')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.pocoControl')"
           :index="0"
           :project-id="projectId"
           type="poco"
           :step="step"
         />
         <div>
-          <el-form-item label="验证个数" :model="step">
+          <el-form-item :label="$t('stepDetail.verify.num')" :model="step">
             <el-select v-model="step.content" prop="content">
-              <el-option label="大于" value=">"></el-option>
-              <el-option label="小于" value="<"></el-option>
-              <el-option label="等于" value="="></el-option>
-              <el-option label="大于等于" value=">="></el-option>
-              <el-option label="小于等于" value="<="></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.greaterThan')"
+                value=">"
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.lessThan')"
+                value="<"
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.equalTo')"
+                value="="
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.notLessThan')"
+                value=">="
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.notGreaterThan')"
+                value="<="
+              ></el-option>
             </el-select>
 
             <el-input-number
               v-model="step.text"
-              placeholder="输入数量"
+              :placeholder="$t('stepDetail.verify.enterNum')"
               :min="0"
               style="width: 150px; margin-left: 10px"
               prop="text"
@@ -1570,20 +1826,20 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <el-form-item
           prop="text"
-          label="打开应用"
+          :label="$t('stepDetail.label.androidOptions.app.openApp')"
           :rules="{
             required: true,
-            message: '包名不能为空',
+            message: $t('stepDetail.app.pkg') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
           <el-input
             v-model="step.text"
-            placeholder="请输入启动的App包名"
+            :placeholder="$t('stepDetail.msg.startPkgName')"
           ></el-input>
         </el-form-item>
       </div>
@@ -1594,20 +1850,20 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <el-form-item
           prop="text"
-          label="终止应用"
+          :label="$t('stepDetail.label.androidOptions.app.terminate')"
           :rules="{
             required: true,
-            message: '包名不能为空',
+            message: $t('stepDetail.app.pkg') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
           <el-input
             v-model="step.text"
-            placeholder="请输入终止的App包名"
+            :placeholder="$t('stepDetail.msg.stopPkgName')"
           ></el-input>
         </el-form-item>
       </div>
@@ -1618,35 +1874,42 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <el-form-item
-          label="安装方式"
+          :label="$t('stepDetail.installation')"
           prop="content"
           :rules="{
             required: true,
-            message: '安装方式不能为空',
+            message:
+              $t('stepDetail.installation') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option label="自定义下载路径或本地安装" :value="1"></el-option>
-            <el-option label="已有安装包列表安装" :value="2"></el-option>
+            <el-option
+              :label="$t('stepDetail.msg.installDefine')"
+              :value="1"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.msg.installList')"
+              :value="2"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
           v-if="step.content === 1"
           prop="text"
-          label="安装路径"
+          :label="$t('stepDetail.installPath')"
           :rules="{
             required: true,
-            message: '路径不能为空',
+            message: $t('stepDetail.path') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
           <el-input
             v-model="step.text"
-            placeholder="请输入App下载路径或本地apk路径"
+            :placeholder="$t('stepDetail.msg.installPathInput')"
           ></el-input>
         </el-form-item>
         <el-alert
@@ -1655,12 +1918,16 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 需要先接入Jenkins插件，并确认安装包管理有对应安装包。多个符合条件的安装包优先选择最新的安装。"
+          :title="$t('stepDetail.msgTips.install')"
         />
-        <el-form-item v-if="step.content === 2" prop="text" label="分支名称">
+        <el-form-item
+          v-if="step.content === 2"
+          prop="text"
+          :label="$t('stepDetail.app.branchName')"
+        >
           <el-input
             v-model="step.text"
-            placeholder="请输入分支名称，支持模糊匹配，可以为空"
+            :placeholder="$t('stepDetail.msg.branchName')"
           ></el-input>
         </el-form-item>
       </div>
@@ -1671,26 +1938,26 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <el-form-item
           prop="text"
-          label="卸载应用"
+          :label="$t('stepDetail.label.androidOptions.app.uninstall')"
           :rules="{
             required: true,
-            message: '包名不能为空',
+            message: $t('stepDetail.app.pkg') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
           <el-input
             v-model="step.text"
-            placeholder="请输入卸载的App包名"
+            :placeholder="$t('stepDetail.msg.uninstallPkgName')"
           ></el-input>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'runBack'">
-        <el-form-item label="后台运行">
+        <el-form-item :label="$t('stepDetail.label.iOSOptions.app.runBack')">
           <el-input-number
             v-model="step.content"
             :min="1000"
@@ -1706,20 +1973,20 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <el-form-item
           prop="text"
-          label="清空应用"
+          :label="$t('stepDetail.app.empty')"
           :rules="{
             required: true,
-            message: '包名不能为空',
+            message: $t('stepDetail.app.pkg') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
           <el-input
             v-model="step.text"
-            placeholder="请输入清空应用的App包名"
+            :placeholder="$t('stepDetail.msg.clearAppPkgName')"
           ></el-input>
         </el-form-item>
       </div>
@@ -1730,40 +1997,47 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 传递Android应用的App包名，该步骤可实现自动授权目标App所需要的所有权限"
+          :title="$t('stepDetail.msgTips.androidPkgName')"
         />
         <el-form-item
           prop="text"
-          label="授权应用"
+          :label="$t('stepDetail.app.authorize')"
           :rules="{
             required: true,
-            message: '包名不能为空',
+            message: $t('stepDetail.app.pkg') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
           <el-input
             v-model="step.text"
-            placeholder="请输入自动授权应用权限的App包名"
+            :placeholder="$t('stepDetail.msg.authPkgNameInput')"
           ></el-input>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'swipeByDefinedDirection'">
         <el-form-item
-          label="方向"
+          :label="$t('stepDetail.side')"
           :rules="[
-            { required: true, message: '请选择方向', trigger: 'change' },
+            {
+              required: true,
+              message: $t('stepDetail.msg.select') + $t('stepDetail.side'),
+              trigger: 'change',
+            },
           ]"
           prop="text"
         >
-          <el-select v-model="step.text" placeholder="请选择方向">
+          <el-select
+            v-model="step.text"
+            :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.side')"
+          >
             <el-option label="UP" value="up"></el-option>
             <el-option label="DOWN" value="down"></el-option>
             <el-option label="LEFT" value="left"></el-option>
             <el-option label="RIGHT" value="right"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="滑动距离">
+        <el-form-item :label="$t('stepDetail.slideDistance')">
           <el-input-number
             v-model="step.content"
             :min="1"
@@ -1774,16 +2048,16 @@ onMounted(() => {
       </div>
 
       <div v-if="step.stepType === 'toWebView'">
-        <el-form-item label="包名">
+        <el-form-item :label="$t('stepDetail.app.pkg')">
           <el-input
             v-model="step.content"
-            placeholder="请输入WebView所在包名"
+            :placeholder="$t('stepDetail.msg.webviewPkgName')"
           ></el-input>
         </el-form-item>
-        <el-form-item label="进程名">
+        <el-form-item :label="$t('stepDetail.processName')">
           <el-input
             v-model="step.text"
-            placeholder="（可选）请输入WebView所在进程名，不输入默认为包名"
+            :placeholder="$t('stepDetail.msg.processName')"
           ></el-input>
         </el-form-item>
       </div>
@@ -1794,12 +2068,12 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: Handle相当于页面的Tab，切换WebView后找不到页面可以尝试切换Handle"
+          :title="$t('stepDetail.msgTips.tab')"
         />
-        <el-form-item label="Handle信息">
+        <el-form-item :label="$t('stepDetail.handleInfo')">
           <el-input
             v-model="step.content"
-            placeholder="请输入Handle页面标题 或 地址 或 index下标"
+            :placeholder="$t('stepDetail.msg.titleInput')"
           ></el-input>
         </el-form-item>
       </div>
@@ -1811,25 +2085,34 @@ onMounted(() => {
         "
       >
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
           :step="step"
         />
         <el-form-item
-          label="存在与否"
+          :label="$t('stepDetail.verify.existedOrNot')"
           prop="content"
           :rules="{
             required: true,
-            message: '断言不能为空',
+            message:
+              $t('stepDetail.verify.assert') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option label="存在" value="true"></el-option>
-            <el-option label="不存在" value="false"></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.existed')"
+              value="true"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.notExisted')"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
       </div>
@@ -1841,26 +2124,43 @@ onMounted(() => {
         "
       >
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
           :step="step"
         />
         <div>
-          <el-form-item label="验证个数" :model="step">
+          <el-form-item :label="$t('stepDetail.verify.num')" :model="step">
             <el-select v-model="step.content" prop="content">
-              <el-option label="大于" value=">"></el-option>
-              <el-option label="小于" value="<"></el-option>
-              <el-option label="等于" value="="></el-option>
-              <el-option label="大于等于" value=">="></el-option>
-              <el-option label="小于等于" value="<="></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.greaterThan')"
+                value=">"
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.lessThan')"
+                value="<"
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.equalTo')"
+                value="="
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.notLessThan')"
+                value=">="
+              ></el-option>
+              <el-option
+                :label="$t('stepDetail.verify.notGreaterThan')"
+                value="<="
+              ></el-option>
             </el-select>
 
             <el-input-number
               v-model="step.text"
-              placeholder="输入数量"
+              :placeholder="$t('stepDetail.enterNum')"
               :min="0"
               style="width: 150px; margin-left: 10px"
               prop="text"
@@ -1877,76 +2177,96 @@ onMounted(() => {
         "
       >
         <el-form-item
-          label="开启与否"
+          :label="$t('stepDetail.openOrNot')"
           prop="content"
           :rules="{
             required: true,
-            message: '状态不能为空',
+            message: $t('stepDetail.status') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option label="开启" value="true"></el-option>
-            <el-option label="关闭" value="false"></el-option>
+            <el-option :label="$t('stepDetail.open')" value="true"></el-option>
+            <el-option
+              :label="$t('stepDetail.close')"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'switchWindowMode'">
         <el-form-item
-          label="切换模式"
+          :label="$t('stepDetail.switch.mode')"
           prop="content"
           :rules="{
             required: true,
-            message: '模式不能为空',
+            message: $t('stepDetail.mode') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option label="多窗口模式" value="true"></el-option>
-            <el-option label="单窗口模式" value="false"></el-option>
+            <el-option
+              :label="$t('stepDetail.multiWindowMode')"
+              value="true"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.singleWindowMode')"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'switchIgnoreMode'">
         <el-form-item
-          label="是否忽略"
+          :label="$t('stepDetail.ignoreOrNot')"
           prop="content"
           :rules="{
             required: true,
-            message: '不能为空',
+            message: $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option label="忽略" value="true"></el-option>
-            <el-option label="不忽略" value="false"></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.ignore')"
+              value="true"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.notIgnore')"
+              value="false"
+            ></el-option>
           </el-select>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'switchVisibleMode'">
         <el-form-item
-          label="切换显示"
+          :label="$t('stepDetail.switch.display')"
           prop="content"
           :rules="{
             required: true,
-            message: '不能为空',
+            message: $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option label="显示" value="true"></el-option>
-            <el-option label="隐藏" value="false"></el-option>
+            <el-option
+              :label="$t('stepDetail.display')"
+              value="true"
+            ></el-option>
+            <el-option :label="$t('stepDetail.hide')" value="false"></el-option>
           </el-select>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'webElementScrollToView'">
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -1956,8 +2276,10 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'click' || step.stepType === 'webViewClick'">
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -1981,24 +2303,28 @@ onMounted(() => {
         >
           <template #title>
             <div v-if="shouldShowByActionsTip(step.stepType)">
-              TIPS: 在文本框需要先获取焦点，才能进行输入时，使用此方式。
+              {{ $t('stepDetail.msgTips.focus') }}
             </div>
             <div>
-              需要临时变量或全局变量时，可以添加&#123;&#123; 变量名
-              &#125;&#125;的形式。
+              {{`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`}}
             </div>
           </template>
         </el-alert>
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
           :step="step"
         />
-        <el-form-item label="输入值">
-          <el-input v-model="step.content" placeholder="请输入值"></el-input>
+        <el-form-item :label="$t('stepDetail.inputValue')">
+          <el-input
+            v-model="step.content"
+            :placeholder="$t('stepDetail.inputValue')"
+          ></el-input>
         </el-form-item>
       </div>
 
@@ -2013,25 +2339,32 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 本功能需要先唤醒系统键盘。需要临时变量或全局变量时，可以添加{{变量名}}的形式。"
+          :title="`${$t('stepDetail.msgTips.sysKey')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
-        <el-form-item label="输入值">
-          <el-input v-model="step.content" placeholder="请输入值"></el-input>
+        <el-form-item :label="$t('stepDetail.inputValue')">
+          <el-input
+            v-model="step.content"
+            :placeholder="$t('stepDetail.inputValue')"
+          ></el-input>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'swipe2'">
         <element-select
-          label="从控件"
-          place="请选择控件元素"
+          :label="$t('stepDetail.fromControl')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
           :step="step"
         />
         <element-select
-          label="拖拽到"
-          place="请选择控件元素"
+          :label="$t('stepDetail.dragTo')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="1"
           :project-id="projectId"
           type="normal"
@@ -2045,36 +2378,44 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 长列表的场景下，可通过该方法连续滚动，尝试让目标元素可见"
+          :title="$t('stepDetail.msgTips.table')"
         />
         <element-select
-          label="目标控件"
-          place="请选择控件元素"
+          :label="$t('stepDetail.targetControl')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
           :step="step"
         />
         <el-form-item
-          label="滚动方向"
+          :label="$t('stepDetail.scrollOrientation')"
           prop="content"
           :rules="{
             required: true,
-            message: '滚动方向不能为空',
+            message:
+              $t('stepDetail.scrollOrientation') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.text">
-            <el-option label="向下" value="down"></el-option>
-            <el-option label="向上" value="up"></el-option>
+            <el-option
+              :label="$t('stepDetail.downwards')"
+              value="down"
+            ></el-option>
+            <el-option :label="$t('stepDetail.upwards')" value="up"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
-          label="最多滚动"
+          :label="$t('stepDetail.maxScroll')"
           prop="text"
           :rules="{
             required: true,
-            message: '滚动次数不能为空',
+            message:
+              $t('stepDetail.scrollNum') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
@@ -2088,7 +2429,7 @@ onMounted(() => {
       </div>
 
       <div v-if="step.stepType === 'setSnapshotMaxDepth'">
-        <el-form-item label="最大深度">
+        <el-form-item :label="$t('stepDetail.maxDepth')">
           <el-input-number
             v-model="step.content"
             :min="1"
@@ -2096,17 +2437,18 @@ onMounted(() => {
           ></el-input-number>
         </el-form-item>
       </div>
-
       <div v-if="step.stepType === 'longPress'">
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
           :step="step"
         />
-        <el-form-item label="长按时间">
+        <el-form-item :label="$t('stepDetail.pressTime')">
           <el-input-number
             v-model="step.content"
             :min="100"
@@ -2118,8 +2460,10 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'clear' || step.stepType === 'webViewClear'">
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -2133,12 +2477,14 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 可以将获取的文本放入临时变量中"
+          :title="$t('stepDetail.msgTips.text')"
         />
-        <el-form-item label="变量名">
+        <el-form-item :label="$t('stepDetail.variableName')">
           <el-input
             v-model="step.content"
-            placeholder="请输入变量名"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2154,20 +2500,24 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 可以将获取的文本放入临时变量中"
+          :title="$t('stepDetail.msgTips.text')"
         />
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
           :step="step"
         />
-        <el-form-item label="变量名">
+        <el-form-item :label="$t('stepDetail.variableName')">
           <el-input
             v-model="step.content"
-            placeholder="请输入变量名"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2178,29 +2528,35 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 可以将获取的文本放入临时变量中"
+          :title="$t('stepDetail.msgTips.text')"
         />
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="poco"
           :step="step"
         />
-        <el-form-item label="变量名">
+        <el-form-item :label="$t('stepDetail.variableName')">
           <el-input
             v-model="step.content"
-            placeholder="请输入变量名"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'setPasteboard'">
-        <el-form-item label="文本信息">
+        <el-form-item :label="$t('stepDetail.textInfo')">
           <el-input
             v-model="step.content"
-            placeholder="请输入设置的文本信息"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.set.textInfo')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2211,12 +2567,14 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 获取的文本可放入临时变量中"
+          :title="$t('stepDetail.msgTips.text')"
         />
-        <el-form-item label="变量名">
+        <el-form-item :label="$t('stepDetail.variableName')">
           <el-input
             v-model="step.content"
-            placeholder="请输入变量名"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2230,17 +2588,21 @@ onMounted(() => {
         "
       >
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           :type="step.stepType === 'getPocoText' ? 'poco' : 'normal'"
           :step="step"
         />
-        <el-form-item label="期望值">
+        <el-form-item :label="$t('stepDetail.verify.expectedValue')">
           <el-input
             v-model="step.content"
-            placeholder="请输入期望值"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2254,46 +2616,71 @@ onMounted(() => {
         "
       >
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           :type="step.stepType === 'assertPocoText' ? 'poco' : 'normal'"
           :step="step"
         />
         <el-form-item
-          label="断言类型"
+          :label="$t('stepDetail.verify.assertType')"
           prop="content"
           :rules="{
             required: true,
-            message: '断言类型不能为空',
+            message:
+              $t('stepDetail.verify.assertType') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select v-model="step.content">
-            <el-option label="等于" value="equal"></el-option>
-            <el-option label="不等于" value="notEqual"></el-option>
-            <el-option label="包含" value="contain"></el-option>
-            <el-option label="不包含" value="notContain"></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.equalTo')"
+              value="equal"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.notEqual')"
+              value="notEqual"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.contain')"
+              value="contain"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.verify.notContain')"
+              value="notContain"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
-          label="期望值"
+          :label="$t('stepDetail.verify.expectedValue')"
           prop="text"
           :rules="{
             required: true,
-            message: '期望值不能为空',
+            message:
+              $t('stepDetail.verify.expectedValue') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
-          <el-input v-model="step.text" placeholder="请输入期望值"></el-input>
+          <el-input
+            v-model="step.text"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
+          ></el-input>
         </el-form-item>
       </div>
       <div v-if="step.stepType === 'getTitle' || step.stepType === 'getUrl'">
-        <el-form-item label="期望值">
+        <el-form-item :label="$t('stepDetail.verify.expectedValue')">
           <el-input
             v-model="step.content"
-            placeholder="请输入期望值"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2304,11 +2691,11 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 需要临时变量或全局变量时，可以添加{{变量名}}的形式"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <global-params-select
-          label="期望值"
-          place="请输入期望值或选择全局变量"
+          :label="$t('stepDetail.verify.expectedValue')"
+          :place="$t('stepDetail.msg.expected')"
           :project-id="projectId"
           :step="step"
         />
@@ -2321,26 +2708,30 @@ onMounted(() => {
         "
       >
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           :type="step.stepType === 'logElementAttr' ? 'normal' : 'poco'"
           :step="step"
         />
         <el-form-item
-          label="控件属性"
+          :label="$t('stepDetail.control.attribute')"
           :rules="{
             required: true,
-            message: '控件属性不能为空',
+            message:
+              $t('stepDetail.control.attribute') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select
             v-if="step.stepType === 'logPocoElementAttr'"
             v-model="attrList"
-            label="目标属性"
-            placeholder="请选择控件属性，可多选"
+            :label="$t('stepDetail.targetAttr')"
+            :placeholder="$t('stepDetail.msg.control')"
             multiple
           >
             <el-option value="layer"></el-option>
@@ -2364,8 +2755,8 @@ onMounted(() => {
           <el-select
             v-else-if="step.platform === 1"
             v-model="attrList"
-            label="目标属性"
-            placeholder="请选择控件属性，可多选"
+            :label="$t('stepDetail.targetAttr')"
+            :placeholder="$t('stepDetail.msg.control')"
             multiple
           >
             <el-option value="class"></el-option>
@@ -2391,8 +2782,8 @@ onMounted(() => {
           <el-select
             v-else
             v-model="attrList"
-            label="目标属性"
-            placeholder="请选择控件属性，可多选"
+            :label="$t('stepDetail.targetAttr')"
+            :placeholder="$t('stepDetail.msg.control')"
             multiple
           >
             <el-option value="UID"></el-option>
@@ -2411,37 +2802,48 @@ onMounted(() => {
         </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'getElementAttr' || step.stepType === 'obtainElementAttr'">
+      <div
+        v-if="
+          step.stepType === 'getElementAttr' ||
+          step.stepType === 'obtainElementAttr'
+        "
+      >
         <el-alert
           v-show="step.stepType === 'obtainElementAttr'"
           show-icon
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 可以将获取的控件属性放入临时变量中"
+          :title="$t('stepDetail.msgTips.controlAttribute')"
         />
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
           :step="step"
         />
         <el-form-item
-          label="控件属性"
+          :label="$t('stepDetail.control.attribute')"
           prop="text"
           :rules="{
             required: true,
-            message: '控件属性不能为空',
+            message:
+              $t('stepDetail.control.attribute') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select
             v-if="step.platform === 1"
             v-model="step.text"
-            label="属性"
-            placeholder="请选择控件属性"
+            :label="$t('stepDetail.attribute')"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.control.attribute')
+            "
           >
             <el-option value="class"></el-option>
             <el-option value="password"></el-option>
@@ -2466,8 +2868,10 @@ onMounted(() => {
           <el-select
             v-else
             v-model="step.text"
-            label="属性"
-            placeholder="请选择控件属性"
+            :label="$t('stepDetail.attribute')"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.control.attribute')
+            "
           >
             <el-option value="UID"></el-option>
             <el-option value="accessibilityContainer"></el-option>
@@ -2483,54 +2887,73 @@ onMounted(() => {
             <el-option value="visible"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item 
+        <el-form-item
           v-if="step.stepType === 'getElementAttr'"
-          label="期望值" prop="content">
+          :label="$t('stepDetail.verify.expectedValue')"
+          prop="content"
+        >
           <el-input
             v-model="step.content"
-            placeholder="请输入期望值"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
           ></el-input>
         </el-form-item>
-        <el-form-item 
+        <el-form-item
           v-else
-          label="变量名" prop="content">
+          :label="$t('stepDetail.variableName')"
+          prop="content"
+        >
           <el-input
             v-model="step.content"
-            placeholder="请输入变量名"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'getPocoElementAttr' || step.stepType === 'obtainPocoElementAttr'">
+      <div
+        v-if="
+          step.stepType === 'getPocoElementAttr' ||
+          step.stepType === 'obtainPocoElementAttr'
+        "
+      >
         <el-alert
           v-show="step.stepType === 'obtainPocoElementAttr'"
           show-icon
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 可以将获取的控件属性放入临时变量中"
+          :title="$t('stepDetail.msgTips.controlAttribute')"
         />
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="poco"
           :step="step"
         />
         <el-form-item
-          label="控件属性"
+          :label="$t('stepDetail.control.attribute')"
           prop="text"
           :rules="{
             required: true,
-            message: '控件属性不能为空',
+            message:
+              $t('stepDetail.control.attribute') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select
             v-model="step.text"
-            label="属性"
-            placeholder="请选择控件属性"
+            :label="$t('stepDetail.attribute')"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.control.attribute')
+            "
           >
             <el-option value="layer"></el-option>
             <el-option value="name"></el-option>
@@ -2551,29 +2974,37 @@ onMounted(() => {
             <el-option value="clickable"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item 
+        <el-form-item
           v-if="step.stepType === 'getPocoElementAttr'"
-          label="期望值" prop="content">
+          :label="$t('stepDetail.verify.expectedValue')"
+          prop="content"
+        >
           <el-input
             v-model="step.content"
-            placeholder="请输入期望值"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
           ></el-input>
         </el-form-item>
-        <el-form-item 
+        <el-form-item
           v-else
-          label="变量名" prop="content">
+          :label="$t('stepDetail.variableName')"
+          prop="content"
+        >
           <el-input
             v-model="step.content"
-            placeholder="请输入变量名"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.variableName')
+            "
           ></el-input>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'siriCommand'">
-        <el-form-item label="siri指令">
+        <el-form-item :label="$t('stepDetail.siriCmd')">
           <el-input
             v-model="step.content"
-            placeholder="请输入siri指令，例：what day is it today?"
+            :placeholder="$t('stepDetail.msg.siri')"
           ></el-input>
         </el-form-item>
       </div>
@@ -2591,15 +3022,22 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 可使用{{变量名}}将全局变量或临时变量插入，验证时将替换该内容为变量值"
+          :title="`${$t('stepDetail.use')} &#123;&#123;${$t('stepDetail.variableName')}&#125;&#125; ${$t('stepDetail.msgTips.verify')}`"
         />
-        <el-form-item label="真实值">
-          <el-input v-model="step.text" placeholder="请输入真实值"></el-input>
+        <el-form-item :label="$t('stepDetail.verify.actualValue')">
+          <el-input
+            v-model="step.text"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.actualValue')
+            "
+          ></el-input>
         </el-form-item>
-        <el-form-item label="期望值">
+        <el-form-item :label="$t('stepDetail.verify.expectedValue')">
           <el-input
             v-model="step.content"
-            placeholder="请输入期望值"
+            :placeholder="
+              $t('stepDetail.msg.input') + $t('stepDetail.verify.expectedValue')
+            "
           ></el-input>
         </el-form-item>
       </div>
@@ -2610,11 +3048,13 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 默认按顺序使用SIFT特征匹配、AKAZE特征匹配和模板匹配算法"
+          :title="$t('stepDetail.msgTips.order')"
         />
         <element-select
-          label="控件截图"
-          place="请选择控件元素截图"
+          :label="$t('stepDetail.control.screenshot')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.screenshot')
+          "
           :index="0"
           :project-id="projectId"
           type="image"
@@ -2628,49 +3068,63 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 默认语言包只有简体中文和英文，需要额外添加可以咨询管理员。"
+          :title="$t('stepDetail.msgTips.language')"
         />
         <el-form-item
           prop="content"
-          label="识别语言"
+          :label="$t('stepDetail.identifyLanguages')"
           :rules="{
             required: true,
-            message: '语言类型不能为空',
+            message:
+              $t('stepDetail.language.type') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
-          <el-select v-model="step.content" placeholder="请选择识别语言类型">
-            <el-option label="简体中文" value="chi_sim"></el-option>
-            <el-option label="英文" value="eng"></el-option>
+          <el-select
+            v-model="step.content"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.identifyLanguages')
+            "
+          >
+            <el-option
+              :label="$t('stepDetail.language.simplifiedChinese')"
+              value="chi_sim"
+            ></el-option>
+            <el-option
+              :label="$t('stepDetail.language.english')"
+              value="eng"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
           prop="text"
-          label="期望内容"
+          :label="$t('stepDetail.verify.expectedText')"
           :rules="{
             required: true,
-            message: '期望文本不能为空',
+            message:
+              $t('stepDetail.verify.expectedText') +
+              $t('stepDetail.msg.notBeEmpty'),
             trigger: 'blur',
           }"
         >
           <el-input
             v-model="step.text"
             type="text"
-            placeholder="请输入期望包含的文本内容"
+            :placeholder="$t('stepDetail.msg.text')"
           ></el-input>
         </el-form-item>
       </div>
 
       <div v-if="step.stepType === 'checkImage'">
         <element-select
-          label="页面截图"
-          place="请选择页面截图"
+          :label="$t('stepDetail.pageScreenshot')"
+          :place="$t('stepDetail.msg.select') + $t('stepDetail.pageScreenshot')"
           :index="0"
           :project-id="projectId"
           type="image"
           :step="step"
         />
-        <el-form-item label="期望相似度">
+        <el-form-item :label="$t('stepDetail.verify.expectedMatchRatio')">
           <el-input-number
             v-model="step.content"
             :min="70"
@@ -2682,18 +3136,20 @@ onMounted(() => {
 
       <div v-if="step.stepType === 'publicStep'">
         <el-form-item
-          label="公共步骤"
+          :label="$t('stepDetail.label.iOSOptions.spec.publicStep')"
           prop="text"
           :rules="{
             required: true,
-            message: '公共步骤不能为空',
+            message: $t('routes.publicStep') + $t('stepDetail.msg.notBeEmpty'),
             trigger: 'change',
           }"
         >
           <el-select
             v-model="step.text"
-            placeholder="请选择公共步骤"
-            no-data-text="该项目暂未添加公共步骤"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('routes.publicSteps')
+            "
+            :no-data-text="$t('stepDetail.msg.publicStep')"
           >
             <el-option
               v-for="item in publicStepList"
@@ -2711,9 +3167,9 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          title="TIPS: 设置后从该步骤开始，后面的每个步骤都会按照设置值来间隔。"
+          :title="$t('stepDetail.msgTips.publicStep')"
         />
-        <el-form-item label="步骤间隔">
+        <el-form-item :label="$t('stepDetail.stepInterval')">
           <el-input-number
             v-model="step.content"
             :min="0"
@@ -2724,7 +3180,7 @@ onMounted(() => {
       </div>
 
       <div v-if="step.stepType === 'pause'">
-        <el-form-item label="等待时间">
+        <el-form-item :label="$t('stepDetail.waitTime')">
           <el-input-number
             v-model="step.content"
             :min="1000"
@@ -2741,14 +3197,14 @@ onMounted(() => {
           step.stepType === 'setDefaultFindWebViewElementInterval'
         "
       >
-        <el-form-item label="重试次数">
+        <el-form-item :label="$t('stepDetail.retries')">
           <el-input-number
             v-model="step.content"
             :min="0"
             :step="1"
           ></el-input-number>
         </el-form-item>
-        <el-form-item label="重试间隔">
+        <el-form-item :label="$t('stepDetail.retriesInterval')">
           <el-input-number
             v-model="step.text"
             :min="0"
@@ -2766,15 +3222,17 @@ onMounted(() => {
           class="demo-table-expand"
           size="small"
         >
-          <el-form-item label="测试包名">
+          <el-form-item :label="$t('stepDetail.testPkgName')">
             <el-input
               v-model="monkey.packageName"
               size="small"
               type="text"
-              placeholder="请输入测试包名"
+              :placeholder="
+                $t('stepDetail.msg.input') + $t('stepDetail.testPkgName')
+              "
             ></el-input>
           </el-form-item>
-          <el-form-item label="事件数量">
+          <el-form-item :label="$t('stepDetail.eventsNum')">
             <el-input-number
               v-model="monkey.pctNum"
               style="width: 100%"
@@ -2783,9 +3241,12 @@ onMounted(() => {
               :step="10"
             ></el-input-number>
           </el-form-item>
-          <el-form-item style="margin-top: 10px" label="事件配置">
+          <el-form-item
+            style="margin-top: 10px"
+            :label="$t('stepDetail.eventConfigure')"
+          >
             <el-tabs type="border-card" stretch>
-              <el-tab-pane label="详细配置">
+              <el-tab-pane :label="$t('stepDetail.detailConfigure')">
                 <el-table :data="monkey.options" border :show-header="false">
                   <el-table-column>
                     <template #default="scope">
@@ -2834,7 +3295,10 @@ onMounted(() => {
                   </el-table-column>
                 </el-table>
               </el-tab-pane>
-              <el-tab-pane v-if="step.platform === 1" label="Activity黑名单">
+              <el-tab-pane
+                v-if="step.platform === 1"
+                :label="$t('stepDetail.activityBlacklist')"
+              >
                 <el-table :data="activityList" border :show-header="false">
                   <el-table-column>
                     <template #default="scope">
@@ -2850,13 +3314,15 @@ onMounted(() => {
                         type="danger"
                         size="mini"
                         @click="delObj(scope.row)"
-                        >删除
+                        >{{ $t('stepDetail.delete') }}
                       </el-button>
                     </template>
                   </el-table-column>
                 </el-table>
                 <div style="text-align: center; margin-top: 10px">
-                  <el-button size="mini" @click="add()">新增</el-button>
+                  <el-button size="mini" @click="add()">{{
+                    $t('stepDetail.new')
+                  }}</el-button>
                 </div>
               </el-tab-pane>
             </el-tabs>
@@ -2873,12 +3339,12 @@ onMounted(() => {
         >
           <template #title>
             <span
-              >TIPS: 保存后直接在步骤列表编辑脚本，关于脚本的使用，可参考
+              >{{ $t('stepDetail.msgTips.reference') }}
               <a
                 href="https://sonic-cloud.cn/document?tag=runScript"
                 target="_blank"
               >
-                使用文档
+                {{ $t('stepDetail.userDoc') }}
               </a>
             </span>
           </template>
@@ -2895,12 +3361,14 @@ onMounted(() => {
           show-icon
           style="margin-bottom: 10px"
           close-text="Get!"
-          title="TIPS: 用于迭代操作控件列表，子步骤中引用【当前迭代控件】以操作列表中的控件"
+          :title="$t('stepDetail.msgTips.iteration')"
           type="info"
         />
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="normal"
@@ -2914,12 +3382,14 @@ onMounted(() => {
           show-icon
           style="margin-bottom: 10px"
           close-text="Get!"
-          title="TIPS: 用于迭代操作控件列表，子步骤中引用【当前迭代控件】以操作列表中的控件"
+          :title="$t('stepDetail.msgTips.iteration')"
           type="info"
         />
         <element-select
-          label="控件元素"
-          place="请选择控件元素"
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
           :index="0"
           :project-id="projectId"
           type="poco"
@@ -2929,10 +3399,12 @@ onMounted(() => {
       </div>
     </div>
 
-    <el-form-item label="逻辑处理">
+    <el-form-item :label="$t('stepDetail.logic.process')">
       <el-select
         v-model="step.conditionType"
-        placeholder="请选择逻辑条件"
+        :placeholder="
+          $t('stepDetail.msg.select') + $t('stepDetail.logic.condition')
+        "
         :disabled="
           step.stepType === 'iteratorAndroidElement' ||
           step.stepType === 'iteratorIOSElement' ||
@@ -2940,7 +3412,7 @@ onMounted(() => {
         "
         @change="selectCondition"
       >
-        <el-option label="无" :value="0"></el-option>
+        <el-option :label="$t('stepDetail.none')" :value="0"></el-option>
         <el-option label="if" :value="1"></el-option>
         <el-option label="else if" :value="2"></el-option>
         <el-option label="else" :value="3"></el-option>
@@ -2948,26 +3420,26 @@ onMounted(() => {
       </el-select>
       <el-popover
         placement="right-start"
-        title="逻辑处理"
+        :title="$t('stepDetail.logic.process')"
         :width="300"
         trigger="hover"
       >
-        <p>意为该测试步骤关联的逻辑处理</p>
+        <p>{{ $t('stepDetail.logic.msgProcess') }}</p>
         <div>
           <strong style="color: #409eff">if：</strong
-          >该步骤无异常时，会执行子步骤
+          >{{ $t('stepDetail.logic.msgSubStep') }}
         </div>
         <div>
           <strong style="color: #e6a23c">eles if：</strong
-          >如果上一个if条件步骤有异常，则进入该逻辑判断，无异常时会执行子步骤
+          >{{ $t('stepDetail.logic.msgIf') }}
         </div>
         <div>
           <strong style="color: #f56c6c">else：</strong
-          >如果以上条件全失败，则执行子步骤
+          >{{ $t('stepDetail.logic.msgFailure') }}
         </div>
         <div>
           <strong style="color: #67c23a">while：</strong
-          >如果条件无异常，则重复执行子步骤
+          >{{ $t('stepDetail.logic.msgRepeat') }}
         </div>
         <template #reference>
           <el-icon :size="18" style="vertical-align: middle; margin-left: 10px">
@@ -2978,30 +3450,50 @@ onMounted(() => {
     </el-form-item>
 
     <div v-if="step.conditionType === 0">
-      <el-form-item label="异常处理">
-        <el-select v-model="step.error" placeholder="请选择异常处理方案">
-          <el-option label="忽略" :value="1"></el-option>
-          <el-option label="告警" :value="2"></el-option>
-          <el-option label="中断" :value="3"></el-option>
+      <el-form-item :label="$t('stepDetail.exception.process')">
+        <el-select
+          v-model="step.error"
+          :placeholder="
+            $t('stepDetail.msg.select') + $t('stepDetail.exception.process')
+          "
+        >
+          <el-option
+            :label="$t('stepDetail.exception.ignore')"
+            :value="1"
+          ></el-option>
+          <el-option
+            :label="$t('stepDetail.exception.warning')"
+            :value="2"
+          ></el-option>
+          <el-option
+            :label="$t('stepDetail.exception.interrupt')"
+            :value="3"
+          ></el-option>
         </el-select>
         <el-popover
           placement="right-start"
-          title="异常处理"
+          :title="$t('stepDetail.exception.process')"
           :width="300"
           trigger="hover"
         >
-          <p>意为该测试步骤出现异常时的处理方案</p>
+          <p>{{ $t('stepDetail.exception.msgException') }}</p>
           <div>
-            <strong style="color: #409eff">忽略：</strong
-            >忽略异常并继续执行（逻辑处理时不抛出异常）
+            <strong style="color: #409eff">{{
+              $t('stepDetail.exception.ignore')
+            }}</strong
+            >{{ $t('stepDetail.exception.msgContinue') }}
           </div>
           <div>
-            <strong style="color: #e6a23c">告警：</strong
-            >标记警告并获取异常截图和异常堆栈，然后继续执行（逻辑处理时不抛出异常）
+            <strong style="color: #e6a23c">{{
+              $t('stepDetail.exception.warning')
+            }}</strong
+            >{{ $t('stepDetail.exception.msgWarning') }}
           </div>
           <div>
-            <strong style="color: #f56c6c">中断：</strong
-            >标记失败并获取异常截图、异常堆栈和测试录像，然后中断执行（逻辑处理时抛出异常）
+            <strong style="color: #f56c6c">{{
+              $t('stepDetail.exception.interrupt')
+            }}</strong
+            >{{ $t('stepDetail.exception.msgInterrupt') }}
           </div>
           <template #reference>
             <el-icon
@@ -3017,6 +3509,8 @@ onMounted(() => {
   </el-form>
 
   <div style="text-align: center; margin-top: 20px">
-    <el-button size="small" type="primary" @click="summitStep">提交</el-button>
+    <el-button size="small" type="primary" @click="summitStep">{{
+      $t('stepDetail.submit')
+    }}</el-button>
   </div>
 </template>

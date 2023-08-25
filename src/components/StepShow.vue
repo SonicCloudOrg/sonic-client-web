@@ -57,26 +57,26 @@ const getPublicStepInfo = (id) => {
 const getAssertTextOpe = (s) => {
   switch (s) {
     case 'equal':
-      return '等于';
+      return $t('stepDetail.verify.equalTo');
     case 'notEqual':
-      return '不等于';
+      return $t('stepDetail.verify.notEqual');
     case 'contain':
-      return '包含';
+      return $t('stepDetail.verify.contain');
     case 'notContain':
-      return '不包含';
+      return $t('stepDetail.verify.notContain');
     default:
-      return '未知类型';
+      return $t('stepDetail.verify.unknownType');
   }
 };
 
 const getScrollToDire = (direction) => {
   switch (direction) {
     case 'up':
-      return '向上';
+      return $t('stepDetail.upwards');
     case 'down':
-      return '向下';
+      return $t('stepDetail.downwards');
     default:
-      return '未知滚动方向类型';
+      return $t('stepDetail.unknownScrollSideType');
   }
 };
 const getEleResult = (s) => {
@@ -87,7 +87,7 @@ const getEleResult = (s) => {
   if (ss.indexOf('WEBVIEW') !== -1) {
     return 'WebView';
   }
-  return '原生';
+  return $t('stepDetail.native');
 };
 
 const getNotes = (text, type) => {
@@ -139,10 +139,11 @@ const getNotes = (text, type) => {
     <el-collapse style="margin: 5px 0">
       <el-collapse-item>
         <template #title>
-          <el-tag size="small" type="warning" style="margin-right: 10px"
-            >运行自定义脚本 {{ getNotes(step.content, step.text) }}</el-tag
-          >
-          点击展开/收起脚本编辑器
+          <el-tag size="small" type="warning" style="margin-right: 10px">{{
+            $t('stepDetail.runSelfDefinedScript') +
+            getNotes(step.content, step.text)
+          }}</el-tag>
+          {{ $t('stepDetail.click.expandOrCollapse') }}
           <el-icon>
             <Edit />
           </el-icon>
@@ -176,11 +177,13 @@ const getNotes = (text, type) => {
     >
   </span>
   <span v-if="step.stepType === 'siriCommand'">
-    <el-tag size="small" style="margin-right: 10px">发送Siri指令</el-tag
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.sendSiriCmd')
+    }}</el-tag
     >{{ step.content }}
   </span>
   <span v-if="step.stepType === 'swipeByDefinedDirection'">
-    <el-tag size="small">设备屏幕中央向</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.screenCenter') }}</el-tag>
     <el-tag
       type="info"
       size="small"
@@ -191,62 +194,107 @@ const getNotes = (text, type) => {
     {{ step.content }} px
   </span>
   <span v-if="step.stepType === 'webElementScrollToView'">
-    <el-tag size="small" style="margin-right: 10px">滚动控件</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.scrollControl')
+    }}</el-tag>
     <el-tag type="info" size="small" style="margin-right: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    <el-tag size="small">至顶部可见</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.topVisible') }}</el-tag>
   </span>
   <span v-if="step.stepType === 'lock'">
-    <el-tag size="small">锁定设备</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.rotateDevice.lock')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'closeKeyboard'">
-    <el-tag size="small">关闭Sonic输入法</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.keyboard.closeKeyboard')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'unLock'">
-    <el-tag size="small">解锁设备</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.rotateDevice.unlock')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'screenSub'">
-    <el-tag size="small">左转屏幕</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.rotateDevice.screenSub')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'screenAdd'">
-    <el-tag size="small">右转屏幕</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.rotateDevice.screenAdd')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'screenAbort'">
-    <el-tag size="small">关闭自动旋转</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.rotateDevice.screenAbort')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'switchTouchMode'">
-    <el-tag size="small" style="margin-right: 10px">触控模式设置</el-tag
-    >设置为：{{ step.content }} 模式
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.set.touchMode')
+    }}</el-tag
+    >{{ $t('stepDetail.set.to') + ':' + step.content + $t('stepDetail.mode') }}
   </span>
   <span v-if="step.stepType === 'keyCode' || step.stepType === 'keyCodeSelf'">
-    <el-tag size="small">按下系统{{ step.content }}键</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.pressSys') }}{{ step.content
+      }}{{ $t('stepDetail.key') }}</el-tag
+    >
   </span>
   <span v-if="step.stepType === 'airPlaneMode'">
-    <el-tag size="small" style="margin-right: 10px">切换飞行模式</el-tag
-    >{{ step.content === 'true' ? '开启' : '关闭' }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.network.airPlaneMode')
+    }}</el-tag
+    >{{
+      step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')
+    }}
   </span>
   <span v-if="step.stepType === 'wifiMode'">
-    <el-tag size="small" style="margin-right: 10px">切换WIFI模式</el-tag
-    >{{ step.content === 'true' ? '开启' : '关闭' }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.network.wifiMode')
+    }}</el-tag
+    >{{
+      step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')
+    }}
   </span>
   <span v-if="step.stepType === 'locationMode'">
-    <el-tag size="small" style="margin-right: 10px">切换位置服务</el-tag
-    >{{ step.content === 'true' ? '开启' : '关闭' }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.network.locationMode')
+    }}</el-tag
+    >{{
+      step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')
+    }}
   </span>
   <span v-if="step.stepType === 'switchWindowMode'">
-    <el-tag size="small" style="margin-right: 10px">切换窗口模式</el-tag
-    >{{ step.content === 'true' ? '多窗口模式' : '单窗口模式' }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.element.switchWindowMode')
+    }}</el-tag
+    >{{
+      step.content === 'true'
+        ? $t('stepDetail.multiWindowMode')
+        : $t('stepDetail.singleWindowMode')
+    }}
   </span>
   <span v-if="step.stepType === 'switchIgnoreMode'">
-    <el-tag size="small" style="margin-right: 10px"
-      >切换忽略不重要视图模式</el-tag
-    >{{ step.content === 'true' ? '忽略' : '不忽略' }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.element.switchIgnoreMode')
+    }}</el-tag
+    >{{
+      step.content === 'true'
+        ? $t('stepDetail.verify.ignore')
+        : $t('stepDetail.verify.notIgnore')
+    }}
   </span>
   <span v-if="step.stepType === 'switchVisibleMode'">
-    <el-tag size="small" style="margin-right: 10px"
-      >切换Invisible控件展示</el-tag
-    >{{ step.content === 'true' ? '显示' : '隐藏' }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.androidOptions.element.switchVisibleMode')
+    }}</el-tag
+    >{{
+      step.content === 'true' ? $t('stepDetail.display') : $t('stepDetail.hide')
+    }}
   </span>
   <span
     v-if="
@@ -254,21 +302,23 @@ const getNotes = (text, type) => {
       step.stepType === 'logPocoElementAttr'
     "
   >
-    <el-tag size="small">日志输出</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.logOutput') }}</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    <el-tag size="small" style="margin: 0 10px">控件信息</el-tag>
-    目标属性：{{ step.text }}
+    <el-tag size="small" style="margin: 0 10px">{{
+      $t('stepDetail.control.info')
+    }}</el-tag>
+    {{ $t('stepDetail.targetAttr') }}：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'tap'">
-    <el-tag size="small">点击坐标</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.click.coordinate') }}</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
   </span>
   <span v-if="step.stepType === 'longPressPoint'">
-    <el-tag size="small">长按坐标</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.pressCoordinate') }}</el-tag>
     <el-tag
       type="info"
       size="small"
@@ -279,18 +329,22 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'swipe'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
-    <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >滑动拖拽到</el-tag
-    >
+    <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
+      $t('stepDetail.dragTo')
+    }}</el-tag>
     <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
   </span>
   <span v-if="step.stepType === 'setPasteboard'">
-    <el-tag size="small" style="margin-right: 10px">设置剪切板文本</el-tag>
-    文本：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.system.keyboard.setClipperByKeyboard')
+    }}</el-tag>
+    {{ $t('stepDetail.text') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'getPasteboard'">
-    <el-tag size="small" style="margin-right: 10px">获取剪切板文本</el-tag>
-    提取到变量：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.system.keyboard.getClipperByKeyboard')
+    }}</el-tag>
+    {{ $t('stepDetail.getToVariable') }}：{{ step.content }}
   </span>
   <span
     v-if="
@@ -300,45 +354,71 @@ const getNotes = (text, type) => {
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >设置查找{{ getEleResult(step.stepType) }}控件策略</el-tag
+      >{{ $t('stepDetail.set.search') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.strategy') }}</el-tag
     >
-    重试次数：{{ step.content }} 重试间隔：{{ step.text }} ms
+    {{ $t('stepDetail.retries') }}：{{ step.content }}
+    {{ $t('stepDetail.retriesInterval') }}：{{ step.text }} ms
   </span>
   <span v-if="step.stepType === 'openApp'">
-    <el-tag size="small" style="margin-right: 10px">打开应用</el-tag>
-    应用包名：{{ step.text }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.app.openApp')
+    }}</el-tag>
+    {{ $t('stepDetail.app.pkg') }}：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'terminate'">
-    <el-tag size="small" style="margin-right: 10px">终止应用</el-tag>
-    应用包名：{{ step.text }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.app.terminate')
+    }}</el-tag>
+    {{ $t('stepDetail.app.pkg') }}：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'install'">
-    <el-tag size="small" style="margin-right: 10px">安装应用</el-tag>
-    {{ step.content === '2' ? '从安装包列表安装' : 'App路径：' + step.text }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.app.install')
+    }}</el-tag>
+    {{
+      step.content === '2'
+        ? $t('stepDetail.app.installFromPkglist')
+        : $t('stepDetail.app.path') + step.text
+    }}
   </span>
   <span v-if="step.stepType === 'uninstall'">
-    <el-tag size="small" style="margin-right: 10px">卸载应用</el-tag>
-    应用包名：{{ step.text }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.app.uninstall')
+    }}</el-tag>
+    $t('stepDetail.app.pkg'):{{ step.text }}
   </span>
   <span v-if="step.stepType === 'runBack'">
-    <el-tag size="small" style="margin-right: 10px">后台运行应用</el-tag>
-    后台运行 {{ step.content }} ms
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.iOSOptions.app.runBack')
+    }}</el-tag>
+    {{ $t('stepDetail.label.iOSOptions.app.runBack') }} {{ step.content }} ms
   </span>
   <span v-if="step.stepType === 'appReset'">
-    <el-tag size="small" style="margin-right: 10px">清空应用缓存内存</el-tag>
-    清空应用 {{ step.text }} 缓存内存
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.app.appReset')
+    }}</el-tag>
+    {{ $t('stepDetail.app.empty') }} {{ step.text }}
+    {{ $t('stepDetail.bufferMemory') }}
   </span>
   <span v-if="step.stepType === 'appAutoGrantPermissions'">
-    <el-tag size="small" style="margin-right: 10px">自动授权应用权限</el-tag>
-    授权应用 {{ step.text }} 所声明的权限
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.label.androidOptions.app.appAutoGrantPermissions')
+    }}</el-tag>
+    {{ $t('stepDetail.app.authorize') }} {{ step.text }}
+    {{ $t('stepDetail.declearedRights') }}
   </span>
   <span v-if="step.stepType === 'toWebView'">
-    <el-tag size="small" style="margin-right: 10px">切换WebView</el-tag>
-    WebView名称：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.switch.webview')
+    }}</el-tag>
+    {{ $t('stepDetail.webviewName') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'toHandle'">
-    <el-tag size="small" style="margin-right: 10px">切换Handle</el-tag>
-    Handle切换信息：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.switch.handler')
+    }}</el-tag>
+    {{ $t('stepDetail.handleSwitchInfo') }}：{{ step.content }}
   </span>
   <span
     v-if="
@@ -348,12 +428,19 @@ const getNotes = (text, type) => {
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >判断{{ getEleResult(step.stepType) }}控件元素是否存在</el-tag
-    >断言：
+      >{{ $t('stepDetail.judge') }}{{ getEleResult(step.stepType)
+      }}{{
+        $t('stepDetail.label.androidOptions.element.uiEle.isExistEle')
+      }}</el-tag
+    >{{ $t('stepDetail.assert') }}：
     <el-tag type="info" size="small" style="margin-right: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    {{ step.content === 'true' ? '存在' : '不存在' }}
+    {{
+      step.content === 'true'
+        ? $t('stepDetail.verify.existed')
+        : $t('stepDetail.verify.notExisted')
+    }}
   </span>
   <span
     v-if="
@@ -363,12 +450,15 @@ const getNotes = (text, type) => {
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >判断{{ getEleResult(step.stepType) }}控件元素存在个数</el-tag
-    >断言：
+      >{{ $t('stepDetail.judge') }}{{ getEleResult(step.stepType)
+      }}{{
+        $t('stepDetail.label.androidOptions.element.uiEle.isExistEleNum')
+      }}</el-tag
+    >{{ $t('stepDetail.assert') }}：
     <el-tag type="info" size="small" style="margin-right: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    个数 {{ step.content }} {{ step.text }}
+    {{ $t('stepDetail.number') }} {{ step.content }} {{ step.text }}
   </span>
 
   <span
@@ -378,7 +468,10 @@ const getNotes = (text, type) => {
       step.stepType === 'pocoClick'
     "
   >
-    <el-tag size="small">点击{{ getEleResult(step.stepType) }}控件元素</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.click.action') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.element') }}</el-tag
+    >
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
@@ -390,30 +483,42 @@ const getNotes = (text, type) => {
       step.stepType === 'iteratorPocoElement'
     "
   >
-    <el-tag size="small">迭代{{ getEleResult(step.stepType) }}控件</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.iterate') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.name') }}</el-tag
+    >
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    <el-tag size="small" style="margin-left: 10px">子控件</el-tag>
+    <el-tag size="small" style="margin-left: 10px">{{
+      $t('stepDetail.control.subControl')
+    }}</el-tag>
   </span>
   <span
     v-if="step.stepType === 'sendKeys' || step.stepType === 'webViewSendKeys'"
   >
-    <el-tag size="small">{{ getEleResult(step.stepType) }}控件元素</el-tag>
+    <el-tag size="small"
+      >{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.element') }}</el-tag
+    >
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
-    <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >输入文本</el-tag
-    >
+    <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
+      $t('stepDetail.enterText')
+    }}</el-tag>
     {{ step.content }}
   </span>
   <span v-if="step.stepType === 'setClipperByKeyboard'">
-    <el-tag size="small" style="margin-right: 10px">设置文本到剪切板</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.set.textToClipboard')
+    }}</el-tag>
     {{ step.content }}
   </span>
   <span v-if="step.stepType === 'sendKeyForce'">
-    <el-tag size="small" style="margin-right: 10px">输入法输入</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.inputMethod')
+    }}</el-tag>
     {{ step.content }}
   </span>
   <span
@@ -422,26 +527,32 @@ const getNotes = (text, type) => {
       step.stepType === 'webViewSendKeysByActions'
     "
   >
-    <el-tag size="small">{{ getEleResult(step.stepType) }}控件元素</el-tag>
+    <el-tag size="small"
+      >{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.element') }}</el-tag
+    >
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >输入文本(Actions)</el-tag
+      >{{ $t('stepDetail.enterText') }}(Actions)</el-tag
     >
     {{ step.content }}
   </span>
   <span v-if="step.stepType === 'swipe2' || step.stepType === 'pocoSwipe'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
-    <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >滑动拖拽到</el-tag
-    >
+    <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
+      $t('stepDetail.dragTo')
+    }}</el-tag>
     <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
   </span>
   <span
     v-if="step.stepType === 'longPress' || step.stepType === 'pocoLongPress'"
   >
-    <el-tag size="small">长按{{ getEleResult(step.stepType) }}控件元素</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.longPress') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.element') }}</el-tag
+    >
     <el-tag
       type="info"
       size="small"
@@ -453,7 +564,8 @@ const getNotes = (text, type) => {
   <span v-if="step.stepType === 'clear' || step.stepType === 'webViewClear'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px"
-      >清空{{ getEleResult(step.stepType) }}输入框</el-tag
+      >{{ $t('stepDetail.empty') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.inputBox') }}</el-tag
     >
   </span>
   <span
@@ -463,14 +575,17 @@ const getNotes = (text, type) => {
       step.stepType === 'getPocoTextValue'
     "
   >
-    <el-tag size="small">获取{{ getEleResult(step.stepType) }}文本</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.get') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.text') }}</el-tag
+    >
     <el-tag
       type="info"
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    获取到变量：{{ step.content }}
+    {{ $t('stepDetail.getToVariable') }}：{{ step.content }}
   </span>
   <span
     v-if="
@@ -478,18 +593,24 @@ const getNotes = (text, type) => {
       step.stepType === 'obtainPocoElementAttr'
     "
   >
-    <el-tag size="small">获取{{ getEleResult(step.stepType) }}控件属性</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.get') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.attribute') }}</el-tag
+    >
     <el-tag
       type="info"
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    的 {{ step.text }} 属性到变量：{{ step.content }}
+    {{ $t('stepDetail.its') }} {{ step.text }}
+    {{ $t('stepDetail.attributeToVariable') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'getClipperByKeyboard'">
-    <el-tag size="small">获取剪切板文本</el-tag>
-    获取到变量：{{ step.content }}
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.system.keyboard.getClipperByKeyboard')
+    }}</el-tag>
+    {{ $t('stepDetail.getToVariable') }}：{{ step.content }}
   </span>
   <!--三个指令前端显示上保留，用于兼容老版本升级上来之后，依然能正常的显示和运行-->
   <span
@@ -499,14 +620,17 @@ const getNotes = (text, type) => {
       step.stepType === 'getPocoText'
     "
   >
-    <el-tag size="small">验证{{ getEleResult(step.stepType) }}文本</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.verify.verify') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.text') }}</el-tag
+    >
     <el-tag
       type="info"
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    期望值：{{ step.content }}
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <!--大于2.5.0版本，增强的文本断言能力-->
   <span
@@ -516,30 +640,39 @@ const getNotes = (text, type) => {
       step.stepType === 'assertPocoText'
     "
   >
-    <el-tag size="small">断言{{ getEleResult(step.stepType) }}文本</el-tag>
+    <el-tag size="small"
+      >{{ $t('stepDetail.verify.assert') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.verify.text') }}</el-tag
+    >
     <el-tag
       type="info"
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    期望:
+    {{ $t('stepDetail.verify.expectation') }}:
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
       getAssertTextOpe(step.content)
     }}</el-tag
     >{{ step.text }}
   </span>
   <span v-if="step.stepType === 'getTitle'">
-    <el-tag size="small" style="margin-right: 10px">验证标题</el-tag>
-    期望值：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.verify.title')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'getUrl'">
-    <el-tag size="small" style="margin-right: 10px">验证网址</el-tag>
-    期望值：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.verify.url')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'getActivity'">
-    <el-tag size="small" style="margin-right: 10px">验证Activity</el-tag>
-    期望值：{{ step.content }}
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.verify.activity')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span
     v-if="
@@ -548,7 +681,8 @@ const getNotes = (text, type) => {
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >验证{{ getEleResult(step.stepType) }}元素属性</el-tag
+      >{{ $t('stepDetail.verify.verify') }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.elementAttribute') }}</el-tag
     >
     <el-tag
       type="info"
@@ -556,80 +690,114 @@ const getNotes = (text, type) => {
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    断言：
+    {{ $t('stepDetail.verify.assert') }}：
     <el-tag size="small" style="margin-right: 10px">{{ step.text }}</el-tag>
-    期望值：
+    {{ $t('stepDetail.verify.expectedValue') }}：
     <el-tag size="small" style="margin-right: 10px">{{ step.content }}</el-tag>
   </span>
   <span v-if="step.stepType === 'setTheRealPositionOfTheWindow'">
-    <el-tag type="warning" size="small">设置偏移量</el-tag>
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.set.offset')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'assertEquals'">
-    <el-tag type="warning" size="small">断言验证(相等)</el-tag>
-    真实值：{{ step.text }} 期望值：{{ step.content }}
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.verify.equalTo')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.actualValue') }}：{{ step.text }}
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'assertNotEquals'">
-    <el-tag type="warning" size="small">断言验证(不相等)</el-tag>
-    真实值：{{ step.text }} 期望值：{{ step.content }}
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.verify.notEqual')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.actualValue') }}：{{ step.text }}
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'assertTrue'">
-    <el-tag type="warning" size="small">断言验证(包含)</el-tag>
-    真实值：{{ step.text }} 期望值：{{ step.content }}
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.verify.contain')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.actualValue') }}：{{ step.text }}
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'assertNotTrue'">
-    <el-tag type="warning" size="small">断言验证(不包含)</el-tag>
-    真实值：{{ step.text }} 期望值：{{ step.content }}
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.verify.notContain')
+    }}</el-tag>
+    {{ $t('stepDetail.verify.actualValue') }}：{{ step.text }}
+    {{ $t('stepDetail.verify.expectedValue') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'stepScreen'">
-    <el-tag size="small">获取截图</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.img.stepScreen')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'webViewRefresh'">
-    <el-tag size="small">刷新页面</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.refreshPage') }}</el-tag>
   </span>
   <span v-if="step.stepType === 'webViewBack'">
-    <el-tag size="small">回退页面</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.rollbackPage') }}</el-tag>
   </span>
   <span v-if="step.stepType === 'startPocoDriver'">
-    <el-tag size="small">启动PocoDriver</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.poco.startPocoDriver')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'closePocoDriver'">
-    <el-tag size="small">关闭PocoDriver</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.poco.closePocoDriver')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'freezeSource'">
-    <el-tag size="small">冻结控件树</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.element.poco.frezzeSource')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'thawSource'">
-    <el-tag size="small">解冻控件树</el-tag>
+    <el-tag size="small">{{
+      $t('stepDetail.label.androidOptions.element.poco.thawSource')
+    }}</el-tag>
   </span>
   <span v-if="step.stepType === 'checkImage'">
-    <el-tag size="small">检测</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.detect') }}</el-tag>
     <el-tag
       type="info"
       style="margin-left: 10px; margin-right: 10px"
       size="small"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    <el-tag size="small" style="margin-right: 10px">图像相似度</el-tag>
-    期望匹配率：{{ step.content }} %
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.imageSimilarity')
+    }}</el-tag>
+    {{ $t('stepDetail.expectedMatchRatio') }}：{{ step.content }} %
   </span>
   <span v-if="step.stepType === 'clickByImg'">
-    <el-tag size="small">定位</el-tag>
+    <el-tag size="small">{{ $t('stepDetail.localization') }}</el-tag>
     <el-tag
       type="info"
       size="small"
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
-    ><el-tag size="small">并点击</el-tag>
+    ><el-tag size="small">{{ $t('stepDetail.andClick') }}</el-tag>
   </span>
   <span v-if="step.stepType === 'readText'">
-    <el-tag size="small" style="margin-right: 10px">图像文字识别</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.textIdentifyInImage')
+    }}</el-tag>
     <el-tag size="small" type="info" style="margin-right: 10px">
-      {{ step.content === 'chi_sim' ? '简体中文' : '英文' }}</el-tag
+      {{
+        step.content === 'chi_sim'
+          ? $t('stepDetail.language.simplifiedChinese')
+          : $t('stepDetail.language.english')
+      }}</el-tag
     >
-    期望包含：{{ step.text }}
+    {{ $t('stepDetail.verify.expectContain') }}：{{ step.text }}
   </span>
   <span v-if="step.stepType === 'publicStep'">
-    <el-tag type="warning" size="small">使用公共步骤</el-tag>
+    <el-tag type="warning" size="small">{{
+      $t('stepDetail.usePublicSteps')
+    }}</el-tag>
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.content
     }}</el-tag>
@@ -646,32 +814,38 @@ const getNotes = (text, type) => {
     </el-popover>
   </span>
   <span v-if="step.stepType === 'monkey'">
-    <el-tag style="margin-right: 10px" type="warning" size="small"
-      >随机事件测试</el-tag
-    >
-    应用包名：{{ JSON.parse(step.content).packageName }}&nbsp;&nbsp;事件数：{{
+    <el-tag style="margin-right: 10px" type="warning" size="small">{{
+      $t('stepDetail.randomEventsTest')
+    }}</el-tag>
+    {{ $t('stepDetail.app.pkg') }}：{{
+      JSON.parse(step.content).packageName
+    }}&nbsp;&nbsp;{{ $t('stepDetail.eventsNum') }}：{{
       JSON.parse(step.content).pctNum
     }}
   </span>
   <span v-if="step.stepType === 'stepHold'">
-    <el-tag size="small" style="margin-right: 5px">步骤间隔设置</el-tag>
-    每个步骤间隔 {{ step.content }} ms
+    <el-tag size="small" style="margin-right: 5px">{{
+      $t('stepDetail.set.stepsInterval')
+    }}</el-tag>
+    {{ $t('stepDetail.stepInterval') }} {{ step.content }} ms
   </span>
   <span v-if="step.stepType === 'pause'">
-    <el-tag size="small" style="margin-right: 5px">强制等待</el-tag>
-    等待 {{ step.content }} ms
+    <el-tag size="small" style="margin-right: 5px">{{
+      $t('stepDetail.label.androidOptions.spec.pause')
+    }}</el-tag>
+    {{ $t('stepDetail.wait') }} {{ step.content }} ms
   </span>
   <span v-if="step.stepType === 'setSnapshotMaxDepth'">
-    <el-tag size="small" style="margin-right: 5px"
-      >设置控件获取最大遍历深度</el-tag
-    >
-    最大 {{ step.content }} 层
+    <el-tag size="small" style="margin-right: 5px">{{
+      $t('stepDetail.set.maxControlTraverseDepth')
+    }}</el-tag>
+    {{ $t('stepDetail.max') }} {{ step.content }} {{ $t('stepDetail.layer') }}
   </span>
   <span v-if="step.stepType === 'scrollToEle'">
     <el-tag size="small"
-      >{{ getScrollToDire(step.text) }}滚动到{{
-        getEleResult(step.stepType)
-      }}控件元素</el-tag
+      >{{ getScrollToDire(step.text) }}{{ $t('stepDetail.scrollTo')
+      }}{{ getEleResult(step.stepType)
+      }}{{ $t('stepDetail.control.element') }}</el-tag
     >
     <el-tag
       type="info"
@@ -679,7 +853,8 @@ const getNotes = (text, type) => {
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    最多尝试{{ step.content }}次
+    {{ $t('stepDetail.maxTries') }}{{ step.content
+    }}{{ $t('stepDetail.times') }}
   </span>
   <span>
     <el-tag
@@ -687,7 +862,7 @@ const getNotes = (text, type) => {
       size="small"
       type="warning"
       style="margin-left: 10px"
-      >无异常</el-tag
+      >{{ $t('stepDetail.noException') }}</el-tag
     >
   </span>
 </template>

@@ -50,8 +50,8 @@ const close = () => {
         <div style="display: flex; align-items: center">
           {{ $t('routes.remoteControl') + ' - ' }}
           <span style="font-size: 12px; margin-left: 10px">
-            <div>已使用 {{ parseTimeout(ticker) }}</div>
-            <div>已闲置 {{ parseTimeout(idleCount) }}</div>
+            <div>{{ $t('common.inuse') }} {{ parseTimeout(ticker) }}</div>
+            <div>{{ $t('common.inidle') }} {{ parseTimeout(idleCount) }}</div>
           </span>
           <el-popover placement="bottom" width="270" trigger="hover">
             <div>

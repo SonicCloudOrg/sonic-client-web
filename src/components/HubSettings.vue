@@ -22,6 +22,9 @@ import ColorImg from '@/components/ColorImg.vue';
 import axios from '../http/axios';
 import RenderStatus from './RenderStatus.vue';
 import RenderDeviceName from './RenderDeviceName.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const props = defineProps({
   agentId: Number,
@@ -130,7 +133,7 @@ onMounted(() => {
                   class="device-form"
                   style="margin: 0 0 15px 10px"
                 >
-                  <el-form-item label="电量">
+                  <el-form-item :label="$t('agent.hub.voltage')">
                     <div
                       :style="{
                         position: 'relative',
@@ -188,7 +191,7 @@ onMounted(() => {
                       }}
                     </div>
                   </el-form-item>
-                  <el-form-item label="温度">
+                  <el-form-item :label="$t('agent.hub.temperature')">
                     <div
                       :style="{
                         position: 'relative',
@@ -237,7 +240,7 @@ onMounted(() => {
                       }}
                     </div>
                   </el-form-item>
-                  <el-form-item label="电压">
+                  <el-form-item :label="$t('agent.hub.voltage')">
                     <div
                       :style="{
                         position: 'relative',
@@ -281,7 +284,7 @@ onMounted(() => {
             <div style="text-align: center">
               <el-popover :width="400" trigger="click">
                 <el-table border :data="devices">
-                  <el-table-column header-align="center" label="设备信息">
+                  <el-table-column header-align="center" :label="$t('agent.hub.info')">
                     <template #default="scope">
                       <RenderDeviceName :device="scope.row" />
                     </template>
@@ -293,20 +296,20 @@ onMounted(() => {
                     property="udId"
                     label="udId"
                   />
-                  <el-table-column align="center" width="100" label="操作">
+                  <el-table-column align="center" width="100" :label="$t('agent.hub.action')">
                     <template #default="scope">
                       <el-button
                         type="primary"
                         size="mini"
                         :disabled="scope.row.id === device.id"
                         @click="updatePosition(scope.row.id, i + 1 + j * 5)"
-                        >关联
+                        >{{$t('agent.hub.relate')}}
                       </el-button>
                     </template>
                   </el-table-column>
                 </el-table>
                 <template #reference>
-                  <el-button size="mini"> 切换 </el-button>
+                  <el-button size="mini"> {{$t('agent.hub.switch')}} </el-button>
                 </template>
               </el-popover>
               <el-button
@@ -314,26 +317,26 @@ onMounted(() => {
                 size="mini"
                 @click="hubControl(i + 1 + j * 5, 'up')"
               >
-                通电
+                {{$t('agent.hub.poweron')}}
               </el-button>
               <el-button
                 type="danger"
                 size="mini"
                 @click="hubControl(i + 1 + j * 5, 'down')"
               >
-                断电
+                {{$t('agent.hub.poweroff')}}
               </el-button>
             </div>
           </el-card>
           <el-card v-else>
             <el-empty
               :image-size="30"
-              :description="i + 1 + j * 5 + '号USB口未接入设备'"
+              :description="i + 1 + j * 5 + $t('agent.hub.status')"
             />
             <div style="text-align: center">
               <el-popover :width="400" trigger="click">
                 <el-table border :data="devices">
-                  <el-table-column header-align="center" label="设备信息">
+                  <el-table-column header-align="center" :label="$t('agent.hub.info')">
                     <template #default="scope">
                       <RenderDeviceName :device="scope.row" />
                     </template>
@@ -345,19 +348,19 @@ onMounted(() => {
                     property="udId"
                     label="udId"
                   />
-                  <el-table-column align="center" width="100" label="操作">
+                  <el-table-column align="center" width="100" :label="$t('agent.hub.action')">
                     <template #default="scope">
                       <el-button
                         type="primary"
                         size="mini"
                         @click="updatePosition(scope.row.id, i + 1 + j * 5)"
-                        >关联
+                        >{{$t('agent.hub.relate')}}
                       </el-button>
                     </template>
                   </el-table-column>
                 </el-table>
                 <template #reference>
-                  <el-button size="mini"> 关联 </el-button>
+                  <el-button size="mini"> {{$t('agent.hub.relate')}} </el-button>
                 </template>
               </el-popover>
               <el-button
@@ -365,14 +368,14 @@ onMounted(() => {
                 size="mini"
                 @click="hubControl(i + 1 + j * 5, 'up')"
               >
-                通电
+                {{$t('agent.hub.poweron')}}
               </el-button>
               <el-button
                 type="danger"
                 size="mini"
                 @click="hubControl(i + 1 + j * 5, 'down')"
               >
-                断电
+                {{$t('agent.hub.poweroff')}}
               </el-button>
             </div>
           </el-card>
@@ -381,10 +384,10 @@ onMounted(() => {
     </div>
     <div style="text-align: center; margin-top: 20px">
       <el-button type="primary" size="mini" @click="hubControl(11, 'up')">
-        全部通电
+        {{$t('agent.hub.allpoweron')}}
       </el-button>
       <el-button type="danger" size="mini" @click="hubControl(11, 'down')">
-        全部断电
+        {{$t('agent.hub.allpoweroff')}}
       </el-button>
     </div>
   </div>
