@@ -413,6 +413,18 @@ const findBestNS = (elementDetail) => {
   result.push(r);
   return result;
 };
+const findBestClassChain = (elementDetail) => {
+  const result = [];
+  if (elementDetail.name) {
+    result.push(`**/${elementDetail.type}[\`name == \"${elementDetail.name}\"\`]`);
+    result.push(`**/${elementDetail.type}[\`name CONTAINS \"${elementDetail.name}\"\`]`);
+  }
+  if (elementDetail.label) {
+    result.push(`**/${elementDetail.type}[\`label == \"${elementDetail.label}\"\`]`);
+    result.push(`**/${elementDetail.type}[\`label CONTAINS \"${elementDetail.label}\"\`]`);
+  }
+  return result;
+};
 const findBestXpath = (elementDetail) => {
   const result = [];
   if (elementDetail.name) {
@@ -2793,6 +2805,40 @@ const checkAlive = () => {
                                         "
                                         @click="
                                           toAddElement('nsPredicate', scope.row)
+                                        "
+                                      >
+                                        <Pointer />
+                                      </el-icon>
+                                    </template>
+                                  </el-table-column>
+                                </el-table>
+                              </el-form-item>
+                              <el-form-item :label="$t('IOSRemote.classChain')">
+                                <el-table
+                                  stripe
+                                  :empty-text="$t('IOSRemote.noRecommend')"
+                                  border
+                                  :data="findBestClassChain(elementDetail)"
+                                  :show-header="false"
+                                >
+                                  <el-table-column>
+                                    <template #default="scope">
+                                      <span
+                                        style="cursor: pointer"
+                                        @click="copy(scope.row)"
+                                        >{{ scope.row }}</span
+                                      >
+                                      <el-icon
+                                        v-if="project && project['id']"
+                                        color="green"
+                                        size="16"
+                                        style="
+                                          vertical-align: middle;
+                                          margin-left: 10px;
+                                          cursor: pointer;
+                                        "
+                                        @click="
+                                          toAddElement('classChain', scope.row)
                                         "
                                       >
                                         <Pointer />
