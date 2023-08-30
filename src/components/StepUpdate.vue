@@ -1696,7 +1696,7 @@ onMounted(() => {
         >
           <el-input
             v-model="offsets.offsetWidth"
-            :placeholder="$t('stepDetail.msg.input') + offsetWidth"
+            :placeholder="$t('stepDetail.msg.input') + 'offsetWidth'"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -1710,7 +1710,7 @@ onMounted(() => {
         >
           <el-input
             v-model="offsets.offsetHeight"
-            :placeholder="$t('stepDetail.msg.input') + offsetHeight"
+            :placeholder="$t('stepDetail.msg.input') + 'offsetHeight'"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -1724,7 +1724,7 @@ onMounted(() => {
         >
           <el-input
             v-model="offsets.windowWidth"
-            :placeholder="$t('stepDetail.msg.input') + windowWidth"
+            :placeholder="$t('stepDetail.msg.input') + 'windowWidth'"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -1738,7 +1738,7 @@ onMounted(() => {
         >
           <el-input
             v-model="offsets.windowHeight"
-            :placeholder="$t('stepDetail.msg.input') + windowHeight"
+            :placeholder="$t('stepDetail.msg.input') + 'windowHeight'"
           ></el-input>
         </el-form-item>
       </div>
@@ -2424,7 +2424,7 @@ onMounted(() => {
             :min="1"
             :step="1"
           ></el-input-number>
-          <span style="margin-left: 10px">次</span>
+          <span style="margin-left: 10px">{{ $t('stepDetail.times') }}</span>
         </el-form-item>
       </div>
 
@@ -3450,11 +3450,11 @@ onMounted(() => {
     </el-form-item>
 
     <div v-if="step.conditionType === 0">
-      <el-form-item :label="$t('stepDetail.exception.process')">
+      <el-form-item :label="$t('stepDetail.exception.handling')">
         <el-select
           v-model="step.error"
           :placeholder="
-            $t('stepDetail.msg.select') + $t('stepDetail.exception.process')
+            $t('stepDetail.msg.select') + $t('stepDetail.exception.handling')
           "
         >
           <el-option
@@ -3472,7 +3472,7 @@ onMounted(() => {
         </el-select>
         <el-popover
           placement="right-start"
-          :title="$t('stepDetail.exception.process')"
+          :title="$t('stepDetail.exception.handling')"
           :width="300"
           trigger="hover"
         >

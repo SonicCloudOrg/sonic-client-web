@@ -190,7 +190,9 @@ const getNotes = (text, type) => {
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.text.toUpperCase() }}</el-tag
     >
-    <el-tag size="small" style="margin-right: 10px">滑动</el-tag>
+    <el-tag size="small" style="margin-right: 10px">{{
+      $t('stepDetail.swipe')
+    }}</el-tag>
     {{ step.content }} px
   </span>
   <span v-if="step.stepType === 'webElementScrollToView'">
@@ -386,7 +388,7 @@ const getNotes = (text, type) => {
     <el-tag size="small" style="margin-right: 10px">{{
       $t('stepDetail.label.androidOptions.app.uninstall')
     }}</el-tag>
-    $t('stepDetail.app.pkg'):{{ step.text }}
+    {{ $t('stepDetail.app.pkg') }}:{{ step.text }}
   </span>
   <span v-if="step.stepType === 'runBack'">
     <el-tag size="small" style="margin-right: 10px">{{
@@ -428,11 +430,11 @@ const getNotes = (text, type) => {
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >{{ $t('stepDetail.judge') }}{{ getEleResult(step.stepType)
+      >{{ getEleResult(step.stepType)
       }}{{
         $t('stepDetail.label.androidOptions.element.uiEle.isExistEle')
       }}</el-tag
-    >{{ $t('stepDetail.assert') }}：
+    >{{ $t('stepDetail.verify.assert') }}：
     <el-tag type="info" size="small" style="margin-right: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
@@ -450,11 +452,11 @@ const getNotes = (text, type) => {
     "
   >
     <el-tag size="small" style="margin-right: 10px"
-      >{{ $t('stepDetail.judge') }}{{ getEleResult(step.stepType)
+      >{{ getEleResult(step.stepType)
       }}{{
         $t('stepDetail.label.androidOptions.element.uiEle.isExistEleNum')
       }}</el-tag
-    >{{ $t('stepDetail.assert') }}：
+    >{{ $t('stepDetail.verify.assert') }}：
     <el-tag type="info" size="small" style="margin-right: 10px">{{
       step.elements[0]['eleName']
     }}</el-tag>
@@ -642,7 +644,7 @@ const getNotes = (text, type) => {
   >
     <el-tag size="small"
       >{{ $t('stepDetail.verify.assert') }}{{ getEleResult(step.stepType)
-      }}{{ $t('stepDetail.verify.text') }}</el-tag
+      }}{{ $t('stepDetail.text') }}</el-tag
     >
     <el-tag
       type="info"
@@ -650,7 +652,7 @@ const getNotes = (text, type) => {
       style="margin-left: 10px; margin-right: 10px"
       >{{ step.elements[0]['eleName'] }}</el-tag
     >
-    {{ $t('stepDetail.verify.expectation') }}:
+    {{ $t('stepDetail.verify.expect') }}:
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
       getAssertTextOpe(step.content)
     }}</el-tag
@@ -741,17 +743,17 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'startPocoDriver'">
     <el-tag size="small">{{
-      $t('stepDetail.label.androidOptions.poco.startPocoDriver')
+      $t('stepDetail.label.androidOptions.element.poco.startPocoDriver')
     }}</el-tag>
   </span>
   <span v-if="step.stepType === 'closePocoDriver'">
     <el-tag size="small">{{
-      $t('stepDetail.label.androidOptions.poco.closePocoDriver')
+      $t('stepDetail.label.androidOptions.element.poco.closePocoDriver')
     }}</el-tag>
   </span>
   <span v-if="step.stepType === 'freezeSource'">
     <el-tag size="small">{{
-      $t('stepDetail.label.androidOptions.element.poco.frezzeSource')
+      $t('stepDetail.label.androidOptions.element.poco.freezeSource')
     }}</el-tag>
   </span>
   <span v-if="step.stepType === 'thawSource'">
@@ -770,7 +772,7 @@ const getNotes = (text, type) => {
     <el-tag size="small" style="margin-right: 10px">{{
       $t('stepDetail.imageSimilarity')
     }}</el-tag>
-    {{ $t('stepDetail.expectedMatchRatio') }}：{{ step.content }} %
+    {{ $t('stepDetail.verify.expectedMatchRatio') }}：{{ step.content }} %
   </span>
   <span v-if="step.stepType === 'clickByImg'">
     <el-tag size="small">{{ $t('stepDetail.localization') }}</el-tag>
