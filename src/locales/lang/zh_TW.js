@@ -1013,7 +1013,7 @@ const IOSRemote = {
 const stepDetail = {
   app: {
     authorize: '授权应用',
-    path: '应用路径:',
+    path: '应用路径: ',
     pkg: '应用包名',
     installFromPkglist: '从安装包列表安装',
     close: '关闭应用',
