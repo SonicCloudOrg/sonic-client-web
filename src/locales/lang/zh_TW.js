@@ -1013,7 +1013,7 @@ const IOSRemote = {
 const stepDetail = {
   app: {
     authorize: '授权应用',
-    path: '应用路径:',
+    path: '应用路径: ',
     pkg: '应用包名',
     installFromPkglist: '从安装包列表安装',
     close: '关闭应用',
@@ -1067,7 +1067,7 @@ const stepDetail = {
   display: '显示',
   downwards: '向下',
   exception: {
-    process: '异常处理',
+    handling: '异常处理',
     ignore: '忽略 ',
     warning: '告警 ',
     interrupt: '中断 ',
@@ -1102,7 +1102,6 @@ const stepDetail = {
   inputBox: '输入框',
   iterate: '迭代',
   its: '的',
-  judge: '判断',
   key: '键',
   keyCode: '按键code',
   label: {
@@ -1451,7 +1450,7 @@ const stepDetail = {
   openOrNot: '开启与否',
   others: '其他',
   open: '开启',
-  pressSys: '按下系统',
+  pressSys: '按下系统 ',
   pressCoordinate: '长按坐标',
   pageScreenshot: '页面截图',
   path: '路径',
@@ -1522,7 +1521,7 @@ const stepDetail = {
     assert: '断言',
     assertType: '断言类型',
     contain: '包含',
-    expectation: '期望',
+    expect: '期望',
     expectContain: '期望包含',
     expectedText: '期望文本',
     existedOrNot: '存在与否',
