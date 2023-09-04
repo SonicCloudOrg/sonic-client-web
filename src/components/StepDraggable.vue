@@ -282,7 +282,7 @@ const remove = (e) => {
               
               <!--添加操作的按钮-->
               <el-popconfirm
-                v-if="s.parentId === 0"
+                v-if="s.parentId === 0 && !isEdit"
                 style="margin-left: 10px"
                 :confirm-button-text="$t('steps.addToNextLine')"
                 :cancel-button-text="$t('steps.addToBeforeLine')"
@@ -304,6 +304,7 @@ const remove = (e) => {
 
               <!--复制操作的按钮-->
               <el-popconfirm
+                v-if="!isEdit"
                 style="margin-left: 10px"
                 :confirm-button-text="$t('steps.copyToLastLine')"
                 :cancel-button-text="$t('steps.copyToNextLine')"
