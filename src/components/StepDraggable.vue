@@ -113,8 +113,21 @@ const remove = (e) => {
   emit('remove', e);
 };
 
-const copyStep = (id) => {
-  emit('copyStep', id);
+/**
+ * 拷贝步骤的方法
+ * @param {*} id  步骤id
+ * @param {*} toLast 是否复制到最后一行
+ */ 
+ const copyStep = (id, toLast) => {
+  emit('copyStep', id, toLast);
+};
+/**
+ * 添加步骤到特定位置的方法
+ * @param {*} id         点选的位置
+ * @param {*} toNext     true添加到下一行，false添加到上一行
+ */
+ const addStepTotarget = (id, toNext) => {
+  emit('addStepTotarget', id, toNext);
 };
 </script>
 
@@ -241,7 +254,7 @@ const copyStep = (id) => {
             <div
               style="
                 float: right;
-                flex: 0 0 205px;
+                flex: 0 0 245px;
                 text-align: right;
                 margin-right: 12px;
               "
@@ -266,16 +279,51 @@ const copyStep = (id) => {
                   <Edit />
                 </el-icon>
               </el-button>
-              <el-button
-                circle
-                type="primary"
-                size="mini"
-                @click="copyStep(s.id)"
+              
+              <!--添加操作的按钮-->
+              <el-popconfirm
+                v-if="s.parentId === 0 && !isEdit"
+                style="margin-left: 10px"
+                :confirm-button-text="$t('steps.addToNextLine')"
+                :cancel-button-text="$t('steps.addToBeforeLine')"
+                confirm-button-type="text"
+                icon="el-icon-warning"
+                icon-color="green"
+                :title="$t('steps.addStepTips')"
+                @confirm="addStepTotarget(s.id, true)"
+                @cancel="addStepTotarget(s.id, false)"
               >
-                <el-icon :size="13" style="vertical-align: middle">
-                  <CopyDocument />
-                </el-icon>
-              </el-button>
+                <template #reference>
+                  <el-button circle type="primary" size="mini">
+                    <el-icon :size="13" style="vertical-align: middle">
+                      <DocumentAdd />
+                    </el-icon>
+                  </el-button>
+                </template>
+            </el-popconfirm>
+
+              <!--复制操作的按钮-->
+              <el-popconfirm
+                v-if="!isEdit"
+                style="margin-left: 10px"
+                :confirm-button-text="$t('steps.copyToLastLine')"
+                :cancel-button-text="$t('steps.copyToNextLine')"
+                confirm-button-type="text"
+                icon="el-icon-warning"
+                icon-color="green"
+                :title="$t('steps.copyStepTips')"
+                @confirm="copyStep(s.id, true)"
+                @cancel="copyStep(s.id, false)"
+              >
+                <template #reference>
+                  <el-button circle type="primary" size="mini">
+                    <el-icon :size="13" style="vertical-align: middle">
+                      <CopyDocument />
+                    </el-icon>
+                  </el-button>
+                </template>
+              </el-popconfirm>
+
               <el-button class="handle" circle size="mini">
                 <el-icon :size="13" style="vertical-align: middle">
                   <Rank />

@@ -19,6 +19,8 @@ const props = defineProps({
 const emit = defineEmits(['runStep']);
 const dialogVisible = ref(false);
 const stepId = ref(0);
+const addToTargetStepId = ref(0);
+const addToTargetStepNext = ref(false);
 const parentId = ref(0);
 watch(dialogVisible, (newValue, oldValue) => {
   if (!newValue) {
@@ -33,12 +35,38 @@ const editStep = async (id) => {
 const setParent = (id) => {
   parentId.value = id;
 };
+// 条件语句中的添加步骤方法
 const addStep = () => {
   dialogVisible.value = true;
 };
+// 普通类型中的添加步骤方法
+const addStepTotarget = (id, toNext) => {
+  dialogVisible.value = true;
+  addToTargetStepId.value = id;
+  addToTargetStepNext.value = toNext
+};
 const flush = () => {
-  dialogVisible.value = false;
-  getStepsList();
+  if (addToTargetStepId.value > 0) {
+    // 需要将新增的步骤挪动到目标行的上面或下面
+    axios
+    .get('/controller/steps/stepSortTarget', {
+      params: {
+        targetStepId: addToTargetStepId.value,
+        addToTargetNext: addToTargetStepNext.value,
+      },
+    })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        dialogVisible.value = false;
+        addToTargetStepNext.value = false;
+        addToTargetStepId.value = 0;
+        getStepsList();
+      }
+    });
+  } else {
+    dialogVisible.value = false;
+    getStepsList();
+  }
 };
 const deleteStep = (id) => {
   axios
@@ -116,11 +144,12 @@ const getStepsList = () => {
 const runStep = () => {
   emit('runStep');
 };
-const copyStep = (id) => {
+const copyStep = (id, toLast) => {
   axios
     .get('/controller/steps/copy/steps', {
       params: {
         id,
+        toLast
       },
     })
     .then((resp) => {
@@ -212,5 +241,6 @@ onMounted(() => {
     @editStep="editStep"
     @copyStep="copyStep"
     @deleteStep="deleteStep"
+    @addStepTotarget="addStepTotarget"
   />
 </template>

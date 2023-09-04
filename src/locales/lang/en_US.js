@@ -109,6 +109,12 @@ const steps = {
   loading: 'Loading',
   loadDone: 'Load completed',
   loadMore: 'Load more',
+  copyStepTips: 'Are you sure you want to replicate this step? Click on the surrounding space to cancel',
+  copyToNextLine: 'copy to current line',
+  copyToLastLine: 'copy to last line',
+  addStepTips: 'Select the location to add the step and click on the surrounding space to cancel.',
+  addToNextLine: 'add to next line',
+  addToBeforeLine: 'add to previous line',
 };
 const code = {
   placeholder: 'Please choose language',
