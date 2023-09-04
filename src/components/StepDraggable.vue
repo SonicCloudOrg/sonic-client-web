@@ -121,6 +121,14 @@ const remove = (e) => {
  const copyStep = (id, toLast) => {
   emit('copyStep', id, toLast);
 };
+/**
+ * 添加步骤到特定位置的方法
+ * @param {*} id         点选的位置
+ * @param {*} toNext     true添加到下一行，false添加到上一行
+ */
+ const addStepTotarget = (id, toNext) => {
+  emit('addStepTotarget', id, toNext);
+};
 </script>
 
 <template>
@@ -246,7 +254,7 @@ const remove = (e) => {
             <div
               style="
                 float: right;
-                flex: 0 0 205px;
+                flex: 0 0 245px;
                 text-align: right;
                 margin-right: 12px;
               "
@@ -272,6 +280,28 @@ const remove = (e) => {
                 </el-icon>
               </el-button>
               
+              <!--添加操作的按钮-->
+              <el-popconfirm
+                v-if="s.parentId === 0"
+                style="margin-left: 10px"
+                :confirm-button-text="$t('steps.addToNextLine')"
+                :cancel-button-text="$t('steps.addToBeforeLine')"
+                confirm-button-type="text"
+                icon="el-icon-warning"
+                icon-color="green"
+                :title="$t('steps.addStepTips')"
+                @confirm="addStepTotarget(s.id, true)"
+                @cancel="addStepTotarget(s.id, false)"
+              >
+                <template #reference>
+                  <el-button circle type="primary" size="mini">
+                    <el-icon :size="13" style="vertical-align: middle">
+                      <DocumentAdd />
+                    </el-icon>
+                  </el-button>
+                </template>
+            </el-popconfirm>
+
               <!--复制操作的按钮-->
               <el-popconfirm
                 style="margin-left: 10px"
@@ -292,7 +322,7 @@ const remove = (e) => {
                   </el-button>
                 </template>
               </el-popconfirm>
-              
+
               <el-button class="handle" circle size="mini">
                 <el-icon :size="13" style="vertical-align: middle">
                   <Rank />
