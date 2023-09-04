@@ -116,11 +116,12 @@ const getStepsList = () => {
 const runStep = () => {
   emit('runStep');
 };
-const copyStep = (id) => {
+const copyStep = (id, toLast) => {
   axios
     .get('/controller/steps/copy/steps', {
       params: {
         id,
+        toLast
       },
     })
     .then((resp) => {

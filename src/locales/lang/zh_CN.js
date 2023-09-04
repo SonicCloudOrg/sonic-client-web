@@ -104,7 +104,9 @@ const steps = {
   loading: '加载中',
   loadDone: '加载完毕',
   loadMore: '加载更多',
-
+  copyStepTips: '确定复制该步骤吗？点击周围空白处取消',
+  copyToNextLine: '复制到当前行',
+  copyToLastLine: '复制到最后行',
 };
 const code = {
   placeholder: '请选择',

@@ -113,8 +113,13 @@ const remove = (e) => {
   emit('remove', e);
 };
 
-const copyStep = (id) => {
-  emit('copyStep', id);
+/**
+ * 拷贝步骤的方法
+ * @param {*} id  步骤id
+ * @param {*} toLast 是否复制到最后一行
+ */ 
+ const copyStep = (id, toLast) => {
+  emit('copyStep', id, toLast);
 };
 </script>
 
@@ -266,16 +271,28 @@ const copyStep = (id) => {
                   <Edit />
                 </el-icon>
               </el-button>
-              <el-button
-                circle
-                type="primary"
-                size="mini"
-                @click="copyStep(s.id)"
+              
+              <!--复制操作的按钮-->
+              <el-popconfirm
+                style="margin-left: 10px"
+                :confirm-button-text="$t('steps.copyToLastLine')"
+                :cancel-button-text="$t('steps.copyToNextLine')"
+                confirm-button-type="text"
+                icon="el-icon-warning"
+                icon-color="green"
+                :title="$t('steps.copyStepTips')"
+                @confirm="copyStep(s.id, true)"
+                @cancel="copyStep(s.id, false)"
               >
-                <el-icon :size="13" style="vertical-align: middle">
-                  <CopyDocument />
-                </el-icon>
-              </el-button>
+                <template #reference>
+                  <el-button circle type="primary" size="mini">
+                    <el-icon :size="13" style="vertical-align: middle">
+                      <CopyDocument />
+                    </el-icon>
+                  </el-button>
+                </template>
+              </el-popconfirm>
+              
               <el-button class="handle" circle size="mini">
                 <el-icon :size="13" style="vertical-align: middle">
                   <Rank />
