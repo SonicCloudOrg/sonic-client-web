@@ -112,7 +112,7 @@ onMounted(() => {
       prop="cronNext"
     >
       <template #default="scope">
-        {{ new Date(scope.row['cronNext']) }}
+        {{(scope.row["cronNext"] ? new Date(scope.row["cronNext"]) : $t("jobsTS.cronNoNext"))}}
       </template>
     </el-table-column>
     <el-table-column :label="$t('common.operate')" width="150" align="center">

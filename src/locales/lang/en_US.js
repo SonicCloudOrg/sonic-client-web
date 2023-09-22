@@ -527,6 +527,7 @@ const jobsTS = {
   },
   addCron: 'Add a timed task',
   whatCron: 'What is a Cron expression?',
+  cronNoNext: "N/A",
   cronInfo: {
     one: '* The first bit, indicating seconds, value range: 0-59',
     two: '* The second bit, indicating minutes, value range: 0-59',

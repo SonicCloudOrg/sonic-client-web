@@ -464,6 +464,7 @@ const jobsTS = {
   },
   addCron: '新增排程任務',
   whatCron: '什麼是Cron表達式？',
+  cronNoNext: "N/A",
   cronInfo: {
     one: '* 第一位，表示秒，取值 0-59',
     two: '* 第二位，表示分，取值 0-59',
