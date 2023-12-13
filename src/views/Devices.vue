@@ -69,9 +69,9 @@ const agentIds = ref([]);
 const cpus = ref([]);
 const sizes = ref([]);
 const isFlush = ref('0');
-const androidSystemVersion = ref([5, 6, 7, 8, 9, 10, 11, 12, 13]);
-const iOSSystemVersion = ref([9, 10, 11, 12, 13, 14, 15, 16]);
-const harmonySystemVersion = ref([1, 2, 3]);
+const androidSystemVersion = ref([5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
+const iOSSystemVersion = ref([9, 10, 11, 12, 13, 14, 15, 16, 17]);
+const harmonySystemVersion = ref([1, 2, 3, 4]);
 const manufacturer = ref([
   'APPLE',
   'HUAWEI',
