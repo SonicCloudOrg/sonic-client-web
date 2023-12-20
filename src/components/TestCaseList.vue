@@ -24,6 +24,7 @@ const caseId = ref(0);
 const dialogVisible = ref(false);
 const tableLoading = ref(false);
 const moduleIds = ref([]);
+const caseAuthorNames = ref([]);
 const getTestCaseList = (pageNum, pSize) => {
   tableLoading.value = true;
   pageSize.value = pSize || pageSize.value;
@@ -33,12 +34,12 @@ const getTestCaseList = (pageNum, pSize) => {
       params: {
         projectId: props.projectId,
         moduleIds: moduleIds.value.length > 0 ? moduleIds.value : undefined,
+        caseAuthorNames: caseAuthorNames.value.length > 0 ? caseAuthorNames.value : undefined,
         platform: props.platform,
         name: name.value,
         page: pageCurrNum.value,
         pageSize: pageSize.value,
         idSort: sortingType.value.idSort,
-        designerSort: sortingType.value.designerSort,
         editTimeSort: sortingType.value.editTimeSort,
       },
     })
@@ -120,15 +121,29 @@ const getModuleList = () => {
       }
     });
 };
+const caseAuthorList = ref([]);
+const getCaseAuthorList = () => {
+  axios
+    .get('/controller/testCases/listAllCaseAuthor', { 
+      params: { 
+        projectId: props.projectId,
+        platform: props.platform,
+      } 
+    })
+    .then((resp) => {
+      if (resp.code === 2000) {
+        resp.data.map((item) => {
+          caseAuthorList.value.push({ text: item, value: item });
+        });
+      }
+    });
+};
 let sortingType = ref({});
 const sequence = (column) => {
   sortingType.value = {};
   if (column.order === 'ascending') {
     if (column.prop === 'id') {
       sortingType.value.idSort = 'asc';
-    }
-    if (column.prop === 'designer') {
-      sortingType.value.designerSort = 'asc';
     }
     if (column.prop === 'editTime') {
       sortingType.value.editTimeSort = 'asc';
@@ -137,9 +152,6 @@ const sequence = (column) => {
     if (column.prop === 'id') {
       sortingType.value.idSort = 'desc';
     }
-    if (column.prop === 'designer') {
-      sortingType.value.designerSort = 'desc';
-    }
     if (column.prop === 'editTime') {
       sortingType.value.editTimeSort = 'desc';
     }
@@ -147,13 +159,20 @@ const sequence = (column) => {
   // 判断排序方式
   getTestCaseList();
 };
-const filter = (e) => {
-  moduleIds.value = e.moduleId;
+const filter = (filters) => {
+  for (let key in filters) {
+    if (key === 'moduleId') {
+      moduleIds.value = filters.moduleId;
+    } else if (key === 'caseAuthorName') {
+      caseAuthorNames.value = filters.caseAuthorName;
+    }
+  }
   getTestCaseList();
 };
 onMounted(() => {
   getTestCaseList();
   getModuleList();
+  getCaseAuthorList();
 });
 defineExpose({ open });
 </script>
@@ -234,11 +253,10 @@ defineExpose({ open });
     <el-table-column
       min-width="80"
       :label="$t('testcase.designer')"
-      sortable="custom"
       prop="designer"
       align="center"
-      :sort-orders="['ascending', 'descending']"
-      show-overflow-tooltip
+      column-key="caseAuthorName"
+      :filters="caseAuthorList"
     />
     <el-table-column
       min-width="180"
