@@ -72,7 +72,7 @@ import {
 } from '@element-plus/icons';
 
 import { useI18n } from 'vue-i18n';
-
+import SysDefines from '@/config/sysdefines';
 import AudioProcessor from '@/lib/audio-processor';
 import wifiLogo from '@/assets/img/wifi.png';
 import RenderDeviceName from '../../components/RenderDeviceName.vue';
@@ -496,17 +496,20 @@ const setImgData = () => {
   };
   isShowImg.value = true;
 };
+
+const sysDef = new SysDefines();
 const openSocket = (host, port, key, udId) => {
   if ('WebSocket' in window) {
+    baseUrl = sysDef.getWebsocketUrl(host, port);
     //
     websocket = new WebSocket(
-      `ws://${host}:${port}/websockets/android/${key}/${udId}/${localStorage.getItem(
+      `${baseUrl}/android/${key}/${udId}/${localStorage.getItem(
         'SonicToken'
       )}`
     );
     //
     __Scrcpy = new Scrcpy({
-      socketURL: `ws://${host}:${port}/websockets/android/screen/${key}/${udId}/${localStorage.getItem(
+      socketURL: `${baseUrl}/android/screen/${key}/${udId}/${localStorage.getItem(
         'SonicToken'
       )}`,
       node: 'scrcpy-video',
@@ -517,7 +520,7 @@ const openSocket = (host, port, key, udId) => {
     changeScreenMode(screenMode.value, 1);
     //
     terminalWebsocket = new WebSocket(
-      `ws://${host}:${port}/websockets/android/terminal/${key}/${udId}/${localStorage.getItem(
+      `${baseUrl}/android/terminal/${key}/${udId}/${localStorage.getItem(
         'SonicToken'
       )}`
     );
@@ -1650,9 +1653,10 @@ const getDeviceById = (id) => {
 let audioPlayer = null;
 const isConnectAudio = ref(false);
 const initAudioPlayer = () => {
+  baseUrl = sysDef.getWebsocketUrl(agent.value.host, agent.value.port);
   audioPlayer = new AudioProcessor({
     node: 'audio-player',
-    wsUrl: `ws://${agent.value.host}:${agent.value.port}/websockets/audio/${agent.value.secretKey}/${device.value.udId}`,
+    wsUrl: `${baseUrl}/audio/${agent.value.secretKey}/${device.value.udId}`,
     onReady() {
       isConnectAudio.value = true;
     },
