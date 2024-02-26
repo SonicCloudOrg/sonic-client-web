@@ -69,6 +69,7 @@ import {
   InfoFilled,
 } from '@element-plus/icons';
 import { useI18n } from 'vue-i18n';
+import SysDefines from '@/config/sysdefines';
 import PackageList from '@/components/PackageList.vue';
 import RenderDeviceName from '../../components/RenderDeviceName.vue';
 import PocoPane from '../../components/PocoPane.vue';
@@ -490,20 +491,22 @@ const setImgData = (data) => {
   };
   isShowImg.value = true;
 };
+const sysDef = new SysDefines();
 const openSocket = (host, port, key, udId) => {
   if ('WebSocket' in window) {
+    baseUrl = sysDef.getWebsocketUrl(host, port);
     websocket = new WebSocket(
-      `ws://${host}:${port}/websockets/ios/${key}/${udId}/${localStorage.getItem(
+      `${baseUrl}/ios/${key}/${udId}/${localStorage.getItem(
         'SonicToken'
       )}`
     );
     terminalWebsocket = new WebSocket(
-      `ws://${host}:${port}/websockets/ios/terminal/${key}/${udId}/${localStorage.getItem(
+      `${baseUrl}/ios/terminal/${key}/${udId}/${localStorage.getItem(
         'SonicToken'
       )}`
     );
     screenWebsocket = new WebSocket(
-      `ws://${host}:${port}/websockets/ios/screen/${key}/${udId}/${localStorage.getItem(
+      `${baseUrl}/ios/screen/${key}/${udId}/${localStorage.getItem(
         'SonicToken'
       )}`
     );
