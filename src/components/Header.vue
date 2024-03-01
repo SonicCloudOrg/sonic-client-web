@@ -106,8 +106,16 @@ const flush = () => {
   dialogVisible.value = false;
   getProjectList();
 };
+
+// const getProjectList = () => {
+//   axios.get('/controller/projects/list').then((resp) => {
+//     projectData.value = resp.data;
+//     store.commit('saveProjectList', projectData.value);
+//   });
+// };
+// 修改为：按用户查找所有项目
 const getProjectList = () => {
-  axios.get('/controller/projects/list').then((resp) => {
+  axios.get('/controller/users/listProjects').then((resp) => {
     projectData.value = resp.data;
     store.commit('saveProjectList', projectData.value);
   });
