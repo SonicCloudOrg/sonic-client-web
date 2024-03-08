@@ -405,6 +405,8 @@ const common = {
   copy: 'Copy',
   inuse: 'Used for',
   inidle: 'Idle for',
+  pageNotFoundTip: 'Please check if the URL you entered is correct, or click the button below to return to the homepage',
+  backHome: 'Return to home page'
 };
 // 路由
 const routes = {

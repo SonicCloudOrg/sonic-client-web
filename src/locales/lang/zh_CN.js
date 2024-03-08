@@ -402,6 +402,8 @@ const common = {
   copy: '复制',
   inuse: '已使用',
   inidle: '已闲置',
+  pageNotFoundTip: '请检查您输入的URL是否正确，或单击下面的按钮返回主页',
+  backHome: '回到主页'
 };
 // 路由
 const routes = {

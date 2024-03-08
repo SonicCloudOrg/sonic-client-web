@@ -210,6 +210,11 @@ const getRoutes = () => [
       },
     ],
   },
+  {
+    path: '/:pathMatch(.*)',
+    name: 'NotFound',
+    component: () => import('../views/NotFound.vue'),
+  },
 ];
 
 export let router = null;
