@@ -50,20 +50,20 @@ const getPublicStepList = (pageNum, pSize) => {
     });
 };
 // 复制该公共步骤
-// const copyPublicStepId = (id) => {
-//   axios.get("/controller/publicSteps/copy", {
-//     params: {
-//       id
-//     }
-//   }).then(resp => {
-//     if (resp['code'] === 2000) {
-//       ElMessage.success({
-//         message: resp['message']
-//       });
-//       getPublicStepList()
-//     }
-//   })
-// }
+ const copyPublicStepId = (id) => {
+   axios.get("/controller/publicSteps/copy", {
+     params: {
+       id
+     }
+   }).then(resp => {
+     if (resp['code'] === 2000) {
+       ElMessage.success({
+         message: resp['message']
+       });
+      getPublicStepList()
+     }
+   })
+ }
 const deletePublicStep = (id) => {
   axios
     .delete('/controller/publicSteps', {
@@ -135,12 +135,12 @@ onMounted(() => {
     </el-table-column>
     <el-table-column :label="$t('common.operate')" width="250" align="center">
       <template #default="scope">
-        <!--        <el-button type="primary"-->
-        <!--                   size="mini"-->
-        <!--                   v-on:click="copyPublicStepId(scope.row.id)"-->
-        <!--        >-->
-        <!--          复制-->
-        <!--        </el-button>-->
+                <el-button type="primary"
+                           size="mini"
+                           v-on:click="copyPublicStepId(scope.row.id)"
+                 >
+                 复制
+                </el-button>
 
         <el-button
           type="primary"

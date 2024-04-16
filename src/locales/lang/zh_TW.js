@@ -418,12 +418,16 @@ const globalParamsTs = {
     valueName: '參數值',
     valueNameMessage: "參數值不能空白，多個可以用 '{'|'}' 號隔開",
     inputValue: "請輸入參數值，多個可以用 '{'|'}' 號隔開",
+    inputdescriptions: '参数描述',
+    descriptions: "请输入参数值描述，多个可以用 '{'|'}' 号隔开",
+    descriptionsMessage: '参数描述不能为空，建议使用英文',
   },
   addGlobalParams: '添加全域參數',
   paramsList: {
     id: '參數id',
     name: '參數名',
     value: '參數值',
+    descriptions: '参数描述',
   },
   delMessage: '確定刪除該全域參數嗎?',
 };

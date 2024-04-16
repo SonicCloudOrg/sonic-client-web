@@ -36,6 +36,7 @@ const props = defineProps({
 const selectCondition = (e) => {
   step.value.error = 1;
 };
+const elements = ref([{eleName:'',eleType:'',eleValue:'',id:'',moduleId:'',modulesDTO:'',projectId:'',stepsId:''}]);
 const step = ref({
   id: null,
   caseId: props.caseId,
@@ -43,13 +44,14 @@ const step = ref({
   projectId: props.projectId,
   platform: props.platform,
   stepType: '',
-  elements: [],
+  elements: elements,
   text: '',
   conditionType: 0,
   content: '',
   error: 3,
   disabled: 0,
 });
+
 const activityList = ref([{ name: '' }]);
 const add = () => {
   activityList.value.push({ name: '' });
@@ -214,6 +216,7 @@ const stepForm = ref(null);
 const changeType = (e) => {
   step.value.text = '';
   step.value.elements = [];
+
   step.value.content = '';
   activityList.value = [{ name: '' }];
   if (
@@ -2320,12 +2323,15 @@ onMounted(() => {
           type="normal"
           :step="step"
         />
+
         <el-form-item :label="$t('stepDetail.inputValue')">
           <el-input
-            v-model="step.content"
-            :placeholder="$t('stepDetail.inputValue')"
+              v-model="step.content"
+              :placeholder="$t('stepDetail.inputValue')"
           ></el-input>
         </el-form-item>
+
+
       </div>
 
       <div
@@ -3398,19 +3404,18 @@ onMounted(() => {
         />
       </div>
     </div>
-
     <el-form-item :label="$t('stepDetail.logic.process')">
       <el-select
-        v-model="step.conditionType"
-        :placeholder="
+          v-model="step.conditionType"
+          :placeholder="
           $t('stepDetail.msg.select') + $t('stepDetail.logic.condition')
         "
-        :disabled="
+          :disabled="
           step.stepType === 'iteratorAndroidElement' ||
           step.stepType === 'iteratorIOSElement' ||
           step.stepType === 'iteratorPocoElement'
         "
-        @change="selectCondition"
+          @change="selectCondition"
       >
         <el-option :label="$t('stepDetail.none')" :value="0"></el-option>
         <el-option label="if" :value="1"></el-option>
@@ -3419,10 +3424,10 @@ onMounted(() => {
         <el-option label="while" :value="4"></el-option>
       </el-select>
       <el-popover
-        placement="right-start"
-        :title="$t('stepDetail.logic.process')"
-        :width="300"
-        trigger="hover"
+          placement="right-start"
+          :title="$t('stepDetail.logic.process')"
+          :width="300"
+          trigger="hover"
       >
         <p>{{ $t('stepDetail.logic.msgProcess') }}</p>
         <div>
@@ -3447,6 +3452,12 @@ onMounted(() => {
           </el-icon>
         </template>
       </el-popover>
+    </el-form-item>
+    <el-form-item :label="$t('stepDetail.xpath')">
+      <el-input
+        v-model="step.elements[0].eleValue"
+        :placeholder="$t('stepDetail.msg.select') + $t('stepDetail.logic.condition')">
+      </el-input>
     </el-form-item>
 
     <div v-if="step.conditionType === 0">
