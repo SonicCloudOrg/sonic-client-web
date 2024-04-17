@@ -108,7 +108,6 @@ onMounted(() => {
   <el-button size="mini" round type="primary" @click="open">{{
     $t('publicStepTS.add')
   }}</el-button>
-<!--  <el-table :data="pageData['content']" border style="margin-top: 10px">-->
   <el-table
       v-loading="tableLoading"
       :data="pageData['content']"
@@ -121,20 +120,6 @@ onMounted(() => {
       @sort-change="sequence"
   >
     <el-table-column width="100" label="id" prop="id" align="center" />
-<!--    <el-table-column-->
-<!--        width="100"-->
-<!--        label="id"-->
-<!--        prop="id"-->
-<!--        align="center"-->
-<!--        sortable="custom"-->
-<!--        :sort-orders="['ascending', 'descending']"-->
-<!--        show-overflow-tooltip-->
-<!--    />-->
-<!--    <el-table-column-->
-<!--      :label="$t('publicStepTS.name')"-->
-<!--      prop="name"-->
-<!--      header-align="center"-->
-<!--    />-->
     <el-table-column
         min-width="280"
         prop="name"
