@@ -28,6 +28,7 @@ const publicStep = ref({
 });
 // 公共步骤信息页面搜索文案
 const searchText = ref('');
+const searchtestcaseId = ref('');
 const updatePub = ref(null);
 const parentId = ref(0);
 const pageData = ref({});
@@ -92,6 +93,29 @@ const searchListOfSteps = (pageNum, pSize) => {
       .then((resp) => {
         pageData.value = resp.data;
       });
+  }
+};
+
+const searchListOfStepsByCaseID = (pageNum, pSize) => {
+  if (searchtestcaseId.value.length === 0) {
+    getStepList(pageNum, pSize);
+  } else {
+    pageSize.value = pSize || pageSize.value;
+    pageCurrNum.value = pageNum || pageCurrNum.value;
+    axios
+        .get('/controller/steps/search/listByCaseID', {
+          params: {
+            projectId: props.projectId,
+            platform: publicStep.value.platform,
+            testcaseId: searchtestcaseId.value,
+            page: pageCurrNum.value,
+            pageSize: pageSize.value,
+
+          },
+        })
+        .then((resp) => {
+          pageData.value = resp.data;
+        });
   }
 };
 const deleteStep = (id) => {

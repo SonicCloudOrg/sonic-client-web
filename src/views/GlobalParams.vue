@@ -17,6 +17,7 @@ const globalParams = ref({
   projectId: route.params.projectId,
   paramsKey: '',
   paramsValue: '',
+  descriptions: '',
 });
 const editGlobalParams = async (id) => {
   await open();
@@ -28,6 +29,7 @@ const open = () => {
     projectId: route.params.projectId,
     paramsKey: '',
     paramsValue: '',
+    descriptions: '',
   };
   dialogVisible.value = true;
 };
@@ -139,6 +141,21 @@ onMounted(() => {
           :placeholder="$t('globalParamsTs.dialogVisible.inputValue')"
         ></el-input>
       </el-form-item>
+
+      <el-form-item
+          prop="paramsKey"
+          :label="$t('globalParamsTs.dialogVisible.inputdescriptions')"
+          :rules="{
+          required: true,
+          message: $t('globalParamsTs.dialogVisible.descriptionsMessage'),
+          trigger: 'blur',
+        }"
+      >
+        <el-input
+            v-model="globalParams.descriptions"
+            :placeholder="$t('globalParamsTs.dialogVisible.descriptions')"
+        ></el-input>
+      </el-form-item>
     </el-form>
     <div style="text-align: center">
       <el-button size="small" type="primary" @click="summit">{{
@@ -167,6 +184,12 @@ onMounted(() => {
       header-align="center"
       prop="paramsValue"
     ></el-table-column>
+    <el-table-column
+        :label="$t('globalParamsTs.paramsList.descriptions')"
+        header-align="center"
+        prop="descriptions"
+    ></el-table-column>
+
     <el-table-column :label="$t('common.operate')" width="170" align="center">
       <template #default="scope">
         <el-button

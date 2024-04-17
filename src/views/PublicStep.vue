@@ -9,13 +9,18 @@ import axios from '../http/axios';
 import ChildStepListView from '../components/ChildStepListView.vue';
 
 const { t: $t } = useI18n();
-
+const props = defineProps({
+  projectId: Number,
+  platform: Number,
+  isReadOnly: Boolean,
+});
 const route = useRoute();
 const dialogVisible = ref(false);
 const pageData = ref({});
 const pageSize = ref(15);
 const pageCurrNum = ref(1);
 const publicStepId = ref(0);
+const name = ref('');
 watch(dialogVisible, (newValue, oldValue) => {
   if (!newValue) {
     publicStepId.value = 0;
@@ -41,29 +46,31 @@ const getPublicStepList = (pageNum, pSize) => {
     .get('/controller/publicSteps/list', {
       params: {
         projectId: route.params.projectId,
+        name: name.value,
         page: pageCurrNum.value,
         pageSize: pageSize.value,
       },
     })
     .then((resp) => {
       pageData.value = resp.data;
+      tableLoading.value = false;
     });
 };
 // 复制该公共步骤
-// const copyPublicStepId = (id) => {
-//   axios.get("/controller/publicSteps/copy", {
-//     params: {
-//       id
-//     }
-//   }).then(resp => {
-//     if (resp['code'] === 2000) {
-//       ElMessage.success({
-//         message: resp['message']
-//       });
-//       getPublicStepList()
-//     }
-//   })
-// }
+ const copyPublicStepId = (id) => {
+   axios.get("/controller/publicSteps/copy", {
+     params: {
+       id
+     }
+   }).then(resp => {
+     if (resp.code === 2000) {
+       ElMessage.success({
+         message: resp.message
+       });
+      getPublicStepList()
+     }
+   })
+ }
 const deletePublicStep = (id) => {
   axios
     .delete('/controller/publicSteps', {
@@ -101,13 +108,34 @@ onMounted(() => {
   <el-button size="mini" round type="primary" @click="open">{{
     $t('publicStepTS.add')
   }}</el-button>
-  <el-table :data="pageData['content']" border style="margin-top: 10px">
+  <el-table
+      v-loading="tableLoading"
+      :data="pageData['content']"
+      border
+      :row-style="isReadOnly ? { cursor: 'pointer' } : {}"
+      style="margin-top: 15px"
+      :default-sort="{ prop: 'editTime', order: 'descending' }"
+      @filter-change="filter"
+      @row-click="selectCase"
+      @sort-change="sequence"
+  >
     <el-table-column width="100" label="id" prop="id" align="center" />
     <el-table-column
-      :label="$t('publicStepTS.name')"
-      prop="name"
-      header-align="center"
-    />
+        min-width="280"
+        prop="name"
+        header-align="center"
+        show-overflow-tooltip
+    >
+      <template #header>
+        <el-input
+            v-model="name"
+            size="mini"
+            :placeholder="$t('publicStepTS.name')"
+            @input="getPublicStepList()"
+        />
+      </template>
+    </el-table-column>
+
     <el-table-column
       :label="$t('publicStepTS.platform')"
       width="110"
@@ -123,7 +151,7 @@ onMounted(() => {
       align="center"
     >
       <template #default="scope">
-        <el-popover placement="left" :width="700" trigger="click">
+        <el-popover placement="left" :width="500" trigger="click">
           <child-step-list-view :steps="scope.row.steps" />
           <template #reference>
             <el-button size="mini">{{
@@ -135,12 +163,12 @@ onMounted(() => {
     </el-table-column>
     <el-table-column :label="$t('common.operate')" width="250" align="center">
       <template #default="scope">
-        <!--        <el-button type="primary"-->
-        <!--                   size="mini"-->
-        <!--                   v-on:click="copyPublicStepId(scope.row.id)"-->
-        <!--        >-->
-        <!--          复制-->
-        <!--        </el-button>-->
+                <el-button type="primary"
+                           size="mini"
+                           v-on:click="copyPublicStepId(scope.row.id)"
+                 >
+                 复制
+                </el-button>
 
         <el-button
           type="primary"

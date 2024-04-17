@@ -481,12 +481,16 @@ const globalParamsTs = {
       "The parameter value cannot be empty, multiple values can be separated by '{'|'}'",
     inputValue:
       "Please input the value of the parameter, multiple values can be separated by '{'|'}'",
+    Inputdescriptions: 'Please enter a parameter name description',
+    Descriptions: "Please enter parameter value descriptions, multiple can be separated by '{' | '}' signs",
+    DescriptionsMessage: 'Parameter description cannot be empty, it is recommended to use English',
   },
   addGlobalParams: 'Add global parameters',
   paramsList: {
     id: 'Parameter id',
     name: 'Name',
     value: 'Value',
+    descriptions: 'Parameter Description',
   },
   delMessage: 'Sure to delete this global parameter?',
 };
