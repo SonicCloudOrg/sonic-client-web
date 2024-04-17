@@ -70,7 +70,7 @@ const pubSteps = {
   selectPass: '选择成功！已加入到已选步骤',
   removePass: '移出成功！',
   stepInfo: '步骤信息',
-  name: '公共步骤名称',
+  name: '',
   nameMsg: '公共步骤名称不能为空',
   namePlace: '请输入公共步骤名称',
   platform: '平台',
