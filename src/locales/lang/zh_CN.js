@@ -414,6 +414,7 @@ const routes = {
   operateSteps: '运行步骤',
   testSuite: '测试套件',
   testResult: '测试结果',
+  androidTest: 'Android测试结果',
   reportDetails: '报告详情',
   publicSteps: '公共步骤',
   controlElement: '控件元素',
@@ -672,6 +673,23 @@ const ResultsTS = {
   interruptTest: '确定中断本次测试吗?',
   interrupt: '中断',
   del: '确定删除该测试报告吗?',
+};
+const resultAndroidTS = {
+  id: 'id',
+  name: '名称',
+  appVersion: 'app版本',
+  appPackage: 'app包名',
+  fps: 'FPS',
+  phyRSS: '物理内存',
+  vmRSS:'虚拟内存',
+  totalPSS: '总内存',
+  cpu: 'cpu',
+  platform: '系统类型',
+  udid: '设备uid',
+  createTime: '创建时间',
+  caseId:'用例id',
+  resultId:'测试结果id',
+
 };
 const stepListViewTS = {
   caseInfo: '用例详情',
@@ -1645,6 +1663,7 @@ export default {
     publicStepTS,
     resultDetailTS,
     ResultsTS,
+    resultAndroidTS,
     stepListViewTS,
     testSuitesTS,
     versionsTS,

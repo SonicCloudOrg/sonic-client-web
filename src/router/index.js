@@ -94,6 +94,12 @@ const getRoutes = () => [
         meta: { title: $tc('routes.testResult') },
       },
       {
+        path: 'AndroidTest',
+        name: 'AndroidTest',
+        component: () => import('../views/androidTest.vue'),
+        meta: { title: $tc('routes.testAndroidTest') },
+      },
+      {
         path: 'ResultDetail/:resultId(\\d+)',
         name: 'ResultDetail',
         component: () => import('../views/ResultDetail.vue'),
