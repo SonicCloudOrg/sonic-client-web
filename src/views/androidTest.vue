@@ -18,34 +18,41 @@ const platformOptions = ref([ // 定义平台选项数组
   {label: 'Android', value: '1'},
   {label: 'iOS', value: '2'}
 ]);
-const selectedPlatform = ref('1');//定义选择版本
-const appVersion = ref([]);//定义appversion数据
-const selectedAppVersion = ref('');//定义选择appVersion
+const selectedPlatform = ref('1');// 定义选择版本
+const appVersion = ref([]);// 定义appversion数据
+const selectedAppVersion = ref('');// 定义选择appVersion
 const resultId = ref('');
 const caseId = ref('');
 const udid = ref('');
 
 const getAndroidList = (pageNum, pSize) => {
+  console.log(pSize)
   pageSize.value = pSize || pageSize.value;
   pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
-    .get('/controller/resultPerformance/list', {
-      // 定义传递给接口的参数，首次进来platform默认为1
-      params: {
-        projectId: route.params.projectId,
-        page: pageCurrNum.value,
-        pageSize: pageSize.value,
-        platform:selectedPlatform.value,
-      },
-    })
-    .then((resp) => {
-  pageData.value = resp.data;
-      appVersion.value = pageData.value.content
-      console.log('123', appVersion.value)
-      ElMessage.success({
-        message: resp.message,
+      .get('/controller/resultPerformance/list', {
+        // 定义传递给接口的参数，首次进来platform默认为1
+        params: {
+          projectId: route.params.projectId,
+          page: pageCurrNum.value,
+          pageSize: pageSize.value,
+          platform: selectedPlatform.value,
+        },
+      })
+      .then((resp) => {
+        pageData.value = resp.data;
+        const arr1 = pageData.value.content
+        console.log(arr1)
+        const arr = Array.from(new Set(arr1.map(item => item.appVersion))).map(app => {
+              return arr1.find(item => item.appVersion === app)
+            }
+        )
+        appVersion.value = arr
+        console.log('123', appVersion.value)
+        ElMessage.success({
+          message: resp.message,
+        });
       });
-    });
 };
 
 const getPplatform = (pageNum, pSize) => {
@@ -54,12 +61,12 @@ const getPplatform = (pageNum, pSize) => {
   pageCurrNum.value = pageNum || pageCurrNum.value;
   axios
       .get('/controller/resultPerformance/list', {
-        //参数是使用v-model绑定的，所以不需要传递，直接拿板顶数据的.value就行，例如selectedAppVersion.value，下面数据也是如此，两个下拉选择框写了两个方法
+        // 参数是使用v-model绑定的，所以不需要传递，直接拿板顶数据的.value就行，例如selectedAppVersion.value，下面数据也是如此，两个下拉选择框写了两个方法
         params: {
           projectId: route.params.projectId,
           page: pageCurrNum.value,
           pageSize: pageSize.value,
-          platform:selectedPlatform.value,
+          platform: selectedPlatform.value,
         },
       })
       .then((resp) => {
@@ -79,12 +86,12 @@ const getAppVersion = (pageNum, pSize) => {
           projectId: route.params.projectId,
           page: pageCurrNum.value,
           pageSize: pageSize.value,
-          appVersion:`${selectedAppVersion.value}`,
-          platform:selectedPlatform.value,
+          appVersion: `${selectedAppVersion.value}`,
+          platform: selectedPlatform.value,
         },
       })
       .then((resp) => {
-        console.log('222',resp)
+        console.log('222', resp)
         pageData.value = resp.data;
         ElMessage.success({
           message: resp.message,
@@ -94,7 +101,7 @@ const getAppVersion = (pageNum, pSize) => {
 const resultIdS = (pageNum, pSize) => {
   pageSize.value = pSize || pageSize.value;
   pageCurrNum.value = pageNum || pageCurrNum.value;
-  console.log('123',resultId.value)
+  console.log('123', resultId.value)
   axios
       .get('/controller/resultPerformance/list', {
         // 输入框的方法集合在一个方法里面，不是必须的参数给一个判断为‘’，需要查询的数据也是双向绑定的，
@@ -103,9 +110,9 @@ const resultIdS = (pageNum, pSize) => {
           projectId: route.params.projectId,
           page: pageCurrNum.value,
           pageSize: pageSize.value,
-          platform:selectedPlatform.value,
-          udid:udid.value || '',
-          caseId:caseId.value || '',
+          platform: selectedPlatform.value,
+          udid: udid.value || '',
+          caseId: caseId.value || '',
         },
       })
       .then((resp) => {
@@ -118,7 +125,7 @@ const resultIdS = (pageNum, pSize) => {
       });
 };
 onMounted(() => {
-  getAndroidList(1,10);
+  getAndroidList(1, 10);
 });
 </script>
 
@@ -155,7 +162,7 @@ onMounted(() => {
           :value="item.appVersion"
       />
     </el-select>
-<!--    @keydown.enter.native是监听回车事件-->
+    <!--    @keydown.enter.native是监听回车事件-->
     <el-input
         v-model="resultId"
         size="mini"
