@@ -414,7 +414,7 @@ const routes = {
   operateSteps: '运行步骤',
   testSuite: '测试套件',
   testResult: '测试结果',
-  androidTest: 'Android测试结果',
+  androidTest: '性能测试结果',
   reportDetails: '报告详情',
   publicSteps: '公共步骤',
   controlElement: '控件元素',
@@ -674,7 +674,7 @@ const ResultsTS = {
   interrupt: '中断',
   del: '确定删除该测试报告吗?',
 };
-const resultAndroidTS = {
+const performance = {
   id: 'id',
   name: '名称',
   appVersion: 'app版本',
@@ -1663,7 +1663,7 @@ export default {
     publicStepTS,
     resultDetailTS,
     ResultsTS,
-    resultAndroidTS,
+    performance,
     stepListViewTS,
     testSuitesTS,
     versionsTS,

@@ -358,6 +358,7 @@ const routes = {
   iosTestCase: 'iOS測試案例',
   operateSteps: '操作步驟',
   testSuite: '測試套件',
+  androidTest: '性能測試結果',
   testResult: '測試結果',
   reportDetails: '報告詳情',
   publicSteps: '公共步驟',
@@ -616,7 +617,7 @@ const ResultsTS = {
   interrupt: '中斷',
   del: '確定刪除該測試報告嗎?',
 };
-const resultAndroidTS = {
+const performance = {
   id: 'id',
   name: '名称',
   appVersion: 'app版本',
@@ -1599,7 +1600,7 @@ export default {
     publicStepTS,
     resultDetailTS,
     ResultsTS,
-    resultAndroidTS,
+    performance,
     stepListViewTS,
     testSuitesTS,
     versionsTS,
