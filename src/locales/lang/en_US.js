@@ -1156,6 +1156,7 @@ const stepDetail = {
   delete: 'Delete ',
   detect: 'Detect ',
   dragTo: 'Drag To ',
+  swipeTo: 'Swipe To',
   display: 'Display ',
   downwards: 'Downwards ',
   exception: {
@@ -1263,8 +1264,9 @@ const stepDetail = {
           click: 'Click the Control Element',
           sendKeys: 'Enter Text',
           sendKeysByActions: 'Enter Text(Actions)',
-          swipe2: 'Drag Control Element',
-          scrollToEle: 'Drag to Control Element',
+          swipe2: 'Swipe Control Element',
+          drag2: 'Drag Control Element',
+          scrollToEle: 'Scroll to Control Element',
           longPress: 'Long Press Control Element',
           clear: 'Clear InputBox',
           obtainElementAttr: 'Get Element Attribute',
@@ -1279,6 +1281,7 @@ const stepDetail = {
           tap: 'Tap Coordinate',
           longPressPoint: 'Long Press Point',
           swipe: 'Swipe',
+          drag: 'Drag And Drop',
         },
         webView: {
           self: 'WebView Control',
