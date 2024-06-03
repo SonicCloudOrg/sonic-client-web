@@ -1134,7 +1134,6 @@ const stepDetail = {
   delete: '删除',
   detect: '检测',
   dragTo: '拖拽至',
-  swipeTo: '滑动至',
   display: '显示',
   downwards: '向下',
   exception: {
@@ -1243,6 +1242,7 @@ const stepDetail = {
           sendKeysByActions: '输入文本(Actions)',
           swipe2: '滑动控件元素',
           drag2: '拖拽控件元素',
+          motion: '触控动作事件(MotionEvent)',
           scrollToEle: '滚动到控件元素',
           longPress: '长按控件元素',
           clear: '清空输入框',
@@ -1259,6 +1259,7 @@ const stepDetail = {
           longPressPoint: '长按坐标',
           swipe: '直线滑动',
           drag: '拖拽滑动',
+          motion: '触控动作事件(MotionEvent)',
         },
         webView: {
           self: 'WebView控件',
@@ -1328,7 +1329,7 @@ const stepDetail = {
         self: '运行设置',
         stepHold: '步骤间隔设置',
         switchTouchMode: '触控模式设置',
-      }, 
+      },
     },
     iOSOptions: {
       system: {
@@ -1462,6 +1463,10 @@ const stepDetail = {
   maxTries: '最大尝试',
   multiWindowMode: '多窗口模式',
   mode: '模式',
+  motionType: {
+    self: '动作类型',
+    Exec: '执行触控动作',
+  },
   maxDepth: '最大深度',
   maxScroll: '最多滚动',
   msg: {
@@ -1561,8 +1566,9 @@ const stepDetail = {
     textToClipboard: '设置文本至剪切板',
     stepsInterval: '步骤间隔设置',
     touchMode: '触控模式设置',
-},
+  },
   swipe: '滑动',
+  swipeTo: '滑动至',
   switch: {
     handler: '切换句柄',
     webview: '切换webview',

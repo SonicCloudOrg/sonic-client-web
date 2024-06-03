@@ -556,6 +556,23 @@ const getNotes = (text, type) => {
     <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
   </span>
   <span
+    v-if="
+      step.stepType === 'motionEvent' || step.stepType === 'motionEventByPoint'
+    "
+  >
+    <el-tag size="small" type="info">{{ step.elements[0]['eleName'] }}</el-tag>
+    <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
+      $t('stepDetail.motionType.Exec')
+    }}</el-tag>
+    <el-tag
+      type="info"
+      size="small"
+      style="margin-right: 10px"
+    >
+      {{ step.text.toUpperCase() }}</el-tag
+    >
+  </span>
+  <span
     v-if="step.stepType === 'longPress' || step.stepType === 'pocoLongPress'"
   >
     <el-tag size="small"

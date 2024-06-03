@@ -1156,7 +1156,6 @@ const stepDetail = {
   delete: 'Delete ',
   detect: 'Detect ',
   dragTo: 'Drag To ',
-  swipeTo: 'Swipe To',
   display: 'Display ',
   downwards: 'Downwards ',
   exception: {
@@ -1266,6 +1265,7 @@ const stepDetail = {
           sendKeysByActions: 'Enter Text(Actions)',
           swipe2: 'Swipe Control Element',
           drag2: 'Drag Control Element',
+          motion: 'Motion Event',
           scrollToEle: 'Scroll to Control Element',
           longPress: 'Long Press Control Element',
           clear: 'Clear InputBox',
@@ -1282,6 +1282,7 @@ const stepDetail = {
           longPressPoint: 'Long Press Point',
           swipe: 'Swipe',
           drag: 'Drag And Drop',
+          motion: 'Motion Event',
         },
         webView: {
           self: 'WebView Control',
@@ -1486,6 +1487,10 @@ const stepDetail = {
   maxTries: 'Max Tries ',
   multiWindowMode: 'Multi Window Mode',
   mode: 'Mode',
+  motionType: {
+    self: 'Motion Type',
+    Exec: 'Touch action',
+  },
   maxDepth: 'Max Depth',
   maxScroll: 'Max Scroll',
   msg: {
@@ -1597,6 +1602,7 @@ const stepDetail = {
     touchMode: 'Set Touch Mode',
   },
   swipe: 'Swipe',
+  swipeTo: 'Swipe To',
   switch: {
     handler: 'Switch Handler',
     webview: 'Switch Webview',
