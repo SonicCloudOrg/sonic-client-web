@@ -80,6 +80,25 @@ const deletePublicStep = (id) => {
       }
     });
 };
+const curShowPublicStep = ref({
+  id: null,
+  projectId: route.params.projectId,
+  platform: 0,
+  name: '',
+  steps: [],
+});
+/**
+ * 点击列表上的某个公共元素信息之后，再拉取单个公共步骤的子步骤信息
+ * @param id 公共步骤id
+ */
+const getPublicStepInfo = (id) => {
+  curShowPublicStep.value.steps = [];
+  axios.get('/controller/publicSteps', { params: { id } }).then((resp) => {
+    if (resp.code === 2000) {
+      curShowPublicStep.value = resp.data;
+    }
+  });
+};
 onMounted(() => {
   getPublicStepList();
 });
@@ -124,9 +143,9 @@ onMounted(() => {
     >
       <template #default="scope">
         <el-popover placement="left" :width="700" trigger="click">
-          <child-step-list-view :steps="scope.row.steps" />
+          <child-step-list-view :steps="curShowPublicStep.steps" />
           <template #reference>
-            <el-button size="mini">{{
+            <el-button size="mini" @click="getPublicStepInfo(scope.row.id)">{{
               $t('publicStepTS.viewSteps')
             }}</el-button>
           </template>
