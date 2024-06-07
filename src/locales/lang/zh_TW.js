@@ -358,6 +358,7 @@ const routes = {
   iosTestCase: 'iOS測試案例',
   operateSteps: '操作步驟',
   testSuite: '測試套件',
+  androidTest: '性能測試結果',
   testResult: '測試結果',
   reportDetails: '報告詳情',
   publicSteps: '公共步驟',
@@ -616,6 +617,23 @@ const ResultsTS = {
   interrupt: '中斷',
   del: '確定刪除該測試報告嗎?',
 };
+const performance = {
+  id: 'id',
+  name: '名称',
+  appVersion: 'app版本',
+  appPackage: 'app包名',
+  fps: 'FPS',
+  phyRSS: '物理内存',
+  vmRSS:'虚拟内存',
+  totalPSS: '总内存',
+  cpu: 'cpu',
+  platform: '系统类型',
+  udid: '设备uid',
+  createTime: '创建时间',
+  caseId:'用例id',
+  resultId:'测试结果id',
+};
+
 const stepListViewTS = {
   caseInfo: '案例詳情',
   platformToBe: '所屬平台',
@@ -1582,6 +1600,7 @@ export default {
     publicStepTS,
     resultDetailTS,
     ResultsTS,
+    performance,
     stepListViewTS,
     testSuitesTS,
     versionsTS,

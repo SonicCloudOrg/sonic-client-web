@@ -120,6 +120,9 @@ onMounted(() => {
           <el-menu-item :index="'/Home/' + route.params.projectId + '/Results'">
             <i class="el-icon-s-data"></i>{{ $t('routes.testResult') }}
           </el-menu-item>
+          <el-menu-item :index="'/Home/' + route.params.projectId + '/androidTest'">
+            <i class="el-icon-s-data"></i>{{ $t('routes.androidTest') }}
+          </el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="7">
