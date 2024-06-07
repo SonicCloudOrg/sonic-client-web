@@ -2845,6 +2845,7 @@ onMounted(() => {
               $t('stepDetail.msg.select') + $t('stepDetail.control.attribute')
             "
           >
+            <el-option value="centerCoordinate"></el-option>
             <el-option value="class"></el-option>
             <el-option value="password"></el-option>
             <el-option value="resource-id"></el-option>
