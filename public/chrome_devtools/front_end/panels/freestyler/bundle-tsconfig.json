@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/panels/freestyler"},"files":["../../../../../../front_end/panels/freestyler/freestyler.ts"],"references":[{"path":"./freestyler-tsconfig.json"}]}

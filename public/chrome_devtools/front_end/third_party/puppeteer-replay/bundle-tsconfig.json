@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/third_party/puppeteer-replay"},"files":["../../../../../../front_end/third_party/puppeteer-replay/puppeteer-replay.ts"],"references":[{"path":"./puppeteer-replay-tsconfig.json"}]}

@@ -1,0 +1,61 @@
+import * as UI from '../../ui/legacy/legacy.js';
+export declare class CoverageView extends UI.Widget.VBox {
+    private model;
+    private decorationManager;
+    private readonly coverageTypeComboBox;
+    private readonly coverageTypeComboBoxSetting;
+    private toggleRecordAction;
+    private readonly toggleRecordButton;
+    private inlineReloadButton;
+    private readonly startWithReloadButton;
+    private readonly clearAction;
+    private readonly exportAction;
+    private textFilterRegExp;
+    private readonly filterInput;
+    private typeFilterValue;
+    private readonly filterByTypeComboBox;
+    private showContentScriptsSetting;
+    private readonly contentScriptsCheckbox;
+    private readonly coverageResultsElement;
+    private readonly landingPage;
+    private readonly bfcacheReloadPromptPage;
+    private readonly activationReloadPromptPage;
+    private listView;
+    private readonly statusToolbarElement;
+    private statusMessageElement;
+    constructor();
+    static instance(): CoverageView;
+    static removeInstance(): void;
+    private buildLandingPage;
+    private buildReloadPromptPage;
+    clear(): void;
+    private reset;
+    toggleRecording(): void;
+    isBlockCoverageSelected(): boolean;
+    private selectCoverageType;
+    private onCoverageTypeComboBoxSelectionChanged;
+    ensureRecordingStarted(): Promise<void>;
+    startRecording(options: {
+        reload: (boolean | undefined);
+        jsCoveragePerBlock: (boolean | undefined);
+    } | null): Promise<void>;
+    private onCoverageDataReceived;
+    private updateListView;
+    stopRecording(): Promise<void>;
+    processBacklog(): void;
+    private onPrimaryPageChanged;
+    private updateViews;
+    private updateStats;
+    private onFilterChanged;
+    private onFilterByTypeChanged;
+    private isVisible;
+    exportReport(): Promise<void>;
+    selectCoverageItemByUrl(url: string): void;
+    static readonly EXTENSION_BINDINGS_URL_PREFIX = "extensions::";
+    wasShown(): void;
+    willHide(): void;
+}
+export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+    handleAction(_context: UI.Context.Context, actionId: string): boolean;
+    private innerHandleAction;
+}

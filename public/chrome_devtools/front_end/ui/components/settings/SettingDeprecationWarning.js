@@ -1,0 +1,31 @@
+// Copyright 2022 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+import * as Common from '../../../core/common/common.js';
+import * as LitHtml from '../../lit-html/lit-html.js';
+import * as IconButton from '../icon_button/icon_button.js';
+import settingDeprecationWarning from './settingDeprecationWarning.css.js';
+export class SettingDeprecationWarning extends HTMLElement {
+    static litTagName = LitHtml.literal `devtools-setting-deprecation-warning`;
+    #shadow = this.attachShadow({ mode: 'open' });
+    connectedCallback() {
+        this.#shadow.adoptedStyleSheets = [settingDeprecationWarning];
+    }
+    set data(data) {
+        this.#render(data);
+    }
+    #render({ disabled, warning, experiment }) {
+        const iconData = { iconName: 'info', color: 'var(--icon-default)', width: '16px' };
+        const classes = { clickable: false };
+        let onclick;
+        if (disabled && experiment) {
+            classes.clickable = true;
+            onclick = () => {
+                void Common.Revealer.reveal(experiment);
+            };
+        }
+        LitHtml.render(LitHtml.html `<${IconButton.Icon.Icon.litTagName} class=${LitHtml.Directives.classMap(classes)} .data=${iconData} title=${warning} @click=${onclick}></${IconButton.Icon.Icon.litTagName}>`, this.#shadow, { host: this });
+    }
+}
+customElements.define('devtools-setting-deprecation-warning', SettingDeprecationWarning);
+//# sourceMappingURL=SettingDeprecationWarning.js.map

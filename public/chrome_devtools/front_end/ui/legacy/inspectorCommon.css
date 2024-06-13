@@ -1,0 +1,650 @@
+/*
+ * Copyright 2015 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+* {
+  box-sizing: border-box;
+  /* This is required for correct sizing of flex items because we rely
+     * on an old version of the flexbox spec. */
+
+  min-width: 0;
+  min-height: 0;
+}
+
+:root {
+  height: 100%;
+  overflow: hidden;
+  /**
+   * NOTE: please don't add to these colours!
+   * We are migrating to a new set of theme colors (see below for details) and over time these colors will be deprecated / removed.
+   * Chat to jacktfranklin@ or petermueller@ if you have questions.
+   * https://crbug.com/1122511
+   */
+  --legacy-accent-color: #1a73e8;
+  --legacy-accent-fg-color: #1a73e8;
+  --legacy-accent-color-hover: #3b86e8;
+  --legacy-accent-fg-color-hover: #1567d3;
+  --legacy-active-control-bg-color: #5a5a5a;
+  --legacy-focus-bg-color: hsl(214deg 40% 92%);
+  --legacy-focus-ring-inactive-shadow-color: #e0e0e0;
+  --legacy-input-validation-error: #db1600;
+  --legacy-toolbar-hover-bg-color: #eaeaea;
+  --legacy-selection-fg-color: #fff;
+  --legacy-selection-bg-color: var(--legacy-accent-color);
+  --legacy-selection-inactive-fg-color: #5a5a5a;
+  --legacy-selection-inactive-bg-color: #dadada;
+  --legacy-divider-border: 1px solid var(--sys-color-divider);
+  --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
+  --legacy-focus-ring-active-shadow: 0 0 0 1px var(--legacy-accent-color);
+  --legacy-item-selection-bg-color: #cfe8fc;
+  --legacy-item-selection-inactive-bg-color: #e0e0e0;
+  --monospace-font-size: 10px;
+  --monospace-font-family: monospace;
+  --source-code-font-size: 11px;
+  --source-code-font-family: monospace;
+  --sys-motion-duration-short4: 200ms;
+  --sys-motion-duration-medium2: 300ms;
+  --sys-motion-duration-long2: 500ms;
+  --sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --sys-motion-easing-emphasized-accelerate: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.theme-with-dark-background {
+  /**
+   * Inherit the native form control colors when using a dark theme.
+   * Override them using CSS variables if needed.
+   */
+  color-scheme: dark;
+  /**
+   * NOTE: please don't add to these colours!
+   * We are migrating to a new set of theme colors (see below for details) and over time these colors will be deprecated / removed.
+   * Chat to jacktfranklin@ or petermueller@ if you have questions.
+   * https://crbug.com/1122511
+   */
+  --legacy-accent-color: #0e639c;
+  --legacy-accent-fg-color: #ccc;
+  --legacy-accent-fg-color-hover: #fff;
+  --legacy-accent-color-hover: rgb(17 119 187);
+  --legacy-active-control-bg-color: #cdcdcd;
+  --legacy-focus-bg-color: hsl(214deg 19% 27%);
+  --legacy-focus-ring-inactive-shadow-color: #5a5a5a;
+  --legacy-toolbar-hover-bg-color: #202020;
+  --legacy-selection-fg-color: #cdcdcd;
+  --legacy-selection-inactive-fg-color: #cdcdcd;
+  --legacy-selection-inactive-bg-color: hsl(0deg 0% 28%);
+  --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
+  --legacy-item-selection-bg-color: hsl(207deg 88% 22%);
+  --legacy-item-selection-inactive-bg-color: #454545;
+}
+
+body {
+  --default-font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  cursor: default;
+  font-family: var(--default-font-family);
+  font-size: 12px;
+  tab-size: 4;
+  user-select: none;
+  color: var(--sys-color-on-surface);
+  background: var(--sys-color-cdt-base-container);
+}
+
+/* Default fonts */
+.platform-linux {
+  --default-font-family: "Google Sans Text", "Google Sans", system-ui, sans-serif;
+}
+
+.platform-mac {
+  --default-font-family: system-ui, sans-serif;
+}
+
+.platform-windows {
+  --default-font-family: system-ui, sans-serif;
+}
+
+:focus {
+  outline-width: 0;
+}
+
+/* Monospace font per platform configuration */
+.platform-mac,
+:host-context(.platform-mac) {
+  --monospace-font-size: 11px;
+  --monospace-font-family: monospace;
+  --source-code-font-size: 11px;
+  --source-code-font-family: monospace;
+}
+
+.platform-windows,
+:host-context(.platform-windows) {
+  --monospace-font-size: 12px;
+  --monospace-font-family: monospace;
+  --source-code-font-size: 12px;
+  --source-code-font-family: monospace;
+}
+
+.platform-linux,
+:host-context(.platform-linux) {
+  --monospace-font-size: 11px;
+  --monospace-font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace;
+  --source-code-font-size: 11px;
+  --source-code-font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace;
+}
+
+.monospace {
+  font-family: var(--monospace-font-family);
+  font-size: var(--monospace-font-size) !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.source-code {
+  font-family: var(--source-code-font-family);
+  font-size: var(--source-code-font-size) !important; /* stylelint-disable-line declaration-no-important */
+  white-space: pre-wrap;
+}
+
+.source-code .devtools-link.text-button {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+iframe,
+a img {
+  border: none;
+}
+
+.fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+iframe.fill {
+  width: 100%;
+  height: 100%;
+}
+
+.widget {
+  position: relative;
+  flex: auto;
+  contain: style;
+}
+
+.hbox {
+  display: flex;
+  flex-direction: row !important; /* stylelint-disable-line declaration-no-important */
+  position: relative;
+}
+
+.vbox {
+  display: flex;
+  flex-direction: column !important; /* stylelint-disable-line declaration-no-important */
+  position: relative;
+}
+
+.view-container > .toolbar {
+  border-bottom: 1px solid var(--sys-color-divider);
+}
+
+.flex-auto {
+  flex: auto;
+}
+
+.flex-none {
+  flex: none;
+}
+
+.flex-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overflow-auto {
+  overflow: auto;
+  background-color: var(--sys-color-cdt-base-container);
+}
+
+iframe.widget {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.hidden {
+  display: none !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.highlighted-search-result {
+  border-radius: 1px;
+  background-color: var(--sys-color-yellow-container);
+  outline: 1px solid var(--sys-color-yellow-container);
+}
+
+.link {
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--sys-color-primary);
+  outline-offset: 2px;
+}
+
+button,
+input,
+select {
+  /* Form elements do not automatically inherit font style from ancestors. */
+  font-family: inherit;
+  font-size: inherit;
+}
+
+select option,
+select optgroup,
+input {
+  background-color: var(--sys-color-cdt-base-container);
+}
+
+input {
+  color: inherit;
+}
+
+input::placeholder {
+  --override-input-placeholder-color: rgb(0 0 0 / 54%);
+
+  color: var(--override-input-placeholder-color);
+}
+
+.theme-with-dark-background input::placeholder,
+:host-context(.theme-with-dark-background) input::placeholder {
+  --override-input-placeholder-color: rgb(230 230 230 / 54%);
+}
+
+input[type="checkbox"]:not(.-theme-preserve) {
+  accent-color: var(--sys-color-primary-bright);
+  color: var(--sys-color-on-primary);
+}
+
+.harmony-input:not([type]),
+.harmony-input[type="number"],
+.harmony-input[type="text"] {
+  padding: 3px 6px;
+  height: 24px;
+  border: 1px solid var(--sys-color-neutral-outline);
+  border-radius: 4px;
+
+  &.error-input,
+  &:invalid {
+    border-color: var(--sys-color-error);
+  }
+
+  &:not(.error-input):not(:invalid):focus {
+    border-color: var(--sys-color-state-focus-ring);
+  }
+
+  &:not(.error-input):not(:invalid):hover:not(:focus) {
+    background: var(--sys-color-state-hover-on-subtle);
+  }
+}
+
+.highlighted-search-result.current-search-result {
+  /* Note: this value is used in light & dark mode */
+  --override-current-search-result-background-color: rgb(255 127 0 / 80%);
+
+  border-radius: 1px;
+  padding: 1px;
+  margin: -1px;
+  background-color: var(--override-current-search-result-background-color);
+}
+
+.dimmed {
+  opacity: 60%;
+}
+
+.editing {
+  box-shadow: var(--drop-shadow);
+  background-color: var(--sys-color-cdt-base-container);
+  text-overflow: clip !important; /* stylelint-disable-line declaration-no-important */
+  padding-left: 2px;
+  margin-left: -2px;
+  padding-right: 2px;
+  margin-right: -2px;
+  margin-bottom: -1px;
+  padding-bottom: 1px;
+  opacity: 100% !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.editing,
+.editing * {
+  color: var(--sys-color-on-surface) !important; /* stylelint-disable-line declaration-no-important */
+  text-decoration: none !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.chrome-select {
+  appearance: none;
+  user-select: none;
+  border: 1px solid var(--sys-color-neutral-outline);
+  border-radius: 4px;
+  color: var(--sys-color-on-surface);
+  font: inherit;
+  margin: 0;
+  outline: none;
+  padding-right: 20px;
+  padding-left: 6px;
+  background-image: var(--image-file-arrow-drop-down-light);
+  background-color: var(--sys-color-surface);
+  background-position: right center;
+  background-repeat: no-repeat;
+  min-height: 24px;
+  min-width: 80px;
+}
+
+.chrome-select:disabled {
+  opacity: 38%;
+}
+
+.theme-with-dark-background .chrome-select,
+:host-context(.theme-with-dark-background) .chrome-select {
+  background-image: var(--image-file-arrow-drop-down-dark);
+}
+
+/* stylelint-disable no-descending-specificity */
+.chrome-select:enabled {
+  &:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &:active {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
+
+  &:focus {
+    outline: 2px solid var(--sys-color-state-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  .chrome-select {
+    background-image: var(--image-file-arrow-drop-down-light);
+  }
+
+  .theme-with-dark-background .chrome-select,
+  :host-context(.theme-with-dark-background) .chrome-select {
+    background-image: var(--image-file-arrow-drop-down-light);
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  .chrome-select {
+    background-image: var(--image-file-arrow-drop-down-dark);
+  }
+
+  .theme-with-dark-background .chrome-select,
+  :host-context(.theme-with-dark-background) .chrome-select {
+    background-image: var(--image-file-arrow-drop-down-dark);
+  }
+}
+
+.chrome-select-label {
+  margin: 0 22px;
+  flex: none;
+}
+
+.chrome-select-label p p {
+  margin-top: 0;
+  color: var(--sys-color-token-subtle);
+}
+
+/* This class is used outside of the settings screen in the "Renderer" and
+   "Sensors" panel. As such we need to override their style globally */
+.settings-select {
+  margin: 0;
+}
+
+.chrome-select optgroup,
+.chrome-select option {
+  background-color: var(--sys-color-cdt-base-container);
+  color: var(--sys-color-on-surface);
+}
+
+.gray-info-message {
+  text-align: center;
+  font-style: italic;
+  padding: 6px;
+  color: var(--sys-color-token-subtle);
+  white-space: nowrap;
+}
+
+span[is="dt-icon-label"] {
+  flex: none;
+}
+
+.full-widget-dimmed-banner a {
+  color: inherit;
+}
+
+.full-widget-dimmed-banner {
+  color: var(--sys-color-token-subtle);
+  background-color: var(--sys-color-cdt-base-container);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  font-size: 13px;
+  overflow: auto;
+  z-index: 500;
+}
+
+.dot::before {
+  content: var(--image-file-empty);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  outline: 1px solid var(--icon-gap-default);
+  left: 9px;
+  position: absolute;
+  top: 9px;
+  z-index: 1;
+}
+
+.green::before {
+  background-color: var(--sys-color-green-bright);
+}
+
+.purple::before {
+  background-color: var(--sys-color-purple-bright);
+}
+
+.expandable-inline-button {
+  background-color: var(--sys-color-cdt-base-container);
+  color: var(--sys-color-on-surface);
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.undisplayable-text,
+.expandable-inline-button {
+  border: none;
+  padding: 1px 3px;
+  margin: 0 2px;
+  font-size: 11px;
+  font-family: sans-serif;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.undisplayable-text::after,
+.expandable-inline-button::after {
+  content: attr(data-text);
+}
+
+.undisplayable-text {
+  color: var(--sys-color-state-disabled);
+  font-style: italic;
+}
+
+.expandable-inline-button:hover,
+.expandable-inline-button:focus-visible {
+  background-color: var(--sys-color-state-hover-on-subtle);
+}
+
+.expandable-inline-button:focus-visible {
+  background-color: var(--sys-color-state-focus-highlight);
+}
+
+::selection {
+  background-color: var(--sys-color-tonal-container);
+}
+
+.reload-warning {
+  align-self: center;
+  margin-left: 10px;
+}
+
+button.link {
+  border: none;
+  background: none;
+  padding: 3px;
+}
+
+button.link:focus-visible {
+  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--sys-shape-corner-full);
+}
+
+.theme-with-dark-background button.link:focus-visible,
+:host-context(.theme-with-dark-background) button.link:focus-visible {
+  --override-link-focus-background-color: rgb(230 230 230 / 8%);
+}
+
+@media (forced-colors: active) {
+  .dimmed,
+  .chrome-select:disabled {
+    opacity: 100%;
+  }
+
+  .harmony-input:not([type]),
+  .harmony-input[type="number"],
+  .harmony-input[type="text"] {
+    border: 1px solid ButtonText;
+  }
+
+  .harmony-input:not([type]):focus,
+  .harmony-input[type="number"]:focus,
+  .harmony-input[type="text"]:focus {
+    border: 1px solid Highlight;
+  }
+}
+/* search input with customized styling */
+input.custom-search-input::-webkit-search-cancel-button {
+  appearance: none;
+  width: 16px;
+  height: 15px;
+  margin-right: 0;
+  opacity: 70%;
+  mask-image: var(--image-file-cross-circle-filled);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: 99%;
+  background-color: var(--icon-default);
+}
+
+input.custom-search-input::-webkit-search-cancel-button:hover {
+  opacity: 99%;
+}
+/* loading spinner */
+.spinner::before {
+  display: block;
+  width: var(--dimension, 24px);
+  height: var(--dimension, 24px);
+  border: var(--override-spinner-size, 3px) solid var(--override-spinner-color, var(--sys-color-token-subtle));
+  border-radius: 12px;
+  clip: rect(0, var(--clip-size, 15px), var(--clip-size, 15px), 0);
+  content: "";
+  position: absolute;
+  animation: spinner-animation 1s linear infinite;
+  box-sizing: border-box;
+}
+
+@keyframes spinner-animation {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}
+/** Adorner */
+.adorner-container {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.adorner-container.hidden {
+  display: none;
+}
+
+.adorner-container devtools-adorner {
+  margin-left: 3px;
+}
+
+:host-context(.theme-with-dark-background) devtools-adorner {
+  --override-adorner-border-color: var(--sys-color-tonal-outline);
+  --override-adorner-focus-border-color: var(--sys-color-state-focus-ring);
+  --override-adorner-active-background-color: var(--sys-color-state-riple-neutral-on-subtle);
+}
+
+/* General panel styles */
+.panel {
+  display: flex;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background-color: var(--sys-color-cdt-base-container);
+}
+
+.panel-sidebar {
+  overflow-x: hidden;
+  background-color: var(--sys-color-cdt-base-container);
+}
+
+iframe.extension {
+  flex: auto;
+  width: 100%;
+  height: 100%;
+}
+
+iframe.panel.extension {
+  display: block;
+  height: 100%;
+}
+
+@media (forced-colors: active) {
+  :root {
+    --legacy-accent-color: Highlight;
+    --legacy-focus-ring-inactive-shadow-color: ButtonText;
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSources": true,
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable"
+    ],
+    "module": "esnext",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/elements/components",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "tsBuildInfoFile": "unittests-tsconfig.json.tsbuildinfo",
+    "typeRoots": [
+      "../../../../../../../node_modules/@types"
+    ],
+    "types": [
+      "mocha",
+      "chai",
+      "sinon",
+      "karma-chai-sinon"
+    ],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../../front_end/panels/elements/components/AccessibilityTreeNode.test.ts",
+    "../../../../../../../front_end/panels/elements/components/AdornerManager.test.ts",
+    "../../../../../../../front_end/panels/elements/components/AnchorFunctionLinkSwatch.test.ts",
+    "../../../../../../../front_end/panels/elements/components/CSSHintDetailsView.test.ts",
+    "../../../../../../../front_end/panels/elements/components/CSSPropertyDocsView.test.ts",
+    "../../../../../../../front_end/panels/elements/components/CSSPropertyIconResolver.test.ts",
+    "../../../../../../../front_end/panels/elements/components/CSSQuery.test.ts",
+    "../../../../../../../front_end/panels/elements/components/CSSVariableValueView.test.ts",
+    "../../../../../../../front_end/panels/elements/components/ComputedStyleProperty.test.ts",
+    "../../../../../../../front_end/panels/elements/components/ComputedStyleTrace.test.ts",
+    "../../../../../../../front_end/panels/elements/components/ElementsBreadcrumbs.test.ts",
+    "../../../../../../../front_end/panels/elements/components/ElementsTreeExpandButton.test.ts",
+    "../../../../../../../front_end/panels/elements/components/LayoutPane.test.ts",
+    "../../../../../../../front_end/panels/elements/components/QueryContainer.test.ts",
+    "../../../../../../../front_end/panels/elements/components/StylePropertyEditor.test.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../front_end/global_typings/request_idle_callback.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "./bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../testing/testing-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/node_text/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/render_coordinator/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/legacy/components/inline_editor/bundle-tsconfig.json"
+    }
+  ]
+}

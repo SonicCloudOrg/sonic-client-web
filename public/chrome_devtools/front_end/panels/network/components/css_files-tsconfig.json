@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "EditableSpan.css.js",
+        "HeaderSectionRow.css.js",
+        "RequestHeaderSection.css.js",
+        "RequestHeadersView.css.js",
+        "RequestTrustTokensView.css.js",
+        "ResponseHeaderSection.css.js",
+        "WebBundleInfoView.css.js"
+    ]
+}

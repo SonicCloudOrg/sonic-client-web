@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "dialog.css.js",
+        "iconDialog.css.js",
+        "shortcutDialog.css.js"
+    ]
+}

@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../front_end/panels/recorder/controllers"},"files":["../../../../../../../front_end/panels/recorder/controllers/controllers.ts"],"references":[{"path":"./controllers-tsconfig.json"}]}

@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "."
+    },
+    "files": [
+        "JSONEditor.css.js",
+        "toolbar.css.js"
+    ]
+}

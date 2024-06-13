@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/panels/autofill"},"files":["../../../../../../front_end/panels/autofill/autofill.ts"],"references":[{"path":"./autofill-tsconfig.json"},{"path":"./css_files-tsconfig.json"}]}

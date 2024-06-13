@@ -1,0 +1,72 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSources": true,
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable"
+    ],
+    "module": "esnext",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/timeline/track_appenders",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "tsBuildInfoFile": "unittests-tsconfig.json.tsbuildinfo",
+    "typeRoots": [
+      "../../../../../../../node_modules/@types"
+    ],
+    "types": [
+      "mocha",
+      "chai",
+      "sinon",
+      "karma-chai-sinon"
+    ],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../../front_end/panels/timeline/track_appenders/AnimationsTrackAppender.test.ts",
+    "../../../../../../../front_end/panels/timeline/track_appenders/AppenderUtils.test.ts",
+    "../../../../../../../front_end/panels/timeline/track_appenders/CompatibilityTracksAppender.test.ts",
+    "../../../../../../../front_end/panels/timeline/track_appenders/ExtensionTrackAppender.test.ts",
+    "../../../../../../../front_end/panels/timeline/track_appenders/GPUTrackAppender.test.ts",
+    "../../../../../../../front_end/panels/timeline/track_appenders/InteractionsTrackAppender.test.ts",
+    "../../../../../../../front_end/panels/timeline/track_appenders/LayoutShiftsTrackAppender.test.ts",
+    "../../../../../../../front_end/panels/timeline/track_appenders/NetworkTrackAppender.test.ts",
+    "../../../../../../../front_end/panels/timeline/track_appenders/ThreadAppender.test.ts",
+    "../../../../../../../front_end/panels/timeline/track_appenders/TimingsTrackAppender.test.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../front_end/global_typings/request_idle_callback.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/timeline_model/bundle-tsconfig.json"
+    },
+    {
+      "path": "../bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../testing/testing-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/legacy/components/perf_ui/bundle-tsconfig.json"
+    }
+  ]
+}

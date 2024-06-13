@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/services/events_serializer"},"files":["../../../../../../front_end/services/events_serializer/events_serializer.ts"],"references":[{"path":"./events_serializer-tsconfig.json"}]}

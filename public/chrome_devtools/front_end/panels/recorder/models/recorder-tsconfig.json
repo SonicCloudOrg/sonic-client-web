@@ -1,0 +1,86 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSources": true,
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable"
+    ],
+    "module": "esnext",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/recorder/models",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "tsBuildInfoFile": "recorder-tsconfig.json.tsbuildinfo",
+    "typeRoots": [],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../../front_end/panels/recorder/models/ConverterIds.ts",
+    "../../../../../../../front_end/panels/recorder/models/RecorderSettings.ts",
+    "../../../../../../../front_end/panels/recorder/models/RecorderShortcutHelper.ts",
+    "../../../../../../../front_end/panels/recorder/models/RecordingPlayer.ts",
+    "../../../../../../../front_end/panels/recorder/models/RecordingSession.ts",
+    "../../../../../../../front_end/panels/recorder/models/RecordingSettings.ts",
+    "../../../../../../../front_end/panels/recorder/models/RecordingStorage.ts",
+    "../../../../../../../front_end/panels/recorder/models/SDKUtils.ts",
+    "../../../../../../../front_end/panels/recorder/models/Schema.ts",
+    "../../../../../../../front_end/panels/recorder/models/SchemaUtils.ts",
+    "../../../../../../../front_end/panels/recorder/models/ScreenshotStorage.ts",
+    "../../../../../../../front_end/panels/recorder/models/ScreenshotUtils.ts",
+    "../../../../../../../front_end/panels/recorder/models/Section.ts",
+    "../../../../../../../front_end/panels/recorder/models/Tooltip.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../front_end/global_typings/request_idle_callback.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../core/common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../generated/protocol-tsconfig.json"
+    },
+    {
+      "path": "../../../models/persistence/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../elements/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../services/puppeteer/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../third_party/puppeteer/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../third_party/puppeteer-replay/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/legacy/bundle-tsconfig.json"
+    },
+    {
+      "path": "../injected/bundle-tsconfig.json"
+    },
+    {
+      "path": "../util/bundle-tsconfig.json"
+    }
+  ]
+}

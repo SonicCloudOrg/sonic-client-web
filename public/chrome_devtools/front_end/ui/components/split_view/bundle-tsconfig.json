@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../../front_end/ui/components/split_view"},"files":["../../../../../../../front_end/ui/components/split_view/split_view.ts"],"references":[{"path":"./split_view-tsconfig.json"}]}

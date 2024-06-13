@@ -1,0 +1,132 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSources": true,
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable"
+    ],
+    "module": "esnext",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/recorder/components",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "tsBuildInfoFile": "components-tsconfig.json.tsbuildinfo",
+    "typeRoots": [],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../../front_end/panels/recorder/components/ControlButton.ts",
+    "../../../../../../../front_end/panels/recorder/components/CreateRecordingView.ts",
+    "../../../../../../../front_end/panels/recorder/components/ExtensionView.ts",
+    "../../../../../../../front_end/panels/recorder/components/RecordingListView.ts",
+    "../../../../../../../front_end/panels/recorder/components/RecordingView.ts",
+    "../../../../../../../front_end/panels/recorder/components/ReplaySection.ts",
+    "../../../../../../../front_end/panels/recorder/components/SelectButton.ts",
+    "../../../../../../../front_end/panels/recorder/components/StartView.ts",
+    "../../../../../../../front_end/panels/recorder/components/StepEditor.ts",
+    "../../../../../../../front_end/panels/recorder/components/StepView.ts",
+    "../../../../../../../front_end/panels/recorder/components/TimelineSection.ts",
+    "../../../../../../../front_end/panels/recorder/components/util.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../front_end/global_typings/request_idle_callback.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../core/common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../core/host/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../core/platform/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../models/extensions/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../third_party/codemirror.next/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../third_party/puppeteer-replay/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/buttons/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/dialogs/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/helpers/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/icon_button/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/input/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/menus/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/panel_feedback/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/panel_introduction_steps/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/render_coordinator/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/split_view/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/suggestion_input/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/components/text_editor/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/legacy/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/lit-html/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/visual_logging/bundle-tsconfig.json"
+    },
+    {
+      "path": "../controllers/bundle-tsconfig.json"
+    },
+    {
+      "path": "../converters/bundle-tsconfig.json"
+    },
+    {
+      "path": "../extensions/bundle-tsconfig.json"
+    },
+    {
+      "path": "../models/bundle-tsconfig.json"
+    },
+    {
+      "path": "../recorder-actions/bundle-tsconfig.json"
+    }
+  ]
+}
