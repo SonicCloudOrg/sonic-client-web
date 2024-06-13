@@ -1,0 +1,58 @@
+name: build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+    
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3 \
+            git \
+            curl \
+            gn \
+            npm
+            
+      - name: Install Depot Tools
+        uses: newkdev/setup-depot-tools@v1.0.1
+
+      - name: Fetch devtools-frontend
+        run: fetch --no-history devtools-frontend
+
+      - name: Build devtools-frontend
+        run: |
+          cd devtools-frontend
+          gclient sync
+          gn gen out/Default
+          autoninja -C out/Default
+
+      - name: Create commit
+        id: create_commit
+        run: |
+          # Copy built files
+          rsync -a ./devtools-frontend/out/Default/gen/front_end ./public/
+          # Create commit info with latest devtools-frontend commit
+          current_date=$(date +"%d-%m-%Y")
+          latest_commit_full=$(git ls-remote https://chromium.googlesource.com/devtools/devtools-frontend.git HEAD | cut -f 1)
+          latest_commit_short=${latest_commit_full:0:7}
+          commit_title="Build $current_date"
+          commit_description="Latest devtools frontend commit: [${latest_commit_short}](https://chromium.googlesource.com/devtools/devtools-frontend.git/+/${latest_commit_full})"
+          branch_name="build/${current_date}"
+          # Create step outputs
+          echo "branch_name=${branch_name}" >> $GITHUB_OUTPUT
+          echo "commit_title=${commit_title}" >> $GITHUB_OUTPUT
+          echo "commit_description=${commit_description}" >> $GITHUB_OUTPUT
