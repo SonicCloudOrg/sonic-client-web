@@ -1,9 +1,10 @@
 name: devtoolsBuilder
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 43 22 * * ?"
+  push: 
+    branches: 
+     - chrome-dev-tools
+      
 
 permissions:
   contents: write
