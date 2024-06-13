@@ -45,16 +45,16 @@ jobs:
         id: create_commit
         run: |
           # Copy built files
-          rsync -a ./devtools-frontend/out/Default/gen/front_end ./public/front_end
+          rsync -a ./devtools-frontend/out/Default/gen/front_end ./public/chrome_devtools
           # Create index.html
-          # cp ./public/front_end/devtools_app.html ./public/front_end/index.html
+          cp ./public/chrome_devtools/front_end/devtools_app.html ./public/chrome_devtools/front_end/index.html
           # Create commit info with latest devtools-frontend commit
           current_date=$(date +"%d-%m-%Y")
           latest_commit_full=$(git ls-remote https://chromium.googlesource.com/devtools/devtools-frontend.git HEAD | cut -f 1)
           latest_commit_short=${latest_commit_full:0:7}
-          commit_title="Build $current_date"
+          commit_title="Chrome devtools auto-build $current_date"
           commit_description="Latest devtools frontend commit: [${latest_commit_short}](https://chromium.googlesource.com/devtools/devtools-frontend.git/+/${latest_commit_full})"
-          branch_name="build/${current_date}"
+          branch_name="chrome-devtools-build/${current_date}"
           # Create step outputs
           echo "branch_name=${branch_name}" >> $GITHUB_OUTPUT
           echo "commit_title=${commit_title}" >> $GITHUB_OUTPUT
@@ -72,10 +72,4 @@ jobs:
           labels: auto-build
           branch-suffix: timestamp
           add-paths: |
-            public/front_end
-      - name: Merge PR
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
-          merge-method: squash
-          token: ${{ secrets.PAT }}
+            public/chrome_devtools
