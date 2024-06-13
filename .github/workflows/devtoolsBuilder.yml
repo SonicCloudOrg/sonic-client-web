@@ -3,7 +3,7 @@ name: devtoolsBuilder
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 42 22 * * *"
+    - cron: "0 43 22 * * ?"
 
 permissions:
   contents: write
