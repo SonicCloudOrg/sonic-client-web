@@ -174,7 +174,7 @@ defineProps({
 const tabWebView = (port, id, transTitle) => {
   title.value = transTitle;
   isWebView.value = false;
-  iframeUrl.value = `/chrome/devtools/inspector.html?ws=${agent.value.host}:${agent.value.port}/websockets/webView/${agent.value.secretKey}/${port}/${id}`;
+  iframeUrl.value = `/chrome_devtools/front_end/inspector.html?ws=${agent.value.host}:${agent.value.port}/websockets/webView/${agent.value.secretKey}/${port}/${id}`;
   nextTick(() => {
     iFrameHeight.value = document.body.clientHeight - 180;
   });
