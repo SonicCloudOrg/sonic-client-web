@@ -20,7 +20,9 @@ import qs from 'qs';
 import { ElMessage } from 'element-plus';
 import { i18n, $tc } from '@/locales/setupI18n';
 import { router } from '../router/index.js';
+import SysDefines from '@/config/sysdefines';
 
+let sysDef = new SysDefines();
 let baseURL = '';
 if (process.env.NODE_ENV === 'development') {
   baseURL = 'http://localhost:3000/server/api';
@@ -30,9 +32,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 const $http = axios.create();
 baseURL = baseURL.replace(':80/', '/');
+baseURL = baseURL.replace('http://', sysDef.getWebProtocol());
 $http.defaults.baseURL = baseURL;
 // $http.defaults.timeout = 20000;
-$http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+// $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 $http.defaults.withCredentials = true;
 $http.defaults.paramsSerializer = (params) =>
   qs.stringify(params, { arrayFormat: 'brackets' });
