@@ -175,6 +175,10 @@ const summit = () => {
           } else {
             emit('flush', true);
           }
+        } else {
+          ElMessage.error({
+            message: resp.data,
+          });
         }
       });
     }
