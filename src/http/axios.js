@@ -23,7 +23,7 @@ import { router } from '../router/index.js';
 
 let baseURL = '';
 if (process.env.NODE_ENV === 'development') {
-  baseURL = 'http://172.16.2.144:3000/server/api';
+  baseURL = 'http://localhost:3000/server/api';
 }
 if (process.env.NODE_ENV === 'production') {
   baseURL = 'http://SONIC_SERVER_HOST:SONIC_SERVER_PORT/server/api';
