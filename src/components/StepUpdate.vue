@@ -1587,32 +1587,7 @@ onMounted(() => {
         </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'swipe'">
-        <element-select
-          :label="$t('stepDetail.fromControl')"
-          :place="
-            $t('stepDetail.msg.select') +
-            $t('stepDetail.label.androidOptions.element.coordinate.self')
-          "
-          :index="0"
-          :project-id="projectId"
-          type="point"
-          :step="step"
-        />
-        <element-select
-          :label="$t('stepDetail.swipeTo')"
-          :place="
-            $t('stepDetail.msg.select') +
-            $t('stepDetail.label.androidOptions.element.coordinate.self')
-          "
-          :index="1"
-          :project-id="projectId"
-          type="point"
-          :step="step"
-        />
-      </div>
-
-      <div v-if="step.stepType === 'drag'">
+      <div v-if="step.stepType === 'swipe' || step.stepType === 'drag'">
         <element-select
           :label="$t('stepDetail.fromControl')"
           :place="
@@ -1871,9 +1846,7 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t(
-            'stepDetail.variableName'
-          )}&#125;&#125;`"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <el-form-item
           prop="text"
@@ -1897,9 +1870,7 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t(
-            'stepDetail.variableName'
-          )}&#125;&#125;`"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <el-form-item
           prop="text"
@@ -1923,9 +1894,7 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t(
-            'stepDetail.variableName'
-          )}&#125;&#125;`"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <el-form-item
           :label="$t('stepDetail.installation')"
@@ -1989,9 +1958,7 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t(
-            'stepDetail.variableName'
-          )}&#125;&#125;`"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <el-form-item
           prop="text"
@@ -2026,9 +1993,7 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t(
-            'stepDetail.variableName'
-          )}&#125;&#125;`"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <el-form-item
           prop="text"
@@ -2361,11 +2326,7 @@ onMounted(() => {
               {{ $t('stepDetail.msgTips.focus') }}
             </div>
             <div>
-              {{
-                `${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t(
-                  'stepDetail.variableName'
-                )}&#125;&#125;`
-              }}
+              {{`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`}}
             </div>
           </template>
         </el-alert>
@@ -2398,9 +2359,7 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          :title="`${$t('stepDetail.msgTips.sysKey')}&#123;&#123;${$t(
-            'stepDetail.variableName'
-          )}&#125;&#125;`"
+          :title="`${$t('stepDetail.msgTips.sysKey')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <el-form-item :label="$t('stepDetail.inputValue')">
           <el-input
@@ -2410,30 +2369,7 @@ onMounted(() => {
         </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'swipe2'">
-        <element-select
-          :label="$t('stepDetail.fromControl')"
-          :place="
-            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
-          "
-          :index="0"
-          :project-id="projectId"
-          type="normal"
-          :step="step"
-        />
-        <element-select
-          :label="$t('stepDetail.swipeTo')"
-          :place="
-            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
-          "
-          :index="1"
-          :project-id="projectId"
-          type="normal"
-          :step="step"
-        />
-      </div>
-
-      <div v-if="step.stepType === 'drag2'">
+      <div v-if="step.stepType === 'swipe2' || step.stepType === 'drag2'">
         <element-select
           :label="$t('stepDetail.fromControl')"
           :place="
@@ -2455,6 +2391,8 @@ onMounted(() => {
           :step="step"
         />
       </div>
+
+
       <div v-if="step.stepType === 'motionEvent'">
         <element-select
           :label="$t('stepDetail.control.element')"
@@ -2845,9 +2783,7 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t(
-            'stepDetail.variableName'
-          )}&#125;&#125;`"
+          :title="`${$t('stepDetail.msgTips.variable')}&#123;&#123;${$t('stepDetail.variableName')}&#125;&#125;`"
         />
         <global-params-select
           :label="$t('stepDetail.verify.expectedValue')"
@@ -3179,9 +3115,7 @@ onMounted(() => {
           style="margin-bottom: 10px"
           close-text="Get!"
           type="info"
-          :title="`${$t('stepDetail.use')} &#123;&#123;${$t(
-            'stepDetail.variableName'
-          )}&#125;&#125; ${$t('stepDetail.msgTips.verify')}`"
+          :title="`${$t('stepDetail.use')} &#123;&#123;${$t('stepDetail.variableName')}&#125;&#125; ${$t('stepDetail.msgTips.verify')}`"
         />
         <el-form-item :label="$t('stepDetail.verify.actualValue')">
           <el-input
@@ -3479,9 +3413,9 @@ onMounted(() => {
                   </el-table-column>
                 </el-table>
                 <div style="text-align: center; margin-top: 10px">
-                  <el-button size="mini" @click="add()"
-                    >{{ $t('stepDetail.new') }}
-                  </el-button>
+                  <el-button size="mini" @click="add()">{{
+                    $t('stepDetail.new')
+                  }}</el-button>
                 </div>
               </el-tab-pane>
             </el-tabs>
@@ -3668,8 +3602,8 @@ onMounted(() => {
   </el-form>
 
   <div style="text-align: center; margin-top: 20px">
-    <el-button size="small" type="primary" @click="summitStep"
-      >{{ $t('stepDetail.submit') }}
-    </el-button>
+    <el-button size="small" type="primary" @click="summitStep">{{
+      $t('stepDetail.submit')
+    }}</el-button>
   </div>
 </template>

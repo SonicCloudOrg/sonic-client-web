@@ -1263,10 +1263,10 @@ const stepDetail = {
           click: 'Click the Control Element',
           sendKeys: 'Enter Text',
           sendKeysByActions: 'Enter Text(Actions)',
-          swipe2: 'Swipe Control Element',
-          drag2: 'Drag Control Element',
+          swipe2: 'Drag Control Element',
+          drag2: 'Drag And Drop Control Element',
           motion: 'Motion Event',
-          scrollToEle: 'Scroll to Control Element',
+          scrollToEle: 'Drag to Control Element',
           longPress: 'Long Press Control Element',
           clear: 'Clear InputBox',
           obtainElementAttr: 'Get Element Attribute',
@@ -1352,7 +1352,7 @@ const stepDetail = {
         self: 'Runtime Settings',
         stepHold: 'Step Interval setting',
         switchTouchMode: 'Touch Mode Setting',
-      }, 
+      },
     },
     iOSOptions: {
       system: {
@@ -1602,7 +1602,6 @@ const stepDetail = {
     touchMode: 'Set Touch Mode',
   },
   swipe: 'Swipe',
-  swipeTo: 'Swipe To',
   switch: {
     handler: 'Switch Handler',
     webview: 'Switch Webview',

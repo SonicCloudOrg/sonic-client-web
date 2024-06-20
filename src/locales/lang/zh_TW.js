@@ -1070,7 +1070,7 @@ const stepDetail = {
   detailConfigure: '详细配置',
   delete: '删除',
   detect: '检测',
-  dragTo: '拖拽至',
+  dragTo: '滑动拖拽至',
   display: '显示',
   downwards: '向下',
   exception: {
@@ -1177,8 +1177,8 @@ const stepDetail = {
           click: '点击控件元素',
           sendKeys: '输入文本',
           sendKeysByActions: '输入文本(Actions)',
-          swipe2: '滑动控件元素',
-          drag2: '拖拽控件元素',
+          swipe2: '拖拽控件元素',
+          drag2: '(长按)控件元素拖拽移动',
           motion: '触控动作事件(MotionEvent)',
           scrollToEle: '滚动到控件元素',
           longPress: '长按控件元素',
@@ -1194,8 +1194,8 @@ const stepDetail = {
           self: '坐标控件',
           tap: '点击坐标',
           longPressPoint: '长按坐标',
-          swipe: '直线滑动',
-          drag: '拖拽滑动',
+          swipe: '滑动拖拽',
+          drag: '(长按)坐标拖拽滑动',
           motion: '触控动作事件(MotionEvent)',
         },
         webView: {
@@ -1266,7 +1266,7 @@ const stepDetail = {
         self: '运行设置',
         stepHold: '步骤间隔设置',
         switchTouchMode: '触控模式设置',
-      }, 
+      },
     },
     iOSOptions: {
       system: {
@@ -1441,7 +1441,7 @@ const stepDetail = {
       'TIPS: 传递Android应用的App包名，该步骤可实现自动授权目标App所需要的所有权限',
     focus: 'TIPS: 在文本框需要先获取焦点，才能进行输入时，使用此方式。',
     sysKey:
-      'TIPS: 本功能需要先唤醒系统键盘。需要临时变量或全局变量时，可以添加', 
+      'TIPS: 本功能需要先唤醒系统键盘。需要临时变量或全局变量时，可以添加',
     table: 'TIPS: 长列表的场景下，可通过该方法连续滚动，尝试让目标元素可见',
     text: 'TIPS: 可以将获取的文本放入临时变量中',
     controlAttribute: 'TIPS: 可以将获取的控件属性放入临时变量中',
@@ -1503,9 +1503,8 @@ const stepDetail = {
     textToClipboard: '设置文本至剪切板',
     stepsInterval: '步骤间隔设置',
     touchMode: '触控模式设置',
-  },
+},
   swipe: '滑动',
-  swipeTo: '滑动至',
   switch: {
     handler: '切换句柄',
     webview: '切换webview',

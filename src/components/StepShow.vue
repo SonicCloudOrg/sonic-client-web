@@ -332,7 +332,7 @@ const getNotes = (text, type) => {
   <span v-if="step.stepType === 'swipe'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
-      $t('stepDetail.swipeTo')
+      $t('stepDetail.dragTo')
     }}</el-tag>
     <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
   </span>
@@ -544,7 +544,7 @@ const getNotes = (text, type) => {
   <span v-if="step.stepType === 'swipe2' || step.stepType === 'pocoSwipe'">
     <el-tag type="info" size="small">{{ step.elements[0]['eleName'] }}</el-tag>
     <el-tag size="small" style="margin-left: 10px; margin-right: 10px">{{
-      $t('stepDetail.swipeTo')
+      $t('stepDetail.dragTo')
     }}</el-tag>
     <el-tag type="info" size="small">{{ step.elements[1]['eleName'] }}</el-tag>
   </span>
