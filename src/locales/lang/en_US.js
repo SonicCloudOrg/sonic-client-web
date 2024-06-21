@@ -1156,6 +1156,9 @@ const stepDetail = {
   delete: 'Delete ',
   detect: 'Detect ',
   dragTo: 'Drag To ',
+  dragUp: 'Analog long press',
+  dragMove: 'Then drag to',
+  dragDown: 'And drop',
   display: 'Display ',
   downwards: 'Downwards ',
   exception: {

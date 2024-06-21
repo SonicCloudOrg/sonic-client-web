@@ -1071,6 +1071,9 @@ const stepDetail = {
   delete: '删除',
   detect: '检测',
   dragTo: '滑动拖拽至',
+  dragUp: '模拟长按',
+  dragMove: '后拖拽移动到',
+  dragDown: '松手',
   display: '显示',
   downwards: '向下',
   exception: {
