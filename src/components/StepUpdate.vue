@@ -595,6 +595,14 @@ const androidOptions = ref([
             label: $t('stepDetail.label.androidOptions.element.uiEle.swipe2'),
           },
           {
+            value: 'drag2',
+            label: $t('stepDetail.label.androidOptions.element.uiEle.drag2'),
+          },
+          {
+            value: 'motionEvent',
+            label: $t('stepDetail.label.androidOptions.element.uiEle.motion'),
+          },
+          {
             value: 'scrollToEle',
             label: $t(
               'stepDetail.label.androidOptions.element.uiEle.scrollToEle'
@@ -666,6 +674,18 @@ const androidOptions = ref([
             value: 'swipe',
             label: $t(
               'stepDetail.label.androidOptions.element.coordinate.swipe'
+            ),
+          },
+          {
+            value: 'drag',
+            label: $t(
+              'stepDetail.label.androidOptions.element.coordinate.drag'
+            ),
+          },
+          {
+            value: 'motionEventByPoint',
+            label: $t(
+              'stepDetail.label.androidOptions.element.coordinate.motion'
             ),
           },
         ],
@@ -1567,7 +1587,7 @@ onMounted(() => {
         </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'swipe'">
+      <div v-if="step.stepType === 'swipe' || step.stepType === 'drag'">
         <element-select
           :label="$t('stepDetail.fromControl')"
           :place="
@@ -2349,7 +2369,7 @@ onMounted(() => {
         </el-form-item>
       </div>
 
-      <div v-if="step.stepType === 'swipe2'">
+      <div v-if="step.stepType === 'swipe2' || step.stepType === 'drag2'">
         <element-select
           :label="$t('stepDetail.fromControl')"
           :place="
@@ -2372,6 +2392,78 @@ onMounted(() => {
         />
       </div>
 
+
+      <div v-if="step.stepType === 'motionEvent'">
+        <element-select
+          :label="$t('stepDetail.control.element')"
+          :place="
+            $t('stepDetail.msg.select') + $t('stepDetail.control.element')
+          "
+          :index="0"
+          :project-id="projectId"
+          type="normal"
+          :step="step"
+        />
+        <el-form-item
+          :label="$t('stepDetail.motionType.self')"
+          :rules="[
+            {
+              required: true,
+              message:
+                $t('stepDetail.msg.select') + $t('stepDetail.motionType.self'),
+              trigger: 'change',
+            },
+          ]"
+          prop="text"
+        >
+          <el-select
+            v-model="step.text"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.motionType.self')
+            "
+          >
+            <el-option lable="DOWN" value="down"></el-option>
+            <el-option lable="UP" value="up"></el-option>
+            <el-option lable="MOVE" value="move"></el-option>
+          </el-select>
+        </el-form-item>
+      </div>
+      <div v-if="step.stepType === 'motionEventByPoint'">
+        <element-select
+          :label="$t('stepDetail.label.androidOptions.element.coordinate.self')"
+          :place="
+            $t('stepDetail.msg.select') +
+            $t('stepDetail.label.androidOptions.element.coordinate.self')
+          "
+          :index="0"
+          :project-id="projectId"
+          type="point"
+          :step="step"
+        />
+        <el-form-item
+          :label="$t('stepDetail.motionType.self')"
+          :rules="[
+            {
+              required: true,
+              message:
+                $t('stepDetail.msg.select') + $t('stepDetail.motionType.self'),
+              trigger: 'change',
+            },
+          ]"
+          prop="text"
+        >
+          <el-select
+            v-model="step.text"
+            :placeholder="
+              $t('stepDetail.msg.select') + $t('stepDetail.motionType.self')
+            "
+          >
+            <el-option lable="DOWN" value="down"></el-option>
+            <el-option lable="UP" value="up"></el-option>
+            <el-option lable="MOVE" value="move"></el-option>
+          </el-select>
+        </el-form-item>
+      </div>
       <div v-if="step.stepType === 'scrollToEle'">
         <el-alert
           show-icon
