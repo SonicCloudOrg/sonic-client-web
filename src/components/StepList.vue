@@ -43,26 +43,26 @@ const addStep = () => {
 const addStepTotarget = (id, toNext) => {
   dialogVisible.value = true;
   addToTargetStepId.value = id;
-  addToTargetStepNext.value = toNext
+  addToTargetStepNext.value = toNext;
 };
 const flush = () => {
   if (addToTargetStepId.value > 0) {
     // 需要将新增的步骤挪动到目标行的上面或下面
     axios
-    .get('/controller/steps/stepSortTarget', {
-      params: {
-        targetStepId: addToTargetStepId.value,
-        addToTargetNext: addToTargetStepNext.value,
-      },
-    })
-    .then((resp) => {
-      if (resp.code === 2000) {
-        dialogVisible.value = false;
-        addToTargetStepNext.value = false;
-        addToTargetStepId.value = 0;
-        getStepsList();
-      }
-    });
+      .get('/controller/steps/stepSortTarget', {
+        params: {
+          targetStepId: addToTargetStepId.value,
+          addToTargetNext: addToTargetStepNext.value,
+        },
+      })
+      .then((resp) => {
+        if (resp.code === 2000) {
+          dialogVisible.value = false;
+          addToTargetStepNext.value = false;
+          addToTargetStepId.value = 0;
+          getStepsList();
+        }
+      });
   } else {
     dialogVisible.value = false;
     getStepsList();
@@ -149,7 +149,7 @@ const copyStep = (id, toLast) => {
     .get('/controller/steps/copy/steps', {
       params: {
         id,
-        toLast
+        toLast,
       },
     })
     .then((resp) => {
@@ -233,8 +233,10 @@ onMounted(() => {
       }}</el-button>
     </el-button-group>
   </div>
+  <!-- 第一层所有步骤的parentId都是0 -->
   <step-draggable
     :steps="steps"
+    :parent-id="0"
     @setParent="setParent"
     @addStep="addStep"
     @flush="flush"
