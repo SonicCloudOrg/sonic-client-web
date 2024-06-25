@@ -414,7 +414,7 @@ const getNotes = (text, type) => {
     <el-tag size="small" style="margin-right: 10px">{{
       $t('stepDetail.switch.webview')
     }}</el-tag>
-    {{ $t('stepDetail.webviewName') }}：{{ step.content }}
+    {{ $t('stepDetail.WebviewName') }}：{{ step.content }}
   </span>
   <span v-if="step.stepType === 'toHandle'">
     <el-tag size="small" style="margin-right: 10px">{{
