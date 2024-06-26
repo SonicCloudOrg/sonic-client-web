@@ -248,7 +248,7 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'airPlaneMode'">
     <el-tag size="small" style="margin-right: 10px">{{
-      $t('stepDetail.androidOptions.network.airPlaneMode')
+      $t('stepDetail.label.androidOptions.network.airPlaneMode')
     }}</el-tag
     >{{
       step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')
@@ -256,7 +256,7 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'wifiMode'">
     <el-tag size="small" style="margin-right: 10px">{{
-      $t('stepDetail.androidOptions.network.wifiMode')
+      $t('stepDetail.label.androidOptions.network.wifiMode')
     }}</el-tag
     >{{
       step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')
@@ -264,7 +264,7 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'locationMode'">
     <el-tag size="small" style="margin-right: 10px">{{
-      $t('stepDetail.androidOptions.network.locationMode')
+      $t('stepDetail.label.androidOptions.network.locationMode')
     }}</el-tag
     >{{
       step.content === 'true' ? $t('stepDetail.open') : $t('stepDetail.close')
@@ -272,7 +272,7 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'switchWindowMode'">
     <el-tag size="small" style="margin-right: 10px">{{
-      $t('stepDetail.androidOptions.element.switchWindowMode')
+      $t('stepDetail.label.androidOptions.element.switchWindowMode')
     }}</el-tag
     >{{
       step.content === 'true'
@@ -282,7 +282,7 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'switchIgnoreMode'">
     <el-tag size="small" style="margin-right: 10px">{{
-      $t('stepDetail.androidOptions.element.switchIgnoreMode')
+      $t('stepDetail.label.androidOptions.element.switchIgnoreMode')
     }}</el-tag
     >{{
       step.content === 'true'
@@ -292,7 +292,7 @@ const getNotes = (text, type) => {
   </span>
   <span v-if="step.stepType === 'switchVisibleMode'">
     <el-tag size="small" style="margin-right: 10px">{{
-      $t('stepDetail.androidOptions.element.switchVisibleMode')
+      $t('stepDetail.label.androidOptions.element.switchVisibleMode')
     }}</el-tag
     >{{
       step.content === 'true' ? $t('stepDetail.display') : $t('stepDetail.hide')
