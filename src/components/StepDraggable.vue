@@ -72,7 +72,7 @@ const sortStep = (e) => {
   let endId = null;
   let direction = '';
   let newIndex = null;
-  let thisSort = null;
+  let stepsId = null;
   let newParentId = null;
   let caseId = null;
   if (e.added !== undefined) {
@@ -81,7 +81,7 @@ const sortStep = (e) => {
     caseId = props.steps[e.added.newIndex].caseId;
     newParentId = props.parentId;
     newIndex = e.added.newIndex;
-    thisSort = props.steps[e.added.newIndex].sort;
+    stepsId = props.steps[e.added.newIndex].id;
     // 此场景中下面3个参数不重要，为了兼容后端参数要求随便填的，它们会由后端进行处理
     direction = 'added';
     startId = 1;
@@ -109,7 +109,7 @@ const sortStep = (e) => {
       endId,
       newParentId,
       newIndex,
-      thisSort,
+      stepsId,
     })
     .then((resp) => {
       if (resp.code === 2000) {
