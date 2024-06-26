@@ -37,6 +37,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  parentId: Number, // 用于分组拖拽时，更新step数据的parentId
 });
 const emit = defineEmits([
   'flush',
@@ -64,27 +65,51 @@ const switchStep = (id, e) => {
     });
 };
 const sortStep = (e) => {
-  if (props.isEdit && props.steps[e.moved.newIndex].parentId === 0) {
+  if (e.removed !== undefined) {
     return;
   }
   let startId = null;
   let endId = null;
   let direction = '';
-  if (e.moved.newIndex > e.moved.oldIndex) {
-    direction = 'down';
-    endId = props.steps[e.moved.newIndex].sort;
-    startId = props.steps[e.moved.newIndex - 1].sort;
+  let newIndex = null;
+  let stepsId = null;
+  let newParentId = null;
+  let caseId = null;
+  if (e.added !== undefined) {
+    // eslint-disable-next-line vue/no-mutating-props
+    props.steps[e.added.newIndex].parentId = props.parentId; // 更新parentId
+    caseId = props.steps[e.added.newIndex].caseId;
+    newParentId = props.parentId;
+    newIndex = e.added.newIndex;
+    stepsId = props.steps[e.added.newIndex].id;
+    // 此场景中下面3个参数不重要，为了兼容后端参数要求随便填的，它们会由后端进行处理
+    direction = 'added';
+    startId = 1;
+    endId = 2;
   } else {
-    direction = 'up';
-    startId = props.steps[e.moved.newIndex].sort;
-    endId = props.steps[e.moved.newIndex + 1].sort;
+    caseId = props.steps[e.moved.newIndex].caseId;
+    if (props.isEdit && props.steps[e.moved.newIndex].parentId === 0) {
+      return;
+    }
+    if (e.moved.newIndex > e.moved.oldIndex) {
+      direction = 'down';
+      endId = props.steps[e.moved.newIndex].sort;
+      startId = props.steps[e.moved.newIndex - 1].sort;
+    } else {
+      direction = 'up';
+      startId = props.steps[e.moved.newIndex].sort;
+      endId = props.steps[e.moved.newIndex + 1].sort;
+    }
   }
   axios
     .put('/controller/steps/stepSort', {
-      caseId: props.steps[e.moved.newIndex].caseId,
+      caseId,
       direction,
       startId,
       endId,
+      newParentId,
+      newIndex,
+      stepsId,
     })
     .then((resp) => {
       if (resp.code === 2000) {
@@ -117,8 +142,8 @@ const remove = (e) => {
  * 拷贝步骤的方法
  * @param {*} id  步骤id
  * @param {*} toLast 是否复制到最后一行
- */ 
- const copyStep = (id, toLast) => {
+ */
+const copyStep = (id, toLast) => {
   emit('copyStep', id, toLast);
 };
 /**
@@ -126,17 +151,19 @@ const remove = (e) => {
  * @param {*} id         点选的位置
  * @param {*} toNext     true添加到下一行，false添加到上一行
  */
- const addStepTotarget = (id, toNext) => {
+const addStepTotarget = (id, toNext) => {
   emit('addStepTotarget', id, toNext);
 };
 </script>
 
 <template>
   <el-scrollbar style="height: 100%">
-    <el-timeline v-if="steps.length > 0" class="stepsTimeline">
+    <el-timeline class="stepsTimeline">
+      <!-- 设置group，这样同名的group之间就可以互相拖拽 -->
       <VueDraggableNext
         tag="div"
         :list="steps"
+        group="case-step"
         handle=".handle"
         animation="200"
         force-fallback="true"
@@ -241,6 +268,7 @@ const remove = (e) => {
             </template>
             <step-draggable
               :steps="s['childSteps']"
+              :parent-id="s['id']"
               @setParent="setParent"
               @addStep="addStep"
               @flush="emit('flush')"
@@ -279,7 +307,6 @@ const remove = (e) => {
                   <Edit />
                 </el-icon>
               </el-button>
-              
               <!--添加操作的按钮-->
               <el-popconfirm
                 v-if="s.parentId === 0 && !isEdit"
@@ -300,7 +327,7 @@ const remove = (e) => {
                     </el-icon>
                   </el-button>
                 </template>
-            </el-popconfirm>
+              </el-popconfirm>
 
               <!--复制操作的按钮-->
               <el-popconfirm
@@ -362,7 +389,10 @@ const remove = (e) => {
         </el-timeline-item>
       </VueDraggableNext>
     </el-timeline>
-    <el-empty v-else :description="$t('steps.empty')"></el-empty>
+    <el-empty
+      v-if="steps.length === 0"
+      :description="$t('steps.empty')"
+    ></el-empty>
   </el-scrollbar>
 </template>
 
