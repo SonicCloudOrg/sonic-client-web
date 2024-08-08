@@ -589,7 +589,7 @@ onUnmounted(() => {
                   :is-read-only="true"
                   :debug-loading="stepLoading"
                   :step-log="stepList"
-                  @loadMore="loadMore"
+                  @load-more="loadMore"
                 />
               </el-tab-pane>
               <el-tab-pane

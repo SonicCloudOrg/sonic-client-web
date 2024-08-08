@@ -34,7 +34,8 @@ const getTestCaseList = (pageNum, pSize) => {
       params: {
         projectId: props.projectId,
         moduleIds: moduleIds.value.length > 0 ? moduleIds.value : undefined,
-        caseAuthorNames: caseAuthorNames.value.length > 0 ? caseAuthorNames.value : undefined,
+        caseAuthorNames:
+          caseAuthorNames.value.length > 0 ? caseAuthorNames.value : undefined,
         platform: props.platform,
         name: name.value,
         page: pageCurrNum.value,
@@ -124,11 +125,11 @@ const getModuleList = () => {
 const caseAuthorList = ref([]);
 const getCaseAuthorList = () => {
   axios
-    .get('/controller/testCases/listAllCaseAuthor', { 
-      params: { 
+    .get('/controller/testCases/listAllCaseAuthor', {
+      params: {
         projectId: props.projectId,
         platform: props.platform,
-      } 
+      },
     })
     .then((resp) => {
       if (resp.code === 2000) {
@@ -160,7 +161,7 @@ const sequence = (column) => {
   getTestCaseList();
 };
 const filter = (filters) => {
-  for (let key in filters) {
+  for (const key in filters) {
     if (key === 'moduleId') {
       moduleIds.value = filters.moduleId;
     } else if (key === 'caseAuthorName') {

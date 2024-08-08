@@ -416,12 +416,20 @@ const findBestNS = (elementDetail) => {
 const findBestClassChain = (elementDetail) => {
   const result = [];
   if (elementDetail.name) {
-    result.push(`**/${elementDetail.type}[\`name == \"${elementDetail.name}\"\`]`);
-    result.push(`**/${elementDetail.type}[\`name CONTAINS \"${elementDetail.name}\"\`]`);
+    result.push(
+      `**/${elementDetail.type}[\`name == \"${elementDetail.name}\"\`]`
+    );
+    result.push(
+      `**/${elementDetail.type}[\`name CONTAINS \"${elementDetail.name}\"\`]`
+    );
   }
   if (elementDetail.label) {
-    result.push(`**/${elementDetail.type}[\`label == \"${elementDetail.label}\"\`]`);
-    result.push(`**/${elementDetail.type}[\`label CONTAINS \"${elementDetail.label}\"\`]`);
+    result.push(
+      `**/${elementDetail.type}[\`label == \"${elementDetail.label}\"\`]`
+    );
+    result.push(
+      `**/${elementDetail.type}[\`label CONTAINS \"${elementDetail.label}\"\`]`
+    );
   }
   return result;
 };
@@ -2484,7 +2492,7 @@ const checkAlive = () => {
                     :case-id="testCase['id']"
                     :project-id="project['id']"
                     :debug-loading="debugLoading"
-                    @runStep="runStep"
+                    @run-step="runStep"
                   />
                 </el-tab-pane>
                 <el-tab-pane
@@ -2495,8 +2503,8 @@ const checkAlive = () => {
                     :is-read-only="false"
                     :debug-loading="debugLoading"
                     :step-log="stepLog"
-                    @clearLog="clearLog"
-                    @stopStep="stopStep"
+                    @clear-log="clearLog"
+                    @stop-step="stopStep"
                   />
                 </el-tab-pane>
               </el-tabs>

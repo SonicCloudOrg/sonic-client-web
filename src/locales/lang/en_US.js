@@ -109,10 +109,12 @@ const steps = {
   loading: 'Loading',
   loadDone: 'Load completed',
   loadMore: 'Load more',
-  copyStepTips: 'Are you sure you want to replicate this step? Click on the surrounding space to cancel',
+  copyStepTips:
+    'Are you sure you want to replicate this step? Click on the surrounding space to cancel',
   copyToNextLine: 'copy to current line',
   copyToLastLine: 'copy to last line',
-  addStepTips: 'Select the location to add the step and click on the surrounding space to cancel.',
+  addStepTips:
+    'Select the location to add the step and click on the surrounding space to cancel.',
   addToNextLine: 'add to next line',
   addToBeforeLine: 'add to previous line',
 };
@@ -527,7 +529,7 @@ const jobsTS = {
   },
   addCron: 'Add a timed task',
   whatCron: 'What is a Cron expression?',
-  cronNoNext: "N/A",
+  cronNoNext: 'N/A',
   cronInfo: {
     one: '* The first bit, indicating seconds, value range: 0-59',
     two: '* The second bit, indicating minutes, value range: 0-59',
@@ -1149,7 +1151,8 @@ const stepDetail = {
       isOpenH5Listener: 'Detect if stay in H5 for a long time(Android Only)',
       isOpenActivityListener:
         'Detect if the current activity is in blacklist (Android Only)',
-      isOpenNetworkListener: 'Detect if in the airplane status or WIFI(Android Only)',
+      isOpenNetworkListener:
+        'Detect if in the airplane status or WIFI(Android Only)',
     },
   },
   detailConfigure: 'Detail Configure ',

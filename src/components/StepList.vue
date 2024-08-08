@@ -237,12 +237,12 @@ onMounted(() => {
   <step-draggable
     :steps="steps"
     :parent-id="0"
-    @setParent="setParent"
-    @addStep="addStep"
+    @set-parent="setParent"
+    @add-step="addStep"
     @flush="flush"
-    @editStep="editStep"
-    @copyStep="copyStep"
-    @deleteStep="deleteStep"
-    @addStepTotarget="addStepTotarget"
+    @edit-step="editStep"
+    @copy-step="copyStep"
+    @delete-step="deleteStep"
+    @add-step-totarget="addStepTotarget"
   />
 </template>

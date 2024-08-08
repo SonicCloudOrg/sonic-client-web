@@ -349,7 +349,6 @@ const common = {
   copy: '复制',
   inuse: '使用済み',
   inidle: 'アイドル状態',
-
 };
 // 路由
 const routes = {
@@ -467,7 +466,7 @@ const jobsTS = {
   },
   addCron: '添加定时任务',
   whatCron: '什么是Cron表达式？',
-  cronNoNext: "N/A",
+  cronNoNext: 'N/A',
   cronInfo: {
     one: '* 第一位，表示秒，取值 0-59',
     two: '* 第二位，表示分，取值 0-59',
@@ -1064,10 +1063,12 @@ const stepDetail = {
       swipeEvent: '随机两个坐标滑动',
       systemEvent: 'Home、返回键等等',
       navEvent: '安卓：随机开关WIFI；iOS：后台运行当前应用',
-      isOpenPackageListener: '检测当前应用是否为被测应用，为否时将重新拉起被测应用',
+      isOpenPackageListener:
+        '检测当前应用是否为被测应用，为否时将重新拉起被测应用',
       isOpenH5Listener: '检测是否长时间停留在H5页面 (Android Only)',
       isOpenActivityListener: '检测当前Activity是否在黑名单内 (Android Only)',
-      isOpenNetworkListener: '检测设备是否处于飞行模式和WIFI网络 (Android Only)',
+      isOpenNetworkListener:
+        '检测设备是否处于飞行模式和WIFI网络 (Android Only)',
     },
   },
   detailConfigure: '详细配置',
@@ -1481,7 +1482,8 @@ const stepDetail = {
   port: '端口',
   randomEventsTest: '随机事件测试',
   refreshPage: '刷新页面',
-  reminderDisplay: '三个指令前端显示上保留，用于兼容老版本升级上来之后，依然能正常的显示和运行',
+  reminderDisplay:
+    '三个指令前端显示上保留，用于兼容老版本升级上来之后，依然能正常的显示和运行',
   reminderVersion: '大于2.5.0版本，增强的文本断言能力',
   retries: '重试次数',
   retriesInterval: '重试间隔',
@@ -1509,7 +1511,7 @@ const stepDetail = {
     textToClipboard: '设置文本至剪切板',
     stepsInterval: '步骤间隔设置',
     touchMode: '触控模式设置',
-},
+  },
   swipe: '滑动',
   switch: {
     handler: '切换句柄',

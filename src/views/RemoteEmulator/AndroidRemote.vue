@@ -3320,7 +3320,7 @@ const checkAlive = () => {
                     :case-id="testCase['id']"
                     :project-id="project['id']"
                     :debug-loading="debugLoading"
-                    @runStep="runStep"
+                    @run-step="runStep"
                   />
                 </el-tab-pane>
                 <el-tab-pane
@@ -3331,8 +3331,8 @@ const checkAlive = () => {
                     :is-read-only="false"
                     :debug-loading="debugLoading"
                     :step-log="stepLog"
-                    @clearLog="clearLog"
-                    @stopStep="stopStep"
+                    @clear-log="clearLog"
+                    @stop-step="stopStep"
                   />
                 </el-tab-pane>
               </el-tabs>

@@ -269,12 +269,12 @@ const addStepTotarget = (id, toNext) => {
             <step-draggable
               :steps="s['childSteps']"
               :parent-id="s['id']"
-              @setParent="setParent"
-              @addStep="addStep"
+              @set-parent="setParent"
+              @add-step="addStep"
               @flush="emit('flush')"
-              @editStep="editStep"
-              @deleteStep="deleteStep"
-              @copyStep="copyStep"
+              @edit-step="editStep"
+              @delete-step="deleteStep"
+              @copy-step="copyStep"
             />
           </el-card>
           <div v-else style="display: flex; justify-content: space-between">
