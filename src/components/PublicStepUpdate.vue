@@ -291,6 +291,7 @@ const jump = (id) => {
     <el-tab-pane :label="$t('pubSteps.selected')" name="select">
       <step-draggable
         :is-edit="true"
+        :is-public-steps="true"
         :steps="publicStep.steps"
         @set-parent="setParent"
         @add-step="addStep"
