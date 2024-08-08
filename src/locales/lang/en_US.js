@@ -1156,6 +1156,9 @@ const stepDetail = {
   delete: 'Delete ',
   detect: 'Detect ',
   dragTo: 'Drag To ',
+  dragUp: 'Analog long press',
+  dragMove: 'Then drag to',
+  dragDown: 'And drop',
   display: 'Display ',
   downwards: 'Downwards ',
   exception: {
@@ -1264,6 +1267,8 @@ const stepDetail = {
           sendKeys: 'Enter Text',
           sendKeysByActions: 'Enter Text(Actions)',
           swipe2: 'Drag Control Element',
+          drag2: 'Drag And Drop Control Element',
+          motion: 'Motion Event',
           scrollToEle: 'Drag to Control Element',
           longPress: 'Long Press Control Element',
           clear: 'Clear InputBox',
@@ -1279,6 +1284,8 @@ const stepDetail = {
           tap: 'Tap Coordinate',
           longPressPoint: 'Long Press Point',
           swipe: 'Swipe',
+          drag: 'Drag And Drop',
+          motion: 'Motion Event',
         },
         webView: {
           self: 'WebView Control',
@@ -1348,7 +1355,7 @@ const stepDetail = {
         self: 'Runtime Settings',
         stepHold: 'Step Interval setting',
         switchTouchMode: 'Touch Mode Setting',
-      }, 
+      },
     },
     iOSOptions: {
       system: {
@@ -1483,6 +1490,10 @@ const stepDetail = {
   maxTries: 'Max Tries ',
   multiWindowMode: 'Multi Window Mode',
   mode: 'Mode',
+  motionType: {
+    self: 'Motion Type',
+    Exec: 'Touch action',
+  },
   maxDepth: 'Max Depth',
   maxScroll: 'Max Scroll',
   msg: {
