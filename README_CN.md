@@ -32,7 +32,7 @@
 </p>
 
 ### 官方网站
-[Sonic Official Website](https://sonic-cloud.cn)
+[Sonic Official Website](https://soniccloudorg.github.io/)
 ## 背景
 
 #### 什么是 Sonic ?
