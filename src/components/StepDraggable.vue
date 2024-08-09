@@ -37,6 +37,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isPublicSteps: {
+    type: Boolean,
+    default: false, // 公共步骤可能会引用多个不同case的步骤，不应该允许拖拽更改parentId
+  },
   parentId: Number, // 用于分组拖拽时，更新step数据的parentId
 });
 const emit = defineEmits([
@@ -163,7 +167,7 @@ const addStepTotarget = (id, toNext) => {
       <VueDraggableNext
         tag="div"
         :list="steps"
-        group="case-step"
+        :group="isPublicSteps ? '' : 'case-step'"
         handle=".handle"
         animation="200"
         force-fallback="true"
