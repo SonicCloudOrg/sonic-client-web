@@ -9,7 +9,7 @@ export default defineConfig({
     port: 3002,
   },
   build: {
-    chunkSizeWarningLimit: 600 * 1024, // 设置警告阈值为600KiB，因为element-plus超过500kb导致打包失败
+    chunkSizeWarningLimit: 600, // 设置警告阈值为600KiB
     rollupOptions: {
       output: {
         manualChunks(id) {
