@@ -832,7 +832,7 @@ const getNotes = (text, type) => {
     <el-popover
       placement="bottom"
       :fallback-placements="['bottom', 'top', 'right', 'left']"
-      popper-class="popper-auto-flow"
+      popper-class="public-step-popover"
       :width="700"
       trigger="click"
     >

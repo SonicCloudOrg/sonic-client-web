@@ -144,7 +144,7 @@ onMounted(() => {
       <template #default="scope">
         <el-popover
           placement="left"
-          popper-class="popper-auto-flow"
+          popper-class="public-step-popover"
           :fallback-placements="['bottom', 'top', 'right', 'left']"
           :width="700"
           trigger="click"

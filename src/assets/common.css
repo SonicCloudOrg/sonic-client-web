@@ -361,7 +361,7 @@ body,
     align-items: center;
 }
 
-.popper-auto-flow {
+.public-step-popover {
   max-height: 500px;
   overflow: auto;
 }
