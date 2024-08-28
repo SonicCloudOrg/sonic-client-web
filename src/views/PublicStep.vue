@@ -142,7 +142,13 @@ onMounted(() => {
       align="center"
     >
       <template #default="scope">
-        <el-popover placement="left" :width="700" trigger="click">
+        <el-popover
+          placement="left"
+          popper-class="public-step-popover"
+          :fallback-placements="['bottom', 'top', 'right', 'left']"
+          :width="700"
+          trigger="click"
+        >
           <child-step-list-view :steps="curShowPublicStep.steps" />
           <template #reference>
             <el-button size="mini" @click="getPublicStepInfo(scope.row.id)">{{

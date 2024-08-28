@@ -829,7 +829,13 @@ const getNotes = (text, type) => {
     <el-tag type="info" size="small" style="margin-left: 10px">{{
       step.content
     }}</el-tag>
-    <el-popover placement="bottom" :width="700" trigger="click">
+    <el-popover
+      placement="bottom"
+      :fallback-placements="['bottom', 'top', 'right', 'left']"
+      popper-class="public-step-popover"
+      :width="700"
+      trigger="click"
+    >
       <child-step-list-view :steps="childStep" />
       <template #reference>
         <el-button

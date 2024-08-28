@@ -360,3 +360,8 @@ body,
 .remote-header .el-page-header__left{
     align-items: center;
 }
+
+.public-step-popover {
+  max-height: 500px;
+  overflow: auto;
+}
