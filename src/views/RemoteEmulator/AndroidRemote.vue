@@ -556,6 +556,34 @@ const stopLogcat = () => {
     })
   );
 };
+const saveLogcat = () => {
+  if (logcatOutPut && Array.isArray(logcatOutPut.value)) {
+
+    const logContent = logcatOutPut.value.join('\n');
+    
+    const blob = new Blob([logContent], { type: 'text/plain;charset=utf-8' });
+    
+    const url = URL.createObjectURL(blob);
+
+    const now = new Date();
+    const formattedDate = now.toISOString().replace(/:/g, '-').split('.')[0];
+    const modelName = device.value['model']; 
+    const fileName = `${modelName}_${formattedDate}.log`;
+    
+    const a = document.createElement('a');
+    a.href = url;
+    
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } else {
+    console.error("logcatOutPut or logcatOutPut.value not expect");
+  }
+};
+
 const sendCmd = () => {
   if (cmdInput.value.length > 0 && cmdIsDone.value === true) {
     cmdIsDone.value = false;
@@ -3168,19 +3196,26 @@ const checkAlive = () => {
                       style="margin-left: 5px"
                       type="primary"
                       @click="sendLogcat"
-                      >Search
+                      >Start
                     </el-button>
                     <el-button
                       size="mini"
                       style="margin-left: 5px"
-                      type="danger"
+                      type="warning"
                       @click="stopLogcat"
                       >Stop
                     </el-button>
                     <el-button
                       size="mini"
                       style="margin-left: 5px"
-                      type="warning"
+                      type="success"
+                      @click="saveLogcat"
+                      >Save
+                    </el-button>
+                    <el-button
+                      size="mini"
+                      style="margin-left: 5px"
+                      type="danger"
                       @click="clearLogcat"
                       >Clear
                     </el-button>
