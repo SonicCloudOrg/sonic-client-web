@@ -557,30 +557,23 @@ const stopLogcat = () => {
   );
 };
 const saveLogcat = () => {
-  if (logcatOutPut && Array.isArray(logcatOutPut.value)) {
-
+  if (logcatOutPut.value && Array.isArray(logcatOutPut.value)) {
     const logContent = logcatOutPut.value.join('\n');
-    
     const blob = new Blob([logContent], { type: 'text/plain;charset=utf-8' });
-    
     const url = URL.createObjectURL(blob);
-
     const now = new Date();
     const formattedDate = now.toISOString().replace(/:/g, '-').split('.')[0];
-    const modelName = device.value['model']; 
+    const modelName = device.value.model;
     const fileName = `${modelName}_${formattedDate}.log`;
-    
     const a = document.createElement('a');
     a.href = url;
-    
     a.download = fileName;
     document.body.appendChild(a);
     a.click();
-    
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   } else {
-    console.error("logcatOutPut or logcatOutPut.value not expect");
+    console.error('logcatOutPut or logcatOutPut.value not expect');
   }
 };
 
@@ -1370,6 +1363,17 @@ const runStep = () => {
     })
   );
 };
+const checkLocation = (data) => {
+  websocket.send(
+    JSON.stringify({
+      type: 'debug',
+      detail: 'checkLocation',
+      element: data.eleValue,
+      eleType: data.eleType,
+      pwd: device.value.password,
+    })
+  );
+};
 const stopStep = () => {
   debugLoading.value = false;
   websocket.send(
@@ -1825,7 +1829,9 @@ const checkAlive = () => {
       :project-id="project['id']"
       :element-id="0"
       :element-obj="element"
+      :is-remote-page="true"
       @flush="dialogElement = false"
+      @check-location="checkLocation"
     />
   </el-dialog>
   <remote-page-header
