@@ -10,6 +10,7 @@ const props = defineProps({
   elementId: Number,
   elementObj: Object,
   isRemotePage: Boolean,
+  checkLoading: Boolean,
 });
 const emit = defineEmits(['flush', 'checkLocation']);
 const element = ref({
@@ -224,8 +225,10 @@ onMounted(() => {
         v-if="isRemotePage"
         size="small"
         type="warning"
+        :loading="checkLoading"
+        :disabled="checkLoading"
         @click="testElement"
-        >{{ '测试' }}</el-button
+        >{{ $t('form.test') }}</el-button
       >
       <el-button size="small" type="primary" @click="saveElement">{{
         $t('form.save')
