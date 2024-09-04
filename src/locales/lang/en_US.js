@@ -374,6 +374,7 @@ const form = {
   inputNewPasswordAgain: 'Please input your new password again',
   confirm: 'Confirm',
   cancel: 'Cancel',
+  test: 'Test',
 };
 // 弹窗相关
 const dialog = {

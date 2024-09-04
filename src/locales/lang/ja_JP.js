@@ -317,6 +317,7 @@ const form = {
   inputNewPasswordAgain: '新パスワードを再度入力してください',
   confirm: '確定',
   cancel: 'キャンセル',
+  test: 'テスト',
 };
 // 弹窗相关
 const dialog = {
