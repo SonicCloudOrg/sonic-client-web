@@ -36,7 +36,7 @@ import ElementUpdate from '@/components/ElementUpdate.vue';
 import Pageable from '@/components/Pageable.vue';
 import defaultLogo from '@/assets/logo.png';
 import {
-  Aim,
+  Location,
   Place,
   FullScreen,
   Download,
@@ -2800,7 +2800,7 @@ const checkAlive = () => {
                                     })
                                   "
                                 >
-                                  <Aim />
+                                  <Location />
                                 </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"
@@ -2851,7 +2851,7 @@ const checkAlive = () => {
                                           })
                                         "
                                       >
-                                        <Aim />
+                                        <Location />
                                       </el-icon>
                                       <el-icon
                                         v-if="project && project['id']"
@@ -2902,7 +2902,7 @@ const checkAlive = () => {
                                           })
                                         "
                                       >
-                                        <Aim />
+                                        <Location />
                                       </el-icon>
                                       <el-icon
                                         v-if="project && project['id']"
@@ -2957,7 +2957,7 @@ const checkAlive = () => {
                                           })
                                         "
                                       >
-                                        <Aim />
+                                        <Location />
                                       </el-icon>
                                       <el-icon
                                         v-if="project && project['id']"
@@ -3000,7 +3000,7 @@ const checkAlive = () => {
                                     })
                                   "
                                 >
-                                  <Aim />
+                                  <Location />
                                 </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"
@@ -3088,7 +3088,7 @@ const checkAlive = () => {
                                     })
                                   "
                                 >
-                                  <Aim />
+                                  <Location />
                                 </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"

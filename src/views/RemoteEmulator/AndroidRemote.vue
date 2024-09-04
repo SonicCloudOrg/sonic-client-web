@@ -69,7 +69,7 @@ import {
   Service,
   VideoCamera,
   Postcard,
-  Aim,
+  Location,
 } from '@element-plus/icons';
 
 import { useI18n } from 'vue-i18n';
@@ -3725,7 +3725,7 @@ const checkAlive = () => {
                                     })
                                   "
                                 >
-                                  <Aim />
+                                  <Location />
                                 </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"
@@ -3780,7 +3780,7 @@ const checkAlive = () => {
                                           })
                                         "
                                       >
-                                        <Aim />
+                                        <Location />
                                       </el-icon>
                                       <el-icon
                                         v-if="project && project['id']"
@@ -3823,7 +3823,7 @@ const checkAlive = () => {
                                     })
                                   "
                                 >
-                                  <Aim />
+                                  <Location />
                                 </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"
@@ -3875,7 +3875,7 @@ const checkAlive = () => {
                                     })
                                   "
                                 >
-                                  <Aim />
+                                  <Location />
                                 </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"
@@ -3943,7 +3943,7 @@ const checkAlive = () => {
                                     })
                                   "
                                 >
-                                  <Aim />
+                                  <Location />
                                 </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"
