@@ -315,6 +315,7 @@ const form = {
   inputNewPasswordAgain: '請再次輸入新密碼',
   confirm: '確定',
   cancel: '取消',
+  test: '測試',
 };
 // 彈出型視窗相關
 const dialog = {

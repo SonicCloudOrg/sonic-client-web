@@ -69,6 +69,7 @@ import {
   Service,
   VideoCamera,
   Postcard,
+  Location,
 } from '@element-plus/icons';
 
 import { useI18n } from 'vue-i18n';
@@ -148,6 +149,7 @@ const activeTab = ref('main');
 const activeTab2 = ref('step');
 const stepLog = ref([]);
 const debugLoading = ref(false);
+const checkElementLoading = ref(false);
 const dialogElement = ref(false);
 const dialogImgElement = ref(false);
 const imgElementUrl = ref(null);
@@ -557,30 +559,23 @@ const stopLogcat = () => {
   );
 };
 const saveLogcat = () => {
-  if (logcatOutPut && Array.isArray(logcatOutPut.value)) {
-
+  if (logcatOutPut.value && Array.isArray(logcatOutPut.value)) {
     const logContent = logcatOutPut.value.join('\n');
-    
     const blob = new Blob([logContent], { type: 'text/plain;charset=utf-8' });
-    
     const url = URL.createObjectURL(blob);
-
     const now = new Date();
     const formattedDate = now.toISOString().replace(/:/g, '-').split('.')[0];
-    const modelName = device.value['model']; 
+    const modelName = device.value.model;
     const fileName = `${modelName}_${formattedDate}.log`;
-    
     const a = document.createElement('a');
     a.href = url;
-    
     a.download = fileName;
     document.body.appendChild(a);
     a.click();
-    
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   } else {
-    console.error("logcatOutPut or logcatOutPut.value not expect");
+    console.error('logcatOutPut or logcatOutPut.value not expect');
   }
 };
 
@@ -867,6 +862,7 @@ const websocketOnmessage = (message) => {
     }
     case 'status': {
       debugLoading.value = false;
+      checkElementLoading.value = false;
       ElMessage.info({
         message: $t('androidRemoteTS.runOver'),
       });
@@ -1370,6 +1366,18 @@ const runStep = () => {
     })
   );
 };
+const checkLocation = (data) => {
+  checkElementLoading.value = true;
+  websocket.send(
+    JSON.stringify({
+      type: 'debug',
+      detail: 'checkLocation',
+      element: data.eleValue,
+      eleType: data.eleType,
+      pwd: device.value.password,
+    })
+  );
+};
 const stopStep = () => {
   debugLoading.value = false;
   websocket.send(
@@ -1825,7 +1833,10 @@ const checkAlive = () => {
       :project-id="project['id']"
       :element-id="0"
       :element-obj="element"
+      :is-remote-page="true"
+      :check-loading="checkElementLoading"
       @flush="dialogElement = false"
+      @check-location="checkLocation"
     />
   </el-dialog>
   <remote-page-header
@@ -3700,6 +3711,23 @@ const checkAlive = () => {
                                   >{{ elementDetail['resource-id'] }}</span
                                 >
                                 <el-icon
+                                  color="green"
+                                  size="16"
+                                  style="
+                                    vertical-align: middle;
+                                    margin-left: 10px;
+                                    cursor: pointer;
+                                  "
+                                  @click="
+                                    checkLocation({
+                                      eleType: 'id',
+                                      eleValue: elementDetail['resource-id'],
+                                    })
+                                  "
+                                >
+                                  <Location />
+                                </el-icon>
+                                <el-icon
                                   v-if="project && project['id']"
                                   color="green"
                                   size="16"
@@ -3738,6 +3766,23 @@ const checkAlive = () => {
                                         >{{ scope.row }}</span
                                       >
                                       <el-icon
+                                        color="green"
+                                        size="16"
+                                        style="
+                                          vertical-align: middle;
+                                          margin-left: 10px;
+                                          cursor: pointer;
+                                        "
+                                        @click="
+                                          checkLocation({
+                                            eleType: 'xpath',
+                                            eleValue: scope.row,
+                                          })
+                                        "
+                                      >
+                                        <Location />
+                                      </el-icon>
+                                      <el-icon
                                         v-if="project && project['id']"
                                         color="green"
                                         size="16"
@@ -3763,6 +3808,23 @@ const checkAlive = () => {
                                 <span @click="copy(elementDetail['xpath'])">{{
                                   elementDetail['xpath']
                                 }}</span>
+                                <el-icon
+                                  color="green"
+                                  size="16"
+                                  style="
+                                    vertical-align: middle;
+                                    margin-left: 10px;
+                                    cursor: pointer;
+                                  "
+                                  @click="
+                                    checkLocation({
+                                      eleType: 'xpath',
+                                      eleValue: elementDetail['xpath'],
+                                    })
+                                  "
+                                >
+                                  <Location />
+                                </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"
                                   color="green"
@@ -3798,6 +3860,23 @@ const checkAlive = () => {
                                   @click="copy(elementDetail['content-desc'])"
                                   >{{ elementDetail['content-desc'] }}</span
                                 >
+                                <el-icon
+                                  color="green"
+                                  size="16"
+                                  style="
+                                    vertical-align: middle;
+                                    margin-left: 10px;
+                                    cursor: pointer;
+                                  "
+                                  @click="
+                                    checkLocation({
+                                      eleType: 'accessibilityId',
+                                      eleValue: elementDetail['content-desc'],
+                                    })
+                                  "
+                                >
+                                  <Location />
+                                </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"
                                   color="green"
@@ -3844,6 +3923,28 @@ const checkAlive = () => {
                                     )
                                   }}</span
                                 >
+                                <el-icon
+                                  color="green"
+                                  size="16"
+                                  style="
+                                    vertical-align: middle;
+                                    margin-left: 10px;
+                                    cursor: pointer;
+                                  "
+                                  @click="
+                                    checkLocation({
+                                      eleType: 'point',
+                                      eleValue: computedCenter(
+                                        elementDetail['x'],
+                                        elementDetail['y'],
+                                        elementDetail['width'],
+                                        elementDetail['height']
+                                      ),
+                                    })
+                                  "
+                                >
+                                  <Location />
+                                </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"
                                   color="green"

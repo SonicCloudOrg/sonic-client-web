@@ -36,7 +36,7 @@ import ElementUpdate from '@/components/ElementUpdate.vue';
 import Pageable from '@/components/Pageable.vue';
 import defaultLogo from '@/assets/logo.png';
 import {
-  Aim,
+  Location,
   Place,
   FullScreen,
   Download,
@@ -130,6 +130,7 @@ const activeTab = ref('main');
 const activeTab2 = ref('step');
 const stepLog = ref([]);
 const debugLoading = ref(false);
+const checkElementLoading = ref(false);
 const dialogElement = ref(false);
 const dialogImgElement = ref(false);
 const imgElementUrl = ref(null);
@@ -815,6 +816,7 @@ const websocketOnmessage = (message) => {
     }
     case 'status': {
       debugLoading.value = false;
+      checkElementLoading.value = false;
       ElMessage.info({
         message: $t('androidRemoteTS.runOver'),
       });
@@ -1083,6 +1085,18 @@ const runStep = () => {
       type: 'debug',
       detail: 'runStep',
       caseId: testCase.value.id,
+    })
+  );
+};
+const checkLocation = (data) => {
+  checkElementLoading.value = true;
+  websocket.send(
+    JSON.stringify({
+      type: 'debug',
+      detail: 'checkLocation',
+      element: data.eleValue,
+      eleType: data.eleType,
+      pwd: device.value.password,
     })
   );
 };
@@ -1360,7 +1374,10 @@ const checkAlive = () => {
       :project-id="project['id']"
       :element-id="0"
       :element-obj="element"
+      :is-remote-page="true"
+      :check-loading="checkElementLoading"
       @flush="dialogElement = false"
+      @check-location="checkLocation"
     />
   </el-dialog>
   <remote-page-header
@@ -2769,6 +2786,23 @@ const checkAlive = () => {
                                   elementDetail['name']
                                 }}</span>
                                 <el-icon
+                                  color="green"
+                                  size="16"
+                                  style="
+                                    vertical-align: middle;
+                                    margin-left: 10px;
+                                    cursor: pointer;
+                                  "
+                                  @click="
+                                    checkLocation({
+                                      eleType: 'accessibilityId',
+                                      eleValue: elementDetail['name'],
+                                    })
+                                  "
+                                >
+                                  <Location />
+                                </el-icon>
+                                <el-icon
                                   v-if="project && project['id']"
                                   color="green"
                                   size="16"
@@ -2803,6 +2837,23 @@ const checkAlive = () => {
                                         >{{ scope.row }}</span
                                       >
                                       <el-icon
+                                        color="green"
+                                        size="16"
+                                        style="
+                                          vertical-align: middle;
+                                          margin-left: 10px;
+                                          cursor: pointer;
+                                        "
+                                        @click="
+                                          checkLocation({
+                                            eleType: 'nsPredicate',
+                                            eleValue: scope.row,
+                                          })
+                                        "
+                                      >
+                                        <Location />
+                                      </el-icon>
+                                      <el-icon
                                         v-if="project && project['id']"
                                         color="green"
                                         size="16"
@@ -2836,6 +2887,23 @@ const checkAlive = () => {
                                         @click="copy(scope.row)"
                                         >{{ scope.row }}</span
                                       >
+                                      <el-icon
+                                        color="green"
+                                        size="16"
+                                        style="
+                                          vertical-align: middle;
+                                          margin-left: 10px;
+                                          cursor: pointer;
+                                        "
+                                        @click="
+                                          checkLocation({
+                                            eleType: 'classChain',
+                                            eleValue: scope.row,
+                                          })
+                                        "
+                                      >
+                                        <Location />
+                                      </el-icon>
                                       <el-icon
                                         v-if="project && project['id']"
                                         color="green"
@@ -2875,6 +2943,23 @@ const checkAlive = () => {
                                         >{{ scope.row }}</span
                                       >
                                       <el-icon
+                                        color="green"
+                                        size="16"
+                                        style="
+                                          vertical-align: middle;
+                                          margin-left: 10px;
+                                          cursor: pointer;
+                                        "
+                                        @click="
+                                          checkLocation({
+                                            eleType: 'xpath',
+                                            eleValue: scope.row,
+                                          })
+                                        "
+                                      >
+                                        <Location />
+                                      </el-icon>
+                                      <el-icon
                                         v-if="project && project['id']"
                                         color="green"
                                         size="16"
@@ -2900,6 +2985,23 @@ const checkAlive = () => {
                                 <span @click="copy(elementDetail['xpath'])">{{
                                   elementDetail['xpath']
                                 }}</span>
+                                <el-icon
+                                  color="green"
+                                  size="16"
+                                  style="
+                                    vertical-align: middle;
+                                    margin-left: 10px;
+                                    cursor: pointer;
+                                  "
+                                  @click="
+                                    checkLocation({
+                                      eleType: 'xpath',
+                                      eleValue: elementDetail['xpath'],
+                                    })
+                                  "
+                                >
+                                  <Location />
+                                </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"
                                   color="green"
@@ -2966,6 +3068,28 @@ const checkAlive = () => {
                                     )
                                   }}</span
                                 >
+                                <el-icon
+                                  color="green"
+                                  size="16"
+                                  style="
+                                    vertical-align: middle;
+                                    margin-left: 10px;
+                                    cursor: pointer;
+                                  "
+                                  @click="
+                                    checkLocation({
+                                      eleType: 'point',
+                                      eleValue: computedCenter(
+                                        elementDetail['x'],
+                                        elementDetail['y'],
+                                        elementDetail['width'],
+                                        elementDetail['height']
+                                      ),
+                                    })
+                                  "
+                                >
+                                  <Location />
+                                </el-icon>
                                 <el-icon
                                   v-if="project && project['id']"
                                   color="green"

@@ -9,8 +9,10 @@ const props = defineProps({
   projectId: Number,
   elementId: Number,
   elementObj: Object,
+  isRemotePage: Boolean,
+  checkLoading: Boolean,
 });
-const emit = defineEmits(['flush']);
+const emit = defineEmits(['flush', 'checkLocation']);
 const element = ref({
   id: null,
   eleName: '',
@@ -75,6 +77,9 @@ const saveElement = () => {
       });
     }
   });
+};
+const testElement = () => {
+  emit('checkLocation', element.value);
 };
 const moduleList = ref([]);
 const getModuleList = () => {
@@ -216,6 +221,15 @@ onMounted(() => {
       </el-select>
     </el-form-item>
     <div style="text-align: center">
+      <el-button
+        v-if="isRemotePage"
+        size="small"
+        type="warning"
+        :loading="checkLoading"
+        :disabled="checkLoading"
+        @click="testElement"
+        >{{ $t('form.test') }}</el-button
+      >
       <el-button size="small" type="primary" @click="saveElement">{{
         $t('form.save')
       }}</el-button>

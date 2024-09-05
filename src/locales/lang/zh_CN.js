@@ -370,6 +370,7 @@ const form = {
   inputNewPasswordAgain: '请再次输入新密码',
   confirm: '确定',
   cancel: '取消',
+  test: '测试',
 };
 // 弹窗相关
 const dialog = {
