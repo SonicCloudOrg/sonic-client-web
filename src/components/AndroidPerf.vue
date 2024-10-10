@@ -38,45 +38,53 @@ const stopPerfmon = () => {
   isStart.value = false;
 };
 const clearPerfmon = () => {
-  sysCpu.value = [];
-  sysMem.value = [];
-  sysNetwork.value = [];
-  procCpu.value = [];
-  procMem.value = [];
-  procFps.value = [];
-  procThread.value = [];
+  // sysCpu.value = [];
+  // sysMem.value = [];
+  // sysNetwork.value = [];
+  // procCpu.value = [];
+  // procMem.value = [];
+  // procFps.value = [];
+  // procThread.value = [];
+  androidPerfChart.value.clearPerf();
 };
 const setData = (data) => {
   if (data.process) {
     if (data.process.cpuInfo) {
-      procCpu.value.push(data.process.cpuInfo);
+      // procCpu.value.push(data.process.cpuInfo);
+      androidPerfChart.value.pushProcCpuData(data.process.cpuInfo)
       androidPerfChart.value.printPerfCpu();
     }
     if (data.process.memInfo) {
-      procMem.value.push(data.process.memInfo);
+      // procMem.value.push(data.process.memInfo);
+      androidPerfChart.value.pushProcMemData(data.process.memInfo);
       androidPerfChart.value.printPerfMem();
     }
     if (data.process.fpsInfo) {
-      procFps.value.push(data.process.fpsInfo);
+      // procFps.value.push(data.process.fpsInfo);
+      androidPerfChart.value.pushProcFPSData(data.process.fpsInfo);
       androidPerfChart.value.printProcFps();
     }
     if (data.process.threadInfo) {
-      procThread.value.push(data.process.threadInfo);
+      // procThread.value.push(data.process.threadInfo);
+      androidPerfChart.value.pushProcThreadData(data.process.threadInfo);
       androidPerfChart.value.printProcThread();
     }
   }
   if (data.system) {
     if (data.system.cpuInfo) {
-      sysCpu.value.push(data.system.cpuInfo);
+      // sysCpu.value.push(data.system.cpuInfo);
+      androidPerfChart.value.pushSysCpuData(data.system.cpuInfo);
       androidPerfChart.value.printCpu();
       androidPerfChart.value.printSingleCpu();
     }
     if (data.system.memInfo) {
-      sysMem.value.push(data.system.memInfo);
+      // sysMem.value.push(data.system.memInfo);
+      androidPerfChart.value.pushSysMemData(data.system.memInfo);
       androidPerfChart.value.printMem();
     }
     if (data.system.networkInfo) {
-      sysNetwork.value.push(data.system.networkInfo);
+      // sysNetwork.value.push(data.system.networkInfo);
+      androidPerfChart.value.pushSysNetworkData(data.system.networkInfo)
       androidPerfChart.value.printNetwork();
     }
   }

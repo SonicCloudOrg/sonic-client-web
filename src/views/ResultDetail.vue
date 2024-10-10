@@ -227,6 +227,36 @@ const getPerform = () => {
 
       if (lastDevice.value.platform === 1) {
         const key = `${route.params.resultId}-${caseId.value}-${deviceId.value}-androidPerfChart`;
+        for (const i in resp.data) {
+          const r = JSON.parse(resp.data[i].log);
+          if (!r.type){
+            if (r.process) {
+              if (r.process.cpuInfo) {
+                androidPerfChartMap[key].pushProcCpuData(r.process.cpuInfo);
+              }
+              if (r.process.memInfo) {
+                androidPerfChartMap[key].pushProcMemData(r.process.memInfo);
+              }
+              if (r.process.fpsInfo) {
+                androidPerfChartMap[key].pushProcFPSData(r.process.fpsInfo);
+              }
+              if (r.process.threadInfo) {
+                androidPerfChartMap[key].pushProcThreadData(r.process.threadInfo);
+              }
+            }
+            if (r.system) {
+              if (r.system.cpuInfo) {
+                androidPerfChartMap[key].pushSysCpuData(r.system.cpuInfo);
+              }
+              if (r.system.memInfo) {
+                androidPerfChartMap[key].pushSysMemData(r.system.memInfo);
+              }
+              if (r.system.networkInfo) {
+                androidPerfChartMap[key].pushSysNetworkData(r.system.networkInfo);
+              }
+            }
+          }
+        }
         androidPerfChartMap[key].printPerfCpu();
         androidPerfChartMap[key].printPerfMem();
         androidPerfChartMap[key].printProcFps();
