@@ -56,6 +56,14 @@ const props = defineProps({
   procThread: Array,
 });
 
+function getTimeStr(timestamp) {
+  const now = new Date(timestamp);
+  const hour = now.getHours().toString().padStart(2, '0');
+  const minute = now.getMinutes().toString().padStart(2, '0');
+  const second = now.getSeconds().toString().padStart(2, '0');
+  return `${hour}:${minute}:${second}`;
+}
+
 const printSingleCpu = () => {
   let chart = echarts.getInstanceByDom(
       document.getElementById(
@@ -127,7 +135,7 @@ let sysCpuData = {
 }
 
 const pushSysCpuData = (obj) => {
-  sysCpuData.xAxisData.push(new Date(obj.cpu.timeStamp))
+  sysCpuData.xAxisData.push(getTimeStr(obj.cpu.timeStamp))
   if (obj.cpu) {
     for (const i in obj.cpu) {
       if (i !== 'timeStamp') {
@@ -239,7 +247,7 @@ let sysMemData = {
 }
 
 const pushSysMemData = (obj) => {
-  sysMemData.xAxisData.push(new Date(obj.timeStamp))
+  sysMemData.xAxisData.push(getTimeStr(obj.timeStamp))
   sysMemData.memBuffersData.push(obj.memBuffers)
   sysMemData.memCached.push(obj.memCached)
   sysMemData.memCached.push(obj.memFree)
@@ -273,6 +281,12 @@ const printMem = () => {
     },
     tooltip: {
       trigger: 'axis',
+      position(pos, params, dom, rect, size) {
+        const obj = {top: 60};
+        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+        return obj;
+      },
+      valueFormatter: (value) => `${value}`,
     },
     grid: {top: '30%', left: '20%'},
     toolbox: {
@@ -359,7 +373,7 @@ let procFPSData = {
   seriesData: []
 }
 const pushProcFPSData = (obj) => {
-  procFPSData.xAxisData.push(new Date(obj.timeStamp))
+  procFPSData.xAxisData.push(getTimeStr(obj.timeStamp))
   procFPSData.seriesData.push(obj.fps)
 }
 const printProcFps = () => {
@@ -425,9 +439,11 @@ let procThreadData = {
 }
 const pushProcThreadData = (obj) => {
   console.log(obj)
-  procThreadData.xAxisData.push(new Date(obj.timestamp))
+  procThreadData.xAxisData.push(getTimeStr(obj.timeStamp))
   procThreadData.seriesData.push(obj.threadCount)
 }
+
+
 const printProcThread = () => {
   let chart = echarts.getInstanceByDom(
       document.getElementById(
@@ -495,7 +511,7 @@ const pushSysNetworkData = (obj) => {
   let isAddTime = true;
   for (const i in obj) {
     if (isAddTime) {
-      sysNetworkData.xAxisData.push(new Date(obj[i].timeStamp));
+      sysNetworkData.xAxisData.push(getTimeStr(obj[i].timeStamp));
       isAddTime = false;
     }
 
@@ -552,6 +568,16 @@ const printNetwork = () => {
     },
     tooltip: {
       trigger: 'axis',
+      position(pos, params, dom, rect, size) {
+        const obj = {top: 60};
+        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+        return obj;
+      },
+      valueFormatter: (value) => `${value}`,
+    },
+    legend: {
+      top: '8%',
+      data: sysNetworkData.legendData,
     },
     grid: {top: '20%', left: '18%'},
     toolbox: {
@@ -582,7 +608,7 @@ let procCpuData = {
   seriesData: []
 }
 const pushProcCpuData = (obj) => {
-  procCpuData.xAxisData.push(new Date(obj.timeStamp))
+  procCpuData.xAxisData.push(getTimeStr(obj.timeStamp))
   procCpuData.seriesData.push(obj.cpuUtilization)
 }
 const printPerfCpu = () => {
@@ -653,7 +679,7 @@ let procMemData = {
   vmData: []
 }
 const pushProcMemData = (obj) => {
-  procMemData.xAxisData.push(new Date(obj.timeStamp))
+  procMemData.xAxisData.push(getTimeStr(obj.timeStamp))
   procMemData.phyData.push(obj.phyRSS)
   procMemData.vmData.push(obj.vmRSS)
   procMemData.pssData.push(obj.totalPSS)
