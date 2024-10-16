@@ -56,6 +56,16 @@ const props = defineProps({
   procThread: Array,
 });
 
+function getTimeStr(timestamp) {
+  const now = new Date(timestamp);
+  const hour = now.getHours().toString().padStart(2, '0');
+  const minute = now.getMinutes().toString().padStart(2, '0');
+  const second = now.getSeconds().toString().padStart(2, '0');
+  return `${hour}:${minute}:${second}`;
+}
+
+let signZoomStart = 30;
+let signZoomEnd = 100;
 const printSingleCpu = () => {
   let chart = echarts.getInstanceByDom(
       document.getElementById(
@@ -107,14 +117,18 @@ const printSingleCpu = () => {
       {
         show: true,
         realtime: true,
-        start: 30,
-        end: 100,
+        start: signZoomStart,
+        end: signZoomEnd,
         xAxisIndex: [0, 1],
       },
     ],
     yAxis: [{name: `${$t('perf.singleCpu')}(%)`, min: 0}],
     series: sysCpuData.SingleCpuData,
   };
+  chart.on('dataZoom', (event) => {
+    signZoomEnd = event.end
+    signZoomStart = event.start
+  })
   chart.setOption(option);
 };
 
@@ -124,10 +138,12 @@ let sysCpuData = {
   CpuDataLegend: [],
   SingleCpuData: [],
   SingleCpuDataLegend: [],
+  zoomStart:30,
+  zoomEnd:100,
 }
 
 const pushSysCpuData = (obj) => {
-  sysCpuData.xAxisData.push(new Date(obj.cpu.timeStamp))
+  sysCpuData.xAxisData.push(getTimeStr(obj.cpu.timeStamp))
   if (obj.cpu) {
     for (const i in obj.cpu) {
       if (i !== 'timeStamp') {
@@ -217,14 +233,18 @@ const printCpu = () => {
       {
         show: true,
         realtime: true,
-        start: 30,
-        end: 100,
+        start: sysCpuData.zoomStart,
+        end: sysCpuData.zoomEnd,
         xAxisIndex: [0, 1],
       },
     ],
     yAxis: [{name: `${$t('perf.totalCpu')}(%)`, min: 0}],
     series: sysCpuData.seriesData,
   };
+  chart.on('dataZoom', (event) => {
+    sysCpuData.zoomEnd = event.end
+    sysCpuData.zoomStart = event.start
+  })
   chart.setOption(option);
 };
 
@@ -236,10 +256,12 @@ let sysMemData = {
   memTotal: [],
   swapFree: [],
   swapTotal: [],
+  zoomStart:30,
+  zoomEnd:100,
 }
 
 const pushSysMemData = (obj) => {
-  sysMemData.xAxisData.push(new Date(obj.timeStamp))
+  sysMemData.xAxisData.push(getTimeStr(obj.timeStamp))
   sysMemData.memBuffersData.push(obj.memBuffers)
   sysMemData.memCached.push(obj.memCached)
   sysMemData.memCached.push(obj.memFree)
@@ -273,6 +295,12 @@ const printMem = () => {
     },
     tooltip: {
       trigger: 'axis',
+      position(pos, params, dom, rect, size) {
+        const obj = {top: 60};
+        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+        return obj;
+      },
+      valueFormatter: (value) => `${value}`,
     },
     grid: {top: '30%', left: '20%'},
     toolbox: {
@@ -300,8 +328,8 @@ const printMem = () => {
       {
         show: true,
         realtime: true,
-        start: 30,
-        end: 100,
+        start: sysMemData.zoomStart,
+        end: sysMemData.zoomEnd,
         xAxisIndex: [0, 1],
       },
     ],
@@ -351,15 +379,21 @@ const printMem = () => {
       },
     ],
   };
+  chart.on('dataZoom', (event) => {
+    sysMemData.zoomEnd = event.end
+    sysMemData.zoomStart = event.start
+  })
   chart.setOption(option);
 };
 
 let procFPSData = {
   xAxisData: [],
-  seriesData: []
+  seriesData: [],
+  zoomStart:30,
+  zoomEnd:100,
 }
 const pushProcFPSData = (obj) => {
-  procFPSData.xAxisData.push(new Date(obj.timeStamp))
+  procFPSData.xAxisData.push(getTimeStr(obj.timeStamp))
   procFPSData.seriesData.push(obj.fps)
 }
 const printProcFps = () => {
@@ -402,8 +436,8 @@ const printProcFps = () => {
       {
         show: true,
         realtime: true,
-        start: 30,
-        end: 100,
+        start: procFPSData.zoomStart,
+        end: procFPSData.zoomEnd,
         xAxisIndex: [0, 1],
       },
     ],
@@ -416,18 +450,26 @@ const printProcFps = () => {
       },
     ],
   };
+  chart.on('dataZoom', (event) => {
+    procFPSData.zoomEnd = event.end
+    procFPSData.zoomStart = event.start
+  })
   chart.setOption(option);
 };
 
 let procThreadData = {
   xAxisData: [],
-  seriesData: []
+  seriesData: [],
+  zoomStart:30,
+  zoomEnd:100,
 }
 const pushProcThreadData = (obj) => {
   console.log(obj)
-  procThreadData.xAxisData.push(new Date(obj.timestamp))
+  procThreadData.xAxisData.push(getTimeStr(obj.timeStamp))
   procThreadData.seriesData.push(obj.threadCount)
 }
+
+
 const printProcThread = () => {
   let chart = echarts.getInstanceByDom(
       document.getElementById(
@@ -468,8 +510,8 @@ const printProcThread = () => {
       {
         show: true,
         realtime: true,
-        start: 30,
-        end: 100,
+        start: procThreadData.zoomStart,
+        end: procThreadData.zoomEnd,
         xAxisIndex: [0, 1],
       },
     ],
@@ -482,20 +524,26 @@ const printProcThread = () => {
       },
     ],
   };
+  chart.on('dataZoom', (event) => {
+    procThreadData.zoomEnd = event.end
+    procThreadData.zoomStart = event.start
+  })
   chart.setOption(option);
 };
 
 let sysNetworkData = {
   xAxisData: [],
   seriesData: [],
-  legendData:[]
+  legendData:[],
+  zoomStart:30,
+  zoomEnd:100,
 }
 
 const pushSysNetworkData = (obj) => {
   let isAddTime = true;
   for (const i in obj) {
     if (isAddTime) {
-      sysNetworkData.xAxisData.push(new Date(obj[i].timeStamp));
+      sysNetworkData.xAxisData.push(getTimeStr(obj[i].timeStamp));
       isAddTime = false;
     }
 
@@ -552,6 +600,16 @@ const printNetwork = () => {
     },
     tooltip: {
       trigger: 'axis',
+      position(pos, params, dom, rect, size) {
+        const obj = {top: 60};
+        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+        return obj;
+      },
+      valueFormatter: (value) => `${value}`,
+    },
+    legend: {
+      top: '8%',
+      data: sysNetworkData.legendData,
     },
     grid: {top: '20%', left: '18%'},
     toolbox: {
@@ -566,23 +624,29 @@ const printNetwork = () => {
       {
         show: true,
         realtime: true,
-        start: 30,
-        end: 100,
+        start: sysNetworkData.zoomStart,
+        end: sysNetworkData.zoomEnd,
         xAxisIndex: [0, 1],
       },
     ],
     yAxis: [{name: `${$t('perf.network')}(b)`, min: 0}],
     series: sysNetworkData.seriesData,
   };
+  chart.on('dataZoom', (event) => {
+    sysNetworkData.zoomEnd = event.end
+    sysNetworkData.zoomStart = event.start
+  })
   chart.setOption(option);
 };
 
 let procCpuData = {
   xAxisData: [],
-  seriesData: []
+  seriesData: [],
+  zoomStart:30,
+  zoomEnd:100,
 }
 const pushProcCpuData = (obj) => {
-  procCpuData.xAxisData.push(new Date(obj.timeStamp))
+  procCpuData.xAxisData.push(getTimeStr(obj.timeStamp))
   procCpuData.seriesData.push(obj.cpuUtilization)
 }
 const printPerfCpu = () => {
@@ -627,8 +691,8 @@ const printPerfCpu = () => {
       {
         show: true,
         realtime: true,
-        start: 30,
-        end: 100,
+        start: procCpuData.zoomStart,
+        end: procCpuData.zoomEnd,
         xAxisIndex: [0, 1],
       },
     ],
@@ -643,6 +707,10 @@ const printPerfCpu = () => {
       },
     ],
   };
+  chart.on('dataZoom', (event) => {
+    procCpuData.zoomEnd = event.end
+    procCpuData.zoomStart = event.start
+  })
   chart.setOption(option);
 };
 
@@ -650,10 +718,12 @@ let procMemData = {
   xAxisData: [],
   pssData: [],
   phyData: [],
-  vmData: []
+  vmData: [],
+  zoomStart:30,
+  zoomEnd:100
 }
 const pushProcMemData = (obj) => {
-  procMemData.xAxisData.push(new Date(obj.timeStamp))
+  procMemData.xAxisData.push(getTimeStr(obj.timeStamp))
   procMemData.phyData.push(obj.phyRSS)
   procMemData.vmData.push(obj.vmRSS)
   procMemData.pssData.push(obj.totalPSS)
@@ -700,8 +770,8 @@ const printPerfMem = () => {
       {
         show: true,
         realtime: true,
-        start: 30,
-        end: 100,
+        start: procMemData.zoomStart,
+        end: procMemData.zoomEnd,
         xAxisIndex: [0, 1],
       },
     ],
@@ -734,6 +804,10 @@ const printPerfMem = () => {
       },
     ],
   };
+  chart.on('dataZoom', (event) => {
+    procMemData.zoomEnd = event.end
+    procMemData.zoomStart = event.start
+  })
   chart.setOption(option);
 };
 
