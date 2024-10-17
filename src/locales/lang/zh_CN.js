@@ -421,6 +421,7 @@ const routes = {
   globalParameter: '全局参数',
   moduleManage: '模块管理',
   versionIteration: '版本迭代',
+  membersProject: '项目成员',
   timedTask: '定时任务',
   projectSetting: '项目设置',
   projectPage: '项目首页',
@@ -506,8 +507,28 @@ const homeTS = {
     setting: '项目相关设置',
     mange: '模块管理',
     update: '版本迭代',
+    member: '项目成员',
   },
 };
+
+// 项目成员
+const proMemberTS = {
+  dialogVisible: {
+    addMember: '添加成员',
+    inputParam: '输入用户名',
+  },
+  pageData: {
+    memberId: '成员ID',
+    memberName: '用户名',
+    memberRole: '成员角色',
+    memberNoNull: '用户不能为空',
+    delMessage: '确认删除项目成员吗？',
+    createBy: '创建人',
+    members: '普通成员',
+  },
+};
+
+
 const jobsTS = {
   dialogVisible: {
     message: '定时任务信息',
@@ -1652,6 +1673,7 @@ export default {
     elements,
     globalParamsTs,
     homeTS,
+    proMemberTS,
     jobsTS,
     loginTS,
     modulesTS,

@@ -154,6 +154,11 @@ onMounted(() => {
           >
             <i class="el-icon-coin"></i>{{ $t('homeTS.projectSetting.update') }}
           </el-menu-item>
+
+          <el-menu-item :index="'/Home/'+ route.params.projectId + '/Members'">
+            <i class="el-icon-user"></i>{{ $t('homeTS.projectSetting.member') }}
+          </el-menu-item>
+
           <el-menu-item
             :index="'/Home/' + route.params.projectId + '/ProjectOption'"
           >
